@@ -1,13 +1,13 @@
 from django.db import models
 from decimal import *
+from djmoney.models.fields import MoneyField, Money
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the "real" save() method.
-        cuenta_cliente = CuentaCliente(cliente=self)
-        cuenta_cliente.save()
+    def deuda(self):
+        total_adeudado = DeudaCliente.objects.filter(cliente=self).aggregate(models.Sum('monto'))
+        return Money(total_adeudado['monto__sum'], 'ARS')
 
 class Consultor(models.Model):
     nombre = models.CharField(max_length=30)
@@ -23,17 +23,25 @@ class FacturaClienteManager(models.Manager):
 
 class FacturaCliente(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-    monto = models.DecimalField(max_digits=10, decimal_places=2)
-    fecha = models.DateField(auto_now=True)
+    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    fecha = models.DateField()
     descripcion = models.CharField(max_length=300)
-    gastos = models.DecimalField(max_digits=10, decimal_places=2)
+    gastos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     mentor = models.ForeignKey(Consultor, on_delete=models.CASCADE, null=True)
 
     objects = FacturaClienteManager()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+        deuda = DeudaCliente(cliente=self.cliente, monto=self.monto, fecha=self.fecha)
+        deuda.save()
 
     @property
     def ganancia(self):
         return self.monto - self.gastos
 
-class CuentaCliente(models.Model):
+class DeudaCliente(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    fecha = models.DateField()
+    
