@@ -1,0 +1,12 @@
+- model: facturacion_clientes.Consultor
+  pk: 1
+  fields:
+    nombre: David
+- model: facturacion_clientes.Consultor
+  pk: 2
+  fields:
+    nombre: Vani
+- model: facturacion_clientes.Consultor
+  pk: 3
+  fields:
+    nombre: Mariano
