@@ -1,0 +1,27 @@
+version: '3'
+
+services: 
+  djangoapp:
+    build: .
+    volumes: 
+      - .:/app
+    networks: 
+      - nginx_network
+    environment:
+     - PYTHONUNBUFFERED=1
+    command:  gunicorn --bind :8000 sistemita.wsgi:application --chdir sistemita
+
+  nginx:
+    image: nginx:1.13
+    ports:
+      - "8000:80"
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:  # <-- wait for djangoapp to be "ready" before starting this service
+      - djangoapp
+    networks:  
+      - nginx_network
+
+networks:  
+  nginx_network:
+    driver: bridge
