@@ -4,7 +4,7 @@ Característica: Distribución de lo facturado a un cliente en distintos concept
 Escenario: 
 Dado que "OSDE" es cliente
     Y que la distribución por default es del "10%" para fondo administrativo, "5%" para el fondo líquido, "20%" para mentoring y "65%" para el delivery
-Cuandose facture "1000" pesos el "2/1/2010" al cliente "OSDE" con "0" pesos de gastos
+Cuando se facture "1000" pesos el "2/1/2010" al cliente "OSDE" con "0" pesos de gastos
     Y el mentoring lo hizo "David"
     Y el reparto fue 
         | Persona | %  |

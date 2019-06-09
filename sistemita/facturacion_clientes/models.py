@@ -40,9 +40,13 @@ class FacturaCliente(models.Model):
     def ganancia(self):
         return self.monto - self.gastos
 
-# Cuenta
+# Cuentas
 class DeudaCliente(models.Model):
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField()
+    
+class FondoAdministrativo():
+    def saldo(self):
+        pass
     

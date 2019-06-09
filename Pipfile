@@ -13,6 +13,7 @@ pytest-bdd = "*"
 behave-django = "*"
 pyyaml = "*"
 django-money = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
