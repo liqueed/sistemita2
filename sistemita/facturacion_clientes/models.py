@@ -13,6 +13,14 @@ class Cliente(models.Model):
         total_adeudado = DeudaCliente.objects.filter(factura__cliente=self).aggregate(models.Sum('monto'))
         return Money(total_adeudado['monto__sum'], 'ARS')
 
+    def deuda_con_liqueed(self):
+        total_adeudado = DeudaCliente.objects.filter(factura__cliente=self, factura__facturadeliqueedacliente__isnull=False).aggregate(models.Sum('monto'))
+        return Money(total_adeudado['monto__sum'], 'ARS')
+
+    def deuda_con_consultor(self, consultor):
+        total_adeudado = DeudaCliente.objects.filter(factura__cliente=self, factura__facturadeconsultoracliente__consultor=consultor).aggregate(models.Sum('monto'))
+        return Money(total_adeudado['monto__sum'], 'ARS')
+
 class Consultor(models.Model):
     nombre = models.CharField(max_length=30)
 
@@ -69,6 +77,11 @@ class FacturaCliente(models.Model):
     def ganancia(self):
         return self.monto - self.gastos
 
+class FacturaDeConsultorACliente(FacturaCliente):
+    consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
+
+class FacturaDeLiqueedACliente(FacturaCliente):
+    pass
 
 class PorcentajesAportadosAFondosYDelivery(SingletonModel):
     porcentaje_fondo_administrativo = 10

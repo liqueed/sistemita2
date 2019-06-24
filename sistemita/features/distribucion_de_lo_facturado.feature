@@ -3,7 +3,7 @@ Característica: Distribución de lo facturado a un cliente en distintos concept
 
 Escenario: 
 Dado que "OSDE" es cliente
-Cuando se facture "1000" pesos el "2/1/2010" al cliente "OSDE" con "0" pesos de gastos
+Cuando se facture desde liqueed "1000" pesos el "2/1/2010" al cliente "OSDE" con "0" pesos de gastos
     Y el mentoring lo hizo "David" con un peso del "25%" sobre el total facturado
     Y el reparto fue 
         | Consultor | %  |

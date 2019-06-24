@@ -10,9 +10,9 @@ def step_impl(context, nombre_cliente):
     cliente = models.Cliente(nombre=nombre_cliente)
     cliente.save()    
 
-def crear_factura(nombre_cliente, ingreso, gastos, fecha, context):
+def crear_factura_de_liqueed_a_cliente(nombre_cliente, ingreso, gastos, fecha, context):
     cliente = models.Cliente.objects.get(nombre=nombre_cliente)
-    factura = models.FacturaCliente(
+    factura = models.FacturaDeLiqueedACliente(
         cliente=cliente, 
         monto=ingreso, 
         gastos=gastos,
@@ -21,13 +21,37 @@ def crear_factura(nombre_cliente, ingreso, gastos, fecha, context):
     factura.save()
     context.ultima_factura = factura
 
-@when(u'se facture hoy "{monto:d}" pesos a "{nombre_cliente}" sin gastos')
-def step_impl(context, monto, nombre_cliente):
-    crear_factura(nombre_cliente, monto, Money(0, 'ARS'), date.today(), context)
+def crear_factura_de_consultor_a_cliente(nombre_consultor, nombre_cliente, ingreso, gastos, fecha, context):
+    cliente = models.Cliente.objects.get(nombre=nombre_cliente)
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    factura = models.FacturaDeConsultorACliente(
+        consultor=consultor,
+        cliente=cliente, 
+        monto=ingreso, 
+        gastos=gastos,
+        fecha=fecha
+    )
+    factura.save()
+    context.ultima_factura = factura
 
-@when(u'se facture "{ingreso:d}" pesos el "{fecha:tg}" al cliente "{nombre_cliente}" con "{gastos:d}" pesos de gastos')
+@when(u'se facture desde liqueed hoy "{monto:d}" pesos a "{nombre_cliente}" sin gastos')
+def step_impl(context, monto, nombre_cliente):
+    crear_factura_de_liqueed_a_cliente(nombre_cliente, monto, Money(0, 'ARS'), date.today(), context)
+
+@when(u'se facture desde liqueed "{ingreso:d}" pesos el "{fecha:tg}" al cliente "{nombre_cliente}" con "{gastos:d}" pesos de gastos')
 def step_impl(context, ingreso, fecha, nombre_cliente, gastos):
-    crear_factura(nombre_cliente, Money(ingreso,'ARS'),  Money(gastos, 'ARS'), fecha, context)
+    crear_factura_de_liqueed_a_cliente(nombre_cliente, Money(ingreso,'ARS'),  Money(gastos, 'ARS'), fecha, context)
+
+@when(u'"{nombre_consultor}" facture "{ingreso:d}" pesos el "{fecha:tg}" directamente al cliente "{nombre_cliente}" con "{gastos:d}" pesos de gastos')
+def step_impl(context, nombre_consultor, ingreso, fecha, nombre_cliente, gastos):
+    crear_factura_de_consultor_a_cliente(
+            nombre_consultor=nombre_consultor,
+            nombre_cliente=nombre_cliente,
+            ingreso=Money(ingreso,'ARS'),
+            gastos=Money(gastos, 'ARS'),
+            fecha=fecha,
+            context=context)
+
 
 @then(u'la última factura fue de "{monto:d}" pesos realizada el "{fecha:tg}" al cliente "{nombre_cliente}" con "{gastos:d}" pesos de gastos')
 def step_impl(context, monto, fecha, nombre_cliente, gastos):
@@ -104,3 +128,19 @@ def step_impl(context, nombre_cliente, dias_demora_pago):
 def step_impl(context, a_fecha, dias_faltantes, nombre_cliente):
     dias_faltantes_a_comparar = models.DeudaCliente.dias_faltantes_para_cobro(factura=context.ultima_factura, a_fecha=a_fecha.date())
     context.test.assertEquals(dias_faltantes, dias_faltantes_a_comparar)
+
+@then(u'hay "{monto:d}" pesos pendientes de pago de "{nombre_cliente}" a liqueed')
+def step_impl(context, monto, nombre_cliente):
+    cliente = models.Cliente.objects.get(nombre=nombre_cliente)
+    context.test.assertEquals(cliente.deuda_con_liqueed(), Money(monto, 'ARS'))
+
+@then(u'hay "{monto:d}" pesos pendientes de pago de "{nombre_cliente}" directamente a "{nombre_consultor}"')
+def step_impl(context, monto, nombre_cliente, nombre_consultor):
+    cliente = models.Cliente.objects.get(nombre=nombre_cliente)
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    context.test.assertEquals(cliente.deuda_con_consultor(consultor), Money(monto, 'ARS'))
+
+@then(u'hay "{monto:d}" pesos pendientes de pago directamente a "{nombre_consultor}"')
+def step_impl(context, monto, nombre_consultor):
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    context.test.assertEquals(cliente.deuda_con_consultor(consultor), Money(monto, 'ARS'))
