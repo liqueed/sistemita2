@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "888f5b8c2227d1b9109981fa9344568aabc290cf96f9a62095310429fcb8dc88"
+            "sha256": "2fa860d816e5ac0cbd4c982aedf6e6b89f2b8821b485b83fb70de41d3cca57be"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -61,11 +61,18 @@
             "index": "pypi",
             "version": "==0.15"
         },
+        "django-solo": {
+            "hashes": [
+                "sha256:b1206b9a9411b19a4354f7d7d245909a9ea7e9cd566b594363b5adce7dc13e5d"
+            ],
+            "index": "pypi",
+            "version": "==1.1.3"
+        },
         "glob2": {
             "hashes": [
-                "sha256:f5b0a686ff21f820c4d3f0c4edd216704cea59d79d00fa337e244a2f2ff83ed6"
+                "sha256:85c3dbd07c8aa26d63d7aacee34fa86e9a91a3873bc30bf62ec46e531f92ab8c"
             ],
-            "version": "==0.6"
+            "version": "==0.7"
         },
         "gunicorn": {
             "hashes": [
@@ -77,10 +84,10 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:a9f185022cfa69e9ca5f7eabfd5a58b689894cb78a11e3c8c89398a8ccbb8e7f",
-                "sha256:df1403cd3aebeb2b1dcd3515ca062eecb5bd3ea7611f18cba81130c68707e879"
+                "sha256:6dfd58dfe281e8d240937776065dd3624ad5469c835248219bd16cf2e12dbeb7",
+                "sha256:cb6ee23b46173539939964df59d3d72c3e0c1b5d54b84f1d8a7e912fe43612db"
             ],
-            "version": "==0.17"
+            "version": "==0.18"
         },
         "mako": {
             "hashes": [
@@ -179,10 +186,10 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:6032845e68a17a96e8da3088037f899b56357769a724122056265ca2ea1890ee",
-                "sha256:bea27a646a3d74cbbcf8d3d4a06b2dfc336baf3dc2cc85cf70ad0157e73e8322"
+                "sha256:4a784f1d4f2ef198fe9b7aef793e9fa1a3b2f84e822d9b3a64a181293a572d45",
+                "sha256:926855726d8ae8371803f7b2e6ec0a69953d9c6311fa7c3b6c1b929ff92d27da"
             ],
-            "version": "==4.6.2"
+            "version": "==4.6.3"
         },
         "pytest-bdd": {
             "hashes": [

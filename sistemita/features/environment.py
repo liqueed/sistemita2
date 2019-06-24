@@ -1,2 +1,2 @@
 def before_all(context):
-    context.fixtures = ['personas_liqueed.yaml']
+    context.fixtures = ['datos_iniciales.yaml']

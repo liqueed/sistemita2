@@ -3,6 +3,7 @@ from django.db.models import Sum
 from django.db import connection
 from datetime import date
 from djmoney.money import Money
+from decimal import *
 
 @given(u'que "{nombre_cliente}" es cliente')
 def step_impl(context, nombre_cliente):
@@ -52,30 +53,39 @@ def step_impl(context, monto):
 def step_impl(context, porcentaje_fondo_administrativo, porcentaje_fondo_liquido, porcentaje_mentoring, porcentaje_delivery):
     raise NotImplementedError(u'FALTA')
 
-@when(u'el mentoring lo hizo "{nombre_mentor}"')
-def step_impl(context, nombre_mentor):
+@when(u'el mentoring lo hizo "{nombre_mentor}" con un peso del "{porcentaje_para_mentoring_sobre_total_facturado:d}%" sobre el total facturado')
+def step_impl(context, nombre_mentor, porcentaje_para_mentoring_sobre_total_facturado):
     factura = context.ultima_factura
-    consultores = models.Consultor.objects.count()
     mentor = models.Consultor.objects.get(nombre=nombre_mentor)
-    context.test.assertEquals(nombre_mentor, mentor.nombre)
+    factura.definir_mentoring(mentor=mentor, porcentaje_para_mentoring_sobre_total_facturado=porcentaje_para_mentoring_sobre_total_facturado)
+
 
 @when(u'el reparto fue')
 def step_impl(context):
-    raise NotImplementedError(u'FALTA')
+    for reparto in context.table:
+        nombre_consultor = reparto['Consultor']
+        consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+        porcentaje_aporte = reparto['%']
+        delivery_individual_pendiente_de_cobro = models.DeliveryIndividualPendienteDeCobro(
+                consultor=consultor,
+                factura=context.ultima_factura,
+                monto = Decimal(porcentaje_aporte)/100*context.ultima_factura.delivery_pendiente_de_cobro)
+        delivery_individual_pendiente_de_cobro.save()
 
-@then(u'el saldo del fondo administrativo es de "{monto:d}" pesos')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then el saldo del fondo administrativo es de "100" pesos')
+@then(u'el saldo pendiente de cobro del fondo administrativo es de "{monto:d}" pesos')
+def step_impl(context, monto):
+    context.test.assertEquals(models.FondoAdministrativoPendienteDeCobro.saldo(), Decimal(monto))
 
 
-@then(u'el saldo del fondo líquido es de "{monto:d}" pesos')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then el saldo del fondo líquido es de "50" pesos')
+@then(u'el saldo pendiente de cobro del fondo líquido es de "{monto:d}" pesos')
+def step_impl(context, monto):
+    context.test.assertEquals(models.FondoLiquidoPendienteDeCobro.saldo(), Decimal(monto))
 
 
-@then(u'el saldo de "{nombre_consultor}" con liqueed es de "{monto:d}"')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then el saldo de "David" con liqueed es de "525"')
+@then(u'el saldo pendiente de cobro de "{nombre_consultor}" con liqueed es de "{monto:d}"')
+def step_impl(context, nombre_consultor, monto):
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    context.test.assertEquals(consultor.saldo_pendiente_de_cobro_a_cliente(), Decimal(monto))
 
 
 @then(u'el cliente "{nombre_cliente}" adeuda "{monto:d}" pesos')

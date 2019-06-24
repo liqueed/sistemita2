@@ -14,6 +14,7 @@ behave-django = "*"
 pyyaml = "*"
 django-money = "*"
 gunicorn = "*"
+django-solo = "*"
 
 [requires]
 python_version = "3.7"

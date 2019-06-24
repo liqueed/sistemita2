@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
     'behave_django',
     'djmoney',
+    'solo',
     'facturacion_clientes'
 ]
 
