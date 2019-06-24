@@ -93,11 +93,14 @@ def step_impl(context, nombre_cliente, monto):
     cliente = models.Cliente.objects.get(nombre=nombre_cliente)
     context.test.assertEquals(cliente.deuda(), Money(monto, 'ARS'))
 
-@given(u'que el cliente "Kiosquito" demora los pagos "30" días')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Given que el cliente "Kiosquito" demora los pagos "30" días')
+@given(u'que el cliente "{nombre_cliente}" demora los pagos "{dias_demora_pago}" días')
+def step_impl(context, nombre_cliente, dias_demora_pago):
+    cliente = models.Cliente.objects.get(nombre=nombre_cliente)
+    cliente.dias_demora_pago = dias_demora_pago
+    cliente.save()
 
 
-@then(u'el "12/1/2010" faltarán "20" días para que "Kiosquito" pague la última factura')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then el "12/1/2010" faltarán "20" días para que "Kiosquito" pague la última factura')
+@then(u'el "{a_fecha:tg}" faltarán "{dias_faltantes:d}" días para que "{nombre_cliente}" pague la última factura')
+def step_impl(context, a_fecha, dias_faltantes, nombre_cliente):
+    dias_faltantes_a_comparar = models.DeudaCliente.dias_faltantes_para_cobro(factura=context.ultima_factura, a_fecha=a_fecha.date())
+    context.test.assertEquals(dias_faltantes, dias_faltantes_a_comparar)

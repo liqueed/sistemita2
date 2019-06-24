@@ -3,12 +3,14 @@ from decimal import *
 from djmoney.models.fields import MoneyField, Money
 from solo.models import SingletonModel
 from django.db.models import Sum
+from datetime import timedelta
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
+    dias_demora_pago = models.IntegerField(default=0)
 
     def deuda(self):
-        total_adeudado = DeudaCliente.objects.filter(cliente=self).aggregate(models.Sum('monto'))
+        total_adeudado = DeudaCliente.objects.filter(factura__cliente=self).aggregate(models.Sum('monto'))
         return Money(total_adeudado['monto__sum'], 'ARS')
 
 class Consultor(models.Model):
@@ -38,8 +40,8 @@ class FacturaCliente(models.Model):
     objects = FacturaClienteManager()
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the "real" save() method.
-        deuda_cliente = DeudaCliente(cliente=self.cliente, monto=self.monto, fecha=self.fecha)
+        super().save(*args, **kwargs) 
+        deuda_cliente = DeudaCliente(factura=self, monto=self.monto, fecha=self.fecha)
         deuda_cliente.save()
         porc = PorcentajesAportadosAFondosYDelivery.get_solo()
         porc.aportar_a_fondos_por_nueva_factura(self)
@@ -86,12 +88,16 @@ class PorcentajesAportadosAFondosYDelivery(SingletonModel):
 
 # Cuentas
 class DeudaCliente(models.Model):
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField()
+
+    @staticmethod
+    def dias_faltantes_para_cobro(factura, a_fecha):
+        delta =  timedelta(days=factura.cliente.dias_demora_pago) + DeudaCliente.objects.get(factura=factura).fecha - a_fecha
+        return delta.days
     
-    
-class FondoAdministrativoPendienteDeCobro(models.Model):
+class FondoPendienteDeCobro(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
@@ -100,27 +106,20 @@ class FondoAdministrativoPendienteDeCobro(models.Model):
     def saldo(clase):
         return clase.objects.all().aggregate(Sum('monto'))['monto__sum']
 
-class FondoLiquidoPendienteDeCobro(models.Model):
-    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
-    fecha = models.DateField(auto_now=True)
-    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
-
-    @classmethod
-    def saldo(clase):
-        return clase.objects.all().aggregate(Sum('monto'))['monto__sum']
-
-class DeliveryYMentoringPendientesDeCobro(models.Model):
-    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
-    fecha = models.DateField(auto_now=True)
-    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
+    class Meta:
+        abstract = True
     
-    def saldo():
-        return DeliveryYMentoringPendientesDeCobro.objects.all().aggregate(Sum('monto'))['monto__sum']
 
-class MentoringPendienteDeCobro(models.Model):
-    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
-    fecha = models.DateField(auto_now=True)
-    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
+class FondoAdministrativoPendienteDeCobro(FondoPendienteDeCobro):
+    pass
+
+class FondoLiquidoPendienteDeCobro(FondoPendienteDeCobro):
+    pass
+
+class DeliveryYMentoringPendientesDeCobro(FondoPendienteDeCobro):
+    pass
+
+class MentoringPendienteDeCobro(FondoPendienteDeCobro):
     mentor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
 
     def saldo(mentor):
@@ -130,11 +129,14 @@ class MentoringPendienteDeCobro(models.Model):
         else:
             return saldo
 
-class DeliveryIndividualPendienteDeCobro(models.Model):
-    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
-    fecha = models.DateField(auto_now=True)
-    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
+class DeliveryIndividualPendienteDeCobro(FondoPendienteDeCobro):
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
 
     def saldo(consultor):
         return DeliveryIndividualPendienteDeCobro.objects.filter(consultor=consultor).aggregate(Sum('monto'))['monto__sum']
+        if (saldo==None):
+            return Decimal('0')
+        else:
+            return saldo
+
+
