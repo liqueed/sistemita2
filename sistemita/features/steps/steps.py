@@ -92,3 +92,12 @@ def step_impl(context, nombre_consultor, monto):
 def step_impl(context, nombre_cliente, monto):
     cliente = models.Cliente.objects.get(nombre=nombre_cliente)
     context.test.assertEquals(cliente.deuda(), Money(monto, 'ARS'))
+
+@given(u'que el cliente "Kiosquito" demora los pagos "30" días')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Given que el cliente "Kiosquito" demora los pagos "30" días')
+
+
+@then(u'el "12/1/2010" faltarán "20" días para que "Kiosquito" pague la última factura')
+def step_impl(context):
+    raise NotImplementedError(u'STEP: Then el "12/1/2010" faltarán "20" días para que "Kiosquito" pague la última factura')

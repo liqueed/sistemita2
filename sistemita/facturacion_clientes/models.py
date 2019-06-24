@@ -52,10 +52,21 @@ class FacturaCliente(models.Model):
             factura=self,
             mentor=mentor)
         mentoring_pendiente_de_cobro.save()
+    
+    @property
+    def delivery_pendiente_de_cobro(self):
+        monto_pendiente_delivery_y_mentoring = DeliveryYMentoringPendientesDeCobro.objects.get(factura=self).monto 
+        pendientes_mentoring = MentoringPendienteDeCobro.objects.filter(factura=self)
+        if(pendientes_mentoring.count()>0):
+            monto_pendiente_mentoring = pendientes_mentoring[0].monto
+        else:
+            monto_pendiente_mentoring = 0
+        return monto_pendiente_delivery_y_mentoring - monto_pendiente_mentoring
 
     @property
     def ganancia(self):
         return self.monto - self.gastos
+
 
 class PorcentajesAportadosAFondosYDelivery(SingletonModel):
     porcentaje_fondo_administrativo = 10
@@ -69,9 +80,9 @@ class PorcentajesAportadosAFondosYDelivery(SingletonModel):
         fondo_liquido_pendiente_de_cobro = FondoLiquidoPendienteDeCobro(
             factura=factura, monto=factura.ganancia*self.porcentaje_fondo_liquido/100)
         fondo_liquido_pendiente_de_cobro.save()
-        delivery_pendiente_de_cobro = DeliveryPendienteDeCobro(
+        delivery_y_mentoring_pendientes_de_cobro = DeliveryYMentoringPendientesDeCobro(
             factura=factura, monto=factura.ganancia*self.porcentaje_delivery_y_mentoring/100)
-        delivery_pendiente_de_cobro.save()
+        delivery_y_mentoring_pendientes_de_cobro.save()
 
 # Cuentas
 class DeudaCliente(models.Model):
@@ -98,13 +109,13 @@ class FondoLiquidoPendienteDeCobro(models.Model):
     def saldo(clase):
         return clase.objects.all().aggregate(Sum('monto'))['monto__sum']
 
-class DeliveryPendienteDeCobro(models.Model):
+class DeliveryYMentoringPendientesDeCobro(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
     
     def saldo():
-        return DeliveryPendienteDeCobro.objects.all().aggregate(Sum('monto'))['monto__sum']
+        return DeliveryYMentoringPendientesDeCobro.objects.all().aggregate(Sum('monto'))['monto__sum']
 
 class MentoringPendienteDeCobro(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
@@ -113,7 +124,11 @@ class MentoringPendienteDeCobro(models.Model):
     mentor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
 
     def saldo(mentor):
-        return MentoringPendienteDeCobro.objects.filter(mentor=mentor).aggregate(Sum('monto'))['monto__sum']
+        saldo = MentoringPendienteDeCobro.objects.filter(mentor=mentor).aggregate(Sum('monto'))['monto__sum']
+        if (saldo==None):
+            return Decimal('0')
+        else:
+            return saldo
 
 class DeliveryIndividualPendienteDeCobro(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
