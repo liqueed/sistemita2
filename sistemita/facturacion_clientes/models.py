@@ -5,21 +5,28 @@ from solo.models import SingletonModel
 from django.db.models import Sum
 from datetime import timedelta
 
+def ResultadoAggregateAMoney(resultado):
+    if (resultado==None):
+        return Decimal('0')
+    else:
+        return resultado
+
+
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
     dias_demora_pago = models.IntegerField(default=0)
 
     def deuda(self):
         total_adeudado = DeudaCliente.objects.filter(factura__cliente=self).aggregate(models.Sum('monto'))
-        return Money(total_adeudado['monto__sum'], 'ARS')
+        return Money(ResultadoAggregateAMoney(total_adeudado['monto__sum']), 'ARS')
 
     def deuda_con_liqueed(self):
         total_adeudado = DeudaCliente.objects.filter(factura__cliente=self, factura__facturadeliqueedacliente__isnull=False).aggregate(models.Sum('monto'))
-        return Money(total_adeudado['monto__sum'], 'ARS')
+        return Money(ResultadoAggregateAMoney(total_adeudado['monto__sum']), 'ARS')
 
     def deuda_con_consultor(self, consultor):
         total_adeudado = DeudaCliente.objects.filter(factura__cliente=self, factura__facturadeconsultoracliente__consultor=consultor).aggregate(models.Sum('monto'))
-        return Money(total_adeudado['monto__sum'], 'ARS')
+        return Money(ResultadoAggregateAMoney(total_adeudado['monto__sum']), 'ARS')
 
 class Consultor(models.Model):
     nombre = models.CharField(max_length=30)
@@ -152,4 +159,12 @@ class DeliveryIndividualPendienteDeCobro(FondoPendienteDeCobro):
         else:
             return saldo
 
+class PagoClienteTransferenciaALiqueed(models.Model):
+    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    fecha = models.DateField(auto_now=True)
+    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        deuda_cancelada = DeudaCliente.objects.get(factura=self.factura)
+        deuda_cancelada.delete()

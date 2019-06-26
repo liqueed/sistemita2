@@ -144,3 +144,13 @@ def step_impl(context, monto, nombre_cliente, nombre_consultor):
 def step_impl(context, monto, nombre_consultor):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
     context.test.assertEquals(cliente.deuda_con_consultor(consultor), Money(monto, 'ARS'))
+
+@when(u'el cliente "{nombre_cliente}" pague la ultima factura por transferencia bancaria el "{fecha:tg}"')
+def step_impl(context, nombre_cliente, fecha):
+    cliente = models.Cliente.objects.get(nombre=nombre_cliente)
+    pago = models.PagoClienteTransferenciaALiqueed(
+            monto=context.ultima_factura.monto,
+            fecha=fecha,
+            factura=context.ultima_factura
+        )
+    pago.save()
