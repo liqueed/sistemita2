@@ -90,7 +90,7 @@ def step_impl(context):
         nombre_consultor = reparto['Consultor']
         consultor = models.Consultor.objects.get(nombre=nombre_consultor)
         porcentaje_aporte = reparto['%']
-        delivery_individual_pendiente_de_cobro = models.DeliveryIndividualPendienteDeCobro(
+        delivery_individual_pendiente_de_cobro = models.DeliveryIndividual(
                 consultor=consultor,
                 factura=context.ultima_factura,
                 monto = Decimal(porcentaje_aporte)/100*context.ultima_factura.delivery_pendiente_de_cobro)
@@ -98,12 +98,12 @@ def step_impl(context):
 
 @then(u'el saldo pendiente de cobro del fondo administrativo es de "{monto:d}" pesos')
 def step_impl(context, monto):
-    context.test.assertEquals(models.FondoAdministrativoPendienteDeCobro.saldo(), Decimal(monto))
+    context.test.assertEquals(models.FondoAdministrativo.saldo_pendiente_de_cobro(), Decimal(monto))
 
 
 @then(u'el saldo pendiente de cobro del fondo líquido es de "{monto:d}" pesos')
 def step_impl(context, monto):
-    context.test.assertEquals(models.FondoLiquidoPendienteDeCobro.saldo(), Decimal(monto))
+    context.test.assertEquals(models.FondoLiquido.saldo_pendiente_de_cobro(), Decimal(monto))
 
 
 @then(u'el saldo pendiente de cobro de "{nombre_consultor}" con liqueed es de "{monto:d}"')
@@ -154,3 +154,16 @@ def step_impl(context, nombre_cliente, fecha):
             factura=context.ultima_factura
         )
     pago.save()
+
+@then(u'el saldo disponible del fondo administrativo es de "{monto:d}" pesos')
+def step_impl(context, monto):
+        context.test.assertEquals(models.FondoAdministrativo.saldo_disponible(), Decimal(monto))
+
+@then(u'el saldo disponible del fondo líquido es de "{monto:d}" pesos')
+def step_impl(context, monto):
+        context.test.assertEquals(models.FondoLiquido.saldo_disponible(), Decimal(monto))
+
+@then(u'el saldo disponible de cobro de "{nombre_consultor}" con liqueed es de "{monto:d}"')
+def step_impl(context, nombre_consultor, monto):
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    context.test.assertEquals(consultor.saldo_disponible_de_cobro(), Decimal(monto))
