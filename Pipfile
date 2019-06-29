@@ -15,6 +15,7 @@ pyyaml = "*"
 django-money = "*"
 gunicorn = "*"
 django-solo = "*"
+django-afip = "*"
 
 [requires]
 python_version = "3.7"
