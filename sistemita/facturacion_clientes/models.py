@@ -28,6 +28,20 @@ class Cliente(models.Model):
         total_adeudado = DeudaCliente.objects.filter(factura__cliente=self, factura__facturadeconsultoracliente__consultor=consultor).aggregate(models.Sum('monto'))
         return Money(ResultadoAggregateAMoney(total_adeudado['monto__sum']), 'ARS')
 
+    @staticmethod
+    def agregar_cliente_o_recuperar_si_ya_existe(nombre):
+        clientes_con_el_mismo_nombre = Cliente.objects.filter(nombre=nombre)
+        if(clientes_con_el_mismo_nombre.count()==0):
+            nuevo_cliente = Cliente(nombre=nombre)
+            nuevo_cliente.save()
+            return nuevo_cliente
+        else:
+            return clientes_con_el_mismo_nombre[0]
+
+class Contacto(models.Model):
+    nombre = models.CharField(max_length=100)
+    email = models.EmailField()
+
 class Consultor(models.Model):
     nombre = models.CharField(max_length=30)
 
@@ -86,6 +100,13 @@ class FacturaCliente(models.Model):
     @property
     def ganancia(self):
         return self.monto - self.gastos
+
+    @property
+    def monto_adeudado(self):
+        monto_adeudado = Money(0.0, 'ARS')
+        for deuda in DeudaCliente.objects.filter(factura=self):
+            monto_adeudado = monto_adeudado + deuda.monto
+        return monto_adeudado
 
 class FacturaDeConsultorACliente(FacturaCliente):
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
@@ -195,3 +216,45 @@ class PagoClienteTransferenciaALiqueed(models.Model):
         deuda_cancelada = DeudaCliente.objects.get(factura=self.factura)
         deuda_cancelada.delete()
         MovimientoCuenta.objects.filter(factura=self.factura).update(estado=MovimientoCuenta.DISPONIBLE)
+
+class TipoDeCursoPublico(models.Model):
+    titulo = models.CharField(max_length=100)
+    abreviatura = models.CharField(max_length=10)
+
+class CursoPublico(models.Model):
+    fecha = models.DateField()
+    dictante = models.ForeignKey(Consultor, on_delete=models.CASCADE)
+    tipo_de_curso = models.ForeignKey(TipoDeCursoPublico, on_delete=models.CASCADE)
+
+    @property
+    def monto_adeudado(self):
+        inscripciones = InscripcionEnCursoPublico.objects.filter(curso=self)
+        deuda = Money(0.0, 'ARS')
+        for inscripcion in inscripciones:
+            deuda = deuda + inscripcion.factura.monto_adeudado
+        return deuda
+
+class InscripcionEnCursoPublico(models.Model):
+    curso = models.ForeignKey(CursoPublico, on_delete=models.CASCADE)
+    fecha_inscripcion = models.DateField()
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE, null=True)
+    costo_por_persona = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    cantidad_inscriptos = models.IntegerField()
+    inscriptos = models.ManyToManyField(Contacto)
+
+    @property
+    def costo_total(self):
+        return self.costo_por_persona * self.cantidad_inscriptos
+
+    def facturar(self, fecha):
+        factura = FacturaDeLiqueedACliente(cliente=self.cliente,
+                                           fecha=fecha,
+                                           gastos=0.0,
+                                           descripcion="Inscripción de {0} en {1}".format(self.cliente.nombre, self.curso.tipo_de_curso),
+                                           monto=self.costo_total)
+        factura.save()
+        self.factura = factura
+        self.save()
+
+    

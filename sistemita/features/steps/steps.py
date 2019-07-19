@@ -157,13 +157,63 @@ def step_impl(context, nombre_cliente, fecha):
 
 @then(u'el saldo disponible del fondo administrativo es de "{monto:d}" pesos')
 def step_impl(context, monto):
-        context.test.assertEquals(models.FondoAdministrativo.saldo_disponible(), Decimal(monto))
+    context.test.assertEquals(models.FondoAdministrativo.saldo_disponible(), Decimal(monto))
 
 @then(u'el saldo disponible del fondo líquido es de "{monto:d}" pesos')
 def step_impl(context, monto):
-        context.test.assertEquals(models.FondoLiquido.saldo_disponible(), Decimal(monto))
+    context.test.assertEquals(models.FondoLiquido.saldo_disponible(), Decimal(monto))
 
 @then(u'el saldo disponible de cobro de "{nombre_consultor}" con liqueed es de "{monto:d}"')
 def step_impl(context, nombre_consultor, monto):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
     context.test.assertEquals(consultor.saldo_disponible_de_cobro(), Decimal(monto))
+
+@given(u'que está publicado un "{abreviatura_de_tipo_de_curso}" el "{fecha:tg}" dictado por "{dictante}"')
+def step_impl(context, abreviatura_de_tipo_de_curso, fecha, dictante):
+    consultor = models.Consultor.objects.get(nombre=dictante)
+    tipo_de_curso = models.TipoDeCursoPublico.objects.get(abreviatura=abreviatura_de_tipo_de_curso)
+    nuevo_curso = models.CursoPublico(tipo_de_curso=tipo_de_curso, fecha=fecha, dictante=consultor)
+    nuevo_curso.save()
+
+@when(u'se inscriba "{nombre_persona}" en el "{abreviatura_de_tipo_de_curso}" del "{fecha:tg}" con un costo de "{costo_por_persona:d}" pesos')
+def step_impl(context, nombre_persona, abreviatura_de_tipo_de_curso, fecha, costo_por_persona):
+    cliente = models.Cliente.agregar_cliente_o_recuperar_si_ya_existe(nombre_persona)
+    tipo_de_curso = models.TipoDeCursoPublico.objects.get(abreviatura=abreviatura_de_tipo_de_curso)
+    curso = models.CursoPublico.objects.get(tipo_de_curso=tipo_de_curso, fecha=fecha)
+    inscripcion = models.InscripcionEnCursoPublico(fecha_inscripcion=fecha, curso=curso, cliente=cliente, costo_por_persona=costo_por_persona, cantidad_inscriptos=1)
+    inscripcion.save()
+
+@when(u'se haya facturado el "{fecha_facturacion:tg}" la inscripción de "{nombre_persona}" en el "{abreviatura_de_tipo_de_curso}" del "{fecha_curso:tg}"')
+def step_impl(context, fecha_facturacion, nombre_persona, abreviatura_de_tipo_de_curso, fecha_curso):
+    cliente = models.Cliente.agregar_cliente_o_recuperar_si_ya_existe(nombre_persona)
+    tipo_de_curso = models.TipoDeCursoPublico.objects.get(abreviatura=abreviatura_de_tipo_de_curso)
+    curso = models.CursoPublico.objects.get(tipo_de_curso=tipo_de_curso, fecha=fecha_curso)
+    inscripcion = models.InscripcionEnCursoPublico.objects.get(curso=curso, cliente=cliente)
+    factura_inscripcion = models.FacturaDeLiqueedACliente(cliente=cliente, 
+        fecha=fecha_facturacion,
+        monto=inscripcion.costo_por_persona,
+        gastos=Decimal('0.00'))
+    factura_inscripcion.save()
+
+@when(u'se el cliente "{nombre_cliente}" inscriba "{cantidad_personas}" personas en el "{abreviatura_de_tipo_de_curso}" del "{fecha_curso:tg}" con un costo de "{costo_por_persona:d}" pesos cada una')
+def step_impl(context, nombre_cliente, cantidad_personas, abreviatura_de_tipo_de_curso, fecha_curso, costo_por_persona):
+    cliente = models.Cliente.objects.get(nombre=nombre_cliente)
+    tipo_de_curso = models.TipoDeCursoPublico.objects.get(abreviatura=abreviatura_de_tipo_de_curso)
+    curso = models.CursoPublico.objects.get(tipo_de_curso=tipo_de_curso, fecha=fecha_curso)
+    inscripcion = models.InscripcionEnCursoPublico(fecha_inscripcion=fecha_curso, curso=curso, cliente=cliente, costo_por_persona=costo_por_persona, cantidad_inscriptos=cantidad_personas)
+    inscripcion.save()
+
+@when(u'se haya facturado la inscripción de los participantes de "{nombre_cliente}" en el "{abreviatura_de_tipo_de_curso}" del "{fecha_curso:tg}"')
+def step_impl(context, nombre_cliente, abreviatura_de_tipo_de_curso, fecha_curso):
+    cliente = models.Cliente.objects.get(nombre=nombre_cliente)
+    tipo_de_curso = models.TipoDeCursoPublico.objects.get(abreviatura=abreviatura_de_tipo_de_curso)
+    curso = models.CursoPublico.objects.get(tipo_de_curso=tipo_de_curso, fecha=fecha_curso)
+    inscripciones = models.InscripcionEnCursoPublico.objects.filter(curso=curso)
+    for inscripcion in inscripciones:
+        inscripcion.facturar(fecha_curso)
+
+@then(u'la deuda total de clientes para el "{abreviatura_de_tipo_de_curso}" del "{fecha_curso:tg}" es de "{monto:d}" pesos')
+def step_impl(context, abreviatura_de_tipo_de_curso, fecha_curso, monto):
+    tipo_de_curso = models.TipoDeCursoPublico.objects.get(abreviatura=abreviatura_de_tipo_de_curso)
+    curso = models.CursoPublico.objects.get(tipo_de_curso=tipo_de_curso, fecha=fecha_curso)
+    context.test.assertEquals(curso.monto_adeudado, Money(monto, 'ARS'))
