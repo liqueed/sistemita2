@@ -45,6 +45,12 @@ class Contacto(models.Model):
 class Consultor(models.Model):
     nombre = models.CharField(max_length=30)
 
+    class Meta:
+        verbose_name_plural = "Consultores"
+
+    def __str__(self):
+        return self.nombre
+
     def saldo_pendiente_de_cobro_a_cliente(self):
         return Mentoring.saldo_pendiente_de_cobro(self) + DeliveryIndividual.saldo_pendiente_de_cobro(self)
 
