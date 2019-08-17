@@ -54,7 +54,7 @@ class Consultor(models.Model):
     def saldo_pendiente_de_cobro_a_cliente(self):
         return Mentoring.saldo_pendiente_de_cobro(self) + DeliveryIndividual.saldo_pendiente_de_cobro(self)
 
-    def saldo_disponible_de_cobro(self):
+    def saldo_bruto_disponible_de_cobro(self):
         return Mentoring.saldo_disponible(self) + DeliveryIndividual.saldo_disponible(self)
 
 class FacturaClienteManager(models.Manager):

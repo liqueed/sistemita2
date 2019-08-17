@@ -80,7 +80,7 @@ def step_impl(context, monto):
 @then(u'el saldo bruto disponible de cobro de "{nombre_consultor}" con liqueed es de "{monto:d}"')
 def step_impl(context, nombre_consultor, monto):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
-    context.test.assertEquals(consultor.saldo_disponible_de_cobro(), Decimal(monto))
+    context.test.assertEquals(consultor.saldo_bruto_disponible_de_cobro(), Decimal(monto))
 
 @then(u'la deuda total de clientes para el "{abreviatura_de_tipo_de_curso}" del "{fecha_curso:tg}" es de "{monto:d}" pesos')
 def step_impl(context, abreviatura_de_tipo_de_curso, fecha_curso, monto):
