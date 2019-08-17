@@ -25,6 +25,6 @@ Cuando se facture desde liqueed "1000" pesos el "2/1/2010" al cliente "OSDE" con
     Y el cliente "OSDE" pague la ultima factura por transferencia bancaria el "04/01/2010"
 Entonces el saldo disponible del fondo administrativo es de "100" pesos
     Y el saldo disponible del fondo líquido es de "50" pesos
-    Y el saldo disponible de cobro de "David" con liqueed es de "550"
-    Y el saldo disponible de cobro de "Vani" con liqueed es de "180"
-    Y el saldo disponible de cobro de "Mariano" con liqueed es de "120"
+    Y el saldo bruto disponible de cobro de "David" con liqueed es de "550"
+    Y el saldo bruto disponible de cobro de "Vani" con liqueed es de "180"
+    Y el saldo bruto disponible de cobro de "Mariano" con liqueed es de "120"

@@ -77,7 +77,7 @@ def step_impl(context, monto):
 def step_impl(context, monto):
     context.test.assertEquals(models.FondoLiquido.saldo_disponible(), Decimal(monto))
 
-@then(u'el saldo disponible de cobro de "{nombre_consultor}" con liqueed es de "{monto:d}"')
+@then(u'el saldo bruto disponible de cobro de "{nombre_consultor}" con liqueed es de "{monto:d}"')
 def step_impl(context, nombre_consultor, monto):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
     context.test.assertEquals(consultor.saldo_disponible_de_cobro(), Decimal(monto))
