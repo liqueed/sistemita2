@@ -87,3 +87,8 @@ def step_impl(context, abreviatura_de_tipo_de_curso, fecha_curso, monto):
     tipo_de_curso = models.TipoDeCursoPublico.objects.get(abreviatura=abreviatura_de_tipo_de_curso)
     curso = models.CursoPublico.objects.get(tipo_de_curso=tipo_de_curso, fecha=fecha_curso)
     context.test.assertEquals(curso.monto_adeudado, Money(monto, 'ARS'))
+
+@then(u'el total pagado por impuesto al cheque hasta el momento es "{monto:d}"')
+def step_impl(context, monto):
+    total_hasta_el_momento = models.PagoImpuestoAlCheque.total_hasta_el_momento()
+    context.test.assertEquals(total_hasta_el_momento, Money(monto, 'ARS'))

@@ -52,6 +52,16 @@ def step_impl(context, nombre_cliente, fecha):
             factura=context.ultima_factura
         )
     pago.save()
+    context.ultimo_pago = pago
+
+@when(u'se pague "{monto:d}" pesos de impuesto al cheque por crédito por el último pago de un cliente')
+def step_impl(context, monto):
+    pago_impuesto_al_cheque = models.PagoImpuestoAlCheque(
+            monto=Money(monto, 'ARS'),
+            fecha=context.ultimo_pago.fecha,
+            pago=context.ultimo_pago
+    )
+    pago_impuesto_al_cheque.save()
 
 @when(u'se inscriba "{nombre_persona}" en el "{abreviatura_de_tipo_de_curso}" del "{fecha:tg}" con un costo de "{costo_por_persona:d}" pesos')
 def step_impl(context, nombre_persona, abreviatura_de_tipo_de_curso, fecha, costo_por_persona):

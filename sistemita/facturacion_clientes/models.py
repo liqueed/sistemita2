@@ -223,6 +223,17 @@ class PagoClienteTransferenciaALiqueed(models.Model):
         deuda_cancelada.delete()
         MovimientoCuenta.objects.filter(factura=self.factura).update(estado=MovimientoCuenta.DISPONIBLE)
 
+class PagoImpuestoAlCheque(models.Model):
+    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    fecha = models.DateField(auto_now=True)
+    pago = models.ForeignKey(PagoClienteTransferenciaALiqueed, on_delete=models.CASCADE)
+
+    @staticmethod
+    def total_hasta_el_momento():
+        total = PagoImpuestoAlCheque.objects.aggregate(models.Sum('monto'))
+        return Money(ResultadoAggregateAMoney(total['monto__sum']), 'ARS')
+        
+
 class TipoDeCursoPublico(models.Model):
     titulo = models.CharField(max_length=100)
     abreviatura = models.CharField(max_length=10)
