@@ -44,7 +44,7 @@ class Contacto(models.Model):
 
 class Consultor(models.Model):
     nombre = models.CharField(max_length=30)
-
+    cbu = models.DecimalField(max_digits=22, decimal_places=0, null=True)
     class Meta:
         verbose_name_plural = "Consultores"
 
@@ -223,6 +223,17 @@ class PagoClienteTransferenciaALiqueed(models.Model):
         deuda_cancelada.delete()
         MovimientoCuenta.objects.filter(factura=self.factura).update(estado=MovimientoCuenta.DISPONIBLE)
 
+class PagoLiqueedAConsultor(models.Model):
+    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    fecha = models.DateField(auto_now=True)
+    consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
+    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        delivery_individual_cobrado = DeliveryIndividual.objects.get(factura=self.factura)
+        delivery_individual_cobrado.delete()
+    
 class PagoImpuestoAlCheque(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)

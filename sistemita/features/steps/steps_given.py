@@ -17,3 +17,9 @@ def step_impl(context, abreviatura_de_tipo_de_curso, fecha, dictante):
     tipo_de_curso = models.TipoDeCursoPublico.objects.get(abreviatura=abreviatura_de_tipo_de_curso)
     nuevo_curso = models.CursoPublico(tipo_de_curso=tipo_de_curso, fecha=fecha, dictante=consultor)
     nuevo_curso.save()
+
+@given(u'que el consultor "{nombre_consultor}" recibe los pagos en la cuenta con CBU "{cbu:d}"')
+def step_impl(context, nombre_consultor, cbu):
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    consultor.cbu = cbu
+    consultor.save()

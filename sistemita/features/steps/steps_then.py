@@ -92,3 +92,8 @@ def step_impl(context, abreviatura_de_tipo_de_curso, fecha_curso, monto):
 def step_impl(context, monto):
     total_hasta_el_momento = models.PagoImpuestoAlCheque.total_hasta_el_momento()
     context.test.assertEquals(total_hasta_el_momento, Money(monto, 'ARS'))
+
+@then(u'el consultor "{nombre_consultor}" ya no tiene delivery pendiente de cobro')
+def step_impl(context, nombre_consultor):
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    context.test.assertEquals(models.DeliveryIndividual.saldo_disponible(consultor), Decimal(0.0))

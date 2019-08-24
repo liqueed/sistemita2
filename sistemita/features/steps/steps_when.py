@@ -43,6 +43,15 @@ def step_impl(context):
                 monto = Decimal(porcentaje_aporte)/100*context.ultima_factura.delivery_pendiente_de_cobro)
         delivery_individual_pendiente_de_cobro.save()
 
+@when(u'el único consultor sea "{nombre_consultor}"')
+def step_impl(context, nombre_consultor):
+        consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+        delivery_individual_pendiente_de_cobro = models.DeliveryIndividual(
+                consultor=consultor,
+                factura=context.ultima_factura,
+                monto = context.ultima_factura.delivery_pendiente_de_cobro)
+        delivery_individual_pendiente_de_cobro.save()
+
 @when(u'el cliente "{nombre_cliente}" pague la ultima factura por transferencia bancaria el "{fecha:tg}"')
 def step_impl(context, nombre_cliente, fecha):
     cliente = models.Cliente.objects.get(nombre=nombre_cliente)
@@ -99,3 +108,14 @@ def step_impl(context, nombre_cliente, abreviatura_de_tipo_de_curso, fecha_curso
     inscripciones = models.InscripcionEnCursoPublico.objects.filter(curso=curso)
     for inscripcion in inscripciones:
         inscripcion.facturar(fecha_curso)
+
+@when(u'liqueed le pague "{monto:d}" pesos por transferencia a "{nombre_consultor}" el "{fecha:tg}" en concepto de delivery')
+def step_impl(context, monto, nombre_consultor, fecha):
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    pago = models.PagoLiqueedAConsultor(
+            consultor=consultor,
+            monto=Money(monto, 'ARS'),
+            fecha=fecha,
+            factura=context.ultima_factura
+    )
+    pago.save()
