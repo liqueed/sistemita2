@@ -285,4 +285,13 @@ class InscripcionEnCursoPublico(models.Model):
         self.factura = factura
         self.save()
 
+class MovimientoBancario(models.Model):
+    fecha = models.DateField()
+    codigo_sucursal = models.CharField(max_length=4)
+    descripcion_sucursal = models.CharField(max_length=20)
+    codigo_operativo = models.CharField(max_length=4)
+    referencia = models.CharField(max_length=9)
+    concepto = models.CharField(max_length=200)
+    importe_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    saldo_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     

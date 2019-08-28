@@ -5,6 +5,7 @@ from datetime import date
 from djmoney.money import Money
 from decimal import Decimal
 from steps_common import *
+import locale
 
 
 @then(u'la última factura fue de "{monto:d}" pesos realizada el "{fecha:tg}" al cliente "{nombre_cliente}" con "{gastos:d}" pesos de gastos')
@@ -97,3 +98,12 @@ def step_impl(context, monto):
 def step_impl(context, nombre_consultor):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
     context.test.assertEquals(models.DeliveryIndividual.saldo_disponible(consultor), Decimal(0.0))
+
+@then(u'existe el movimiento del "{fecha:tg}" con sucursal de origen código "{codigo_sucursal}" y descripción "{descripcion_sucursal}", código operativo "{codigo_operativo}", referencia "{referencia}", concepto "{concepto}", importe "{importe}" y saldo "{saldo}"')
+def step_impl(context, fecha, codigo_sucursal, descripcion_sucursal, codigo_operativo, referencia, concepto, importe, saldo):
+    locale.setlocale(locale.LC_ALL,'es_AR.iso88591')
+    importe = locale.atof(importe, Decimal)
+    saldo = locale.atof(saldo, Decimal)
+    movimiento = models.MovimientoBancario.objects.filter(fecha=fecha, codigo_sucursal=codigo_sucursal, descripcion_sucursal=descripcion_sucursal,codigo_operativo=codigo_operativo,
+        referencia=referencia, concepto=concepto, importe_pesos=importe, saldo_pesos=saldo)
+    context.test.assertEquals(movimiento.count(),1)

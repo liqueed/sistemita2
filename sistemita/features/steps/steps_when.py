@@ -5,6 +5,7 @@ from datetime import date
 from djmoney.money import Money
 from decimal import Decimal
 from steps_common import *
+from facturacion_clientes import lector_archivo_de_movimientos_bancarios
 
 
 @when(u'se facture desde liqueed hoy "{monto:d}" pesos a "{nombre_cliente}" sin gastos')
@@ -119,3 +120,7 @@ def step_impl(context, monto, nombre_consultor, fecha):
             factura=context.ultima_factura
     )
     pago.save()
+
+@when(u'se importa el archivo de movimientos "{nombre_archivo}"')
+def step_impl(context, nombre_archivo):
+    lector_archivo_de_movimientos_bancarios.LectorArchivoDeMovimientosBancarios.importar_nombre_archivo(nombre_archivo)
