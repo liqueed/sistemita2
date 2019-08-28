@@ -1,4 +1,5 @@
 import os
+import io
 import os.path
 import csv
 from datetime import datetime 
@@ -13,9 +14,12 @@ class LectorArchivoDeMovimientosBancarios:
     def importar_nombre_archivo(nombre_archivo):
         path_completo_al_archivo = os.path.join(os.getcwd(), nombre_archivo)
         with open(path_completo_al_archivo, 'r', encoding='ISO-8859-1') as archivo:
-           movimientos = LectorArchivoDeMovimientosBancarios.importar_movimientos(archivo)
-           MovimientoBancario.objects.bulk_create(movimientos)
-            
+           LectorArchivoDeMovimientosBancarios.importar_movimientos(archivo)
+           
+    @staticmethod
+    def importar_archivo_subido_en_memoria(archivo_subido_en_memoria):
+        with io.StringIO(archivo_subido_en_memoria.read().decode('ISO-8859-1')) as archivo:
+            LectorArchivoDeMovimientosBancarios.importar_movimientos(archivo)
 
     @staticmethod
     def importar_movimientos(archivo):
@@ -36,5 +40,5 @@ class LectorArchivoDeMovimientosBancarios:
                     concepto=elementos_de_la_lista[5],
                     importe_pesos=elementos_de_la_lista[6],
                     saldo_pesos=elementos_de_la_lista[7]))
-        return movimientos
+        MovimientoBancario.objects.bulk_create(movimientos)
                 
