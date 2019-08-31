@@ -6,6 +6,7 @@ from djmoney.money import Money
 from decimal import Decimal
 from steps_common import *
 from facturacion_clientes import lector_archivo_de_movimientos_bancarios
+import locale
 
 
 @when(u'se facture desde liqueed hoy "{monto:d}" pesos a "{nombre_cliente}" sin gastos')
@@ -124,3 +125,33 @@ def step_impl(context, monto, nombre_consultor, fecha):
 @when(u'se importa el archivo de movimientos "{nombre_archivo}"')
 def step_impl(context, nombre_archivo):
     lector_archivo_de_movimientos_bancarios.LectorArchivoDeMovimientosBancarios.importar_nombre_archivo(nombre_archivo)
+
+""
+@when(u'se produjo el movimiento del "{fecha:tg}" con sucursal de origen código "{codigo_sucursal}" y descripción "{descripcion_sucursal}", código operativo "{codigo_operativo}", referencia "{referencia}", concepto "{concepto}", importe "{importe}" y saldo "{saldo}"')
+def step_impl(context, fecha, codigo_sucursal, descripcion_sucursal, codigo_operativo, referencia, concepto, importe, saldo):
+        locale.setlocale(locale.LC_ALL,'es_AR.iso88591')
+        importe = locale.atof(importe, Decimal)
+        saldo = locale.atof(saldo, Decimal)
+        movimiento_bancario = models.MovimientoBancario(
+                fecha=fecha,
+                codigo_sucursal=codigo_sucursal,
+                descripcion_sucursal=descripcion_sucursal,
+                codigo_operativo=codigo_operativo,
+                referencia=referencia,
+                concepto=concepto,
+                importe_pesos=importe,
+                saldo_pesos=saldo
+        )
+        movimiento_bancario.save()
+        context.ultimo_movimiento_bancario = movimiento_bancario
+
+@when(u'se concilia la última factura con el último movimiento bancario')
+def step_impl(context):
+        pago = models.PagoClienteTransferenciaALiqueed(
+                monto=context.ultima_factura.monto,
+                fecha=context.ultimo_movimiento_bancario.fecha,
+                factura=context.ultima_factura,
+                movimiento_bancario=context.ultimo_movimiento_bancario
+        )
+        pago.save()
+        context.ultimo_pago = pago

@@ -212,10 +212,21 @@ class DeliveryIndividual(MovimientoCuenta):
         saldo = DeliveryIndividual.objects.filter(consultor=consultor, estado=MovimientoCuenta.DISPONIBLE).aggregate(Sum('monto'))['monto__sum']
         return ResultadoAggregateAMoney(saldo)
 
+class MovimientoBancario(models.Model):
+    fecha = models.DateField()
+    codigo_sucursal = models.CharField(max_length=4)
+    descripcion_sucursal = models.CharField(max_length=20)
+    codigo_operativo = models.CharField(max_length=4)
+    referencia = models.CharField(max_length=9)
+    concepto = models.CharField(max_length=200)
+    importe_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    saldo_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+
 class PagoClienteTransferenciaALiqueed(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
+    movimiento_bancario = models.ForeignKey(MovimientoBancario, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -285,13 +296,5 @@ class InscripcionEnCursoPublico(models.Model):
         self.factura = factura
         self.save()
 
-class MovimientoBancario(models.Model):
-    fecha = models.DateField()
-    codigo_sucursal = models.CharField(max_length=4)
-    descripcion_sucursal = models.CharField(max_length=20)
-    codigo_operativo = models.CharField(max_length=4)
-    referencia = models.CharField(max_length=9)
-    concepto = models.CharField(max_length=200)
-    importe_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
-    saldo_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+
     

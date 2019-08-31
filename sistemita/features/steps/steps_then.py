@@ -107,3 +107,10 @@ def step_impl(context, fecha, codigo_sucursal, descripcion_sucursal, codigo_oper
     movimiento = models.MovimientoBancario.objects.filter(fecha=fecha, codigo_sucursal=codigo_sucursal, descripcion_sucursal=descripcion_sucursal,codigo_operativo=codigo_operativo,
         referencia=referencia, concepto=concepto, importe_pesos=importe, saldo_pesos=saldo)
     context.test.assertEquals(movimiento.count(),1)
+
+@then(u'está registrado un pago de cliente a liqueed que asocia la última factura con el último movimiento')
+def step_impl(context):
+    pagos_asociados = models.PagoClienteTransferenciaALiqueed.objects.filter(
+        factura=context.ultima_factura,
+        movimiento_bancario=context.ultimo_movimiento_bancario)
+    context.test.assertEquals(pagos_asociados.count(),1)
