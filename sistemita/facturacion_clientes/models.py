@@ -296,5 +296,17 @@ class InscripcionEnCursoPublico(models.Model):
         self.factura = factura
         self.save()
 
+class TarjetaDeCreditoCorporativa(models.Model):
+    tipo = models.CharField(max_length=30)
 
-    
+class PagoTarjetaDeCreditoCorporativa(models.Model):
+    tarjeta = models.ForeignKey(TarjetaDeCreditoCorporativa, on_delete=models.CASCADE)
+    movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
+
+    @property
+    def monto(self):
+        return self.movimiento_bancario.monto
+
+    @property
+    def fecha(self):
+        return self.movimiento_bancario.fecha

@@ -23,3 +23,8 @@ def step_impl(context, nombre_consultor, cbu):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
     consultor.cbu = cbu
     consultor.save()
+
+@given(u'que en liqueed hay tarjetas de crédito corporativas "{tipo_tarjeta}"')
+def step_impl(context, tipo_tarjeta):
+    tarjeta_de_credito_corporativa = models.TarjetaDeCreditoCorporativa(tipo=tipo_tarjeta)
+    tarjeta_de_credito_corporativa.save()

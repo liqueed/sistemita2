@@ -114,3 +114,12 @@ def step_impl(context):
         factura=context.ultima_factura,
         movimiento_bancario=context.ultimo_movimiento_bancario)
     context.test.assertEquals(pagos_asociados.count(),1)
+
+@then(u'está registrado un pago de la tarjeta "{tipo_tarjeta}" con fecha "{fecha:tg}" por "{monto:d}" pesos')
+def step_impl(context, tipo_tarjeta, fecha, monto):
+    tarjeta = models.TarjetaDeCreditoCorporativa.objects.get(tipo=tipo_tarjeta)
+    pago_tarjeta = models.PagoTarjetaDeCreditoCorporativa.objects.filter(
+        movimiento_bancario__fecha=fecha,
+        movimiento_bancario__importe_pesos=monto
+    )
+    context.test.assertEquals(pago_tarjeta.count(),1)

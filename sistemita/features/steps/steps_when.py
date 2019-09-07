@@ -155,3 +155,10 @@ def step_impl(context):
         )
         pago.save()
         context.ultimo_pago = pago
+
+@when(u'se concilia el último movimiento bancario con el último pago de la tarjeta "{tipo_tarjeta}"')
+def step_impl(context, tipo_tarjeta):
+    tarjeta = models.TarjetaDeCreditoCorporativa.objects.get(tipo=tipo_tarjeta)
+    pago_tarjeta = models.PagoTarjetaDeCreditoCorporativa(tarjeta=tarjeta,
+        movimiento_bancario=context.ultimo_movimiento_bancario)
+    pago_tarjeta.save()
