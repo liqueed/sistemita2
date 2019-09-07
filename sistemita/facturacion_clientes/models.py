@@ -222,17 +222,25 @@ class MovimientoBancario(models.Model):
     importe_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     saldo_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
 
-class PagoClienteTransferenciaALiqueed(models.Model):
+class PagoCliente(models.Model):
+    class Meta:
+        abstract = True
+
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
-    movimiento_bancario = models.ForeignKey(MovimientoBancario, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         deuda_cancelada = DeudaCliente.objects.get(factura=self.factura)
         deuda_cancelada.delete()
         MovimientoCuenta.objects.filter(factura=self.factura).update(estado=MovimientoCuenta.DISPONIBLE)
+
+class PagoClienteTransferenciaALiqueed(PagoCliente):
+    movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
+
+class PagoClienteTransferenciaAConsultor(PagoCliente):
+    pass
 
 class PagoLiqueedAConsultor(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')

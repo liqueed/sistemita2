@@ -11,7 +11,7 @@ Entonces el cliente "Kiosquito" adeuda "0" pesos
 Escenario: Pago de cliente directamente a cuenta bancaria de consultor por el total de una factura
 Dado que "Kiosquito" es cliente
 Cuando "Alan" facture "500" pesos el "3/1/2010" directamente al cliente "Kiosquito" con "0" pesos de gastos
-Y el cliente "Kiosquito" pague la ultima factura por transferencia bancaria el "04/01/2010"
+Y el cliente "Kiosquito" pague la ultima factura por transferencia bancaria directa a "Alan" el "04/01/2010"
 Entonces el cliente "Kiosquito" adeuda "0" pesos
 
 Escenario: Se cobra via liqueed un trabajo hecho por muchos consultores

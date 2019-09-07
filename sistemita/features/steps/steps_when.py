@@ -54,10 +54,10 @@ def step_impl(context, nombre_consultor):
                 monto = context.ultima_factura.delivery_pendiente_de_cobro)
         delivery_individual_pendiente_de_cobro.save()
 
-@when(u'el cliente "{nombre_cliente}" pague la ultima factura por transferencia bancaria el "{fecha:tg}"')
-def step_impl(context, nombre_cliente, fecha):
+@when(u'el cliente "{nombre_cliente}" pague la ultima factura por transferencia bancaria directa a "{nombre_consultor}" el "{fecha:tg}"')
+def step_impl(context, nombre_cliente, nombre_consultor, fecha):
     cliente = models.Cliente.objects.get(nombre=nombre_cliente)
-    pago = models.PagoClienteTransferenciaALiqueed(
+    pago = models.PagoClienteTransferenciaAConsultor(
             monto=context.ultima_factura.monto,
             fecha=fecha,
             factura=context.ultima_factura
