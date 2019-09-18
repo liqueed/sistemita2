@@ -65,12 +65,13 @@ def step_impl(context, nombre_cliente, nombre_consultor, fecha):
     pago.save()
     context.ultimo_pago = pago
 
-@when(u'se pague "{monto:d}" pesos de impuesto al cheque por crédito por el último pago de un cliente')
-def step_impl(context, monto):
+@when(u'se computa el último movimiento bancario como impuesto al cheque por crédito por el último pago de un cliente')
+def step_impl(context):
     pago_impuesto_al_cheque = models.PagoImpuestoAlCheque(
-            monto=Money(monto, 'ARS'),
+            monto=context.ultimo_movimiento_bancario.importe_pesos,
             fecha=context.ultimo_pago.fecha,
-            pago=context.ultimo_pago
+            pago=context.ultimo_pago,
+            movimiento_bancario=context.ultimo_movimiento_bancario
     )
     pago_impuesto_al_cheque.save()
 

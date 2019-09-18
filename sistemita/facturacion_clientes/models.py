@@ -258,6 +258,7 @@ class PagoImpuestoAlCheque(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     pago = models.ForeignKey(PagoClienteTransferenciaALiqueed, on_delete=models.CASCADE)
+    movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
 
     @staticmethod
     def total_hasta_el_momento():
