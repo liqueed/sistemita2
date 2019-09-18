@@ -247,6 +247,7 @@ class PagoLiqueedAConsultor(models.Model):
     fecha = models.DateField(auto_now=True)
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
     factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
+    movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

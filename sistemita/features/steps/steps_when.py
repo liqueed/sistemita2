@@ -111,17 +111,6 @@ def step_impl(context, nombre_cliente, abreviatura_de_tipo_de_curso, fecha_curso
     for inscripcion in inscripciones:
         inscripcion.facturar(fecha_curso)
 
-@when(u'liqueed le pague "{monto:d}" pesos por transferencia a "{nombre_consultor}" el "{fecha:tg}" en concepto de delivery')
-def step_impl(context, monto, nombre_consultor, fecha):
-    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
-    pago = models.PagoLiqueedAConsultor(
-            consultor=consultor,
-            monto=Money(monto, 'ARS'),
-            fecha=fecha,
-            factura=context.ultima_factura
-    )
-    pago.save()
-
 @when(u'se importa el archivo de movimientos "{nombre_archivo}"')
 def step_impl(context, nombre_archivo):
     lector_archivo_de_movimientos_bancarios.LectorArchivoDeMovimientosBancarios.importar_nombre_archivo(nombre_archivo)
@@ -162,3 +151,15 @@ def step_impl(context, tipo_tarjeta):
     pago_tarjeta = models.PagoTarjetaDeCreditoCorporativa(tarjeta=tarjeta,
         movimiento_bancario=context.ultimo_movimiento_bancario)
     pago_tarjeta.save()
+
+@when(u'se computa el último movimiento bancario como pago a "{nombre_consultor}" el "{fecha:tg}" en concepto de delivery asociado a la última factura')
+def step_impl(context, nombre_consultor, fecha):
+    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    pago = models.PagoLiqueedAConsultor(
+            consultor=consultor,
+            monto=context.ultimo_movimiento_bancario.importe_pesos,
+            fecha=fecha,
+            factura=context.ultima_factura,
+            movimiento_bancario=context.ultimo_movimiento_bancario
+    )
+    pago.save()

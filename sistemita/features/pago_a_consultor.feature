@@ -6,6 +6,8 @@ Dado que "BIND" es cliente
 Y que el consultor "David" recibe los pagos en la cuenta con CBU "0123456789012345678901"
 Cuando se facture desde liqueed "1000" pesos el "2/1/2010" al cliente "BIND" con "0" pesos de gastos
     Y el único consultor sea "David"        
-    Y el cliente "BIND" pague la ultima factura por transferencia bancaria el "04/01/2010"
-    Y liqueed le pague "850" pesos por transferencia a "David" el "05/01/2010" en concepto de delivery 
+    Y se produjo el movimiento del "04/01/2010" con sucursal de origen código "762" y descripción "Cerrito", código operativo "2377", referencia "7181803", concepto "Pago Proveedores Interbanking Exte  - BIND 30546741253 03 7181803", importe "1000" y saldo "0"
+    Y se concilia la última factura con el último movimiento bancario   
+    Y se produjo el movimiento del "05/01/2010" con sucursal de origen código "762" y descripción "Cerrito", código operativo "824", referencia "4266732", concepto "Pago Cci 24hs Gravada Interbanking  - A Cbu 1500035000008161431046", importe "850" y saldo "0"
+    Y se computa el último movimiento bancario como pago a "David" el "05/01/2010" en concepto de delivery asociado a la última factura
 Entonces el consultor "David" ya no tiene delivery pendiente de cobro
