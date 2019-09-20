@@ -123,3 +123,8 @@ def step_impl(context, tipo_tarjeta, fecha, monto):
         movimiento_bancario__importe_pesos=monto
     )
     context.test.assertEquals(pago_tarjeta.count(),1)
+
+@then(u'la cantidad de movimientos bancarios aún no conciliados es de "{cantidad_movimientos:d}"')
+def step_impl(context, cantidad_movimientos):
+    movimientos_no_conciliados = models.MovimientoBancario.movimientos_no_conciliados()
+    context.test.assertEquals(movimientos_no_conciliados.count(), cantidad_movimientos)

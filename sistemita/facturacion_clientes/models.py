@@ -222,6 +222,13 @@ class MovimientoBancario(models.Model):
     importe_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     saldo_pesos = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
 
+    @staticmethod
+    def movimientos_no_conciliados():
+        return MovimientoBancario.objects.filter(pagoclientetransferenciaaliqueed__isnull = True,
+        pagoliqueedaconsultor__isnull = True,
+        pagotarjetadecreditocorporativa__isnull = True,
+        pagoimpuestoalcheque__isnull = True)
+
 class PagoCliente(models.Model):
     class Meta:
         abstract = True
