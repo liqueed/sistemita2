@@ -4,7 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-rope = "*"
 pylint = "*"
 
 [packages]
@@ -15,7 +14,6 @@ pyyaml = "*"
 django-money = "*"
 gunicorn = "*"
 django-solo = "*"
-django-afip = "*"
 
 [requires]
 python_version = "3.7"
