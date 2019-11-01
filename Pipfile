@@ -10,7 +10,6 @@ pylint = "*"
 [packages]
 django = "*"
 pytest-django = "*"
-pytest-bdd = "*"
 behave-django = "*"
 pyyaml = "*"
 django-money = "*"
