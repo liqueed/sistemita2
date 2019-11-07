@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
+rope = "*"
 
 [packages]
 django = "*"
@@ -14,6 +15,7 @@ pyyaml = "*"
 django-money = "*"
 gunicorn = "*"
 django-solo = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.7"

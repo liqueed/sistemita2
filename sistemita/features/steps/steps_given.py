@@ -5,6 +5,13 @@ def step_impl(context, nombre_cliente):
     cliente = models.Cliente(nombre=nombre_cliente)
     cliente.save()
 
+@given(u'que "{nombre_cliente}" es cliente referenciado como "{descripcion_en_resumen_bancario}" en el resumen bancario con CUIT "{cuit:d}"')
+def step_impl(context, nombre_cliente, descripcion_en_resumen_bancario, cuit):
+    cliente = models.Cliente(nombre=nombre_cliente,\
+         descripcion_en_resumen_bancario=descripcion_en_resumen_bancario,\
+         cuit=cuit)
+    cliente.save()
+
 @given(u'que el cliente "{nombre_cliente}" demora los pagos "{dias_demora_pago}" días')
 def step_impl(context, nombre_cliente, dias_demora_pago):
     cliente = models.Cliente.objects.get(nombre=nombre_cliente)

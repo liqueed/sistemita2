@@ -14,7 +14,9 @@ def ResultadoAggregateAMoney(resultado):
 
 class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
+    cuit = models.BigIntegerField(null=True)
     dias_demora_pago = models.IntegerField(default=0)
+    descripcion_en_resumen_bancario = models.CharField(max_length=50)
 
     def deuda(self):
         total_adeudado = DeudaCliente.objects.filter(factura__cliente=self).aggregate(models.Sum('monto'))

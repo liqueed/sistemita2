@@ -3,6 +3,9 @@
 # Visual Studio
 .vscode
 
+# PyCharm
+.idea
+
 ### OSX ###
 .DS_Store
 .AppleDouble
@@ -67,6 +70,7 @@ htmlcov/
 .tox/
 .coverage
 .cache
+.pytest_cache
 nosetests.xml
 coverage.xml
 

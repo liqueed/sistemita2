@@ -6,6 +6,7 @@ from djmoney.money import Money
 from decimal import Decimal
 from steps_common import *
 from facturacion_clientes import lector_archivo_de_movimientos_bancarios
+from facturacion_clientes import conciliador_automatico_de_movimientos_bancarios
 import locale
 
 
@@ -164,3 +165,7 @@ def step_impl(context, nombre_consultor, fecha):
             movimiento_bancario=context.ultimo_movimiento_bancario
     )
     pago.save()
+
+@when(u'se concilian movimientos pendientes automáticamente')
+def step_impl(context):
+    conciliador_automatico_de_movimientos_bancarios.ConciliadorAutomaticoDeMovimientosBancarios.conciliar_movimientos_no_conciliados()
