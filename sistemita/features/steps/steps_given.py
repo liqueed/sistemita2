@@ -25,10 +25,14 @@ def step_impl(context, abreviatura_de_tipo_de_curso, fecha, dictante):
     nuevo_curso = models.CursoPublico(tipo_de_curso=tipo_de_curso, fecha=fecha, dictante=consultor)
     nuevo_curso.save()
 
-@given(u'que el consultor "{nombre_consultor}" recibe los pagos en la cuenta con CBU "{cbu:d}"')
-def step_impl(context, nombre_consultor, cbu):
+@given(u'que el consultor "{nombre_consultor}" tiene la siguiente estrategia tributaria')
+def step_impl(context, nombre_consultor):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
-    consultor.cbu = cbu
+    for facturador in context.table:
+        nuevo_facturador = models.FacturadorDeConsultor(consultor=consultor,
+        cuit=facturador['CUIT'],
+        cbu=facturador['CBU'])
+        nuevo_facturador.save()
     consultor.save()
 
 @given(u'que en liqueed hay tarjetas de crédito corporativas "{tipo_tarjeta}"')

@@ -46,7 +46,7 @@ class Contacto(models.Model):
 
 class Consultor(models.Model):
     nombre = models.CharField(max_length=30)
-    cbu = models.DecimalField(max_digits=22, decimal_places=0, null=True)
+
     class Meta:
         verbose_name_plural = "Consultores"
 
@@ -58,6 +58,11 @@ class Consultor(models.Model):
 
     def saldo_bruto_disponible_de_cobro(self):
         return Mentoring.saldo_disponible(self) + DeliveryIndividual.saldo_disponible(self)
+
+class FacturadorDeConsultor(models.Model):
+    consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
+    cuit = models.BigIntegerField(null=True)
+    cbu = models.DecimalField(max_digits=22, decimal_places=0, null=True)
 
 class FacturaClienteManager(models.Manager):
     def ganancia_hasta_hoy(self):
@@ -255,6 +260,7 @@ class PagoLiqueedAConsultor(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
+    facturador = models.ForeignKey(FacturadorDeConsultor, on_delete=models.CASCADE)
     factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
     movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
 

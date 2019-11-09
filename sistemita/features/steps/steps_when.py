@@ -154,14 +154,16 @@ def step_impl(context, tipo_tarjeta):
         movimiento_bancario=context.ultimo_movimiento_bancario)
     pago_tarjeta.save()
 
-@when(u'se computa el último movimiento bancario como pago a "{nombre_consultor}" el "{fecha:tg}" en concepto de delivery asociado a la última factura')
-def step_impl(context, nombre_consultor, fecha):
+@when(u'se computa el último movimiento bancario como pago a "{nombre_consultor}" a su cuenta con CBU "{cbu:d}" el "{fecha:tg}" en concepto de delivery asociado a la última factura')
+def step_impl(context, nombre_consultor, cbu, fecha):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
+    facturador = models.FacturadorDeConsultor.objects.get(cbu=cbu)
     pago = models.PagoLiqueedAConsultor(
             consultor=consultor,
             monto=context.ultimo_movimiento_bancario.importe_pesos,
             fecha=fecha,
             factura=context.ultima_factura,
+            facturador=facturador,
             movimiento_bancario=context.ultimo_movimiento_bancario
     )
     pago.save()
