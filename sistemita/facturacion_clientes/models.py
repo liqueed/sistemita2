@@ -260,8 +260,18 @@ class PagoLiqueedAConsultor(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        delivery_individual_cobrado = DeliveryIndividual.objects.get(factura=self.factura)
-        delivery_individual_cobrado.delete()
+        self.DescontarOEliminarDeudaLiqueedConConsultor()
+
+    def DescontarOEliminarDeudaLiqueedConConsultor(self):
+        delivery_individual_original = DeliveryIndividual.objects.get(factura=self.factura)
+        if(self.monto < delivery_individual_original.monto):
+            delivery_individual_pendiente = DeliveryIndividual(consultor=delivery_individual_original.consultor,
+            factura=delivery_individual_original.factura,
+            monto=delivery_individual_original.monto - self.monto,
+            estado=delivery_individual_original.estado)
+            delivery_individual_pendiente.save()
+        delivery_individual_original.delete()
+        
     
 class PagoImpuestoAlCheque(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
