@@ -42,7 +42,6 @@ INSTALLED_APPS += [
     'behave_django',
     'djmoney',
     'solo',
-    'django_afip',
     'facturacion_clientes'
 ]
 
