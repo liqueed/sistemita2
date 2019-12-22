@@ -11,7 +11,7 @@ RUN mkdir -p /app
 WORKDIR /app
 ADD Pipfile /app
 ADD Pipfile.lock /app
-RUN pipenv sync
+RUN pipenv sync -d
 COPY . /app
 EXPOSE 8000
 
