@@ -170,4 +170,5 @@ def step_impl(context, nombre_consultor, cbu, fecha):
 
 @when(u'se concilian movimientos pendientes automáticamente')
 def step_impl(context):
-    conciliador_automatico_de_movimientos_bancarios.ConciliadorAutomaticoDeMovimientosBancarios.conciliar_movimientos_no_conciliados()
+    conciliador = conciliador_automatico_de_movimientos_bancarios.ConciliadorAutomaticoDeMovimientosBancarios()
+    conciliador.conciliar_movimientos_no_conciliados()
