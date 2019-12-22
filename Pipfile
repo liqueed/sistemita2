@@ -6,17 +6,17 @@ verify_ssl = true
 [dev-packages]
 pylint = "*"
 rope = "*"
+pytest-django = "*"
+behave-django = "*"
+pytest = "*"
+pylint-django = "*"
 
 [packages]
 django = "==2.2.7"
-pytest-django = "*"
-behave-django = "*"
 pyyaml = "*"
 django-money = "*"
 gunicorn = "*"
 django-solo = "*"
-pytest = "*"
-pylint-django = "*"
 
 [requires]
 python_version = "3.7"
