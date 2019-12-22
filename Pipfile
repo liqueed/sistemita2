@@ -10,6 +10,8 @@ pytest-django = "*"
 behave-django = "*"
 pytest = "*"
 pylint-django = "*"
+django-extensions = "*"
+pydotplus = "*"
 
 [packages]
 django = "==2.2.7"
