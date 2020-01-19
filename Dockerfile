@@ -1,6 +1,5 @@
 FROM python:3.7-buster
 
-
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y locales
 RUN sed -i -e 's/# es_AR ISO-8859-1/es_AR ISO-8859-1/' /etc/locale.gen
 RUN locale-gen 
