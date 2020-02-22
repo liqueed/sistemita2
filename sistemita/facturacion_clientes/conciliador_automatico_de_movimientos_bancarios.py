@@ -1,5 +1,5 @@
 
-from .models import MovimientoBancario, Cliente, FacturaCliente, PagoClienteTransferenciaALiqueed, DeudaCliente
+from .models import MovimientoBancario, Cliente, FacturaCliente, PagoClienteTransferenciaALiqueed, DeudaCliente, FacturadorDeConsultor
 
 class ConciliadorAutomaticoDeMovimientosBancarios:
     
@@ -61,6 +61,14 @@ class LectorDeMovimientoDePagoDeCliente(LectorDeMovimientoAbstracto):
         texto_a_procesar = texto_a_procesar[LectorDeMovimientoDePagoDeCliente.LARGO_PREFIJO:][:-LectorDeMovimientoDePagoDeCliente.LARGO_SUFIJO]
         return texto_a_procesar
             
+class LectorDeMovimientoDePagoAConsultor(LectorDeMovimientoAbstracto):
+    CODIGO_OPERATIVO_TRANSFERENCIA_A_OTRAS_CUENTAS = '0824'
+    
+    LARGO_CBU = 22
 
-
-
+    @staticmethod
+    def es_lector_que_corresponde(movimiento_no_conciliado):
+        cbu = movimiento_no_conciliado.concepto.strip()[-LectorDeMovimientoDePagoAConsultor.LARGO_CBU:]
+        es_cbu_de_algun_consultor = FacturadorDeConsultor.es_cbu_de_algun_consultor(cbu)
+        return movimiento_no_conciliado.codigo_operativo == LectorDeMovimientoDePagoAConsultor.CODIGO_OPERATIVO_TRANSFERENCIA_A_OTRAS_CUENTAS \
+            and es_cbu_de_algun_consultor
