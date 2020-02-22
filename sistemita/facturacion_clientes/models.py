@@ -62,7 +62,12 @@ class Consultor(models.Model):
 class FacturadorDeConsultor(models.Model):
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
     cuit = models.BigIntegerField(null=True)
-    cbu = models.DecimalField(max_digits=22, decimal_places=0, null=True)
+    cbu = models.CharField(max_length=22, null=True)
+
+    @staticmethod
+    def es_cbu_de_algun_consultor(cbu_a_buscar):
+        return FacturadorDeConsultor.objects.filter(cbu=cbu_a_buscar).count()>0
+
 
 class FacturaClienteManager(models.Manager):
     def ganancia_hasta_hoy(self):
@@ -261,7 +266,7 @@ class PagoLiqueedAConsultor(models.Model):
     fecha = models.DateField(auto_now=True)
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
     facturador = models.ForeignKey(FacturadorDeConsultor, on_delete=models.CASCADE)
-    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
+    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE, null=True)
     movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):

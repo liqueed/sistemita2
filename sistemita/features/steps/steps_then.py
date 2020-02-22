@@ -128,3 +128,11 @@ def step_impl(context, tipo_tarjeta, fecha, monto):
 def step_impl(context, cantidad_movimientos):
     movimientos_no_conciliados = models.MovimientoBancario.movimientos_no_conciliados()
     context.test.assertEquals(movimientos_no_conciliados.count(), cantidad_movimientos)
+
+@then(u'el cbu "{cbu}" es de algún consultor')
+def step_impl(context, cbu):
+    context.test.assertTrue(models.FacturadorDeConsultor.es_cbu_de_algun_consultor(cbu))
+
+@then(u'el cbu "{cbu}" no es de ningún consultor')
+def step_impl(context, cbu):
+    context.test.assertTrue(models.FacturadorDeConsultor.es_cbu_de_algun_consultor(cbu)==False)
