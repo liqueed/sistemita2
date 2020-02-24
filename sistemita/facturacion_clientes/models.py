@@ -163,30 +163,17 @@ class MovimientoCuenta(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE)
-    PENDIENTE = 'PENDIENTE'
-    DISPONIBLE = 'DISPONIBLE'
-    COBRADO = 'COBRADO'
-    POSIBLES_ESTADOS = (
-        (PENDIENTE, 'Pendiente'),
-        (DISPONIBLE, 'Disponible'),
-        (COBRADO, 'Cobrado')
-    )
-    estado = models.CharField(
-        max_length=10,
-        choices=POSIBLES_ESTADOS,
-        default=PENDIENTE
-    )
-
+    cobrado = models.BooleanField(default=False)
     
     @classmethod
     def saldo_pendiente_de_cobro(clase):
         return ResultadoAggregateAMoney(
-            clase.objects.filter(estado=MovimientoCuenta.PENDIENTE).aggregate(Sum('monto'))['monto__sum'])
+            clase.objects.filter(cobrado=False).aggregate(Sum('monto'))['monto__sum'])
 
     @classmethod
     def saldo_disponible(clase):
         return ResultadoAggregateAMoney(
-            clase.objects.filter(estado=MovimientoCuenta.DISPONIBLE).aggregate(Sum('monto'))['monto__sum'])
+            clase.objects.filter(cobrado=True).aggregate(Sum('monto'))['monto__sum'])
     
 
 class FondoAdministrativo(MovimientoCuenta):
@@ -203,12 +190,12 @@ class Mentoring(MovimientoCuenta):
 
     @staticmethod
     def saldo_pendiente_de_cobro(mentor):
-        saldo = Mentoring.objects.filter(mentor=mentor, estado=MovimientoCuenta.PENDIENTE).aggregate(Sum('monto'))['monto__sum']
+        saldo = Mentoring.objects.filter(mentor=mentor, cobrado=False).aggregate(Sum('monto'))['monto__sum']
         return ResultadoAggregateAMoney(saldo)
 
     @staticmethod
     def saldo_disponible(mentor):
-        saldo = Mentoring.objects.filter(mentor=mentor, estado=MovimientoCuenta.DISPONIBLE).aggregate(Sum('monto'))['monto__sum']
+        saldo = Mentoring.objects.filter(mentor=mentor, cobrado=True).aggregate(Sum('monto'))['monto__sum']
         return ResultadoAggregateAMoney(saldo)
 
 class DeliveryIndividual(MovimientoCuenta):
@@ -216,12 +203,12 @@ class DeliveryIndividual(MovimientoCuenta):
 
     @staticmethod
     def saldo_pendiente_de_cobro(consultor):
-        saldo = DeliveryIndividual.objects.filter(consultor=consultor, estado=MovimientoCuenta.PENDIENTE).aggregate(Sum('monto'))['monto__sum']
+        saldo = DeliveryIndividual.objects.filter(consultor=consultor, cobrado=False).aggregate(Sum('monto'))['monto__sum']
         return ResultadoAggregateAMoney(saldo)
 
     @staticmethod
     def saldo_disponible(consultor):
-        saldo = DeliveryIndividual.objects.filter(consultor=consultor, estado=MovimientoCuenta.DISPONIBLE).aggregate(Sum('monto'))['monto__sum']
+        saldo = DeliveryIndividual.objects.filter(consultor=consultor, cobrado=True).aggregate(Sum('monto'))['monto__sum']
         return ResultadoAggregateAMoney(saldo)
 
 class MovimientoBancario(models.Model):
@@ -253,7 +240,7 @@ class PagoCliente(models.Model):
         super().save(*args, **kwargs)
         deuda_cancelada = DeudaCliente.objects.get(factura=self.factura)
         deuda_cancelada.delete()
-        MovimientoCuenta.objects.filter(factura=self.factura).update(estado=MovimientoCuenta.DISPONIBLE)
+        MovimientoCuenta.objects.filter(factura=self.factura).update(cobrado=True)
 
 class PagoClienteTransferenciaALiqueed(PagoCliente):
     movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
@@ -279,7 +266,7 @@ class PagoLiqueedAConsultor(models.Model):
             delivery_individual_pendiente = DeliveryIndividual(consultor=delivery_individual_original.consultor,
             factura=delivery_individual_original.factura,
             monto=delivery_individual_original.monto - self.monto,
-            estado=delivery_individual_original.estado)
+            cobrado=delivery_individual_original.cobrado)
             delivery_individual_pendiente.save()
         delivery_individual_original.delete()
         
