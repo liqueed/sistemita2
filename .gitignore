@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io
 
+# Modelo de datos generado por la propia aplicación
+modelo.pdf
+
 # Visual Studio
 .vscode
 
