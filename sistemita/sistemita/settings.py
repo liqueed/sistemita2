@@ -42,6 +42,7 @@ INSTALLED_APPS += [
     'behave_django',
     'djmoney',
     'solo',
+    'bootstrap4',
     'django_extensions',
     'facturacion_clientes'
 ]

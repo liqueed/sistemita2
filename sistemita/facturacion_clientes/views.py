@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from .forms import FormSubirArchivoMovimientosBancarios
 from .lector_archivo_de_movimientos_bancarios import LectorArchivoDeMovimientosBancarios
 
-def subir_resumen_bancario(request):
+def importar_resumen_bancario(request):
     if request.method == 'POST':
         form = FormSubirArchivoMovimientosBancarios(request.POST, request.FILES)
         if form.is_valid():
@@ -11,8 +11,5 @@ def subir_resumen_bancario(request):
             return HttpResponseRedirect('/conciliar_movimientos_bancarios/')
     else:
         form = FormSubirArchivoMovimientosBancarios()
-        return render(request, 'facturacion_clientes/subir_resumen_bancario.html', {'form' : form})
-
-def importar_resumen_bancario():
-    pass
+        return render(request, 'facturacion_clientes/importar_resumen_bancario.html', {'form' : form})
         
