@@ -12,6 +12,7 @@ pytest = "*"
 pylint-django = "*"
 django-extensions = "*"
 pydotplus = "*"
+selenium = "*"
 
 [packages]
 django = "==2.2.10"
@@ -19,6 +20,7 @@ pyyaml = "*"
 django-money = "*"
 gunicorn = "*"
 django-solo = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.7"

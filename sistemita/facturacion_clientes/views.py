@@ -12,4 +12,7 @@ def subir_resumen_bancario(request):
     else:
         form = FormSubirArchivoMovimientosBancarios()
         return render(request, 'facturacion_clientes/subir_resumen_bancario.html', {'form' : form})
+
+def importar_resumen_bancario():
+    pass
         
