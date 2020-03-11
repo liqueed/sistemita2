@@ -1,23 +1,5 @@
-
-from .models import MovimientoBancario, Cliente, FacturaCliente, PagoClienteTransferenciaALiqueed, DeudaCliente, FacturadorDeConsultor
-
-class ConciliadorAutomaticoDeMovimientosBancarios:
-    
-    def conciliar_movimientos_no_conciliados(self):
-        for movimiento_no_conciliado in MovimientoBancario.movimientos_no_conciliados():
-            self.intentar_conciliar_movimiento(movimiento_no_conciliado)
-
-    def intentar_conciliar_movimiento(self, movimiento_no_conciliado):
-        lectorDeMovimiento = LectorDeMovimientoAbstracto.detectarTipoCorrectoDeMovimiento(movimiento_no_conciliado)()
-        lectorDeMovimiento.conciliar(movimiento_no_conciliado)
-
-class LectorDeMovimientoAbstracto:
-
-    @staticmethod
-    def detectarTipoCorrectoDeMovimiento(movimiento_no_conciliado):
-        for clase_lector in LectorDeMovimientoAbstracto.__subclasses__():
-            if clase_lector.es_lector_que_corresponde(movimiento_no_conciliado):
-                return clase_lector
+from .conciliador_automatico_de_movimientos_bancarios import LectorDeMovimientoAbstracto
+from ..models import MovimientoBancario, Cliente, FacturaCliente, PagoClienteTransferenciaALiqueed, DeudaCliente, FacturadorDeConsultor
 
 class LectorDeMovimientoDePagoDeCliente(LectorDeMovimientoAbstracto):
     CODIGO_OPERATIVO_PAGO_INTERBANKING_INT = '2376'
@@ -60,15 +42,3 @@ class LectorDeMovimientoDePagoDeCliente(LectorDeMovimientoAbstracto):
         texto_a_procesar = movimiento_no_conciliado.concepto
         texto_a_procesar = texto_a_procesar[LectorDeMovimientoDePagoDeCliente.LARGO_PREFIJO:][:-LectorDeMovimientoDePagoDeCliente.LARGO_SUFIJO]
         return texto_a_procesar
-            
-class LectorDeMovimientoDePagoAConsultor(LectorDeMovimientoAbstracto):
-    CODIGO_OPERATIVO_TRANSFERENCIA_A_OTRAS_CUENTAS = '0824'
-    
-    LARGO_CBU = 22
-
-    @staticmethod
-    def es_lector_que_corresponde(movimiento_no_conciliado):
-        cbu = movimiento_no_conciliado.concepto.strip()[-LectorDeMovimientoDePagoAConsultor.LARGO_CBU:]
-        es_cbu_de_algun_consultor = FacturadorDeConsultor.es_cbu_de_algun_consultor(cbu)
-        return movimiento_no_conciliado.codigo_operativo == LectorDeMovimientoDePagoAConsultor.CODIGO_OPERATIVO_TRANSFERENCIA_A_OTRAS_CUENTAS \
-            and es_cbu_de_algun_consultor

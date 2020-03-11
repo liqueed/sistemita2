@@ -1,14 +1,15 @@
 from django.test import TestCase, LiveServerTestCase
 from django.urls import resolve
-from .conciliador_automatico_de_movimientos_bancarios import *
+from .conciliador_automatico.conciliador_automatico_de_movimientos_bancarios import ConciliadorAutomaticoDeMovimientosBancarios, LectorDeMovimientoAbstracto
+from .conciliador_automatico.lector_de_movimiento_de_pago_a_consultor import *
+from .conciliador_automatico.lector_de_movimiento_de_pago_de_cliente import *
 from .models import MovimientoBancario, Consultor, FacturadorDeConsultor
 from .views import importar_resumen_bancario
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
+
 class TestsConciliadorAutomatico(TestCase):
-
-
 
     def test_detecta_correctamente_movimiento_pago_de_cliente(self):
         movimiento_pago_de_cliente = MovimientoBancario(codigo_operativo='2377',\

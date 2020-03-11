@@ -6,7 +6,7 @@ from djmoney.money import Money
 from decimal import Decimal
 from steps_common import *
 from facturacion_clientes import lector_archivo_de_movimientos_bancarios
-from facturacion_clientes import conciliador_automatico_de_movimientos_bancarios
+from facturacion_clientes.conciliador_automatico import conciliador_automatico_de_movimientos_bancarios
 import locale
 
 
