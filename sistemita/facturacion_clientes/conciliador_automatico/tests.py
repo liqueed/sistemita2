@@ -2,6 +2,7 @@ from django.test import TestCase
 from .conciliador_automatico_de_movimientos_bancarios import ConciliadorAutomaticoDeMovimientosBancarios, LectorDeMovimientoAbstracto
 from .lector_de_movimiento_de_pago_a_consultor import *
 from .lector_de_movimiento_de_pago_de_cliente import *
+from .lector_de_movimiento_de_impuesto_al_cheque import *
 from ..models import MovimientoBancario, Consultor, FacturadorDeConsultor
 
 
@@ -22,3 +23,9 @@ class TestsConciliadorAutomatico(TestCase):
             concepto='Pago Cci 24hs Gravada Interbanking  - A Cbu 1500035000008161431046 ')
         lector = LectorDeMovimientoAbstracto.detectarTipoCorrectoDeMovimiento(movimiento_pago_a_consultor)
         assert (lector == LectorDeMovimientoDePagoAConsultor)
+
+    def test_detecta_correctamente_movimiento_impuesto_al_cheque(self):
+        movimiento_impuesto_al_cheque = MovimientoBancario(codigo_operativo='4633',\
+            concepto='Imp Ley 25413 Deb 0,6% ')
+        lector = LectorDeMovimientoAbstracto.detectarTipoCorrectoDeMovimiento(movimiento_impuesto_al_cheque)
+        assert (lector == LectorDeMovimientoDeImpuestoAlCheque)
