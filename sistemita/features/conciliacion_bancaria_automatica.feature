@@ -8,7 +8,6 @@ Y se produjo el movimiento del "04/02/2010" con sucursal de origen código "762"
 Y se concilian movimientos pendientes automáticamente
 Entonces está registrado un pago de cliente a liqueed que asocia la última factura con el último movimiento
 
-@wip
 Escenario: Pago a un consultor (liqueed paga) - no es posible por ahora saber a qué factura corresponde, por lo que el pago queda "casi conciliado" (a la espera de una última conciliación manual)
 Dado que el consultor "David" tiene la siguiente estrategia tributaria
     | CUIT        | CBU                    |
