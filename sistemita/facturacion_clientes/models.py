@@ -248,13 +248,20 @@ class PagoClienteTransferenciaALiqueed(PagoCliente):
 class PagoClienteTransferenciaAConsultor(PagoCliente):
     pass
 
+class PagoLiqueedAConsultorSinConciliar(models.Model):
+    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    fecha = models.DateField(auto_now=True)
+    consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
+    facturador = models.ForeignKey(FacturadorDeConsultor, on_delete=models.CASCADE)
+    movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
+
 class PagoLiqueedAConsultor(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
     facturador = models.ForeignKey(FacturadorDeConsultor, on_delete=models.CASCADE)
-    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE, null=True)
     movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
+    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
