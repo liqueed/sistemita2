@@ -71,7 +71,6 @@ def step_impl(context):
     pago_impuesto_al_cheque = models.PagoImpuestoAlCheque(
             monto=context.ultimo_movimiento_bancario.importe_pesos,
             fecha=context.ultimo_pago.fecha,
-            pago=context.ultimo_pago,
             movimiento_bancario=context.ultimo_movimiento_bancario
     )
     pago_impuesto_al_cheque.save()
