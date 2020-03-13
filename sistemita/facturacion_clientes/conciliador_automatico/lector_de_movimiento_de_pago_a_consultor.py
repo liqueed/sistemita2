@@ -1,5 +1,5 @@
 from .conciliador_automatico_de_movimientos_bancarios import LectorDeMovimientoAbstracto
-from ..models import PagoLiqueedAConsultorSinConciliar, FacturadorDeConsultor
+from ..models import PagoPlanificadoLiqueedAConsultor, FacturadorDeConsultor, PagoLiqueedAConsultor
 
 class LectorDeMovimientoDePagoAConsultor(LectorDeMovimientoAbstracto):
     CODIGO_OPERATIVO_TRANSFERENCIA_A_OTRAS_CUENTAS = '0824'
@@ -16,11 +16,18 @@ class LectorDeMovimientoDePagoAConsultor(LectorDeMovimientoAbstracto):
     def conciliar(self, movimiento_no_conciliado):
         cbu = movimiento_no_conciliado.concepto.strip()[-LectorDeMovimientoDePagoAConsultor.LARGO_CBU:]
         facturador = FacturadorDeConsultor.objects.get(cbu=cbu)
-        pago_a_consultor_sin_conciliar = PagoLiqueedAConsultorSinConciliar(
+        pago_planificado = PagoPlanificadoLiqueedAConsultor.objects.get(
             monto=abs(movimiento_no_conciliado.importe_pesos),
-            fecha=movimiento_no_conciliado.fecha,
             consultor=facturador.consultor,
-            facturador=facturador,
-            movimiento_bancario=movimiento_no_conciliado
+            facturador=facturador
         )
-        pago_a_consultor_sin_conciliar.save()
+        pago_conciliado = PagoLiqueedAConsultor(
+            monto = abs(movimiento_no_conciliado.importe_pesos),
+            fecha = movimiento_no_conciliado.fecha,
+            consultor = facturador.consultor,
+            facturador = facturador,
+            movimiento_bancario = movimiento_no_conciliado,
+            delivery_individual = pago_planificado.delivery_individual
+        )
+        pago_planificado.delete()
+        pago_conciliado.save()

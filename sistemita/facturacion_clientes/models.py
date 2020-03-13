@@ -248,12 +248,12 @@ class PagoClienteTransferenciaALiqueed(PagoCliente):
 class PagoClienteTransferenciaAConsultor(PagoCliente):
     pass
 
-class PagoLiqueedAConsultorSinConciliar(models.Model):
+class PagoPlanificadoLiqueedAConsultor(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
     fecha = models.DateField(auto_now=True)
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
     facturador = models.ForeignKey(FacturadorDeConsultor, on_delete=models.CASCADE)
-    movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
+    delivery_individual = models.ForeignKey(DeliveryIndividual, on_delete=models.CASCADE)
 
 class PagoLiqueedAConsultor(models.Model):
     monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
@@ -261,21 +261,18 @@ class PagoLiqueedAConsultor(models.Model):
     consultor = models.ForeignKey(Consultor, on_delete=models.CASCADE)
     facturador = models.ForeignKey(FacturadorDeConsultor, on_delete=models.CASCADE)
     movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
-    factura = models.ForeignKey(FacturaCliente, on_delete=models.CASCADE, null=True)
+    delivery_individual = models.ForeignKey(DeliveryIndividual, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.DescontarOEliminarDeudaLiqueedConConsultor()
 
     def DescontarOEliminarDeudaLiqueedConConsultor(self):
-        delivery_individual_original = DeliveryIndividual.objects.get(factura=self.factura)
-        if(self.monto < delivery_individual_original.monto):
-            delivery_individual_pendiente = DeliveryIndividual(consultor=delivery_individual_original.consultor,
-            factura=delivery_individual_original.factura,
-            monto=delivery_individual_original.monto - self.monto,
-            cobrado=delivery_individual_original.cobrado)
-            delivery_individual_pendiente.save()
-        delivery_individual_original.delete()
+        if(self.monto < self.delivery_individual.monto):
+            self.delivery_individual.monto = self.delivery_individual.monto - self.monto
+            self.delivery_individual.save()
+        else:
+            self.delivery_individual.delete()
         
     
 class PagoImpuestoAlCheque(models.Model):

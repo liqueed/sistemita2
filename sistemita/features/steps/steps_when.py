@@ -54,6 +54,7 @@ def step_impl(context, nombre_consultor):
                 factura=context.ultima_factura,
                 monto = context.ultima_factura.delivery_pendiente_de_cobro)
         delivery_individual_pendiente_de_cobro.save()
+        context.delivery_unico_consultor = delivery_individual_pendiente_de_cobro
 
 @when(u'el cliente "{nombre_cliente}" pague la ultima factura por transferencia bancaria directa a "{nombre_consultor}" el "{fecha:tg}"')
 def step_impl(context, nombre_cliente, nombre_consultor, fecha):
@@ -157,11 +158,14 @@ def step_impl(context, tipo_tarjeta):
 def step_impl(context, nombre_consultor, cbu, fecha):
     consultor = models.Consultor.objects.get(nombre=nombre_consultor)
     facturador = models.FacturadorDeConsultor.objects.get(cbu=cbu)
+    delivery_individual = models.DeliveryIndividual.objects.get(
+        factura=context.ultima_factura,
+        consultor=consultor)
     pago = models.PagoLiqueedAConsultor(
             consultor=consultor,
             monto=context.ultimo_movimiento_bancario.importe_pesos,
             fecha=fecha,
-            factura=context.ultima_factura,
+            delivery_individual=delivery_individual,
             facturador=facturador,
             movimiento_bancario=context.ultimo_movimiento_bancario
     )
@@ -171,3 +175,20 @@ def step_impl(context, nombre_consultor, cbu, fecha):
 def step_impl(context):
     conciliador = conciliador_automatico_de_movimientos_bancarios.ConciliadorAutomaticoDeMovimientosBancarios()
     conciliador.conciliar_movimientos_no_conciliados()
+
+@when(u'se navega a la URL "{url}"')
+def step_impl(context, url):
+    context.browser.get(url)
+
+@when(u'que decide facturar los "{importe_total:d}" pesos que le corresponden con esta estrategia')
+def step_impl(context, importe_total):
+    for estrategia in context.table:
+        facturador = models.FacturadorDeConsultor.objects.get(consultor=context.delivery_unico_consultor.consultor, cuit=estrategia['CUIT'])
+        pago_planificado = models.PagoPlanificadoLiqueedAConsultor(
+            consultor = context.delivery_unico_consultor.consultor,
+            monto = estrategia['Monto'],
+            facturador = facturador,
+            delivery_individual = context.delivery_unico_consultor
+        )
+        pago_planificado.save()
+        

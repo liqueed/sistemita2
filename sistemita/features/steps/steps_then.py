@@ -136,10 +136,3 @@ def step_impl(context, cbu):
 @then(u'el cbu "{cbu}" no es de ningún consultor')
 def step_impl(context, cbu):
     context.test.assertTrue(models.FacturadorDeConsultor.es_cbu_de_algun_consultor(cbu)==False)
-
-
-@then(u'existen "{cantidad:d}" pagos al consultor "{nombre_consultor}" pendientes de conciliación')
-def step_impl(context, cantidad, nombre_consultor):
-    consultor = models.Consultor.objects.get(nombre=nombre_consultor)
-    cantidad_de_pagos_al_consultor_sin_conciliar = models.PagoLiqueedAConsultorSinConciliar.objects.filter(consultor=consultor).count()
-    context.test.assertEquals(cantidad, cantidad_de_pagos_al_consultor_sin_conciliar)
