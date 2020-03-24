@@ -1,1 +1,2 @@
 - Representar "presupuesto actual"/OC sobre la que se está trabajando (y con históricos). Ej: Contrato OSDE empezó el 1/1/19 y Juancito cobra 1%  la hora
+- Hacer que funcionen montos con decimales

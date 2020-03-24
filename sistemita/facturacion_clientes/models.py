@@ -285,6 +285,15 @@ class PagoImpuestoAlCheque(models.Model):
         total = PagoImpuestoAlCheque.objects.aggregate(models.Sum('monto'))
         return Money(ResultadoAggregateAMoney(total['monto__sum']), 'ARS')
         
+class PagoIVATasaGeneral(models.Model):
+    monto = MoneyField(max_digits=10, decimal_places=2, default_currency='ARS')
+    fecha = models.DateField(auto_now=True)
+    movimiento_bancario = models.ForeignKey(MovimientoBancario, on_delete=models.CASCADE)
+
+    @staticmethod
+    def total_hasta_el_momento():
+        total = PagoIVATasaGeneral.objects.aggregate(models.Sum('monto'))
+        return Money(ResultadoAggregateAMoney(total['monto__sum']), 'ARS')
 
 class TipoDeCursoPublico(models.Model):
     titulo = models.CharField(max_length=100)

@@ -8,7 +8,6 @@ Y se produjo el movimiento del "04/02/2010" con sucursal de origen código "762"
 Y se concilian movimientos pendientes automáticamente
 Entonces está registrado un pago de cliente a liqueed que asocia la última factura con el último movimiento
 
-@wip
 Escenario: Pago a un consultor (liqueed paga)
 Dado que el consultor "David" tiene la siguiente estrategia tributaria
     | CUIT        | CBU                    |
@@ -32,3 +31,9 @@ Cuando se produjo el movimiento del "04/02/2010" con sucursal de origen código 
 Y se produjo el movimiento del "04/02/2010" con sucursal de origen código "762" y descripción "Cerrito", código operativo "4637", referencia "000002285", concepto "Imp Ley 25413 Cred 0,6% 	", importe "-1421" y saldo "1035530,86"
 Y se concilian movimientos pendientes automáticamente
 Entonces el total pagado por impuesto al cheque hasta el momento es "2873"
+
+@wip
+Escenario: Iva Tasa General
+Cuando se produjo el movimiento del "04/02/2010" con sucursal de origen código "762" y descripción "Cerrito", código operativo "3254", referencia "000002280", concepto "Iva Tasa General ", importe "-3" y saldo "791997.54"
+Y se concilian movimientos pendientes automáticamente
+Entonces el total pagado por IVA Tasa General hasta el momento es "3"

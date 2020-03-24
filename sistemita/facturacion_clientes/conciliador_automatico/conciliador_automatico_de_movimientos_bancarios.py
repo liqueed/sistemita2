@@ -11,6 +11,9 @@ class ConciliadorAutomaticoDeMovimientosBancarios:
         lectorDeMovimiento = LectorDeMovimientoAbstracto.detectarTipoCorrectoDeMovimiento(movimiento_no_conciliado)()
         lectorDeMovimiento.conciliar(movimiento_no_conciliado)
 
+class NoSeEncontroLectorDeMovimientoError(Exception):
+    pass
+
 class LectorDeMovimientoAbstracto:
 
     @staticmethod
@@ -18,5 +21,6 @@ class LectorDeMovimientoAbstracto:
         for clase_lector in LectorDeMovimientoAbstracto.__subclasses__():
             if clase_lector.es_lector_que_corresponde(movimiento_no_conciliado):
                 return clase_lector
+        raise NoSeEncontroLectorDeMovimientoError(movimiento_no_conciliado)
 
             

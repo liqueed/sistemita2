@@ -136,3 +136,8 @@ def step_impl(context, cbu):
 @then(u'el cbu "{cbu}" no es de ningún consultor')
 def step_impl(context, cbu):
     context.test.assertTrue(models.FacturadorDeConsultor.es_cbu_de_algun_consultor(cbu)==False)
+
+@then(u'el total pagado por IVA Tasa General hasta el momento es "{monto:d}"')
+def step_impl(context, monto):
+    total_hasta_el_momento = models.PagoIVATasaGeneral.total_hasta_el_momento()
+    context.test.assertEquals(total_hasta_el_momento, Money(monto, 'ARS'))
