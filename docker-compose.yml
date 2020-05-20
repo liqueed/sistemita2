@@ -1,7 +1,7 @@
 version: '3'
 
 services: 
-  djangoapp:
+  app:
     build: .
     volumes: 
       - .:/app
@@ -9,4 +9,4 @@ services:
       - "8000:8000"
     environment:
      - PYTHONUNBUFFERED=1
-    command:  pipenv run python sistemita/manage.py behave sistemita/features
+    command:  ./docker_entrypoint.sh

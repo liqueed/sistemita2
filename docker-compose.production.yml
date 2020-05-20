@@ -1,7 +1,7 @@
 version: '3'
 
 services: 
-  djangoapp:
+  app:
     build: .
     volumes: 
       - .:/app
@@ -17,8 +17,8 @@ services:
       - "8000:80"
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
-    depends_on:  # <-- wait for djangoapp to be "ready" before starting this service
-      - djangoapp
+    depends_on:  # <-- wait for app to be "ready" before starting this service
+      - app
     networks:  
       - nginx_network
 

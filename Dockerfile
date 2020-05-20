@@ -20,4 +20,3 @@ ADD Pipfile.lock /app
 RUN pipenv install
 COPY . /app
 EXPOSE 8000
-
