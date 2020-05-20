@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Liqueed{% endblock %}
+
+{% block header %}
+<style>
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+<link href="{% static 'css/signin.css'%}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="body">
+    <form class="form-signin">
+        <img class="mb-4" src="{% static 'images/logo-top-dark.png' %}" alt="">
+        <h1 class="h3 mb-3 font-weight-normal"></h1>
+        <label for="id_username" class="sr-only">Email</label>
+        <input type="text" id="id_username" name="username" class="form-control" placeholder="Email" required autofocus>
+        <label for="id_password" class="sr-only">Clave</label>
+        <input type="password" id="id_password" name="password" class="form-control" placeholder="Clave" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Ingrese</button>
+        <p class="text-center mt-5 mb-3 text-muted">Liqueed &copy; 2020</p>
+    </form>
+</div>
+{% endblock %}
