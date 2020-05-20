@@ -1,6 +1,10 @@
 version: '3'
 
 services: 
+  db:
+    image: postgres:11.4-alpine
+    ports:
+      - "5432:5432"
   app:
     build: .
     volumes: 
@@ -10,3 +14,5 @@ services:
     environment:
      - PYTHONUNBUFFERED=1
     command:  ./docker_entrypoint.sh
+    depends_on:
+      - db

@@ -15,7 +15,7 @@ pydotplus = "*"
 selenium = "*"
 
 [packages]
-django = "==2.2.10"
+django = "==3.0.6"
 pyyaml = "*"
 django-money = "*"
 gunicorn = "*"
@@ -26,6 +26,7 @@ behave-django = "*"
 django-extensions = "*"
 selenium = "*"
 django-crispy-forms = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.7"
