@@ -9,4 +9,4 @@ services:
       - "8000:8000"
     environment:
      - PYTHONUNBUFFERED=1
-    command:  python sistemita/manage.py behave sistemita/features
+    command:  pipenv run python sistemita/manage.py behave sistemita/features

@@ -16,7 +16,8 @@ RUN mkdir -p /app
 WORKDIR /app
 ADD Pipfile /app
 ADD Pipfile.lock /app
-RUN pipenv sync -d
+#RUN pipenv install --deploy --system
+RUN pipenv install
 COPY . /app
 EXPOSE 8000
 

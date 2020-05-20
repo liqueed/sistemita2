@@ -22,6 +22,9 @@ gunicorn = "*"
 django-solo = "*"
 pytest-django = "*"
 django-bootstrap4 = "*"
+behave-django = "*"
+django-extensions = "*"
+selenium = "*"
 
 [requires]
 python_version = "3.7"
