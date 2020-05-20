@@ -49,6 +49,8 @@ INSTALLED_APPS = [
 
     
     # Apps
+    'authorization',
+    'core',
     'facturacion_clientes'
 ]
 
@@ -135,3 +137,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+AUTH_USER_MODEL = 'authorization.User'
