@@ -24,13 +24,19 @@
 
 {% block content %}
 <div class="body">
-    <form class="form-signin">
+    <form class="form-signin" method="post">
+        {% csrf_token %}
         <img class="mb-4" src="{% static 'images/logo-top-dark.png' %}" alt="">
         <h1 class="h3 mb-3 font-weight-normal"></h1>
-        <label for="id_username" class="sr-only">Email</label>
-        <input type="text" id="id_username" name="username" class="form-control" placeholder="Email" required autofocus>
-        <label for="id_password" class="sr-only">Clave</label>
-        <input type="password" id="id_password" name="password" class="form-control" placeholder="Clave" required>
+        <div class="form-group">
+            <label for="id_username" class="sr-only">Usuario</label>
+            <input type="text" id="id_username" name="username" class="form-control" placeholder="Usuario" required autofocus>
+        </div>
+        <div class="form-group">
+            <label for="id_password" class="sr-only">Clave</label>
+            <input type="password" id="id_password" name="password" class="form-control" placeholder="Clave" required>
+        </div>
+        <small class="form-text text-muted">{{ form.non_field_errors }}</small>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Ingrese</button>
         <p class="text-center mt-5 mb-3 text-muted">Liqueed &copy; 2020</p>
     </form>
