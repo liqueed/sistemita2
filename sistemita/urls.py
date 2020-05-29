@@ -6,5 +6,5 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     # path('', include('facturacion_clientes.urls'))
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', HomeView.as_view())
+    path('', HomeView.as_view(), name='home')
 ]

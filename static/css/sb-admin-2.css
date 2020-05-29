@@ -10584,9 +10584,10 @@ a:focus {
 }
 
 .bg-login-image {
-  background: url("https://liqueed.org/wp-content/uploads/2018/12/logo-top-dark.png");
+  background: url("https://liqueed.org/wp-content/uploads/2018/12/logo-top-light.png");
   background-repeat: no-repeat;
   background-position: center;
+  background-color: var(--blue);
 }
 
 .bg-register-image {

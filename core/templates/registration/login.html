@@ -1,44 +1,59 @@
-{% extends 'base.html' %}
+{% extends 'registration/base.html' %}
 {% load static %}
 {% block title %}Liqueed{% endblock %}
 
-{% block header %}
-<style>
-  .bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-
-  @media (min-width: 768px) {
-    .bd-placeholder-img-lg {
-      font-size: 3.5rem;
-    }
-  }
-</style>
-<link href="{% static 'css/signin.css'%}" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
-<div class="body">
-    <form class="form-signin" method="post">
-        {% csrf_token %}
-        <img class="mb-4" src="{% static 'images/logo-top-dark.png' %}" alt="">
-        <h1 class="h3 mb-3 font-weight-normal"></h1>
-        <div class="form-group">
-            <label for="id_username" class="sr-only">Usuario</label>
-            <input type="text" id="id_username" name="username" class="form-control" placeholder="Usuario" required autofocus>
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+      <div class="col-xl-10 col-lg-12 col-md-9">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Sistemita</h1>
+                  </div>
+                  <form class="user" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <input required type="text" class="form-control form-control-user" id="id_username" name="username" aria-describedby="usernameHelp" placeholder="Usuario">
+                    </div>
+                    <div class="form-group">
+                      <input required type="password" class="form-control form-control-user" id="id_password" name="password" placeholder="Clave">
+                    </div>
+                    <small class="form-text text-muted">{{ form.non_field_errors }}</small>
+                    <button type="submit" class="btn btn-primary btn-user btn-block">Ingresar</button>
+                    {% comment %}
+                    <hr>
+                    <a href="index.html" class="btn btn-google btn-user btn-block">
+                      <i class="fab fa-google fa-fw"></i> Login with Google
+                    </a>
+                    <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                      <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
+                    </a>
+                    {% endcomment %}
+                  </form>
+                  {% comment %}
+                  <hr>
+                  <div class="text-center">
+                    <a class="small" href="forgot-password.html">Forgot Password?</a>
+                  </div>
+                  <div class="text-center">
+                    <a class="small" href="register.html">Create an Account!</a>
+                  </div>
+                  {% endcomment %}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-            <label for="id_password" class="sr-only">Clave</label>
-            <input type="password" id="id_password" name="password" class="form-control" placeholder="Clave" required>
-        </div>
-        <small class="form-text text-muted">{{ form.non_field_errors }}</small>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Ingrese</button>
-        <p class="text-center mt-5 mb-3 text-muted">Liqueed &copy; 2020</p>
-    </form>
-</div>
+
+      </div>
+
+    </div>
 {% endblock %}
