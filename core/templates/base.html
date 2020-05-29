@@ -44,7 +44,13 @@
         <div id="wrapper">
             {% include 'core/sidebar.html' %}
 
-            {% block content %}{% endblock %}
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    {% include 'core/navbar.html' %}
+
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
         </div>
     </body>
 

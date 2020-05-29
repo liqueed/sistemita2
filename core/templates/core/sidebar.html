@@ -15,18 +15,21 @@
       <i class="fas fa-fw fa-home"></i>
       <span>Inicio</span></a>
   </li>
-
+  <!-- Divider -->
   <hr class="sidebar-divider">
 
+  <!-- Heading -->
   <div class="sidebar-heading">
-    Autorizaci&oacute;n
+    General
   </div>
 
   <li class="nav-item">
-    <a class="nav-link" href="{% url 'logout' %}">
-      <i class="fas fa-fw fa-sign-out-alt"></i>
-      <span>Salir</span></a>
+    <a class="nav-link" href="{% url 'cliente-list' %}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Clientes</span></a>
   </li>
+
+  <hr class="sidebar-divider">
 
 {% comment %}
   <li class="nav-item">
@@ -105,11 +108,11 @@
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
 
+  
   <!-- Sidebar Toggler (Sidebar) -->
   <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
-{% endcomment %}
+  {% endcomment %}
 </ul>
 <!-- End of Sidebar -->
-
