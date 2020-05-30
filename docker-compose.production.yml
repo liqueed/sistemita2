@@ -1,27 +1,43 @@
-version: '3'
+version: '3.7'
 
-services: 
+services:
+  db:
+    image: postgres:11.4-alpine
+    expose:
+      - 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=sistemita
+      - POSTGRES_PASSWORD=!RA7#DbGr4rUNjxb
+      - POSTGRES_DB=sistemita
   app:
     build: .
     volumes: 
       - .:/app
-    networks: 
-      - nginx_network
-    environment:
-     - PYTHONUNBUFFERED=1
-    command:  gunicorn --bind :8000 sistemita.wsgi:application --chdir sistemita
-
+    command: pipenv run gunicorn --workers 3 --bind :8000 sistemita.wsgi:application
+    expose: 
+      - 8000
+    volumes:
+      - ./static:/app/static/
+      - ./media:/app/media/
+    depends_on:
+      - db
+    env_file:
+      - ./.env.production
   nginx:
-    image: nginx:1.13
-    ports:
-      - "8000:80"
+    image: nginx:stable-alpine
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
-    depends_on:  # <-- wait for app to be "ready" before starting this service
+      - ./static:/static/
+      - ./media:/media/
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
       - app
-    networks:  
-      - nginx_network
-
-networks:  
-  nginx_network:
-    driver: bridge
+      
+volumes:
+  postgres_data:
+  static:
+  media:

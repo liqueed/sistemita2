@@ -1,18 +1,27 @@
-version: '3'
+version: '3.7'
 
 services: 
   db:
     image: postgres:11.4-alpine
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=sistemita
+      - POSTGRES_PASSWORD=sistemita
+      - POSTGRES_DB=sistemita
   app:
     build: .
     volumes: 
       - .:/app
     ports:
       - "8000:8000"
-    environment:
-     - PYTHONUNBUFFERED=1
     command:  ./docker_entrypoint.sh
     depends_on:
       - db
+    env_file:
+      - ./.env.dev
+
+volumes:
+  postgres_data:
