@@ -35,6 +35,9 @@ services:
       - 443:443
     volumes:
       - ./config/letsencrypt:/config
+      - ./static:/static/
+      - ./media:/media/
+
     environment:
       - EMAIL=daniel.padula@tutanota.com
       - URL=sistemita.liqueed.org
