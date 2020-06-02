@@ -2,10 +2,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import TemplateView, ListView
 
 from authorization.models import User
+from core.models import Cliente
 
 
-class ClienteListView(LoginRequiredMixin, TemplateView):
-    template_name = 'core/home.html'
+class ClienteListView(LoginRequiredMixin, ListView):
+    model = Cliente
+    queryset = Cliente.objects.all()
 
 
 class UsuarioListView(LoginRequiredMixin, ListView):
