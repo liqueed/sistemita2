@@ -27,18 +27,34 @@ services:
       - db
     env_file:
       - ./.env.production
-  nginx:
-    restart: always
-    image: nginx:stable-alpine
-    volumes:
-      - ./config/nginx/conf.d:/etc/nginx/conf.d
-      - ./static:/static/
-      - ./media:/media/
+  letsencrypt:
+    image: linuxserver/letsencrypt
+    container_name: letsencrypt
     ports:
       - 80:80
       - 443:443
-    depends_on:
-      - app
+    volumes:
+      - ./config/letsencrypt:/config
+    environment:
+      - EMAIL=daniel.padula@tutanota.com
+      - URL=liqueed.org
+      - SUBDOMAINS=sistemita
+      - VALIDATION=http
+      - TZ=America/Argentina/Buenos_Aires
+      - PUID=0
+      - PGID=0
+  # nginx:
+  #   restart: always
+  #   image: nginx:stable-alpine
+  #   volumes:
+  #     - ./config/nginx/conf.d:/etc/nginx/conf.d
+  #     - ./static:/static/
+  #     - ./media:/media/
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   depends_on:
+  #     - app
       
 volumes:
   postgres_data:
