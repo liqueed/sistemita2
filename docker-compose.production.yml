@@ -37,8 +37,7 @@ services:
       - ./config/letsencrypt:/config
     environment:
       - EMAIL=daniel.padula@tutanota.com
-      - URL=liqueed.org
-      - SUBDOMAINS=sistemita
+      - URL=sistemita.liqueed.org
       - VALIDATION=http
       - TZ=America/Argentina/Buenos_Aires
       - PUID=0
