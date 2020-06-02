@@ -36,16 +36,16 @@
                 </tr>
             </tfoot>
             <tbody>
+                {% for object in object_list %}
                 <tr>
-                    {% for object in object_list %}
                     <td>{{ user.pk }}</td>
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.first_name }}</td>
                     <td>{{ user.last_name }}</td>
                     <td></td>
-                    {% endfor %}
                 </tr>
+                {% endfor %}
             </tbody>
             </table>
         </div>

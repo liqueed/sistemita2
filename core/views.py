@@ -11,6 +11,7 @@ class ClienteListView(LoginRequiredMixin, TemplateView):
 class UsuarioListView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'core/user_list.html'
+    queryset = User.objects.all()
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
