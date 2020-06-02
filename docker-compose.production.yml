@@ -34,7 +34,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./config/letsencrypt:/config
+      - ./config/nginx:/config/letsencrypt/nginx/site-confs
     environment:
       - EMAIL=daniel.padula@tutanota.com
       - URL=sistemita.liqueed.org
