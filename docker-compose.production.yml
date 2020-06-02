@@ -40,8 +40,6 @@ services:
       - URL=sistemita.liqueed.org
       - VALIDATION=http
       - TZ=America/Argentina/Buenos_Aires
-      - PUID=0
-      - PGID=0
   # nginx:
   #   restart: always
   #   image: nginx:stable-alpine
