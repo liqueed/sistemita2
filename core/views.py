@@ -13,7 +13,7 @@ class ClienteListView(LoginRequiredMixin, ListView):
 class UsuarioListView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'core/user_list.html'
-    queryset = User.objects.all()
+    queryset = User.objects.all().order_by('username')
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
