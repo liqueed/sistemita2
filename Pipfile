@@ -15,7 +15,7 @@ pydotplus = "*"
 selenium = "*"
 
 [packages]
-django = "==3.0.6"
+django = "==3.0.7"
 pyyaml = "*"
 django-money = "*"
 gunicorn = "*"
