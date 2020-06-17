@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Clientes - Liqueed{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Cliente</h1>
+
+    <p class="lead">{{ object.razon_social}}</p>
+    <p class="lead">{{ object.cuit}}</p>
+    <p class="lead">{{ object.correo}}</p>
+    <p class="lead">{{ object.telefono}}</p>
+    <p class="lead">{{ object.calle}}</p>
+    <p class="lead">{{ object.numero}}</p>
+    <p class="lead">{{ object.piso}}</p>
+    <p class="lead">{{ object.dpto}}</p>
+    <p class="lead">{{ object.provincia}}</p>
+    <p class="lead">{{ object.distrito}}</p>
+    <p class="lead">{{ object.localidad}}</p>
+    <p class="lead">{{ object.get_tipo_envio_factura_display}}</p>
+    <p class="lead">{{ object.link_envio_factura}}</p>
+    <p class="lead">{{ object.correo_envio_factura}}</p>
+
+    <a href="{% url 'cliente-listado' %}" class="btn btn-primary float-right">Volver</a>
+
+</div>
+
+{% endblock %}

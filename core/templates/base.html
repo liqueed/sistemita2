@@ -28,15 +28,6 @@
         <!-- Custom scripts for all pages-->
         <script src="{% static 'js/sb-admin-2.js' %}"></script>
 
-        {% comment %}
-        <!-- Page level plugins -->
-        <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
-
-        <!-- Page level custom scripts -->
-        <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
-        <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
-        {% endcomment %}
-
         {% block header %}{% endblock %}
     </head>
     <body id="page-top">
@@ -50,8 +41,22 @@
 
                     {% block content %}{% endblock %}
                 </div>
+
+                <footer class="sticky-footer bg-white">
+                  <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                      <span>Liqueed 2020</span>
+                    </div>
+                  </div>
+                </footer>
+                <!-- End of Footer -->
             </div>
         </div>
+
+        <script>
+            {% block extra_js %}{% endblock %}
+        </script>
+
     </body>
 
 </html>

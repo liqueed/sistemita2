@@ -1,0 +1,170 @@
+[
+{
+    "model": "core.provincia",
+    "pk": 2,
+    "fields": {
+        "nombre": "Ciudad Aut\u00f3noma de Buenos Aires"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 6,
+    "fields": {
+        "nombre": "Buenos Aires"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 10,
+    "fields": {
+        "nombre": "Catamarca"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 14,
+    "fields": {
+        "nombre": "C\u00f3rdoba"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 18,
+    "fields": {
+        "nombre": "Corrientes"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 22,
+    "fields": {
+        "nombre": "Chaco"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 26,
+    "fields": {
+        "nombre": "Chubut"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 30,
+    "fields": {
+        "nombre": "Entre R\u00edos"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 34,
+    "fields": {
+        "nombre": "Formosa"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 38,
+    "fields": {
+        "nombre": "Jujuy"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 42,
+    "fields": {
+        "nombre": "La Pampa"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 46,
+    "fields": {
+        "nombre": "La Rioja"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 50,
+    "fields": {
+        "nombre": "Mendoza"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 54,
+    "fields": {
+        "nombre": "Misiones"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 58,
+    "fields": {
+        "nombre": "Neuqu\u00e9n"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 62,
+    "fields": {
+        "nombre": "R\u00edo Negro"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 66,
+    "fields": {
+        "nombre": "Salta"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 70,
+    "fields": {
+        "nombre": "San Juan"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 74,
+    "fields": {
+        "nombre": "San Luis"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 78,
+    "fields": {
+        "nombre": "Santa Cruz"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 82,
+    "fields": {
+        "nombre": "Santa Fe"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 86,
+    "fields": {
+        "nombre": "Santiago del Estero"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 90,
+    "fields": {
+        "nombre": "Tucum\u00e1n"
+    }
+},
+{
+    "model": "core.provincia",
+    "pk": 94,
+    "fields": {
+        "nombre": "Tierra del Fuego"
+    }
+}
+]

@@ -1,0 +1,4090 @@
+[
+{
+    "model": "core.distrito",
+    "pk": 2000,
+    "fields": {
+        "nombre": "Ciudad Aut\u00f3noma de Buenos Aires",
+        "provincia": 2
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6007,
+    "fields": {
+        "nombre": "Adolfo Alsina",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6014,
+    "fields": {
+        "nombre": "Adolfo Gonzales Chaves",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6021,
+    "fields": {
+        "nombre": "Alberti",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6028,
+    "fields": {
+        "nombre": "Almirante Brown",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6035,
+    "fields": {
+        "nombre": "Avellaneda",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6042,
+    "fields": {
+        "nombre": "Ayacucho",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6049,
+    "fields": {
+        "nombre": "Azul",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6056,
+    "fields": {
+        "nombre": "Bah\u00eda Blanca",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6063,
+    "fields": {
+        "nombre": "Balcarce",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6070,
+    "fields": {
+        "nombre": "Baradero",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6077,
+    "fields": {
+        "nombre": "Arrecifes",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6084,
+    "fields": {
+        "nombre": "Benito Ju\u00e1rez",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6091,
+    "fields": {
+        "nombre": "Berazategui",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6098,
+    "fields": {
+        "nombre": "Berisso",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6105,
+    "fields": {
+        "nombre": "Bol\u00edvar",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6112,
+    "fields": {
+        "nombre": "Bragado",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6119,
+    "fields": {
+        "nombre": "Brandsen",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6126,
+    "fields": {
+        "nombre": "Campana",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6134,
+    "fields": {
+        "nombre": "Ca\u00f1uelas",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6140,
+    "fields": {
+        "nombre": "Capit\u00e1n Sarmiento",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6147,
+    "fields": {
+        "nombre": "Carlos Casares",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6154,
+    "fields": {
+        "nombre": "Carlos Tejedor",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6161,
+    "fields": {
+        "nombre": "Carmen de Areco",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6168,
+    "fields": {
+        "nombre": "Castelli",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6175,
+    "fields": {
+        "nombre": "Col\u00f3n",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6182,
+    "fields": {
+        "nombre": "Coronel de Marina Leonardo Rosales",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6189,
+    "fields": {
+        "nombre": "Coronel Dorrego",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6196,
+    "fields": {
+        "nombre": "Coronel Pringles",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6203,
+    "fields": {
+        "nombre": "Coronel Su\u00e1rez",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6210,
+    "fields": {
+        "nombre": "Chacabuco",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6217,
+    "fields": {
+        "nombre": "Chascom\u00fas",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6224,
+    "fields": {
+        "nombre": "Chivilcoy",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6231,
+    "fields": {
+        "nombre": "Daireaux",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6238,
+    "fields": {
+        "nombre": "Dolores",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6245,
+    "fields": {
+        "nombre": "Ensenada",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6252,
+    "fields": {
+        "nombre": "Escobar",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6260,
+    "fields": {
+        "nombre": "Esteban Echeverr\u00eda",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6266,
+    "fields": {
+        "nombre": "Exaltaci\u00f3n de la Cruz",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6270,
+    "fields": {
+        "nombre": "Ezeiza",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6274,
+    "fields": {
+        "nombre": "Florencio Varela",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6277,
+    "fields": {
+        "nombre": "Florentino Ameghino",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6280,
+    "fields": {
+        "nombre": "General Alvarado",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6287,
+    "fields": {
+        "nombre": "General Alvear",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6294,
+    "fields": {
+        "nombre": "General Arenales",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6301,
+    "fields": {
+        "nombre": "General Belgrano",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6308,
+    "fields": {
+        "nombre": "General Gucoreo",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6315,
+    "fields": {
+        "nombre": "General Juan Madariaga",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6322,
+    "fields": {
+        "nombre": "General La Madrcore",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6329,
+    "fields": {
+        "nombre": "General Las Heras",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6336,
+    "fields": {
+        "nombre": "General Lavalle",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6343,
+    "fields": {
+        "nombre": "General Paz",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6351,
+    "fields": {
+        "nombre": "General Pinto",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6357,
+    "fields": {
+        "nombre": "General Pueyrred\u00f3n",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6364,
+    "fields": {
+        "nombre": "General Rodr\u00edguez",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6371,
+    "fields": {
+        "nombre": "General San Mart\u00edn",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6385,
+    "fields": {
+        "nombre": "General Viamonte",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6392,
+    "fields": {
+        "nombre": "General Villegas",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6399,
+    "fields": {
+        "nombre": "Guamin\u00ed",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6406,
+    "fields": {
+        "nombre": "Hip\u00f3lito Yrigoyen",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6408,
+    "fields": {
+        "nombre": "Hurlingham",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6410,
+    "fields": {
+        "nombre": "Ituzaing\u00f3",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6412,
+    "fields": {
+        "nombre": "Jos\u00e9 C. Paz",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6413,
+    "fields": {
+        "nombre": "Jun\u00edn",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6420,
+    "fields": {
+        "nombre": "La Costa",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6427,
+    "fields": {
+        "nombre": "La Matanza",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6434,
+    "fields": {
+        "nombre": "Lan\u00fas",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6441,
+    "fields": {
+        "nombre": "La Plata",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6448,
+    "fields": {
+        "nombre": "Laprcorea",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6455,
+    "fields": {
+        "nombre": "Las Flores",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6462,
+    "fields": {
+        "nombre": "Leandro N. Alem",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6469,
+    "fields": {
+        "nombre": "Lincoln",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6476,
+    "fields": {
+        "nombre": "Lober\u00eda",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6483,
+    "fields": {
+        "nombre": "Lobos",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6490,
+    "fields": {
+        "nombre": "Lomas de Zamora",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6497,
+    "fields": {
+        "nombre": "Luj\u00e1n",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6505,
+    "fields": {
+        "nombre": "Magdalena",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6511,
+    "fields": {
+        "nombre": "Maip\u00fa",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6515,
+    "fields": {
+        "nombre": "Malvinas Argentinas",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6518,
+    "fields": {
+        "nombre": "Mar Chiquita",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6525,
+    "fields": {
+        "nombre": "Marcos Paz",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6532,
+    "fields": {
+        "nombre": "Mercedes",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6539,
+    "fields": {
+        "nombre": "Merlo",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6547,
+    "fields": {
+        "nombre": "Monte",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6553,
+    "fields": {
+        "nombre": "Monte Hermoso",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6560,
+    "fields": {
+        "nombre": "Moreno",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6568,
+    "fields": {
+        "nombre": "Mor\u00f3n",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6574,
+    "fields": {
+        "nombre": "Navarro",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6581,
+    "fields": {
+        "nombre": "Necochea",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6588,
+    "fields": {
+        "nombre": "9 de Julio",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6595,
+    "fields": {
+        "nombre": "Olavarr\u00eda",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6602,
+    "fields": {
+        "nombre": "Patagones",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6609,
+    "fields": {
+        "nombre": "Pehuaj\u00f3",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6616,
+    "fields": {
+        "nombre": "Pellegrini",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6623,
+    "fields": {
+        "nombre": "Pergamino",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6630,
+    "fields": {
+        "nombre": "Pila",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6638,
+    "fields": {
+        "nombre": "Pilar",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6644,
+    "fields": {
+        "nombre": "Pinamar",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6648,
+    "fields": {
+        "nombre": "Prescoreente Per\u00f3n",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6651,
+    "fields": {
+        "nombre": "Pu\u00e1n",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6655,
+    "fields": {
+        "nombre": "Punta Indio",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6658,
+    "fields": {
+        "nombre": "Quilmes",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6665,
+    "fields": {
+        "nombre": "Ramallo",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6672,
+    "fields": {
+        "nombre": "Rauch",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6679,
+    "fields": {
+        "nombre": "Rivadavia",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6686,
+    "fields": {
+        "nombre": "Rojas",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6693,
+    "fields": {
+        "nombre": "Roque P\u00e9rez",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6700,
+    "fields": {
+        "nombre": "Saavedra",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6707,
+    "fields": {
+        "nombre": "Saladillo",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6714,
+    "fields": {
+        "nombre": "Salto",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6721,
+    "fields": {
+        "nombre": "Salliquel\u00f3",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6728,
+    "fields": {
+        "nombre": "San Andr\u00e9s de Giles",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6735,
+    "fields": {
+        "nombre": "San Antonio de Areco",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6742,
+    "fields": {
+        "nombre": "San Cayetano",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6749,
+    "fields": {
+        "nombre": "San Fernando",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6756,
+    "fields": {
+        "nombre": "San Iscorero",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6760,
+    "fields": {
+        "nombre": "San Miguel",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6763,
+    "fields": {
+        "nombre": "San Nicol\u00e1s",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6770,
+    "fields": {
+        "nombre": "San Pedro",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6778,
+    "fields": {
+        "nombre": "San Vicente",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6784,
+    "fields": {
+        "nombre": "Suipacha",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6791,
+    "fields": {
+        "nombre": "Tandil",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6798,
+    "fields": {
+        "nombre": "Tapalqu\u00e9",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6805,
+    "fields": {
+        "nombre": "Tigre",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6812,
+    "fields": {
+        "nombre": "Tordillo",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6819,
+    "fields": {
+        "nombre": "Tornquist",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6826,
+    "fields": {
+        "nombre": "Trenque Lauquen",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6833,
+    "fields": {
+        "nombre": "Tres Arroyos",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6840,
+    "fields": {
+        "nombre": "Tres de Febrero",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6847,
+    "fields": {
+        "nombre": "Tres Lomas",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6854,
+    "fields": {
+        "nombre": "25 de Mayo",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6861,
+    "fields": {
+        "nombre": "Vicente L\u00f3pez",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6868,
+    "fields": {
+        "nombre": "Villa Gesell",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6875,
+    "fields": {
+        "nombre": "Villarino",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 6882,
+    "fields": {
+        "nombre": "Z\u00e1rate",
+        "provincia": 6
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10007,
+    "fields": {
+        "nombre": "Ambato",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10014,
+    "fields": {
+        "nombre": "Ancasti",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10021,
+    "fields": {
+        "nombre": "Andalgal\u00e1",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10028,
+    "fields": {
+        "nombre": "Antofagasta de la Sierra",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10035,
+    "fields": {
+        "nombre": "Bel\u00e9n",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10042,
+    "fields": {
+        "nombre": "Capay\u00e1n",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10049,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10056,
+    "fields": {
+        "nombre": "El Alto",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10063,
+    "fields": {
+        "nombre": "Fray Mamerto Esqui\u00fa",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10070,
+    "fields": {
+        "nombre": "La Paz",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10077,
+    "fields": {
+        "nombre": "Pacl\u00edn",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10084,
+    "fields": {
+        "nombre": "Pom\u00e1n",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10091,
+    "fields": {
+        "nombre": "Santa Mar\u00eda",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10098,
+    "fields": {
+        "nombre": "Santa Rosa",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10105,
+    "fields": {
+        "nombre": "Tinogasta",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 10112,
+    "fields": {
+        "nombre": "Valle Viejo",
+        "provincia": 10
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14007,
+    "fields": {
+        "nombre": "Calamuchita",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14014,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14021,
+    "fields": {
+        "nombre": "Col\u00f3n",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14028,
+    "fields": {
+        "nombre": "Cruz del Eje",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14035,
+    "fields": {
+        "nombre": "General Roca",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14042,
+    "fields": {
+        "nombre": "General San Mart\u00edn",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14049,
+    "fields": {
+        "nombre": "Ischil\u00edn",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14056,
+    "fields": {
+        "nombre": "Ju\u00e1rez Celman",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14063,
+    "fields": {
+        "nombre": "Marcos Ju\u00e1rez",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14070,
+    "fields": {
+        "nombre": "Minas",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14077,
+    "fields": {
+        "nombre": "Pocho",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14084,
+    "fields": {
+        "nombre": "Prescoreente Roque S\u00e1enz Pe\u00f1a",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14091,
+    "fields": {
+        "nombre": "Punilla",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14098,
+    "fields": {
+        "nombre": "R\u00edo Cuarto",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14105,
+    "fields": {
+        "nombre": "R\u00edo Primero",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14112,
+    "fields": {
+        "nombre": "R\u00edo Seco",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14119,
+    "fields": {
+        "nombre": "R\u00edo Segundo",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14126,
+    "fields": {
+        "nombre": "San Alberto",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14133,
+    "fields": {
+        "nombre": "San Javier",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14140,
+    "fields": {
+        "nombre": "San Justo",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14147,
+    "fields": {
+        "nombre": "Santa Mar\u00eda",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14154,
+    "fields": {
+        "nombre": "Sobremonte",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14161,
+    "fields": {
+        "nombre": "Tercero Arriba",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14168,
+    "fields": {
+        "nombre": "Totoral",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14175,
+    "fields": {
+        "nombre": "Tulumba",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 14182,
+    "fields": {
+        "nombre": "Uni\u00f3n",
+        "provincia": 14
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18007,
+    "fields": {
+        "nombre": "Bella Vista",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18014,
+    "fields": {
+        "nombre": "Ber\u00f3n de Astrada",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18021,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18028,
+    "fields": {
+        "nombre": "Concepci\u00f3n",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18035,
+    "fields": {
+        "nombre": "Curuz\u00fa Cuati\u00e1",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18042,
+    "fields": {
+        "nombre": "Empedrado",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18049,
+    "fields": {
+        "nombre": "Esquina",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18056,
+    "fields": {
+        "nombre": "General Alvear",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18063,
+    "fields": {
+        "nombre": "General Paz",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18070,
+    "fields": {
+        "nombre": "Goya",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18077,
+    "fields": {
+        "nombre": "Itat\u00ed",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18084,
+    "fields": {
+        "nombre": "Ituzaing\u00f3",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18091,
+    "fields": {
+        "nombre": "Lavalle",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18098,
+    "fields": {
+        "nombre": "Mburucuy\u00e1",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18105,
+    "fields": {
+        "nombre": "Mercedes",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18112,
+    "fields": {
+        "nombre": "Monte Caseros",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18119,
+    "fields": {
+        "nombre": "Paso de los Libres",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18126,
+    "fields": {
+        "nombre": "Saladas",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18133,
+    "fields": {
+        "nombre": "San Cosme",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18140,
+    "fields": {
+        "nombre": "San Luis del Palmar",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18147,
+    "fields": {
+        "nombre": "San Mart\u00edn",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18154,
+    "fields": {
+        "nombre": "San Miguel",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18161,
+    "fields": {
+        "nombre": "San Roque",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18168,
+    "fields": {
+        "nombre": "Santo Tom\u00e9",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 18175,
+    "fields": {
+        "nombre": "Sauce",
+        "provincia": 18
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22007,
+    "fields": {
+        "nombre": "Almirante Brown",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22014,
+    "fields": {
+        "nombre": "Bermejo",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22021,
+    "fields": {
+        "nombre": "Comandante Fern\u00e1ndez",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22028,
+    "fields": {
+        "nombre": "Chacabuco",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22036,
+    "fields": {
+        "nombre": "12 de Octubre",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22039,
+    "fields": {
+        "nombre": "2 de Abril",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22043,
+    "fields": {
+        "nombre": "Fray Justo Santa Mar\u00eda de Oro",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22049,
+    "fields": {
+        "nombre": "General Belgrano",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22056,
+    "fields": {
+        "nombre": "General Donovan",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22063,
+    "fields": {
+        "nombre": "General G\u00fcemes",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22070,
+    "fields": {
+        "nombre": "Independencia",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22077,
+    "fields": {
+        "nombre": "Libertad",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22084,
+    "fields": {
+        "nombre": "Libertador General San Mart\u00edn",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22091,
+    "fields": {
+        "nombre": "Maip\u00fa",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22098,
+    "fields": {
+        "nombre": "Mayor Luis J. Fontana",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22105,
+    "fields": {
+        "nombre": "9 de Julio",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22112,
+    "fields": {
+        "nombre": "O'Higgins",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22119,
+    "fields": {
+        "nombre": "Prescoreencia de la Plaza",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22126,
+    "fields": {
+        "nombre": "1\u00ba de Mayo",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22133,
+    "fields": {
+        "nombre": "Quitilipi",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22140,
+    "fields": {
+        "nombre": "San Fernando",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22147,
+    "fields": {
+        "nombre": "San Lorenzo",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22154,
+    "fields": {
+        "nombre": "Sargento Cabral",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22161,
+    "fields": {
+        "nombre": "Tapenag\u00e1",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 22168,
+    "fields": {
+        "nombre": "25 de Mayo",
+        "provincia": 22
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26007,
+    "fields": {
+        "nombre": "Biedma",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26014,
+    "fields": {
+        "nombre": "Cushamen",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26021,
+    "fields": {
+        "nombre": "Escalante",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26028,
+    "fields": {
+        "nombre": "Florentino Ameghino",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26035,
+    "fields": {
+        "nombre": "Futaleuf\u00fa",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26042,
+    "fields": {
+        "nombre": "Gaiman",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26049,
+    "fields": {
+        "nombre": "Gastre",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26056,
+    "fields": {
+        "nombre": "Langui\u00f1eo",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26063,
+    "fields": {
+        "nombre": "M\u00e1rtires",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26070,
+    "fields": {
+        "nombre": "Paso de Indios",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26077,
+    "fields": {
+        "nombre": "Rawson",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26084,
+    "fields": {
+        "nombre": "R\u00edo Senguer",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26091,
+    "fields": {
+        "nombre": "Sarmiento",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26098,
+    "fields": {
+        "nombre": "Tehuelches",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 26105,
+    "fields": {
+        "nombre": "Telsen",
+        "provincia": 26
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30008,
+    "fields": {
+        "nombre": "Col\u00f3n",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30015,
+    "fields": {
+        "nombre": "Concordia",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30021,
+    "fields": {
+        "nombre": "Diamante",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30028,
+    "fields": {
+        "nombre": "Federaci\u00f3n",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30035,
+    "fields": {
+        "nombre": "Federal",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30042,
+    "fields": {
+        "nombre": "Feliciano",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30049,
+    "fields": {
+        "nombre": "Gualeguay",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30056,
+    "fields": {
+        "nombre": "Gualeguaych\u00fa",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30063,
+    "fields": {
+        "nombre": "Islas del Ibicuy",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30070,
+    "fields": {
+        "nombre": "La Paz",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30077,
+    "fields": {
+        "nombre": "Nogoy\u00e1",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30084,
+    "fields": {
+        "nombre": "Paran\u00e1",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30088,
+    "fields": {
+        "nombre": "San Salvador",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30091,
+    "fields": {
+        "nombre": "Tala",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30098,
+    "fields": {
+        "nombre": "Uruguay",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30105,
+    "fields": {
+        "nombre": "Victoria",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 30113,
+    "fields": {
+        "nombre": "Villaguay",
+        "provincia": 30
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34007,
+    "fields": {
+        "nombre": "Bermejo",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34014,
+    "fields": {
+        "nombre": "Formosa",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34021,
+    "fields": {
+        "nombre": "Laishi",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34028,
+    "fields": {
+        "nombre": "Matacos",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34035,
+    "fields": {
+        "nombre": "Pati\u00f1o",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34042,
+    "fields": {
+        "nombre": "Pilag\u00e1s",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34049,
+    "fields": {
+        "nombre": "Pilcomayo",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34056,
+    "fields": {
+        "nombre": "Piran\u00e9",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 34063,
+    "fields": {
+        "nombre": "Ram\u00f3n Lista",
+        "provincia": 34
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38007,
+    "fields": {
+        "nombre": "Cochinoca",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38014,
+    "fields": {
+        "nombre": "El Carmen",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38021,
+    "fields": {
+        "nombre": "Dr. Manuel Belgrano",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38028,
+    "fields": {
+        "nombre": "Humahuaca",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38035,
+    "fields": {
+        "nombre": "Ledesma",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38042,
+    "fields": {
+        "nombre": "Palpal\u00e1",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38049,
+    "fields": {
+        "nombre": "Rinconada",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38056,
+    "fields": {
+        "nombre": "San Antonio",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38063,
+    "fields": {
+        "nombre": "San Pedro",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38070,
+    "fields": {
+        "nombre": "Santa B\u00e1rbara",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38077,
+    "fields": {
+        "nombre": "Santa Catalina",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38084,
+    "fields": {
+        "nombre": "Susques",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38094,
+    "fields": {
+        "nombre": "Tilcara",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38098,
+    "fields": {
+        "nombre": "Tumbaya",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38105,
+    "fields": {
+        "nombre": "Valle Grande",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 38112,
+    "fields": {
+        "nombre": "Yavi",
+        "provincia": 38
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42007,
+    "fields": {
+        "nombre": "Atreuc\u00f3",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42014,
+    "fields": {
+        "nombre": "Caleu Caleu",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42021,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42028,
+    "fields": {
+        "nombre": "Catril\u00f3",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42035,
+    "fields": {
+        "nombre": "Conhelo",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42042,
+    "fields": {
+        "nombre": "Curac\u00f3",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42049,
+    "fields": {
+        "nombre": "Chalileo",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42056,
+    "fields": {
+        "nombre": "Chapaleuf\u00fa",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42063,
+    "fields": {
+        "nombre": "Chical Co",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42070,
+    "fields": {
+        "nombre": "Guatrach\u00e9",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42077,
+    "fields": {
+        "nombre": "Hucal",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42084,
+    "fields": {
+        "nombre": "Lihuel Calel",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42091,
+    "fields": {
+        "nombre": "Limay Mahucorea",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42098,
+    "fields": {
+        "nombre": "Loventu\u00e9",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42105,
+    "fields": {
+        "nombre": "Marac\u00f3",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42112,
+    "fields": {
+        "nombre": "Puel\u00e9n",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42119,
+    "fields": {
+        "nombre": "Quem\u00fa Quem\u00fa",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42126,
+    "fields": {
+        "nombre": "Rancul",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42133,
+    "fields": {
+        "nombre": "Realic\u00f3",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42140,
+    "fields": {
+        "nombre": "Toay",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42147,
+    "fields": {
+        "nombre": "Trenel",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 42154,
+    "fields": {
+        "nombre": "Utrac\u00e1n",
+        "provincia": 42
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46007,
+    "fields": {
+        "nombre": "Arauco",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46014,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46021,
+    "fields": {
+        "nombre": "Castro Barros",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46028,
+    "fields": {
+        "nombre": "Coronel Felipe Varela",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46035,
+    "fields": {
+        "nombre": "Chamical",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46042,
+    "fields": {
+        "nombre": "Chilecito",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46049,
+    "fields": {
+        "nombre": "Famatina",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46056,
+    "fields": {
+        "nombre": "General Angel V. Pe\u00f1aloza",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46063,
+    "fields": {
+        "nombre": "General Belgrano",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46070,
+    "fields": {
+        "nombre": "General Juan F. Quiroga",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46077,
+    "fields": {
+        "nombre": "General Lamadrcore",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46084,
+    "fields": {
+        "nombre": "General Ocampo",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46091,
+    "fields": {
+        "nombre": "General San Mart\u00edn",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46098,
+    "fields": {
+        "nombre": "Vinchina",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46105,
+    "fields": {
+        "nombre": "Independencia",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46112,
+    "fields": {
+        "nombre": "Rosario Vera Pe\u00f1aloza",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46119,
+    "fields": {
+        "nombre": "San Blas de los Sauces",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 46126,
+    "fields": {
+        "nombre": "Sanagasta",
+        "provincia": 46
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50007,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50014,
+    "fields": {
+        "nombre": "General Alvear",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50021,
+    "fields": {
+        "nombre": "Godoy Cruz",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50028,
+    "fields": {
+        "nombre": "Guaymall\u00e9n",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50035,
+    "fields": {
+        "nombre": "Jun\u00edn",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50042,
+    "fields": {
+        "nombre": "La Paz",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50049,
+    "fields": {
+        "nombre": "Las Heras",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50056,
+    "fields": {
+        "nombre": "Lavalle",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50063,
+    "fields": {
+        "nombre": "Luj\u00e1n de Cuyo",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50070,
+    "fields": {
+        "nombre": "Maip\u00fa",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50077,
+    "fields": {
+        "nombre": "Malarg\u00fce",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50084,
+    "fields": {
+        "nombre": "Rivadavia",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50091,
+    "fields": {
+        "nombre": "San Carlos",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50098,
+    "fields": {
+        "nombre": "San Mart\u00edn",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50105,
+    "fields": {
+        "nombre": "San Rafael",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50112,
+    "fields": {
+        "nombre": "Santa Rosa",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50119,
+    "fields": {
+        "nombre": "Tunuy\u00e1n",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 50126,
+    "fields": {
+        "nombre": "Tupungato",
+        "provincia": 50
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54007,
+    "fields": {
+        "nombre": "Ap\u00f3stoles",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54014,
+    "fields": {
+        "nombre": "Caingu\u00e1s",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54021,
+    "fields": {
+        "nombre": "Candelaria",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54028,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54035,
+    "fields": {
+        "nombre": "Concepci\u00f3n",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54042,
+    "fields": {
+        "nombre": "Eldorado",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54049,
+    "fields": {
+        "nombre": "General Manuel Belgrano",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54056,
+    "fields": {
+        "nombre": "Guaran\u00ed",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54063,
+    "fields": {
+        "nombre": "Iguaz\u00fa",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54070,
+    "fields": {
+        "nombre": "Leandro N. Alem",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54077,
+    "fields": {
+        "nombre": "Libertador General San Mart\u00edn",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54084,
+    "fields": {
+        "nombre": "Montecarlo",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54091,
+    "fields": {
+        "nombre": "Ober\u00e1",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54098,
+    "fields": {
+        "nombre": "San Ignacio",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54105,
+    "fields": {
+        "nombre": "San Javier",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54112,
+    "fields": {
+        "nombre": "San Pedro",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 54119,
+    "fields": {
+        "nombre": "25 de Mayo",
+        "provincia": 54
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58007,
+    "fields": {
+        "nombre": "Alumin\u00e9",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58014,
+    "fields": {
+        "nombre": "A\u00f1elo",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58021,
+    "fields": {
+        "nombre": "Cat\u00e1n Lil",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58028,
+    "fields": {
+        "nombre": "Coll\u00f3n Cur\u00e1",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58035,
+    "fields": {
+        "nombre": "Confluencia",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58042,
+    "fields": {
+        "nombre": "Chos Malal",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58049,
+    "fields": {
+        "nombre": "Huiliches",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58056,
+    "fields": {
+        "nombre": "L\u00e1car",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58063,
+    "fields": {
+        "nombre": "Loncopu\u00e9",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58070,
+    "fields": {
+        "nombre": "Los Lagos",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58077,
+    "fields": {
+        "nombre": "Minas",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58084,
+    "fields": {
+        "nombre": "\u00d1orqu\u00edn",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58091,
+    "fields": {
+        "nombre": "Pehuenches",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58098,
+    "fields": {
+        "nombre": "Pic\u00fan Leuf\u00fa",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58105,
+    "fields": {
+        "nombre": "Picunches",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 58112,
+    "fields": {
+        "nombre": "Zapala",
+        "provincia": 58
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62007,
+    "fields": {
+        "nombre": "Adolfo Alsina",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62014,
+    "fields": {
+        "nombre": "Avellaneda",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62021,
+    "fields": {
+        "nombre": "Bariloche",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62028,
+    "fields": {
+        "nombre": "Conesa",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62035,
+    "fields": {
+        "nombre": "El Cuy",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62042,
+    "fields": {
+        "nombre": "General Roca",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62049,
+    "fields": {
+        "nombre": "9 de julio",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62056,
+    "fields": {
+        "nombre": "\u00d1orquinco",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62063,
+    "fields": {
+        "nombre": "Pichi Mahucorea",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62070,
+    "fields": {
+        "nombre": "Pilcaniyeu",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62077,
+    "fields": {
+        "nombre": "San Antonio",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62084,
+    "fields": {
+        "nombre": "Valcheta",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 62091,
+    "fields": {
+        "nombre": "25 de Mayo",
+        "provincia": 62
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66007,
+    "fields": {
+        "nombre": "Anta",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66014,
+    "fields": {
+        "nombre": "Cachi",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66021,
+    "fields": {
+        "nombre": "Cafayate",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66028,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66035,
+    "fields": {
+        "nombre": "Cerrillos",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66042,
+    "fields": {
+        "nombre": "Chicoana",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66049,
+    "fields": {
+        "nombre": "General G\u00fcemes",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66056,
+    "fields": {
+        "nombre": "General Jos\u00e9 de San Mart\u00edn",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66063,
+    "fields": {
+        "nombre": "Guachipas",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66070,
+    "fields": {
+        "nombre": "Iruya",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66077,
+    "fields": {
+        "nombre": "La Caldera",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66084,
+    "fields": {
+        "nombre": "La Candelaria",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66091,
+    "fields": {
+        "nombre": "La Poma",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66098,
+    "fields": {
+        "nombre": "La Vi\u00f1a",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66105,
+    "fields": {
+        "nombre": "Los Andes",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66112,
+    "fields": {
+        "nombre": "Met\u00e1n",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66119,
+    "fields": {
+        "nombre": "Molinos",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66126,
+    "fields": {
+        "nombre": "Or\u00e1n",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66133,
+    "fields": {
+        "nombre": "Rivadavia",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66140,
+    "fields": {
+        "nombre": "Rosario de la Frontera",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66147,
+    "fields": {
+        "nombre": "Rosario de Lerma",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66154,
+    "fields": {
+        "nombre": "San Carlos",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 66161,
+    "fields": {
+        "nombre": "Santa Victoria",
+        "provincia": 66
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70007,
+    "fields": {
+        "nombre": "Albard\u00f3n",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70014,
+    "fields": {
+        "nombre": "Angaco",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70021,
+    "fields": {
+        "nombre": "Calingasta",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70028,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70035,
+    "fields": {
+        "nombre": "Caucete",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70042,
+    "fields": {
+        "nombre": "Chimbas",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70049,
+    "fields": {
+        "nombre": "Iglesia",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70056,
+    "fields": {
+        "nombre": "J\u00e1chal",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70063,
+    "fields": {
+        "nombre": "9 de Julio",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70070,
+    "fields": {
+        "nombre": "Pocito",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70077,
+    "fields": {
+        "nombre": "Rawson",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70084,
+    "fields": {
+        "nombre": "Rivadavia",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70091,
+    "fields": {
+        "nombre": "San Mart\u00edn",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70098,
+    "fields": {
+        "nombre": "Santa Luc\u00eda",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70105,
+    "fields": {
+        "nombre": "Sarmiento",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70112,
+    "fields": {
+        "nombre": "Ullum",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70119,
+    "fields": {
+        "nombre": "Valle F\u00e9rtil",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70126,
+    "fields": {
+        "nombre": "25 de Mayo",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 70133,
+    "fields": {
+        "nombre": "Zonda",
+        "provincia": 70
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74007,
+    "fields": {
+        "nombre": "Ayacucho",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74014,
+    "fields": {
+        "nombre": "Belgrano",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74021,
+    "fields": {
+        "nombre": "Coronel Pringles",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74028,
+    "fields": {
+        "nombre": "Chacabuco",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74035,
+    "fields": {
+        "nombre": "General Pedernera",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74042,
+    "fields": {
+        "nombre": "Gobernador Dupuy",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74049,
+    "fields": {
+        "nombre": "Jun\u00edn",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74056,
+    "fields": {
+        "nombre": "La Capital",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 74063,
+    "fields": {
+        "nombre": "Libertador General San Mart\u00edn",
+        "provincia": 74
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 78007,
+    "fields": {
+        "nombre": "Corpen Aike",
+        "provincia": 78
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 78014,
+    "fields": {
+        "nombre": "Deseado",
+        "provincia": 78
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 78021,
+    "fields": {
+        "nombre": "G\u00fcer Aike",
+        "provincia": 78
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 78028,
+    "fields": {
+        "nombre": "Lago Argentino",
+        "provincia": 78
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 78035,
+    "fields": {
+        "nombre": "Lago Buenos Aires",
+        "provincia": 78
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 78042,
+    "fields": {
+        "nombre": "Magallanes",
+        "provincia": 78
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 78049,
+    "fields": {
+        "nombre": "R\u00edo Chico",
+        "provincia": 78
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82007,
+    "fields": {
+        "nombre": "Belgrano",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82014,
+    "fields": {
+        "nombre": "Caseros",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82021,
+    "fields": {
+        "nombre": "Castellanos",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82028,
+    "fields": {
+        "nombre": "Constituci\u00f3n",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82035,
+    "fields": {
+        "nombre": "Garay",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82042,
+    "fields": {
+        "nombre": "General L\u00f3pez",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82049,
+    "fields": {
+        "nombre": "General Obligado",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82056,
+    "fields": {
+        "nombre": "Iriondo",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82063,
+    "fields": {
+        "nombre": "La Capital",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82070,
+    "fields": {
+        "nombre": "Las Colonias",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82077,
+    "fields": {
+        "nombre": "9 de Julio",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82084,
+    "fields": {
+        "nombre": "Rosario",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82091,
+    "fields": {
+        "nombre": "San Crist\u00f3bal",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82098,
+    "fields": {
+        "nombre": "San Javier",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82105,
+    "fields": {
+        "nombre": "San Jer\u00f3nimo",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82112,
+    "fields": {
+        "nombre": "San Justo",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82119,
+    "fields": {
+        "nombre": "San Lorenzo",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82126,
+    "fields": {
+        "nombre": "San Mart\u00edn",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 82133,
+    "fields": {
+        "nombre": "Vera",
+        "provincia": 82
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86007,
+    "fields": {
+        "nombre": "Aguirre",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86014,
+    "fields": {
+        "nombre": "Alberdi",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86021,
+    "fields": {
+        "nombre": "Atamisqui",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86028,
+    "fields": {
+        "nombre": "Avellaneda",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86035,
+    "fields": {
+        "nombre": "Banda",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86042,
+    "fields": {
+        "nombre": "Belgrano",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86049,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86056,
+    "fields": {
+        "nombre": "Copo",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86063,
+    "fields": {
+        "nombre": "Choya",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86070,
+    "fields": {
+        "nombre": "Figueroa",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86077,
+    "fields": {
+        "nombre": "General Taboada",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86084,
+    "fields": {
+        "nombre": "Guasay\u00e1n",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86091,
+    "fields": {
+        "nombre": "Jim\u00e9nez",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86098,
+    "fields": {
+        "nombre": "Juan F. Ibarra",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86105,
+    "fields": {
+        "nombre": "Loreto",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86112,
+    "fields": {
+        "nombre": "Mitre",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86119,
+    "fields": {
+        "nombre": "Moreno",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86126,
+    "fields": {
+        "nombre": "Ojo de Agua",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86133,
+    "fields": {
+        "nombre": "Pellegrini",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86140,
+    "fields": {
+        "nombre": "Quebrachos",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86147,
+    "fields": {
+        "nombre": "R\u00edo Hondo",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86154,
+    "fields": {
+        "nombre": "Rivadavia",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86161,
+    "fields": {
+        "nombre": "Robles",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86168,
+    "fields": {
+        "nombre": "Salavina",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86175,
+    "fields": {
+        "nombre": "San Mart\u00edn",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86182,
+    "fields": {
+        "nombre": "Sarmiento",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 86189,
+    "fields": {
+        "nombre": "Sil\u00edpica",
+        "provincia": 86
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90007,
+    "fields": {
+        "nombre": "Burruyac\u00fa",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90014,
+    "fields": {
+        "nombre": "Cruz Alta",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90021,
+    "fields": {
+        "nombre": "Chicligasta",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90028,
+    "fields": {
+        "nombre": "Famaill\u00e1",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90035,
+    "fields": {
+        "nombre": "Graneros",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90042,
+    "fields": {
+        "nombre": "Juan B. Alberdi",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90049,
+    "fields": {
+        "nombre": "La Cocha",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90056,
+    "fields": {
+        "nombre": "Leales",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90063,
+    "fields": {
+        "nombre": "Lules",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90070,
+    "fields": {
+        "nombre": "Monteros",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90077,
+    "fields": {
+        "nombre": "R\u00edo Chico",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90084,
+    "fields": {
+        "nombre": "Capital",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90091,
+    "fields": {
+        "nombre": "Simoca",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90098,
+    "fields": {
+        "nombre": "Taf\u00ed del Valle",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90105,
+    "fields": {
+        "nombre": "Taf\u00ed Viejo",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90112,
+    "fields": {
+        "nombre": "Trancas",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 90119,
+    "fields": {
+        "nombre": "Yerba Buena",
+        "provincia": 90
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 94007,
+    "fields": {
+        "nombre": "R\u00edo Grande",
+        "provincia": 94
+    }
+},
+{
+    "model": "core.distrito",
+    "pk": 94014,
+    "fields": {
+        "nombre": "Ushuaia",
+        "provincia": 94
+    }
+}
+]

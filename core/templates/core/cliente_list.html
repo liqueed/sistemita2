@@ -12,22 +12,42 @@
         <div class="card-header py-3"></div>
         <div class="card-body">
             <div class="table-responsive">
-                {% include 'components/search_form.html' %}
-    
-                <table class="table table-bordered" width="100%" cellspacing="0">
+                <div class="row float-right">
+                    {% include 'components/search_form.html' %}
+
+                      <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                        <a class="btn btn-primary" role="button" href="{% url 'cliente-agregar' %}">Agregar</a>
+                      </div>
+
+                </div>
+                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                         <th>ID</th>
                         <th>Nombre</th>
+                        <th>CUIT</th>
+                        <th>Correo</th>
                         <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for object in object_list %}
                         <tr>
-                            <td>{{ object.pk }}</td>
-                            <td>{{ object.nombre }}</td>
-                            <td></td>
+                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.pk }}</td>
+                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.razon_social }}</td>
+                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.cuit }}</td>
+                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.correo }}</td>
+                            <td>
+                                <div class="dropdown no-arrow">
+                                  <button class="btn btn-secondary dropdown-toggle btn-circle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-wrench"></i>
+                                  </button>
+                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="{% url 'cliente-modificar' object.pk %}">Editar</a>
+                                    <a class="dropdown-item" href="{% url 'cliente-eliminar' object.pk %}">Eliminar</a>
+                                  </div>
+                                </div>
+                            </td>
                         </tr>
                         {% empty %}
                         <tr>
@@ -40,5 +60,5 @@
         </div>
     </div>
 </div>
-  
+
 {% endblock %}

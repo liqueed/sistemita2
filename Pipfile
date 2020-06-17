@@ -27,6 +27,8 @@ django-extensions = "*"
 selenium = "*"
 django-crispy-forms = "*"
 psycopg2 = "*"
+djangorestframework = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.8"

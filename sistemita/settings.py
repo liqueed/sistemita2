@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'bootstrap4',
     'django_extensions',
     'crispy_forms',
-
-
+    'rest_framework',
+    'django_filters',
+    
     # Apps
     'authorization',
     'core',
@@ -147,3 +148,8 @@ AUTH_USER_MODEL = 'authorization.User'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+}

@@ -1,13 +1,52 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.postgres.search import SearchVector
-from django.views.generic import TemplateView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, ListView, DetailView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView
+from rest_framework import permissions
+from rest_framework import viewsets
 
 from authorization.models import User
-from core.models import Cliente
+from core.forms import ClienteForm
+from core.models import Cliente, Distrito, Localidad
+from core.serializers import DistritoSerializer, LocalidadSerializer
+
+
+class LocalidadViewSet(viewsets.ModelViewSet):
+    queryset = Localidad.objects.all()
+    serializer_class = LocalidadSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('distrito',)
+
+
+class DistritoViewSet(viewsets.ModelViewSet):
+    queryset = Distrito.objects.all()
+    serializer_class = DistritoSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    filterset_fields = ('provincia',)
+
+
+class ClienteEliminarView(LoginRequiredMixin, DeleteView):
+    queryset = Cliente.objects.all()
+    success_url = reverse_lazy('cliente-listado')
+
+
+class ClienteDetalleView(LoginRequiredMixin, DetailView):
+    queryset = Cliente.objects.all()
+
+
+class ClienteModificarView(LoginRequiredMixin, UpdateView):
+    queryset = Cliente.objects.all()
+    form_class = ClienteForm
+    success_url = reverse_lazy('cliente-listado')
+
+
+class ClienteAgregarView(LoginRequiredMixin, CreateView):
+    model = Cliente
+    form_class = ClienteForm
+    success_url = reverse_lazy('cliente-listado')
 
 
 class ClienteListView(LoginRequiredMixin, ListView):
-    model = Cliente
     queryset = Cliente.objects.all()
 
 
