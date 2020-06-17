@@ -9,46 +9,36 @@
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-
-        </div>
+        <div class="card-header py-3"></div>
         <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-                <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Correo</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th></th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Correo</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th></th>
-                </tr>
-            </tfoot>
-            <tbody>
-                {% for object in object_list %}
-                <tr>
-                    <td>{{ object.pk }}</td>
-                    <td>{{ object.username }}</td>
-                    <td>{{ object.email }}</td>
-                    <td>{{ object.first_name }}</td>
-                    <td>{{ object.last_name }}</td>
-                    <td></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            </table>
-        </div>
+            <div class="table-responsive">
+                {% include 'components/search_form.html' %}
+
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Correo</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for object in object_list %}
+                        <tr>
+                            <td>{{ object.pk }}</td>
+                            <td>{{ object.username }}</td>
+                            <td>{{ object.email }}</td>
+                            <td>{{ object.first_name }}</td>
+                            <td>{{ object.last_name }}</td>
+                            <td></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
