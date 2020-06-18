@@ -24,7 +24,7 @@
                     <thead>
                         <tr>
                         <th>ID</th>
-                        <th>Nombre</th>
+                        <th>Raz&oacute;n Social</th>
                         <th>CUIT</th>
                         <th>Correo</th>
                         <th></th>
@@ -38,20 +38,17 @@
                             <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.cuit }}</td>
                             <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.correo }}</td>
                             <td>
-                                <div class="dropdown no-arrow">
-                                  <button class="btn btn-secondary dropdown-toggle btn-circle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-wrench"></i>
-                                  </button>
-                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="{% url 'cliente-modificar' object.pk %}">Editar</a>
-                                    <a class="dropdown-item" href="{% url 'cliente-eliminar' object.pk %}">Eliminar</a>
-                                  </div>
-                                </div>
+                              <a href="{% url 'cliente-modificar' object.pk %}">
+                                  <i class="fas fa-wrench"></i>
+                              </a>
+                              <a href="{% url 'cliente-eliminar' object.pk %}">
+                                  <i class="fas fa-trash"></i>
+                              </a>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan=3>Sin resultados</td>
+                            <td colspan=5>Sin resultados</td>
                         </tr>
                         {% endfor %}
                     </tbody>
