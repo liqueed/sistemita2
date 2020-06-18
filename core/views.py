@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
@@ -48,6 +49,19 @@ class ClienteAgregarView(LoginRequiredMixin, CreateView):
 
 class ClienteListView(LoginRequiredMixin, ListView):
     queryset = Cliente.objects.all()
+
+    def get_queryset(self):
+        # Search filter
+        search = self.request.GET.get('search', None)
+        if search:
+            # self.queryset = self.queryset.annotate(
+            #     search=SearchVector('last_name') + SearchVector('first_name') + SearchVector('email') + SearchVector('username'),
+            # ).filter(search=search)
+            self.queryset = self.queryset.filter(
+                Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
+            )
+
+        return self.queryset
 
 
 class UsuarioListView(LoginRequiredMixin, ListView):
