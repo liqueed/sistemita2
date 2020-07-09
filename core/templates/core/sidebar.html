@@ -29,6 +29,12 @@
       <span>Clientes</span></a>
   </li>
 
+  <li class="nav-item{% if request.resolver_match.url_name == 'proveedor-listado' %} active{% endif %}">
+    <a class="nav-link" href="{% url 'proveedor-listado' %}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Proveedores</span></a>
+  </li>
+
   <!-- Divider -->
   <hr class="sidebar-divider">
 

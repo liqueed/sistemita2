@@ -28,35 +28,4 @@
     $('#id_tipo_envio_factura').change(function() {
         update_forma_envio();
     });
-
-    $('#id_provincia').change(function(){
-        var provincia = $('#id_provincia').val();
-        var select_distrito = $('#id_distrito');
-        var select_localidad = $('#id_localidad');
-
-        // Limpio ditrito y localidad
-        select_distrito.children().remove().end();
-        select_distrito.append($("<option />").text('----'));
-        select_localidad.children().remove().end();
-        select_localidad.append($("<option />").text('----'));
-        
-        // Actualizo
-        $.getJSON("{% url 'distrito-list' %}?provincia=" + provincia, function(distritos) {
-            $.each(distritos, function(index, distrito) {
-                select_distrito.append($("<option />").val(distrito.id).text(distrito.nombre));
-            });
-        });
-    });
-
-    $('#id_distrito').change(function(){
-        var distrito = $('#id_distrito').val();
-        var select_localidad = $('#id_localidad');
-        select_localidad.children().remove().end();
-        select_localidad.append($("<option />").text('----'));
-        $.getJSON("{% url 'localidad-list' %}?distrito=" + distrito, function(localidades) {
-            $.each(localidades, function(index, localidad) {
-                select_localidad.append($("<option />").val(localidad.id).text(localidad.nombre));
-            });
-        });
-    });
 {% endblock %}
