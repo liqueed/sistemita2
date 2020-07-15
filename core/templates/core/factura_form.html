@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Facturas - Liqueed{% endblock %}
+{% block content %}
+<div class="container-fluid">
+
+    <h1 class="h3 mb-2 text-gray-800">Facturas</h1>
+    {% crispy form %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+$('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es'});
+$('#id_cliente').select2({allowClear: true, language: 'es'});
+{% endblock %}

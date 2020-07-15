@@ -35,6 +35,20 @@
       <span>Proveedores</span></a>
   </li>
 
+    <!-- Divider -->
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Ventas
+  </div>
+
+  <li class="nav-item{% if request.resolver_match.url_name == 'factura-listado' %} active{% endif %}">
+    <a class="nav-link" href="{% url 'factura-listado' %}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Facturaci&oacute;n</span></a>
+  </li>
+
   <!-- Divider -->
   <hr class="sidebar-divider">
 

@@ -3,7 +3,8 @@ from rest_framework import routers
 
 from core.views import HomeView, ClienteDetalleView, ClienteModificarView, ClienteAgregarView, ClienteListView, \
     UsuarioListView, ClienteEliminarView, DistritoViewSet, LocalidadViewSet, ProveedorListView, ProveedorDetalleView, \
-    ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView
+    ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, FacturaModificarView, FacturaListView, \
+    FacturaEliminarView, FacturaDetalleView, FacturaAgregarView
 
 router = routers.DefaultRouter()
 router.register(r'distrito', DistritoViewSet)
@@ -16,6 +17,12 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
 
     path(r'api/', include(router.urls)),
+
+    path('factura/', FacturaListView.as_view(), name='factura-listado'),
+    path('factura/<int:pk>/', FacturaDetalleView.as_view(), name='factura-detalle'),
+    path('factura/<int:pk>/editar/', FacturaModificarView.as_view(), name='factura-modificar'),
+    path('factura/<int:pk>/eliminar/', FacturaEliminarView.as_view(), name='factura-eliminar'),
+    path('factura/agregar/', FacturaAgregarView.as_view(), name='factura-agregar'),
 
     path('cliente/', ClienteListView.as_view(), name='cliente-listado'),
     path('cliente/<int:pk>/', ClienteDetalleView.as_view(), name='cliente-detalle'),
