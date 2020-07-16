@@ -22,6 +22,8 @@ class FacturaForm(forms.ModelForm):
                     Div('cliente', css_class='col-6'),
                     css_class='row'
                 ),
+                # Aca va la data extra del cliente por JS
+                Div(css_id='info_cliente', css_class='row'),
                 Div(
                     Div('moneda', css_class='col-2'),
                     Div('monto', css_class='col-4'),

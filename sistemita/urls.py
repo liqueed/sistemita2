@@ -4,11 +4,12 @@ from rest_framework import routers
 from core.views import HomeView, ClienteDetalleView, ClienteModificarView, ClienteAgregarView, ClienteListView, \
     UsuarioListView, ClienteEliminarView, DistritoViewSet, LocalidadViewSet, ProveedorListView, ProveedorDetalleView, \
     ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, FacturaModificarView, FacturaListView, \
-    FacturaEliminarView, FacturaDetalleView, FacturaAgregarView
+    FacturaEliminarView, FacturaDetalleView, FacturaAgregarView, ClienteViewSet
 
 router = routers.DefaultRouter()
 router.register(r'distrito', DistritoViewSet)
 router.register(r'localidad', LocalidadViewSet)
+router.register(r'cliente', ClienteViewSet)
 
 urlpatterns = [
     # path('admin/', admin.site.urls),

@@ -4,12 +4,19 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from rest_framework import permissions
+from rest_framework import mixins
 from rest_framework import viewsets
 
 from authorization.models import User
 from core.forms import ClienteForm, ProveedorForm, FacturaForm
 from core.models import Cliente, Distrito, Localidad, Proveedor, Factura
-from core.serializers import DistritoSerializer, LocalidadSerializer
+from core.serializers import DistritoSerializer, LocalidadSerializer, ClienteSerializer
+
+
+class ClienteViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Cliente.objects.all()
+    serializer_class = ClienteSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class FacturaEliminarView(LoginRequiredMixin, DeleteView):
