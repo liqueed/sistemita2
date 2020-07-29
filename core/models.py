@@ -139,3 +139,19 @@ class Factura(TimeStampedModel, models.Model):
         verbose_name = 'factura'
         verbose_name_plural = 'facturas'
 
+
+class OrdenCompra(TimeStampedModel, models.Model):
+    fecha = models.DateField(blank=False)
+    cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
+    moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
+    monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+
+    @property
+    def moneda_monto(self):
+      return f'{self.get_moneda_display()} {self.monto}'
+
+    class Meta:
+        ordering = ('fecha',)
+        verbose_name = 'orden de compra'
+        verbose_name_plural = 'ordenes de compras'
+

@@ -4,7 +4,41 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, HTML, Div, Reset
 from django import forms
 
-from .models import Cliente, Distrito, Localidad, Proveedor, Factura
+from .models import Cliente, Distrito, Localidad, Proveedor, Factura, OrdenCompra
+
+
+class OrdenCompraForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Datos generales',
+                Div(
+                    Div('fecha', css_class='col-4'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('cliente', css_class='col-6'),
+                    css_class='row'
+                ),
+                # Aca va la data extra del cliente por JS
+                Div(css_id='info_cliente', css_class='row'),
+                Div(
+                    Div('moneda', css_class='col-2'),
+                    Div('monto', css_class='col-4'),
+                    css_class='row'
+                ),
+            ),
+            FormActions(
+                Submit('submit', 'Guardar', css_class='float-right'),
+                Reset('reset', 'Limpiar', css_class='float-right')
+            )
+        )
+
+    class Meta:
+        model = OrdenCompra
+        fields = ('fecha', 'cliente', 'moneda', 'monto')
 
 
 class FacturaForm(forms.ModelForm):

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Orden de compra - Liqueed{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Orden de compra</h1>
+
+    <form method="post" action="{% url 'ordencompra-eliminar' object.pk %}">
+        {% csrf_token %}
+        <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la &oacute;rden de compra <em>Nro. {{ object.pk}}</em> del cliente <em>{{ object.cliente.razon_social}}</em> con CUIT <em>{{ object.cliente.cuit}}</em>.</p>
+        <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-danger" type="submit">Eliminar</button>
+                <a class="btn" href="{% url 'ordencompra-listado' %}">No eliminar</a>
+            </div>
+        </div>
+
+    </form>
+
+
+</div>
+
+{% endblock %}

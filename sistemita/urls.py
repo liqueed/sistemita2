@@ -1,10 +1,12 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from core.views import HomeView, ClienteDetalleView, ClienteModificarView, ClienteAgregarView, ClienteListView, \
-    UsuarioListView, ClienteEliminarView, DistritoViewSet, LocalidadViewSet, ProveedorListView, ProveedorDetalleView, \
-    ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, FacturaModificarView, FacturaListView, \
-    FacturaEliminarView, FacturaDetalleView, FacturaAgregarView, ClienteViewSet
+from core.views import \
+    ClienteDetalleView, ClienteModificarView, ClienteAgregarView, ClienteListView, ClienteEliminarView, ClienteViewSet, \
+    HomeView, UsuarioListView, DistritoViewSet, LocalidadViewSet, ProveedorListView, \
+    ProveedorDetalleView, ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, \
+    FacturaModificarView, FacturaListView, FacturaEliminarView, FacturaDetalleView, FacturaAgregarView,\
+    OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView, OrdenCompraEliminarView, OrdenCompraAgregarView
 
 router = routers.DefaultRouter()
 router.register(r'distrito', DistritoViewSet)
@@ -24,6 +26,12 @@ urlpatterns = [
     path('factura/<int:pk>/editar/', FacturaModificarView.as_view(), name='factura-modificar'),
     path('factura/<int:pk>/eliminar/', FacturaEliminarView.as_view(), name='factura-eliminar'),
     path('factura/agregar/', FacturaAgregarView.as_view(), name='factura-agregar'),
+
+    path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-listado'),
+    path('ordencompra/<int:pk>/', OrdenCompraDetalleView.as_view(), name='ordencompra-detalle'),
+    path('ordencompra/<int:pk>/editar/', OrdenCompraModificarView.as_view(), name='ordencompra-modificar'),
+    path('ordencompra/<int:pk>/eliminar/', OrdenCompraEliminarView.as_view(), name='ordencompra-eliminar'),
+    path('ordencompra/agregar/', OrdenCompraAgregarView.as_view(), name='ordencompra-agregar'),
 
     path('cliente/', ClienteListView.as_view(), name='cliente-listado'),
     path('cliente/<int:pk>/', ClienteDetalleView.as_view(), name='cliente-detalle'),

@@ -8,9 +8,47 @@ from rest_framework import mixins
 from rest_framework import viewsets
 
 from authorization.models import User
-from core.forms import ClienteForm, ProveedorForm, FacturaForm
-from core.models import Cliente, Distrito, Localidad, Proveedor, Factura
+from core.forms import ClienteForm, ProveedorForm, FacturaForm, OrdenCompraForm
+from core.models import Cliente, Distrito, Localidad, Proveedor, Factura, OrdenCompra
 from core.serializers import DistritoSerializer, LocalidadSerializer, ClienteSerializer
+
+
+class OrdenCompraEliminarView(LoginRequiredMixin, DeleteView):
+    queryset = OrdenCompra.objects.all()
+    success_url = reverse_lazy('factura-listado')
+
+
+class OrdenCompraDetalleView(LoginRequiredMixin, DetailView):
+    queryset = OrdenCompra.objects.all()
+
+
+class OrdenCompraModificarView(LoginRequiredMixin, UpdateView):
+    queryset = OrdenCompra.objects.all()
+    form_class = OrdenCompraForm
+    success_url = reverse_lazy('ordencompra-listado')
+
+
+class OrdenCompraAgregarView(LoginRequiredMixin, CreateView):
+    model = OrdenCompra
+    form_class = OrdenCompraForm
+    success_url = reverse_lazy('ordencompra-listado')
+
+
+class OrdenCompraListView(LoginRequiredMixin, ListView):
+    queryset = OrdenCompra.objects.all()
+
+    def get_queryset(self):
+        # Search filter
+        search = self.request.GET.get('search', None)
+        if search:
+            # self.queryset = self.queryset.annotate(
+            #     search=SearchVector('last_name') + SearchVector('first_name') + SearchVector('email') + SearchVector('username'),
+            # ).filter(search=search)
+            self.queryset = self.queryset.filter(
+                Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
+            )
+
+        return self.queryset
 
 
 class ClienteViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
