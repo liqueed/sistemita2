@@ -20,19 +20,13 @@
 
   <!-- Heading -->
   <div class="sidebar-heading">
-    General
+    Clientes
   </div>
 
   <li class="nav-item{% if request.resolver_match.url_name == 'cliente-listado' %} active{% endif %}">
     <a class="nav-link" href="{% url 'cliente-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Clientes</span></a>
-  </li>
-
-  <li class="nav-item{% if request.resolver_match.url_name == 'proveedor-listado' %} active{% endif %}">
-    <a class="nav-link" href="{% url 'proveedor-listado' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Proveedores</span></a>
   </li>
 
   <li class="nav-item{% if request.resolver_match.url_name == 'factura-listado' %} active{% endif %}">
@@ -46,6 +40,21 @@
       <i class="fas fa-fw fa-chart-area"></i>
       <span>&Oacute;rdenes de compra</span></a>
   </li>
+
+    <!-- Divider -->
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Proveedores
+  </div>
+
+  <li class="nav-item{% if request.resolver_match.url_name == 'proveedor-listado' %} active{% endif %}">
+    <a class="nav-link" href="{% url 'proveedor-listado' %}">
+      <i class="fas fa-fw fa-chart-area"></i>
+      <span>Proveedores</span></a>
+  </li>
+
 
   <!-- Divider -->
   <hr class="sidebar-divider">
