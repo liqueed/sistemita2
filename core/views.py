@@ -3,11 +3,13 @@ from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
+from django_filters.views import FilterView
 from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import viewsets
 
 from authorization.models import User
+from core.filters import FacturaFilterSet
 from core.forms import ClienteForm, ProveedorForm, FacturaForm, OrdenCompraForm
 from core.models import Cliente, Distrito, Localidad, Proveedor, Factura, OrdenCompra
 from core.serializers import DistritoSerializer, LocalidadSerializer, ClienteSerializer
@@ -78,18 +80,16 @@ class FacturaAgregarView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('factura-listado')
 
 
-class FacturaListView(LoginRequiredMixin, ListView):
+class FacturaListView(LoginRequiredMixin, FilterView):
     queryset = Factura.objects.all()
+    filterset_class = FacturaFilterSet
 
     def get_queryset(self):
         # Search filter
         search = self.request.GET.get('search', None)
         if search:
-            # self.queryset = self.queryset.annotate(
-            #     search=SearchVector('last_name') + SearchVector('first_name') + SearchVector('email') + SearchVector('username'),
-            # ).filter(search=search)
             self.queryset = self.queryset.filter(
-                Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
+                Q(cliente__razon_social__icontains=search) | Q(cliente__correo__icontains=search) | Q(cliente__cuit__icontains=search)
             )
 
         return self.queryset
