@@ -63,6 +63,10 @@ class FacturaForm(forms.ModelForm):
                     Div('monto', css_class='col-4'),
                     css_class='row'
                 ),
+                Div(
+                    Div('cobrado', css_class='col-2'),
+                    css_class='row'
+                ),
             ),
             FormActions(
                 Submit('submit', 'Guardar', css_class='float-right'),
@@ -72,7 +76,7 @@ class FacturaForm(forms.ModelForm):
 
     class Meta:
         model = Factura
-        fields = ('fecha', 'cliente', 'moneda', 'monto')
+        fields = ('fecha', 'cliente', 'moneda', 'monto', 'cobrado')
 
 
 class ProveedorForm(forms.ModelForm):
