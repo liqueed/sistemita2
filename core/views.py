@@ -81,14 +81,14 @@ class FacturaAgregarView(LoginRequiredMixin, CreateView):
 
 
 class FacturaListView(LoginRequiredMixin, FilterView):
-    queryset = Factura.objects.all()
     filterset_class = FacturaFilterSet
 
     def get_queryset(self):
         # Search filter
+        queryset = Factura.objects.all()
         search = self.request.GET.get('search', None)
         if search:
-            self.queryset = self.queryset.filter(
+            self.queryset = queryset.filter(
                 Q(cliente__razon_social__icontains=search) | Q(cliente__correo__icontains=search) | Q(cliente__cuit__icontains=search)
             )
 
