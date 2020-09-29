@@ -12,6 +12,8 @@
         <dd class="col-sm-10">{{ object.cliente }}</dd>
         <dt class="col-sm-2">Valor</dt>
         <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.monto }}</dd>
+	<dt class="col-sm-2">Cobrado</dt>
+        <dd class="col-sm-10">{% if object.cobrado %}<i class="fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}</dd>
     </dl>
 
     <a href="{% url 'factura-listado' %}" class="btn btn-primary float-right">Volver</a>

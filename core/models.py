@@ -129,6 +129,7 @@ class Factura(TimeStampedModel, models.Model):
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    cobrado = models.BooleanField(default=False)
 
     @property
     def moneda_monto(self):
@@ -154,4 +155,3 @@ class OrdenCompra(TimeStampedModel, models.Model):
         ordering = ('fecha',)
         verbose_name = 'orden de compra'
         verbose_name_plural = 'ordenes de compras'
-
