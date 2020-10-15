@@ -6,7 +6,8 @@ from core.views import \
     HomeView, UsuarioListView, DistritoViewSet, LocalidadViewSet, ProveedorListView, \
     ProveedorDetalleView, ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, \
     FacturaModificarView, FacturaListView, FacturaEliminarView, FacturaDetalleView, FacturaAgregarView,\
-    OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView, OrdenCompraEliminarView, OrdenCompraAgregarView
+    OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView, OrdenCompraEliminarView, OrdenCompraAgregarView,\
+    MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView, MedioPagoEliminarView, MedioPagoModificarView
 
 router = routers.DefaultRouter()
 router.register(r'distrito', DistritoViewSet)
@@ -20,6 +21,12 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
 
     path(r'api/', include(router.urls)),
+
+    path('mediopago/', MedioPagoListView.as_view(), name='mediopago-listado'),
+    path('mediopago/agregar/', MedioPagoAgregarView.as_view(), name='mediopago-agregar'),
+    path('mediopago/<int:pk>/', MedioPagoDetalleView.as_view(), name='mediopago-detalle'),
+    path('mediopago/<int:pk>/editar/', MedioPagoModificarView.as_view(), name='mediopago-modificar'),
+    path('medio/<int:pk>/eliminar/', MedioPagoEliminarView.as_view(), name='mediopago-eliminar'),
 
     path('factura/', FacturaListView.as_view(), name='factura-listado'),
     path('factura/<int:pk>/', FacturaDetalleView.as_view(), name='factura-detalle'),

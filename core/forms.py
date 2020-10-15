@@ -4,7 +4,30 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, HTML, Div, Reset
 from django import forms
 
-from .models import Cliente, Distrito, Localidad, Proveedor, Factura, OrdenCompra
+from .models import Cliente, Distrito, Factura, Localidad, MedioPago, Proveedor, OrdenCompra
+
+
+class MedioPagoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Datos generales',
+                Div(
+                    Div('nombre', css_class='col-4'),
+                    css_class='row'
+                ),
+            ),
+            FormActions(
+                Submit('submit', 'Guardar', css_class='float-right'),
+                Reset('reset', 'Limpiar', css_class='float-right')
+            )
+        )
+
+    class Meta:
+        model = MedioPago
+        fields = ('nombre', )
 
 
 class OrdenCompraForm(forms.ModelForm):
