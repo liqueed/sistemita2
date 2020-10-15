@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Medio de Pago - Liqueed{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Medio de Pago</h1>
+
+    <dl class="row">
+        <dt class="col-sm-2">Nombre</dt>
+        <dd class="col-sm-10">{{ object.nombre }}</dd>
+    </dl>
+
+    <a href="{% url 'mediopago-listado' %}" class="btn btn-primary float-right">Volver</a>
+
+</div>
+
+{% endblock %}

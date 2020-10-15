@@ -10,9 +10,42 @@ from rest_framework import viewsets
 
 from authorization.models import User
 from core.filters import FacturaFilterSet
-from core.forms import ClienteForm, ProveedorForm, FacturaForm, OrdenCompraForm
-from core.models import Cliente, Distrito, Localidad, Proveedor, Factura, OrdenCompra
+from core.forms import ClienteForm, FacturaForm, MedioPagoForm, ProveedorForm, OrdenCompraForm
+from core.models import Cliente, Distrito, Localidad, MedioPago, Proveedor, Factura, OrdenCompra
 from core.serializers import DistritoSerializer, LocalidadSerializer, ClienteSerializer
+
+
+class MedioPagoListView(LoginRequiredMixin, ListView):
+    def get_queryset(self):
+        # Search filter
+        queryset = MedioPago.objects.all()
+        search = self.request.GET.get('search', None)
+        if search:
+            queryset = queryset.filter(
+                nombre__icontains=search
+            )
+        return queryset
+
+
+class MedioPagoAgregarView(LoginRequiredMixin, CreateView):
+    model = MedioPago
+    form_class = MedioPagoForm
+    success_url = reverse_lazy('mediopago-listado')
+
+
+class MedioPagoDetalleView(LoginRequiredMixin, DetailView):
+    queryset = MedioPago.objects.all()
+
+
+class MedioPagoModificarView(LoginRequiredMixin, UpdateView):
+    queryset = MedioPago.objects.all()
+    form_class = MedioPagoForm
+    success_url = reverse_lazy('mediopago-listado')
+
+
+class MedioPagoEliminarView(LoginRequiredMixin, DeleteView):
+    queryset = MedioPago.objects.all()
+    success_url = reverse_lazy('mediopago-listado')
 
 
 class OrdenCompraEliminarView(LoginRequiredMixin, DeleteView):
