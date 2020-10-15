@@ -155,3 +155,15 @@ class OrdenCompra(TimeStampedModel, models.Model):
         ordering = ('fecha',)
         verbose_name = 'orden de compra'
         verbose_name_plural = 'ordenes de compras'
+
+
+class MedioPago(TimeStampedModel, models.Model):
+    nombre = models.CharField(max_length=150, verbose_name='Nombre')
+
+    def __str__(self):
+        return '{}'.format(self.nombre)
+
+    class Meta:
+        ordering = ('nombre',)
+        verbose_name = 'medio de pago'
+        verbose_name_plural = 'medios de pago'
