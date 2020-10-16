@@ -12,6 +12,18 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
+class Archivo(models.Model):
+    documento = models.FileField(upload_to='archivos/documentos/')
+
+    def __str__(self):
+        return '{}'.format(self.documento)
+
+    class Meta:
+        db_table = 'core_archivos'
+        verbose_name = 'archivo'
+        verbose_name_plural = 'archivos'
+
+
 class Pais(models.Model):
     codigo = models.CharField(primary_key=True, max_length=3, verbose_name='Código')
     nombre = models.CharField(max_length=150, verbose_name='Nombre')
@@ -130,6 +142,7 @@ class Factura(TimeStampedModel, models.Model):
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     cobrado = models.BooleanField(default=False)
+    archivos = models.ManyToManyField(Archivo, blank=True)
 
     @property
     def moneda_monto(self):
