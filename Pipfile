@@ -29,6 +29,8 @@ django-crispy-forms = "*"
 psycopg2 = "*"
 djangorestframework = "*"
 django-filter = "*"
+pillow = "*"
+
 
 [requires]
 python_version = "3.8"
