@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static crispy_forms_tags %}
+{% load static crispy_forms_tags commontags %}
 {% block title %}Facturas - Liqueed{% endblock %}
 {% block content %}
 <div class="container-fluid">
@@ -14,6 +14,14 @@
         <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.monto }}</dd>
 	<dt class="col-sm-2">Cobrado</dt>
         <dd class="col-sm-10">{% if object.cobrado %}<i class="fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}</dd>
+	<dt class="col-sm-2">Archivos</dt>
+	{% if object.archivos %}
+	  {% for archivo in object.archivos.all %}
+	    <a class="col-sm-10" href="{{ archivo.documento.url }}">
+	      {{ archivo.documento|filename }} <i class="fas fa-download"></i>
+	    </a>
+	  {% endfor %}
+	{% endif %}
     </dl>
 
     <a href="{% url 'factura-listado' %}" class="btn btn-primary float-right">Volver</a>

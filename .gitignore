@@ -100,3 +100,6 @@ db.sqlite3
 
 ### LibreOffice
 *.~lock*
+
+### Media
+sistemita/media/
