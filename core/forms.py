@@ -65,8 +65,6 @@ class OrdenCompraForm(forms.ModelForm):
 
 
 class FacturaForm(forms.ModelForm):
-    archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
@@ -93,7 +91,7 @@ class FacturaForm(forms.ModelForm):
                     css_class='row'
                 ),
                 Div(
-                    Div('archivos', css_class='col-2'),
+                    Div('archivos', template="components/file_input.html"),
                     css_class='row'
                 ),
             ),

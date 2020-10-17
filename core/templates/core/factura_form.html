@@ -5,7 +5,9 @@
 <div class="container-fluid">
 
     <h1 class="h3 mb-2 text-gray-800">Facturas</h1>
-    {% crispy form %}
+    <form method="post" enctype="multipart/form-data">
+      {% crispy form %}
+    </form>
 </div>
 {% endblock %}
 
@@ -27,6 +29,27 @@ function updateInfoCliente(){
         $('#info_cliente').html('');
     }
 }
-
 updateInfoCliente();
+
+$(document).ready(function() {
+    var max_fields = 10;
+    var wrapper    = $(".wrapper");
+    var add_button = $(".add_files");
+    var x = 1;
+
+    $(add_button).click(function(e){
+        e.preventDefault();
+        if(x < max_fields){
+            x++;
+            $(wrapper).append('<div><input type="file" name="archivos" /> <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_field">Eliminar</a></div>');
+        }
+    });
+
+    $(wrapper).on("click",".remove_field", function(e){
+        e.preventDefault();
+	$(this).parent('div').remove();
+	x--;
+    })
+});
+
 {% endblock %}
