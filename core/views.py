@@ -11,8 +11,15 @@ from rest_framework import viewsets
 from authorization.models import User
 from core.filters import FacturaFilterSet
 from core.forms import ClienteForm, FacturaForm, MedioPagoForm, ProveedorForm, OrdenCompraForm
-from core.models import Cliente, Distrito, Localidad, MedioPago, Proveedor, Factura, OrdenCompra
-from core.serializers import DistritoSerializer, LocalidadSerializer, ClienteSerializer
+from core.models import Archivo, Cliente, Distrito, Factura, Localidad, MedioPago, Proveedor, OrdenCompra
+from core.serializers import ArchivoSerializer, ClienteSerializer, DistritoSerializer, FacturaSerializer, \
+    LocalidadSerializer
+
+
+class ArchivoViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    queryset = Archivo.objects.all()
+    serializer_class = ArchivoSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class MedioPagoListView(LoginRequiredMixin, ListView):
@@ -89,6 +96,12 @@ class OrdenCompraListView(LoginRequiredMixin, ListView):
 class ClienteViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class FacturaViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Factura.objects.all()
+    serializer_class = FacturaSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 

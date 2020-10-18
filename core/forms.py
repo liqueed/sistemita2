@@ -91,7 +91,7 @@ class FacturaForm(forms.ModelForm):
                     css_class='row'
                 ),
                 Div(
-                    Div('archivos', template="components/file_input.html"),
+                    Div('archivos', template='components/file_input.html'),
                     css_class='row'
                 ),
             ),
@@ -101,6 +101,8 @@ class FacturaForm(forms.ModelForm):
             )
         )
 
+    archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+
     class Meta:
         model = Factura
         fields = ('fecha', 'cliente', 'moneda', 'monto', 'cobrado', 'archivos')
@@ -108,8 +110,14 @@ class FacturaForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         data = self.cleaned_data
         data.pop('archivos')
+        factura_id = self.instance.pk
 
-        factura = Factura.objects.create(**data)
+        if factura_id is None:
+            factura = Factura.objects.create(**data)
+        else:
+            Factura.objects.filter(pk=factura_id).update(**data)
+            factura = Factura.objects.get(pk=factura_id)
+
         for f in self.files.getlist('archivos'):
             document = Archivo.objects.create(documento=f)
             factura.archivos.add(document)

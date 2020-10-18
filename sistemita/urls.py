@@ -9,12 +9,15 @@ from core.views import \
     ProveedorDetalleView, ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, \
     FacturaModificarView, FacturaListView, FacturaEliminarView, FacturaDetalleView, FacturaAgregarView,\
     OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView, OrdenCompraEliminarView, OrdenCompraAgregarView,\
-    MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView, MedioPagoEliminarView, MedioPagoModificarView
+    MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView, MedioPagoEliminarView, MedioPagoModificarView, \
+    FacturaViewSet, ArchivoViewSet
 
 router = routers.DefaultRouter()
 router.register(r'distrito', DistritoViewSet)
 router.register(r'localidad', LocalidadViewSet)
 router.register(r'cliente', ClienteViewSet)
+router.register(r'factura', FacturaViewSet)
+router.register(r'archivo', ArchivoViewSet)
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
