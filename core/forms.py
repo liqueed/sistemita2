@@ -91,9 +91,10 @@ class FacturaForm(forms.ModelForm):
                     css_class='row'
                 ),
                 Div(
-                    Div('archivos', template='components/file_input.html'),
+                    Div('archivos', template='components/input_files.html'),
                     css_class='row'
                 ),
+                Div(css_id='adjuntos', css_class='row'),
             ),
             FormActions(
                 Submit('submit', 'Guardar', css_class='float-right'),

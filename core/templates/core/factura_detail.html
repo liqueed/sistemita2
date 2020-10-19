@@ -4,7 +4,6 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Factura</h1>
-
     <dl class="row">
         <dt class="col-sm-2">Fecha</dt>
         <dd class="col-sm-10">{{ object.fecha }}</dd>
@@ -17,15 +16,16 @@
 	<dt class="col-sm-2">Archivos</dt>
 	{% if object.archivos %}
 	  {% for archivo in object.archivos.all %}
-	    <a class="col-sm-10" href="{{ archivo.documento.url }}">
-	      {{ archivo.documento|filename }} <i class="fas fa-download"></i>
-	    </a>
-	  {% endfor %}
-	{% endif %}
-    </dl>
-
+	    <div class="col-3 mt-1">
+	      {{ archivo.documento|filename }}
+	    </div>
+	    <div class="col-7">
+	      <a class="btn btn-light btn-sm" target="_blank" href="{{ archivo.documento.url }}"><i class="far fa-eye"></i></a>
+	    </div>
+	    <dt class="col-sm-2"></dt>
+           {% endfor %}
+         {% endif %}
+        </dl>
     <a href="{% url 'factura-listado' %}" class="btn btn-primary float-right">Volver</a>
-
 </div>
-
 {% endblock %}

@@ -3,12 +3,9 @@
 {% block title %}Facturas - Liqueed{% endblock %}
 {% block content %}
 <div class="container-fluid">
-
-  <h1 class="h3 mb-2 text-gray-800">Facturas</h1>
-  <input id="id_factura" type="hidden" value="{{ object.id }}">
-      {% crispy form %}
-    <div class="adjuntos"></div>
-</div>
+    <h1 class="h3 mb-2 text-gray-800">Facturas</h1>
+    {% crispy form %}
+    <input id="id_factura" type="hidden" value="{{ object.id }}">
 {% endblock %}
 
 {% block extra_js %}
@@ -31,52 +28,62 @@ function updateInfoCliente(){
 }
 updateInfoCliente();
 
-$(document).ready(function() {
-    var max_fields = 10;
-    var wrapper    = $(".wrapper");
-    var add_button = $(".add_files");
-    var x = 1;
 
-    $(add_button).click(function(e){
-        e.preventDefault();
-        if(x < max_fields){
-            x++;
-            $(wrapper).append('<div><input type="file" name="archivos" /> <a href="javascript:void(0);" class="btn btn-danger btn-sm remove_field">Eliminar</a></div>');
-        }
-    });
+var max_fields = 10;
+var wrapper    = $(".wrapper");
+var add_button = $(".add_files");
+var x = 1;
 
-    $(wrapper).on("click",".remove_field", function(e){
-        e.preventDefault();
-	$(this).parent('div').remove();
-	x--;
-    })
+$(add_button).click(function(e){
+    e.preventDefault();
+    if(x < max_fields){
+        x++;
+	var htmlInput = `<div class="mb-2"><div class="form-control custom-file" style="border:0">`;
+	htmlInput += `<input class="custom-file-input" type="file" name="archivos">`;
+	htmlInput += `<label class="custom-file-label text-truncate" for="id_archivos">---</label></div>`;
+	htmlInput += `<button class="btn btn-danger btn-sm remove_field" type="button">x</button></div>`;
+	$(wrapper).append(htmlInput);
+	$('.custom-file-input').on("change", function(e){e.target.parentNode.querySelector('.custom-file-label').textContent=e.target.files[0].name;});
+    }
 });
 
-var idFactura = $('#id_factura').val();
+$(wrapper).on("click",".remove_field", function(e){
+    e.preventDefault();
+    $(this).parent("div").remove();
+    x--;
+});
+
+$(".custom-file-input").on("change", function(e){e.target.parentNode.querySelector(".custom-file-label").textContent=e.target.files[0].name;});
+
+var idFactura = $("#id_factura").val();
 if (idFactura) {
-    var adjuntos = $('.adjuntos');
+    var adjuntos = $("#adjuntos");
     $.get(`/api/factura/${idFactura}/`, function(data) {
 	$.each(data.archivos, function(index, item) {
 	    var filename = item.documento.split(/[\\\/]/).pop();
-	    var itemHtml = `<div class="col"><a class="col-sm-10" target="_blank" href="${item.documento}">${filename} <i class="fas fa-eye"></i></a>`;
-	    itemHtml += `<a id="${item.id}" class="btn btn-danger btn-sm remove_document" href="javascript:void(0);" role="button">Eliminar</a></div>`;
+	    var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
+	    itemHtml += `<div class="col-2">`
+	    itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`
+	    itemHtml += `<a class="btn btn-danger btn-sm ml-2 mt-2 remove_document" id="${item.id}" href="javascript:void(0);"><i class="far fa-trash-alt"></i></a></div>`;
 	    adjuntos.append(itemHtml);
 	});
     });
 
     $(adjuntos).on("click",".remove_document", function(e){
 	e.preventDefault();
-	$(this).parent('div').remove();
-	$.ajax({
-	    url: `/api/archivo/${this.id}/`,
-	    type: 'DELETE',
-	    beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+	console.log($(this));
+	var element = $(this).parent("div");
+    	$.ajax({
+    	    url: `/api/archivo/${this.id}/`,
+    	    type: 'DELETE',
+    	    beforeSend: function (xhr) {
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
             },
-	    success: function(result) {
-		// Do something with the resultx
-	    }
-	});
+    	    success: function(result) {
+		element.prev().remove()
+		element.remove();
+    	    }
+    	});
     });
 }
 {% endblock %}
