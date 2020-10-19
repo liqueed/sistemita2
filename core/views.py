@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
@@ -108,6 +109,13 @@ class FacturaViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
 class FacturaEliminarView(LoginRequiredMixin, DeleteView):
     queryset = Factura.objects.all()
     success_url = reverse_lazy('factura-listado')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.archivos.all().delete()
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 
 class FacturaDetalleView(LoginRequiredMixin, DetailView):
