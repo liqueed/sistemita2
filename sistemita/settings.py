@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'django_filters',
+    'django_cleanup.apps.CleanupConfig',
 
     # Apps
     'authorization',

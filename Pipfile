@@ -29,7 +29,8 @@ django-crispy-forms = "*"
 psycopg2 = "*"
 djangorestframework = "*"
 django-filter = "*"
-pillow = "*"
+pillow = "==8.0.0"
+django-cleanup = "==5.1.0"
 
 
 [requires]
