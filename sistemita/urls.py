@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 
@@ -7,12 +9,15 @@ from core.views import \
     ProveedorDetalleView, ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, \
     FacturaModificarView, FacturaListView, FacturaEliminarView, FacturaDetalleView, FacturaAgregarView,\
     OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView, OrdenCompraEliminarView, OrdenCompraAgregarView,\
-    MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView, MedioPagoEliminarView, MedioPagoModificarView
+    MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView, MedioPagoEliminarView, MedioPagoModificarView, \
+    FacturaViewSet, ArchivoViewSet
 
 router = routers.DefaultRouter()
 router.register(r'distrito', DistritoViewSet)
 router.register(r'localidad', LocalidadViewSet)
 router.register(r'cliente', ClienteViewSet)
+router.register(r'factura', FacturaViewSet)
+router.register(r'archivo', ArchivoViewSet)
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -53,4 +58,5 @@ urlpatterns = [
     path('proveedor/agregar/', ProveedorAgregarView.as_view(), name='proveedor-agregar'),
 
     path('usuarios/', UsuarioListView.as_view(), name='usuario-list')
-]
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

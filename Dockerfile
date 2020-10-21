@@ -13,6 +13,8 @@ RUN apk add --no-cache postgresql-dev gcc python3-dev musl-dev
 # ENV PATH="/opt/:${PATH}"
 # ENV PYTHONUNBUFFERED 1
 RUN pip install pipenv
+RUN apk add jpeg-dev zlib-dev
+
 RUN mkdir -p /app
 WORKDIR /app
 ADD Pipfile /app

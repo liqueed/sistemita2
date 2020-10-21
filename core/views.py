@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
@@ -11,8 +12,15 @@ from rest_framework import viewsets
 from authorization.models import User
 from core.filters import FacturaFilterSet
 from core.forms import ClienteForm, FacturaForm, MedioPagoForm, ProveedorForm, OrdenCompraForm
-from core.models import Cliente, Distrito, Localidad, MedioPago, Proveedor, Factura, OrdenCompra
-from core.serializers import DistritoSerializer, LocalidadSerializer, ClienteSerializer
+from core.models import Archivo, Cliente, Distrito, Factura, Localidad, MedioPago, Proveedor, OrdenCompra
+from core.serializers import ArchivoSerializer, ClienteSerializer, DistritoSerializer, FacturaSerializer, \
+    LocalidadSerializer
+
+
+class ArchivoViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    queryset = Archivo.objects.all()
+    serializer_class = ArchivoSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class MedioPagoListView(LoginRequiredMixin, ListView):
@@ -92,9 +100,22 @@ class ClienteViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
 
+class FacturaViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Factura.objects.all()
+    serializer_class = FacturaSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
 class FacturaEliminarView(LoginRequiredMixin, DeleteView):
     queryset = Factura.objects.all()
     success_url = reverse_lazy('factura-listado')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.archivos.all().delete()
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
 
 
 class FacturaDetalleView(LoginRequiredMixin, DetailView):

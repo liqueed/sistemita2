@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, HTML, Div, Reset
 from django import forms
 
-from .models import Cliente, Distrito, Factura, Localidad, MedioPago, Proveedor, OrdenCompra
+from .models import Archivo, Cliente, Distrito, Factura, Localidad, MedioPago, Proveedor, OrdenCompra
 
 
 class MedioPagoForm(forms.ModelForm):
@@ -90,6 +90,11 @@ class FacturaForm(forms.ModelForm):
                     Div('cobrado', css_class='col-2'),
                     css_class='row'
                 ),
+                Div(
+                    Div('archivos', template='components/input_files.html'),
+                    css_class='row'
+                ),
+                Div(css_id='adjuntos', css_class='row'),
             ),
             FormActions(
                 Submit('submit', 'Guardar', css_class='float-right'),
@@ -97,9 +102,28 @@ class FacturaForm(forms.ModelForm):
             )
         )
 
+    archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+
     class Meta:
         model = Factura
-        fields = ('fecha', 'cliente', 'moneda', 'monto', 'cobrado')
+        fields = ('fecha', 'cliente', 'moneda', 'monto', 'cobrado', 'archivos')
+
+    def save(self, *args, **kwargs):
+        data = self.cleaned_data
+        data.pop('archivos')
+        factura_id = self.instance.pk
+
+        if factura_id is None:
+            factura = Factura.objects.create(**data)
+        else:
+            Factura.objects.filter(pk=factura_id).update(**data)
+            factura = Factura.objects.get(pk=factura_id)
+
+        for f in self.files.getlist('archivos'):
+            document = Archivo.objects.create(documento=f)
+            factura.archivos.add(document)
+
+        return super(FacturaForm, self).save(commit=False)
 
 
 class ProveedorForm(forms.ModelForm):
