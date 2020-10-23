@@ -3,14 +3,21 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 
-from core.views import \
-    ClienteDetalleView, ClienteModificarView, ClienteAgregarView, ClienteListView, ClienteEliminarView, ClienteViewSet, \
-    HomeView, UsuarioListView, DistritoViewSet, LocalidadViewSet, ProveedorListView, \
-    ProveedorDetalleView, ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, \
-    FacturaModificarView, FacturaListView, FacturaEliminarView, FacturaDetalleView, FacturaAgregarView,\
-    OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView, OrdenCompraEliminarView, OrdenCompraAgregarView,\
-    MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView, MedioPagoEliminarView, MedioPagoModificarView, \
-    FacturaViewSet, ArchivoViewSet
+from core.views.archivos import ArchivoViewSet
+from core.views.clientes import ClienteDetalleView, ClienteModificarView, ClienteAgregarView,\
+    ClienteListView, ClienteEliminarView, ClienteViewSet
+from core.views.distritos import DistritoViewSet
+from core.views.facturascliente import FacturaModificarView, FacturaListView, FacturaEliminarView, \
+    FacturaDetalleView, FacturaAgregarView, FacturaViewSet
+from core.views.home import HomeView
+from core.views.localidades import LocalidadViewSet
+from core.views.mediopago import MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView,\
+    MedioPagoEliminarView, MedioPagoModificarView
+from core.views.proveedores import ProveedorListView, ProveedorDetalleView, ProveedorAgregarView,\
+    ProveedorModificarView, ProveedorEliminarView
+from core.views.ordencompra import OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView,\
+    OrdenCompraEliminarView, OrdenCompraAgregarView
+from core.views.usuarios import UsuarioListView
 
 router = routers.DefaultRouter()
 router.register(r'distrito', DistritoViewSet)
