@@ -113,7 +113,25 @@ class Cliente(TimeStampedModel, models.Model):
         verbose_name_plural = 'clientes'
 
     def __str__(self):
-      return f'{self.razon_social} - {self.cuit}'
+        return f'{self.razon_social} - {self.cuit}'
+
+
+class Factura(TimeStampedModel, models.Model):
+    fecha = models.DateField(blank=False)
+    cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
+    moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
+    monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    cobrado = models.BooleanField(default=False)
+    archivos = models.ManyToManyField(Archivo, blank=True)
+
+    @property
+    def moneda_monto(self):
+        return f'{self.get_moneda_display()} {self.monto}'
+
+    class Meta:
+        ordering = ('fecha',)
+        verbose_name = 'factura'
+        verbose_name_plural = 'facturas'
 
 
 class Proveedor(TimeStampedModel, models.Model):
@@ -136,9 +154,9 @@ class Proveedor(TimeStampedModel, models.Model):
         verbose_name_plural = 'proveedores'
 
 
-class Factura(TimeStampedModel, models.Model):
+class FacturaProveedor(TimeStampedModel, models.Model):
     fecha = models.DateField(blank=False)
-    cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
+    proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     cobrado = models.BooleanField(default=False)
@@ -146,12 +164,12 @@ class Factura(TimeStampedModel, models.Model):
 
     @property
     def moneda_monto(self):
-      return f'{self.get_moneda_display()} {self.monto}'
+        return f'{self.get_moneda_display()} {self.monto}'
 
     class Meta:
         ordering = ('fecha',)
-        verbose_name = 'factura'
-        verbose_name_plural = 'facturas'
+        verbose_name = 'factura proveedor'
+        verbose_name_plural = 'facturas proveedores'
 
 
 class OrdenCompra(TimeStampedModel, models.Model):
