@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from core.models import Archivo, Distrito, Localidad, Cliente, Provincia, Factura
+from core.models import Archivo, Cliente, Distrito, Factura, FacturaProveedor, Localidad, \
+    Proveedor, Provincia
 
 
 class ProvinciaSerializer(serializers.ModelSerializer):
@@ -43,4 +44,23 @@ class FacturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Factura
+        fields = ['id', 'archivos']
+
+
+class ProveedorSerializer(serializers.ModelSerializer):
+    provincia = ProvinciaSerializer(read_only=True)
+    distrito = DistritoSerializer(read_only=True)
+    localidad = LocalidadSerializer(read_only=True)
+
+    class Meta:
+        model = Proveedor
+        fields = ['id', 'razon_social', 'cuit', 'correo', 'telefono', 'calle', 'numero', 'piso', 'dpto', 'provincia',
+                  'distrito', 'localidad', 'cbu']
+
+
+class FacturaProveedorSerializer(serializers.ModelSerializer):
+    archivos = ArchivoSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = FacturaProveedor
         fields = ['id', 'archivos']

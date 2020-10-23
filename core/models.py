@@ -153,6 +153,9 @@ class Proveedor(TimeStampedModel, models.Model):
         verbose_name = 'proveedor'
         verbose_name_plural = 'proveedores'
 
+    def __str__(self):
+        return f'{self.razon_social} - {self.cuit}'
+
 
 class FacturaProveedor(TimeStampedModel, models.Model):
     fecha = models.DateField(blank=False)

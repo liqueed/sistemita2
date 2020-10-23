@@ -4,8 +4,19 @@ from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 
+from rest_framework import permissions
+from rest_framework import mixins
+from rest_framework import viewsets
+
 from core.models import Proveedor
 from core.forms import ProveedorForm
+from core.serializers import ProveedorSerializer
+
+
+class ProveedorViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    queryset = Proveedor.objects.all()
+    serializer_class = ProveedorSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class ProveedorEliminarView(LoginRequiredMixin, DeleteView):
