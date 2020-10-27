@@ -3,21 +3,32 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework import routers
 
-from core.views import \
-    ClienteDetalleView, ClienteModificarView, ClienteAgregarView, ClienteListView, ClienteEliminarView, ClienteViewSet, \
-    HomeView, UsuarioListView, DistritoViewSet, LocalidadViewSet, ProveedorListView, \
-    ProveedorDetalleView, ProveedorAgregarView, ProveedorModificarView, ProveedorEliminarView, \
-    FacturaModificarView, FacturaListView, FacturaEliminarView, FacturaDetalleView, FacturaAgregarView,\
-    OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView, OrdenCompraEliminarView, OrdenCompraAgregarView,\
-    MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView, MedioPagoEliminarView, MedioPagoModificarView, \
-    FacturaViewSet, ArchivoViewSet
+from core.views.archivos import ArchivoViewSet
+from core.views.clientes import ClienteDetalleView, ClienteModificarView, ClienteAgregarView,\
+    ClienteListView, ClienteEliminarView, ClienteViewSet
+from core.views.distritos import DistritoViewSet
+from core.views.facturascliente import FacturaViewSet, FacturaModificarView, FacturaListView, FacturaEliminarView, \
+    FacturaDetalleView, FacturaAgregarView
+from core.views.facturasproveedor import FacturaProveedorViewSet, FacturaProveedorListView, FacturaProveedorDetalleView, \
+    FacturaProveedorAgregarView, FacturaProveedorModificarView, FacturaProveedorEliminarView
+from core.views.home import HomeView
+from core.views.localidades import LocalidadViewSet
+from core.views.mediopago import MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView,\
+    MedioPagoEliminarView, MedioPagoModificarView
+from core.views.proveedores import ProveedorListView, ProveedorDetalleView, ProveedorAgregarView,\
+    ProveedorModificarView, ProveedorEliminarView, ProveedorViewSet
+from core.views.ordencompra import OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView,\
+    OrdenCompraEliminarView, OrdenCompraAgregarView
+from core.views.usuarios import UsuarioListView
 
 router = routers.DefaultRouter()
-router.register(r'distrito', DistritoViewSet)
-router.register(r'localidad', LocalidadViewSet)
-router.register(r'cliente', ClienteViewSet)
-router.register(r'factura', FacturaViewSet)
 router.register(r'archivo', ArchivoViewSet)
+router.register(r'cliente', ClienteViewSet)
+router.register(r'distrito', DistritoViewSet)
+router.register(r'factura', FacturaViewSet)
+router.register(r'factura-proveedor', FacturaProveedorViewSet)
+router.register(r'localidad', LocalidadViewSet)
+router.register(r'proveedor', ProveedorViewSet)
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -38,6 +49,12 @@ urlpatterns = [
     path('factura/<int:pk>/editar/', FacturaModificarView.as_view(), name='factura-modificar'),
     path('factura/<int:pk>/eliminar/', FacturaEliminarView.as_view(), name='factura-eliminar'),
     path('factura/agregar/', FacturaAgregarView.as_view(), name='factura-agregar'),
+
+    path('factura-proveedor/', FacturaProveedorListView.as_view(), name='factura-proveedor-listado'),
+    path('factura-proveedor/<int:pk>/', FacturaProveedorDetalleView.as_view(), name='factura-proveedor-detalle'),
+    path('factura-proveedor/<int:pk>/editar/', FacturaProveedorModificarView.as_view(), name='factura-proveedor-modificar'),
+    path('factura-proveedor/<int:pk>/eliminar/', FacturaProveedorEliminarView.as_view(), name='factura-proveedor-eliminar'),
+    path('factura-proveedor/agregar/', FacturaProveedorAgregarView.as_view(), name='factura-proveedor-agregar'),
 
     path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-listado'),
     path('ordencompra/<int:pk>/', OrdenCompraDetalleView.as_view(), name='ordencompra-detalle'),

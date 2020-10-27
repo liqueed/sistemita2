@@ -1,6 +1,6 @@
 from django_filters.rest_framework import BooleanFilter, FilterSet
 
-from core.models import Factura
+from core.models import Factura, FacturaProveedor
 
 
 class FacturaFilterSet(FilterSet):
@@ -8,4 +8,12 @@ class FacturaFilterSet(FilterSet):
 
     class Meta:
         model = Factura
+        fields = ['cobrado']
+
+
+class FacturaProveedorFilterSet(FilterSet):
+    cobrado = BooleanFilter()
+
+    class Meta:
+        model = FacturaProveedor
         fields = ['cobrado']

@@ -3,35 +3,35 @@
 {% block title %}Facturas - Liqueed{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Facturas</h1>
+    <h1 class="h3 mb-2 text-gray-800">Factura</h1>
     {% crispy form %}
     <input id="id_factura" type="hidden" value="{{ object.id }}">
 {% endblock %}
 
 {% block extra_js %}
 $('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es'});
-$('#id_cliente').select2({allowClear: true, language: 'es'});
-$('#id_cliente').change(function(){
-    updateInfoCliente();
+$('#id_proveedor').select2({allowClear: true, language: 'es'});
+$('#id_proveedor').change(function(){
+    updateInfoProveedor();
 });
 
-function updateInfoCliente(){
-    var idCliente = $('#id_cliente').val();
-    if(idCliente !== ''){
-        $.get("/api/cliente/" + idCliente + "/", function( response ) {
+function updateInfoProveedor(){
+    var idProveedor = $('#id_proveedor').val();
+    if(idProveedor !== ''){
+        $.get("/api/proveedor/" + idProveedor + "/", function( response ) {
             var data = '<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 11px;" class="card col-6"><div class="card-body"><h5 class="card-title">' + response.razon_social + '</h5><dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">' + response.cuit + '</dd><dt class="col-sm-3">Correo</dt><dd class="col-sm-10">' + response.correo + '</dd><dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">' + response.telefono + '</dd><dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">' + response.calle + ' ' + response.numero + ' ' + response.piso + ' ' + response.dpto + '</dd><dt class="col-sm-2"></dt><dd class="col-sm-10">' + response.localidad.nombre + ', ' + response.distrito.nombre + ', ' + response.provincia.nombre + '</dd></dl></div></div>';
-            $('#info_cliente').html(data);
+            $('#info_proveedor').html(data);
         });
     } else {
-        $('#info_cliente').html('');
+        $('#info_proveedor').html('');
     }
 }
-updateInfoCliente();
+updateInfoProveedor();
 
 var idFactura = $("#id_factura").val();
 if (idFactura) {
     var adjuntos = $("#adjuntos");
-    $.get(`/api/factura/${idFactura}/`, function(data) {
+    $.get(`/api/factura-proveedor/${idFactura}/`, function(data) {
 	$.each(data.archivos, function(index, item) {
 	    var filename = item.documento.split(/[\\\/]/).pop();
 	    var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
