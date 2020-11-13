@@ -33,19 +33,19 @@ var idFactura = $("#id_factura").val();
 if (idFactura) {
     var adjuntos = $("#adjuntos");
     $.get(`/api/factura/${idFactura}/`, function(data) {
-    $.each(data.archivos, function(index, item) {
-        var filename = item.documento.split(/[\\\/]/).pop();
-        var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
-        itemHtml += `<div class="col-2">`
-        itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`
-        itemHtml += `<a class="btn btn-danger btn-sm ml-2 mt-2 remove_document" id="${item.id}" href="javascript:void(0);"><i class="far fa-trash-alt"></i></a></div>`;
-        adjuntos.append(itemHtml);
-    });
+        $.each(data.archivos, function(index, item) {
+            var filename = item.documento.split(/[\\\/]/).pop();
+            var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
+            itemHtml += `<div class="col-2">`
+            itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`
+            itemHtml += `<a class="btn btn-danger btn-sm ml-2 mt-2 remove_document" id="${item.id}" href="javascript:void(0);"><i class="far fa-trash-alt"></i></a></div>`;
+            adjuntos.append(itemHtml);
+        });
     });
 
     $(adjuntos).on("click",".remove_document", function(e){
     e.preventDefault();
-    console.log($(this));
+
     var element = $(this).parent("div");
         $.ajax({
             url: `/api/archivo/${this.id}/`,
@@ -61,6 +61,7 @@ if (idFactura) {
     });
 }
 
+// Handler total
 $('#id_neto').keyup(function(){
     getTotal();
 });
@@ -69,7 +70,6 @@ $('#id_iva').change(function(){
     getTotal();
 });
 
-// Handler total
 function getTotal(){
     let neto = parseInt($('#id_neto').val());
     let iva = parseInt($('#id_iva').val());

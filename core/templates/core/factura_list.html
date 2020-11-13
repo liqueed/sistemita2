@@ -28,7 +28,7 @@
                         <th>Cliente</th>
                         <th>CUIT</th>
                         <th>Monto</th>
-			<th>Cobrado</th>
+            <th>Cobrado</th>
                         <th></th>
                         </tr>
                     </thead>
@@ -40,11 +40,11 @@
                             <td onclick="location.href='{% url 'factura-detalle' object.pk %}';">{{ object.cliente.razon_social }}</td>
                             <td onclick="location.href='{% url 'factura-detalle' object.pk %}';">{{ object.cliente.cuit }}</td>
                             <td onclick="location.href='{% url 'factura-detalle' object.pk %}';"><div class="float-right">{{ object.moneda_monto }}</div></td>
-			    <td onclick="location.href='{% url 'factura-detalle' object.pk %}';">
-			      <div class="float-left">
-				{% if object.cobrado %}<i class="fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}
-			      </div>
-			    </td>
+                <td onclick="location.href='{% url 'factura-detalle' object.pk %}';">
+                  <div class="float-left">
+                {% if object.cobrado %}<i class="fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}
+                  </div>
+                </td>
                             <td>
                               <a href="{% url 'factura-modificar' object.pk %}">
                                   <i class="fas fa-check"></i>

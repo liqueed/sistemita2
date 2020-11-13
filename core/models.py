@@ -185,7 +185,7 @@ class FacturaProveedor(FacturaAbstract):
 
     @property
     def moneda_monto(self):
-        return f'{self.get_moneda_display()} {self.monto}'
+        return f'{self.get_moneda_display()} {self.total}'
 
     class Meta:
         ordering = ('fecha',)
