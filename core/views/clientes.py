@@ -41,9 +41,10 @@ class ClienteAgregarView(LoginRequiredMixin, CreateView):
 
 
 class ClienteListView(LoginRequiredMixin, ListView):
-    queryset = Cliente.objects.all()
+    template_name = 'core/cliente_list.html'
 
     def get_queryset(self):
+        self.queryset = Cliente.objects.all()
         # Search filter
         search = self.request.GET.get('search', None)
         if search:
