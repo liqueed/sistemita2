@@ -5,7 +5,7 @@
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Factura</h1>
     {% crispy form %}
-    <input id="id_factura" type="hidden" value="{{ object.id }}">
+    <input id="id_factura_proveedor" type="hidden" value="{{ object.id }}">
 {% endblock %}
 
 {% block extra_js %}
@@ -28,15 +28,15 @@ function updateInfoProveedor(){
 }
 updateInfoProveedor();
 
-var idFactura = $("#id_factura").val();
-if (idFactura) {
+var idFacturaProveedor = $("#id_factura_proveedor").val();
+if (idFacturaProveedor) {
     var adjuntos = $("#adjuntos");
-    $.get(`/api/factura-proveedor/${idFactura}/`, function(data) {
+    $.get(`/api/factura-proveedor/${idFacturaProveedor}/`, function(data) {
         $.each(data.archivos, function(index, item) {
             var filename = item.documento.split(/[\\\/]/).pop();
             var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
-            itemHtml += `<div class="col-2">`
-            itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`
+            itemHtml += `<div class="col-2">`;
+            itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`;
             itemHtml += `<a class="btn btn-danger btn-sm ml-2 mt-2 remove_document" id="${item.id}" href="javascript:void(0);"><i class="far fa-trash-alt"></i></a></div>`;
             adjuntos.append(itemHtml);
         });
@@ -52,21 +52,47 @@ if (idFactura) {
                 xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
             },
             success: function(result) {
-        element.prev().remove()
-        element.remove();
+                element.prev().remove()
+                element.remove();
             }
         });
     });
 }
 
-// Handler total
-$('#id_neto').keyup(function(){
-    getTotal();
+// Handler factura cliente
+$('#id_factura').select2({allowClear: true, language: 'es'});
+
+let idFactura = $('#id_factura').val();
+let elementView = `<div class="col-2 d-flex align-items-center pt-3">`;
+
+elementView += `<a id="link_factura_cliente" class="btn btn-primary btn-sm text-white d-none" href="#" target="_blank">Ver factura</a></div>`
+$('#div_id_factura').parent().after(elementView);
+
+if (idFactura != ''){
+    buildLinkFacturaCliente();
+}
+
+$('#id_factura').change(function(){
+    buildLinkFacturaCliente();
 });
 
-$('#id_iva').change(function(){
-    getTotal();
-});
+function buildLinkFacturaCliente(){
+    let elemFacturaCliente = $('#link_factura_cliente');
+    let idFactura = $('#id_factura').val();
+
+    if(idFactura !== ''){
+        let url = `{% url "factura-detalle" pk=0 %}`.replace('0', idFactura);
+        elemFacturaCliente.removeClass('d-none');
+        elemFacturaCliente.attr('href', url);
+    } else {
+        elemFacturaCliente.addClass('d-none');
+    }
+}
+
+// Handler total
+$('#id_neto').keyup(function(){getTotal()});
+
+$('#id_iva').change(function(){getTotal()});
 
 function getTotal(){
     let neto = parseInt($('#id_neto').val());
