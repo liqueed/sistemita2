@@ -149,6 +149,9 @@ class Factura(FacturaAbstract):
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
 
+    def __str__(self):
+        return '{} - {} - {}'.format(self.fecha, self.cliente, self.moneda_monto)
+
     class Meta:
         ordering = ('fecha',)
         verbose_name = 'factura'
@@ -182,10 +185,14 @@ class FacturaProveedor(FacturaAbstract):
     """Modelo de factura de proveedor."""
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
+    factura = models.ForeignKey(Factura, blank=False, on_delete=models.CASCADE)
 
     @property
     def moneda_monto(self):
         return f'{self.get_moneda_display()} {self.total}'
+
+    def __str__(self):
+        return '{} - {} - {}'.format(self.fecha, self.proveedor, self.moneda_monto)
 
     class Meta:
         ordering = ('fecha',)
