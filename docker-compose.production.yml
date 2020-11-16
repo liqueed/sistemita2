@@ -27,7 +27,7 @@ services:
       - db
     env_file:
       - ./.env.production
-  letsencrypt:
+  swag:
     image: linuxserver/swag
     container_name: swag
     ports:
