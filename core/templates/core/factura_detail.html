@@ -7,25 +7,35 @@
     <dl class="row">
         <dt class="col-sm-2">Fecha</dt>
         <dd class="col-sm-10">{{ object.fecha }}</dd>
+        <dt class="col-sm-2">Número de factura</dt>
+        <dd class="col-sm-10">{% if object.numero %}{{ object.numero }}{% else %}-{% endif %}</dd>
+        <dt class="col-sm-2">Tipo</dt>
+        <dd class="col-sm-10">{{ object.tipo }}</dd>
         <dt class="col-sm-2">Cliente</dt>
         <dd class="col-sm-10">{{ object.cliente }}</dd>
-        <dt class="col-sm-2">Valor</dt>
-        <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.monto }}</dd>
-	<dt class="col-sm-2">Cobrado</dt>
+        <dt class="col-sm-2">Detalle</dt>
+        <dd class="col-sm-10">{% if object.detalle %}{{ object.detalle }}{% else %}-{% endif %}</dd>
+        <dt class="col-sm-2">Neto</dt>
+        <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.neto }}</dd>
+        <dt class="col-sm-2">IVA %</dt>
+        <dd class="col-sm-10">{{ object.iva }}</dd>
+        <dt class="col-sm-2">Total</dt>
+        <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.total }}</dd>
+    <dt class="col-sm-2">Cobrado</dt>
         <dd class="col-sm-10">{% if object.cobrado %}<i class="fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}</dd>
-	<dt class="col-sm-2">Archivos</dt>
-	{% if object.archivos.all|length %}
-	  {% for archivo in object.archivos.all %}
-	    <div class="col-3 mt-1">
-	      {{ archivo.documento|filename }}
-	    </div>
-	    <div class="col-7">
-	      <a class="btn btn-light btn-sm" target="_blank" href="{{ archivo.documento.url }}"><i class="far fa-eye"></i></a>
-	    </div>
-	    <dt class="col-sm-2"></dt>
+    <dt class="col-sm-2">Archivos</dt>
+    {% if object.archivos.all|length %}
+      {% for archivo in object.archivos.all %}
+        <div class="col-3 mt-1">
+          {{ archivo.documento|filename }}
+        </div>
+        <div class="col-7">
+          <a class="btn btn-light btn-sm" target="_blank" href="{{ archivo.documento.url }}"><i class="far fa-eye"></i></a>
+        </div>
+        <dt class="col-sm-2"></dt>
           {% endfor %}
-	{% else %}
-	  <dd class="col-sm-10">-</dd>
+    {% else %}
+      <dd class="col-sm-10">-</dd>
         {% endif %}
         </dl>
     <a href="{% url 'factura-listado' %}" class="btn btn-primary float-right">Volver</a>

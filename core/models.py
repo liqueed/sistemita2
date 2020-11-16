@@ -116,17 +116,38 @@ class Cliente(TimeStampedModel, models.Model):
         return f'{self.razon_social} - {self.cuit}'
 
 
-class Factura(TimeStampedModel, models.Model):
+class FacturaAbstract(TimeStampedModel, models.Model):
+    """Clase abstracta de facturas."""
+    TIPOS_FACTURA = (
+        ('A', 'A'),
+        ('B', 'B'),
+        ('C', 'C')
+    )
+
+    numero = models.CharField('Número', max_length=20, blank=True)
     fecha = models.DateField(blank=False)
-    cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
+    detalle = models.TextField(blank=True)
+    tipo = models.CharField(blank=False, max_length=1, choices=TIPOS_FACTURA, default='A')
+
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
-    monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    neto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    iva = models.PositiveSmallIntegerField(blank=False, default=21)
+    total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+
     cobrado = models.BooleanField(default=False)
-    archivos = models.ManyToManyField(Archivo, blank=True)
 
     @property
     def moneda_monto(self):
-        return f'{self.get_moneda_display()} {self.monto}'
+        return f'{self.get_moneda_display()} {self.total}'
+
+    class Meta:
+        abstract = True
+
+
+class Factura(FacturaAbstract):
+    """Modelo factura de cliente."""
+    cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
+    archivos = models.ManyToManyField(Archivo, blank=True)
 
     class Meta:
         ordering = ('fecha',)
@@ -157,17 +178,14 @@ class Proveedor(TimeStampedModel, models.Model):
         return f'{self.razon_social} - {self.cuit}'
 
 
-class FacturaProveedor(TimeStampedModel, models.Model):
-    fecha = models.DateField(blank=False)
+class FacturaProveedor(FacturaAbstract):
+    """Modelo de factura de proveedor."""
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
-    moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
-    monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
-    cobrado = models.BooleanField(default=False)
     archivos = models.ManyToManyField(Archivo, blank=True)
 
     @property
     def moneda_monto(self):
-        return f'{self.get_moneda_display()} {self.monto}'
+        return f'{self.get_moneda_display()} {self.total}'
 
     class Meta:
         ordering = ('fecha',)
