@@ -28,8 +28,8 @@ services:
     env_file:
       - ./.env.production
   letsencrypt:
-    image: linuxserver/letsencrypt
-    container_name: letsencrypt
+    image: linuxserver/swag
+    container_name: swag
     ports:
       - 80:80
       - 443:443
