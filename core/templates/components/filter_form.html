@@ -1,7 +1,7 @@
 <form class="form-inline" method="get">
   <div class="form-group mb-2">
     <input type="checkbox" class="form-check-input" name="cobrado" id="id_cobrado" {% if request.GET.cobrado %}checked{% endif %}>
-    <label class="form-check-label mr-2" for="exampleCheck1">Cobrado</label>
+    <label class="form-check-label mr-2" for="exampleCheck1">Cobrado/Pagado</label>
     <input onfocus="this.select()" autofocus autocomplete="off" value="{{ request.GET.search }}" type="text" class="form-control form-control-sm" name="search" id="id_search" placeholder="Buscar">
   </div>
 </form>

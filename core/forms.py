@@ -154,6 +154,7 @@ class FacturaProveedorForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['numero'].label = 'Número de factura'
         self.fields['factura'].label = 'Factura de cliente'
+        self.fields['cobrado'].label = 'Pagado'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
