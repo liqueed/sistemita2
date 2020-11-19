@@ -30,17 +30,18 @@ class OrdenCompraAgregarView(LoginRequiredMixin, CreateView):
 
 
 class OrdenCompraListView(LoginRequiredMixin, ListView):
-    queryset = OrdenCompra.objects.all()
+    template_name = 'ordendecompra-list'
 
     def get_queryset(self):
+        queryset = OrdenCompra.objects.all()
         # Search filter
         search = self.request.GET.get('search', None)
         if search:
             # self.queryset = self.queryset.annotate(
             #     search=SearchVector('last_name') + SearchVector('first_name') + SearchVector('email') + SearchVector('username'),
             # ).filter(search=search)
-            self.queryset = self.queryset.filter(
+            queryset = queryset.filter(
                 Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
             )
 
-        return self.queryset
+        return queryset

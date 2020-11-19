@@ -23,19 +23,19 @@
     Clientes
   </div>
 
-  <li class="nav-item{% if request.resolver_match.url_name == 'cliente-listado' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'cliente-listado, cliente-detalle' %} active{% endif %}">
     <a class="nav-link" href="{% url 'cliente-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Clientes</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name == 'factura-listado' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'factura-listado, factura-detalle' %} active{% endif %}">
     <a class="nav-link" href="{% url 'factura-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name == 'ordencompra-listado' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'ordencompra-listado, ordencompra-detalle' %} active{% endif %}">
     <a class="nav-link" href="{% url 'ordencompra-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>&Oacute;rdenes de compra</span></a>
@@ -49,13 +49,13 @@
     Proveedores
   </div>
 
-  <li class="nav-item{% if request.resolver_match.url_name == 'proveedor-listado' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'proveedor-listado, proveedor-detalle' %} active{% endif %}">
     <a class="nav-link" href="{% url 'proveedor-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Proveedores</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name == 'factura-proveedor-listado' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name == 'factura-proveedor-listado' or request.resolver_match.url_name == 'factura-proveedor-detalle'  %} active{% endif %}">
     <a class="nav-link" href="{% url 'factura-proveedor-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
@@ -69,7 +69,7 @@
     Medios de pago
   </div>
 
-  <li class="nav-item{% if request.resolver_match.url_name == 'medios-listado' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'mediopago-listado, mediopago-detalle' %} active{% endif %}">
     <a class="nav-link" href="{% url 'mediopago-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Medios de pago</span></a>

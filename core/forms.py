@@ -153,6 +153,7 @@ class FacturaProveedorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['numero'].label = 'Número de factura'
+        self.fields['factura'].label = 'Factura de cliente'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
@@ -168,6 +169,10 @@ class FacturaProveedorForm(forms.ModelForm):
                 ),
                 Div(
                     Div('proveedor', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('factura', css_class='col-6'),
                     css_class='row'
                 ),
                 # Aca va la data extra del cliente por JS
@@ -210,7 +215,7 @@ class FacturaProveedorForm(forms.ModelForm):
     class Meta:
         model = FacturaProveedor
         fields = (
-            'fecha', 'numero', 'tipo', 'proveedor', 'detalle',
+            'fecha', 'numero', 'tipo', 'proveedor', 'factura', 'detalle',
             'moneda', 'neto', 'iva', 'total', 'cobrado', 'archivos'
         )
 
