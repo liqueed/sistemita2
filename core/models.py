@@ -121,13 +121,17 @@ class FacturaAbstract(TimeStampedModel, models.Model):
     TIPOS_FACTURA = (
         ('A', 'A'),
         ('B', 'B'),
-        ('C', 'C')
+        ('C', 'C'),
+        ('NCA', 'NC A'),
+        ('NCB', 'NC B'),
+        ('FCPYME', 'FC PYME'),
+        ('NCFCPYME', 'NC FCPYME'),
     )
 
     numero = models.CharField('Número', max_length=20, blank=True)
     fecha = models.DateField(blank=False)
     detalle = models.TextField(blank=True)
-    tipo = models.CharField(blank=False, max_length=1, choices=TIPOS_FACTURA, default='A')
+    tipo = models.CharField(blank=False, max_length=8, choices=TIPOS_FACTURA, default='A')
 
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     neto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
