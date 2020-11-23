@@ -8,7 +8,7 @@ from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import viewsets
 
-from core.models import Proveedor
+from core.models.proveedor import Proveedor
 from core.forms import ProveedorForm
 from core.serializers import ProveedorSerializer
 

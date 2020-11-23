@@ -1,6 +1,7 @@
 from django_filters.rest_framework import BooleanFilter, FilterSet
 
-from core.models import Factura, FacturaProveedor
+from core.models.cliente import Factura
+from core.models.proveedor import FacturaProveedor
 
 
 class FacturaFilterSet(FilterSet):

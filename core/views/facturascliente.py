@@ -10,7 +10,7 @@ from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import viewsets
 
-from core.models import Factura
+from core.models.cliente import Factura
 from core.forms import FacturaForm
 from core.serializers import FacturaSerializer
 from core.filters import FacturaFilterSet

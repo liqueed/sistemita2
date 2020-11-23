@@ -1,7 +1,7 @@
 from rest_framework import permissions
 from rest_framework import viewsets
 
-from core.models import Distrito
+from core.models.entidad import Distrito
 from core.serializers import DistritoSerializer
 
 

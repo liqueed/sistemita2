@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 
 from core.forms import MedioPagoForm
-from core.models import MedioPago
+from core.models.mediopago import MedioPago
 
 
 class MedioPagoListView(LoginRequiredMixin, ListView):

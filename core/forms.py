@@ -4,8 +4,11 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, HTML, Div, Reset
 from django import forms
 
-from .models import Archivo, Cliente, Distrito, Factura, FacturaProveedor, Localidad,\
-    MedioPago, Proveedor, OrdenCompra
+from core.models.archivo import Archivo
+from core.models.cliente import Cliente, Factura, OrdenCompra
+from core.models.entidad import Distrito, Localidad
+from core.models.proveedor import Proveedor, FacturaProveedor
+from core.models.mediopago import MedioPago
 
 
 class MedioPagoForm(forms.ModelForm):

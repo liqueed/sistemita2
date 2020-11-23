@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
-from core.models import Archivo, Cliente, Distrito, Factura, FacturaProveedor, Localidad, \
-    Proveedor, Provincia
+from core.models.entidad import Provincia, Distrito, Localidad
+from core.models.cliente import Cliente, Factura
+from core.models.proveedor import Proveedor, FacturaProveedor
+from core.models.archivo import Archivo
 
 
 class ProvinciaSerializer(serializers.ModelSerializer):
