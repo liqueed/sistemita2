@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
-from core.models.entidad import Provincia, Distrito, Localidad
-from core.models.cliente import Cliente, Factura
-from core.models.proveedor import Proveedor, FacturaProveedor
 from core.models.archivo import Archivo
+from core.models.cliente import Cliente, Factura
+from core.models.entidad import Provincia, Distrito, Localidad
+from core.models.mediopago import MedioPago
+from core.models.proveedor import Proveedor, FacturaProveedor
 
 
 class ProvinciaSerializer(serializers.ModelSerializer):
@@ -43,10 +44,11 @@ class ArchivoSerializer(serializers.ModelSerializer):
 
 class FacturaSerializer(serializers.ModelSerializer):
     archivos = ArchivoSerializer(many=True, read_only=True)
+    cliente = ClienteSerializer(read_only=True)
 
     class Meta:
         model = Factura
-        fields = ['id', 'archivos']
+        fields = ['id', 'archivos', 'cliente', 'cobrado', 'fecha', 'total']
 
 
 class ProveedorSerializer(serializers.ModelSerializer):
@@ -66,3 +68,8 @@ class FacturaProveedorSerializer(serializers.ModelSerializer):
     class Meta:
         model = FacturaProveedor
         fields = ['id', 'archivos']
+
+class MedioPagoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MedioPago
+        fields = ['id', 'nombre']

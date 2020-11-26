@@ -7,8 +7,8 @@ from django import forms
 from core.models.archivo import Archivo
 from core.models.cliente import Cliente, Factura, OrdenCompra
 from core.models.entidad import Distrito, Localidad
-from core.models.proveedor import Proveedor, FacturaProveedor
 from core.models.mediopago import MedioPago
+from core.models.proveedor import Proveedor, FacturaProveedor
 
 
 class MedioPagoForm(forms.ModelForm):

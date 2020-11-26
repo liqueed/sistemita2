@@ -23,12 +23,12 @@
       e.preventDefault();
       if(x < max_fields){
           x++;
-	  var htmlInput = `<div class="mb-2"><div class="form-control custom-file" style="border:0">`;
-	  htmlInput += `<input class="custom-file-input" type="file" name="archivos">`;
-	  htmlInput += `<label class="custom-file-label text-truncate" for="id_archivos">---</label></div>`;
-	  htmlInput += `<button class="btn btn-danger btn-sm remove_field" type="button">x</button></div>`;
-	  $(wrapper).append(htmlInput);
-	  $('.custom-file-input').on("change", function(e){e.target.parentNode.querySelector('.custom-file-label').textContent=e.target.files[0].name;});
+      var htmlInput = `<div class="mb-2"><div class="form-control custom-file" style="border:0">`;
+      htmlInput += `<input class="custom-file-input" type="file" name="archivos">`;
+      htmlInput += `<label class="custom-file-label text-truncate" for="id_archivos">---</label></div>`;
+      htmlInput += `<button class="btn btn-danger btn-sm remove_field" type="button">x</button></div>`;
+      $(wrapper).append(htmlInput);
+      $('.custom-file-input').on("change", function(e){e.target.parentNode.querySelector('.custom-file-label').textContent=e.target.files[0].name;});
       }
   });
 

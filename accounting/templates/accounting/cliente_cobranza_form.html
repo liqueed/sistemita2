@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Clientes - Liqueed{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <h1 class="h3 mb-2 text-gray-800">Cobranza Cliente</h1>
+  <form method="post">
+    <fieldset>
+      <legend>Datos</legend>
+
+      <!-- Client -->
+      <div class="row">
+        <div class="col-5">
+          <div id="div_id_cliente" class="form-group">
+            <label for="id_cliente" class=" requiredField">
+              Cliente<span class="asteriskField">*</span>
+            </label>
+            <div class="">
+              <select name="cliente" required="" id="id_cliente" class="select form-control">
+                <option value="" >---------</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="info_cliente">
+      </div>
+      <!--//End Cliente -->
+
+      <!-- Factura -->
+      <div class="card p-4" style="width: 38rem;">
+        <div class="row">
+
+          <!-- Factura Cliente -->
+          <div class="col-12">
+            <div id="div_id_factura" class="form-group">
+              <label for="id_factura" class=" requiredField">
+                Factura<span class="asteriskField">*</span>
+              </label>
+              <div class="">
+                <select name="factura" class="select form-control" required="" id="id_factura">
+                  <option value="" selected="">---------</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!--//End Factura Cliente -->
+
+          <!-- Metodo y Monto -->
+          <div class="col-12 wrapper">
+            <div class="row">
+              <!-- Metodo -->
+              <div class="col-6">
+                <div id="div_id_metodo" class="form-group">
+                  <label for="id_metodo" class=" requiredField">
+                    Metodo<span class="asteriskField">*</span>
+                  </label>
+                  <div class="selector">
+                    <select name="metodo" class="select form-control" required="" id="id_metodo">
+                      <option value="">---------</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <!--//End Metodo -->
+              <!-- Monto -->
+              <div class="col-5">
+                <div id="div_id_monto" class="form-group">
+                  <label for="id_monto" class=" requiredField">
+                    Monto<span class="asteriskField">*</span>
+                  </label>
+                  <div class="">
+                    <input type="number" name="monto" value="0.0" step="0.01" class="numberinput form-control" required="" id="id_monto">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-1">
+                <div class="form-group">
+                  <label></label>
+                  <div>
+                    <button id="add_metodo" class="btn btn-success btn-xs mt-3"><i class="fas fa-plus-circle"></i></button>
+                  </div>
+                </div>
+              </div>
+              <!--//Monto -->
+            </div>
+          </div>
+          <!-- End metodo y monto -->
+
+          <!-- Ganancias, ingresos e IVA -->
+          <div class="col-4">
+            <div id="div_id_ganancias" class="form-group">
+              <label for="id_ganancias" class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
+              <div class=""><input type="number" name="ganancias" value="0.0" step="0.01" class="numberinput form-control" required="" id="id_ganancias" /></div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div id="div_id_ingresos_brutos" class="form-group">
+              <label for="id_ingresos_brutos" class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
+              <div class=""><input type="number" name="ingresos_brutos" value="0.0" step="0.01" class="numberinput form-control" required="" id="id_ingresos_brutos" /></div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div id="div_id_iva" class="form-group">
+              <label for="id_iva" class="requiredField"> Iva<span class="asteriskField">*</span> </label>
+              <div class=""><input type="number" name="iva" value="0.0" step="0.01" class="numberinput form-control" required="" id="id_iva" /></div>
+            </div>
+          </div>
+          <!-- //End Ganancias, ingresos e IVA -->
+
+        </div>
+      </div>
+      <!--//End Factura -->
+
+      <!-- Total -->
+      <div class="row mt-2">
+        <div class="col-4">
+          <div id="div_id_total" class="form-group">
+            <label for="id_total" class="requiredField"> Total<span class="asteriskField">*</span> </label>
+            <div class=""><input type="number" name="total" value="0.0" step="0.01" class="numberinput form-control" required="" id="id_total" /></div>
+          </div>
+        </div>
+      </div>
+      <!--//End Total -->
+
+    </fieldset>
+
+    <div class="form-group">
+      <div class="">
+        <input type="submit" name="submit" value="Guardar" class="btn btn-primary float-right" id="submit-id-submit" />
+        <input type="reset" name="reset" value="Limpiar" class="btn btn-inverse float-right" id="reset-id-reset" />
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}
