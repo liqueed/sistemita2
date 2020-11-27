@@ -47,7 +47,7 @@
           <!--//End Factura Cliente -->
 
           <!-- Metodo y Monto -->
-          <div class="col-12 wrapper">
+          <div class="col-11 wrapper-metodo">
             <div class="row">
               <!-- Metodo -->
               <div class="col-6">
@@ -64,7 +64,7 @@
               </div>
               <!--//End Metodo -->
               <!-- Monto -->
-              <div class="col-5">
+              <div class="col-6">
                 <div id="div_id_monto" class="form-group">
                   <label for="id_monto" class=" requiredField">
                     Monto<span class="asteriskField">*</span>
@@ -74,19 +74,21 @@
                   </div>
                 </div>
               </div>
-
-              <div class="col-1">
-                <div class="form-group">
-                  <label></label>
-                  <div>
-                    <button id="add_metodo" class="btn btn-success btn-xs mt-3"><i class="fas fa-plus-circle"></i></button>
-                  </div>
-                </div>
-              </div>
               <!--//Monto -->
             </div>
           </div>
           <!-- End metodo y monto -->
+
+          <!-- Agrega monto -->
+          <div class="col-1 pl-0">
+            <div class="form-group">
+              <label></label>
+              <div>
+                <button id="add_metodo" class="btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
+              </div>
+            </div>
+          </div>
+          <!-- //Agrega monto -->
 
           <!-- Ganancias, ingresos e IVA -->
           <div class="col-4">
@@ -137,4 +139,79 @@
 </div>
 {% endblock %}
 {% block extra_js %}
+// Cliente
+$('#id_cliente').select2({
+    ajax: {
+        url: '/api/cliente/',
+        processResults: function (response) {
+            var data = $.map(response, function (obj) {
+                obj.id = obj.id;
+                obj.text = `${obj.razon_social} - CUIT ${obj.cuit}`;
+                return obj;
+            });
+            return {
+                results: data
+            };
+        }
+    }
+});
+
+// Factura
+$('#id_factura').select2({
+    placeholder: "Seleccione un cliente",
+    ajax: {
+        beforeSend: function(jqXHR, settings) {
+            let idCliente = $('#id_cliente').find(":selected").val();
+            settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
+        },
+        url: '/api/factura/',
+        processResults: function (response) {
+            let data = $.map(response, function (obj) {
+                obj.id = obj.id;
+                obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
+                return obj;
+            });
+            return {
+                results: data
+            };
+        }
+    }
+});
+
+// Metodo de pago
+let wrapperMetodo = $(".wrapper-metodo");
+$('#id_metodo').click(function(){
+    if ($(this).children().length == 1){
+        displayMetodoPagoData();
+        $('#add_metodo').removeClass('d-none');
+    }
+});
+
+
+$("#add_metodo").click(function(e){
+    e.preventDefault();
+    let htmlFormCobranza = $(".wrapper-metodo .row:first").clone();
+    htmlFormCobranza.find('#id_monto').val('0.0');
+    htmlFormCobranza.find("select").after('<button class="btn btn-danger btn-xs btn-remove">x</button>');
+    $(".wrapper-metodo").append(htmlFormCobranza);
+});
+
+function displayMetodoPagoData(){
+    $.ajax({
+        url: '/api/mediopago/',
+        success: function (response) {
+            var data = $.map(response, function (obj) {
+                obj.id = obj.id;
+                obj.text = obj.nombre
+                return obj;
+            });
+            $.each(data, function(key, value) {
+                $('#id_metodo').append($("<option></option>")
+                                       .attr("value", value['id'])
+                                       .text(value['nombre']));
+            });
+        }
+    });
+}
+
 {% endblock %}

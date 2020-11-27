@@ -13,7 +13,9 @@ from core.forms import ClienteForm
 from core.serializers import ClienteSerializer
 
 
-class ClienteViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class ClienteViewSet(mixins.ListModelMixin,
+                     mixins.RetrieveModelMixin,
+                     viewsets.GenericViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
     permission_classes = (permissions.IsAuthenticated,)
