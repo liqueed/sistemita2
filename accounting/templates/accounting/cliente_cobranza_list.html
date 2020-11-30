@@ -34,8 +34,8 @@
                         {% for object in object_list %}
                         <tr>
                             <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.pk }}</td>
-                            <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.razon_social }}</td>
-                            <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.cuit }}</td>
+                            <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.cliente.razon_social }}</td>
+                            <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.cliente.cuit }}</td>
                             <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.creado }}</td>
                             <td>
                               <a href="{# url 'cliente-modificar' object.pk #}">
