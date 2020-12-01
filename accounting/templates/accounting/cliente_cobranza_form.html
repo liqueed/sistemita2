@@ -143,6 +143,7 @@
 {% endblock %}
 {% block extra_js %}
 // Cliente
+let cliente;
 $('#id_cliente').select2({
     ajax: {
         url: '/api/cliente/',
@@ -155,9 +156,19 @@ $('#id_cliente').select2({
             return {
                 results: data
             };
-        }
+        },
+        cache: true
     }
+}).on('change', function(e) {
+    var obj = $("#id_cliente").select2("data")[0];
+    cliente = {
+      "razon_social": obj.razon_social,
+      "cuit": obj.cuit,
+      "correo": obj.correo,
+      "telefono": obj.telefono
+    };
 });
+// TODO: mostrar datos de cliente
 
 // Factura
 $('#id_factura').select2({
@@ -176,7 +187,8 @@ $('#id_factura').select2({
             return {
                 results: data
             };
-        }
+        },
+        cache: true
     }
 });
 
@@ -225,8 +237,8 @@ $("#add_metodo").click(function(e){
 $('#submit-id-submit').click(function(e){
     e.preventDefault();
     // Validaciones
+    // TODO: agregar validaciones
     // $("#cobranza-form").validate();
-    let cliente = $('select[name=cliente]').val();
     let total = $('input[name=total]').val();
     let facturas = [];
 
@@ -250,11 +262,12 @@ $('#submit-id-submit').click(function(e){
             'cobranza_factura_pagos': pagos
         });
     });
+
     let formCobranzaData = {
-        'cliente': parseInt(cliente),
         'total': parseInt(total),
         'cobranza_facturas': facturas
     };
+    formCobranzaData['cliente'] = cliente;
 
     $.ajax({
         type        : 'POST',

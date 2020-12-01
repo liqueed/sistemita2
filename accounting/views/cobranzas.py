@@ -15,28 +15,18 @@ from rest_framework.response import Response
 from accounting.models.cobranza import Cobranza
 
 # Serializers
-from accounting.serializers import (
-    AddCobranzaSerializer, CobranzaSerializer
-)
+from accounting.serializers import CobranzaSerializer
 
 
 class CobranzaViewSet(mixins.CreateModelMixin,
                       mixins.RetrieveModelMixin,
+                      mixins.UpdateModelMixin,
                       mixins.ListModelMixin,
                       viewsets.GenericViewSet):
     """Cobranza view set."""
     serializer_class = CobranzaSerializer
     queryset = Cobranza.objects.all()
     permission_classes = (permissions.AllowAny,)  # TODO: Only test
-
-    def create(self, request, *args, **kwargs):
-        """Handle member creation from invitation code."""
-        serializer = AddCobranzaSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        cobranza = serializer.save()
-
-        data = self.get_serializer(cobranza).data
-        return Response(data, status=status.HTTP_201_CREATED)
 
 
 class CobranzaListView(LoginRequiredMixin, ListView):
@@ -49,11 +39,13 @@ class CobranzaListView(LoginRequiredMixin, ListView):
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
+                Q(razon_social__search=search) | Q(correo__icontains=search)
+                | Q(cuit__icontains=search)
             )
 
         return queryset
 
 
 class CobranzaAgregarTemplateView(LoginRequiredMixin, TemplateView):
+    """Formulario para agregar y editar cobranzas."""
     template_name = 'accounting/cliente_cobranza_form.html'
