@@ -42,7 +42,7 @@
                 Factura<span class="asteriskField">*</span>
               </label>
               <div class="wrapper-selector-factura">
-                <select class="form-control selector-factura" name="factura_0" required>
+                <select class="form-control selector-factura" name="factura_1" disabled required>
                   <option value="" selected="">---------</option>
                 </select>
               </div>
@@ -60,7 +60,7 @@
                     Metodo<span class="asteriskField">*</span>
                   </label>
                   <div>
-                    <select class="selector-metodo form-control" name="metodo_1_1" required>
+                    <select class="selector-metodo form-control" name="metodo_1_1" disabled required>
                       <option value="">---------</option>
                     </select>
                   </div>
@@ -122,13 +122,13 @@
       <!-- Agregar factura -->
       <div class="row">
         <div class="offset-6 col-1">
-          <button class="add-factura btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
+          <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
         </div>
       </div>
       <!--//Agregar factura -->
 
       <!-- Total -->
-      <div class="row mt-2">
+      <div class="row wrapper-total d-none mt-2">
         <div class="col-4">
           <div class="form-group">
             <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
@@ -169,6 +169,7 @@ $('#id_cliente').select2({
         cache: true
     }
 }).on('change', function(e) {
+    // Obtengo objeto Cliente
     var obj = $(this).select2("data")[0];
     cliente = {
       "razon_social": obj.razon_social,
@@ -176,6 +177,10 @@ $('#id_cliente').select2({
       "correo": obj.correo,
       "telefono": obj.telefono
     };
+
+    $('.wrapper-total').removeClass('d-none');
+    $('.selector-factura').prop('disabled', false);
+    $('.selector-metodo').prop('disabled', false);
 });
 // TODO: mostrar datos de cliente
 
@@ -202,6 +207,7 @@ $('#cobranza_factura_1 .selector-factura').select2({
 }).on('change', function(){
     var obj = $(this).select2("data")[0];
     setTotal(obj.total);
+    $('.add-factura').removeClass('d-none');
 });
 
 // Metodos de pago
@@ -305,46 +311,51 @@ $('#submit-id-submit').click(function(e){
     let total = $('input[name=total]').val();
     let facturas = [];
 
-    // $('.facturas').each(function(){
-    //     let factura = $(this).find('select[name=factura]').val();
-    //     let ganancias = $(this).find('input[name=ganancias]').val();
-    //     let ingresos_brutos = $(this).find('input[name=ingresos_brutos]').val();
-    //     let iva = $(this).find('input[name=iva]').val();
-    //     let pagos = [];
-    //     $(this).find('.pagos').each(function(e){
-    //         pagos.push({
-    //             'metodo': $(this).find('[name=metodo]').val(),
-    //             'monto': $(this).find('[name=monto]').val()
-    //         });
-    //     });
-    //     facturas.push({
-    //         'factura': parseInt(factura),
-    //         'ganancias': ganancias,
-    //         'ingresos_brutos': ingresos_brutos,
-    //         'iva': iva,
-    //         'cobranza_factura_pagos': pagos
-    //     });
-    // });
+    $('.wrapper-factura').each(function(){
+        let factura = $(this).find('[name*="factura"]').val();
+        let pagos = [];
+        let ganancias = $(this).find('[name*="ganancias"]').val();
+        let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
+        let iva = $(this).find('[name*="iva"]').val();
 
-    // let formCobranzaData = {
-    //     'total': parseInt(total),
-    //     'cobranza_facturas': facturas
-    // };
-    // formCobranzaData['cliente'] = cliente;
+        // pagos
+        $(this).find('.group-pagos').each(function(e){
+            let metodo = $(this).find('[name*="metodo"]').val();
+            let monto = $(this).find('[name*="monto"]').val();
+            pagos.push({
+                'metodo': metodo,
+                'monto': monto
+            });
+        });
 
-    // $.ajax({
-    //     type        : 'POST',
-    //     url         : '/api/cobranza/',
-    //     data        : JSON.stringify(formCobranzaData),
-    //     dataType    : 'json',
-    //     contentType : 'application/json',
-    //     encode      : true,
-    //     beforeSend: function (xhr) {
-    //         xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-    //     }
-    // }).done(function(data) {
-    //     console.log(data);
-    // });
+        facturas.push({
+            'factura': parseInt(factura),
+            'cobranza_factura_pagos': pagos,
+            'ganancias': ganancias,
+            'ingresos_brutos': ingresos_brutos,
+            'iva': iva
+        });
+    });
+
+    let formCobranzaData = {
+        'cobranza_facturas': facturas,
+        'total': parseInt(total)
+    }
+    formCobranzaData['cliente'] = cliente;
+
+    $.ajax({
+        type        : 'POST',
+        url         : '/api/cobranza/',
+        data        : JSON.stringify(formCobranzaData),
+        dataType    : 'json',
+        contentType : 'application/json',
+        encode      : true,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        }
+    }).done(function(data) {
+        console.log(data);
+    });
 
 });
 
