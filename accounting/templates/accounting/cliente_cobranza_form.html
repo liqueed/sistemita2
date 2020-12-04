@@ -6,154 +6,162 @@
     <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-  <h1 class="h3 mb-2 text-gray-800">Cobranza Cliente</h1>
-  <form id="cobranza-form">
-    <fieldset>
-      <legend>Datos</legend>
+    <div class="container-fluid">
+      <h1 class="h3 mb-2 text-gray-800">Cobranza Cliente</h1>
+      <form id="cobranza-form">
+        <fieldset>
+          <legend>Datos</legend>
 
-      <!-- Client -->
-      <div class="row">
-        <div class="col-5">
-          <div class="form-group">
-            <label class="requiredField">
-              Cliente<span class="asteriskField">*</span>
-            </label>
-            <div class="">
-              <select class="select form-control" id="id_cliente" name="cliente" required>
-                <option value="">---------</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row" id="info_cliente">
-      </div>
-      <!--//End Cliente -->
-
-      <!-- Factura -->
-    <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
-        <div class="row">
-
-          <!-- Factura Cliente -->
-          <div class="col-12">
-            <div class="form-group">
-              <label class="requiredField">
-                Factura<span class="asteriskField">*</span>
-              </label>
-              <div class="wrapper-selector-factura">
-                <select class="form-control selector-factura" name="factura_1" disabled required>
-                  <option value="" selected="">---------</option>
-                </select>
+          <!-- Client -->
+          <div class="row">
+            <div class="col-5">
+              <div class="form-group">
+                <label class="requiredField">
+                  Cliente<span class="asteriskField">*</span>
+                </label>
+                <div class="">
+                  <select class="select form-control" id="id_cliente" name="cliente" required>
+                    <option value="">---------</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
-          <!--//End Factura Cliente -->
+          <div class="row" id="info_cliente">
+          </div>
+          <!--//End Cliente -->
 
-          <!-- Metodo y Monto -->
-          <div class="col-11 wrapper-pagos">
-            <div class="row group-pagos">
-              <!-- Metodo -->
-              <div class="col-6">
+          <!-- Factura -->
+
+          <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
+            <div class="row">
+              <div class="col-12">
+                <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
+                  <span class="text-danger">&times;</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <!-- Factura Cliente -->
+              <div class="col-12">
                 <div class="form-group">
                   <label class="requiredField">
-                    Metodo<span class="asteriskField">*</span>
+                    Factura<span class="asteriskField">*</span>
                   </label>
-                  <div>
-                    <select class="selector-metodo form-control" name="metodo_1_1" disabled required>
-                      <option value="">---------</option>
+                  <div class="wrapper-selector-factura">
+                    <select class="form-control selector-factura" name="factura_1" disabled required>
+                      <option value="" selected="">---------</option>
                     </select>
                   </div>
                 </div>
               </div>
-              <!--//End Metodo -->
-              <!-- Monto -->
-              <div class="col-6">
+              <!--//End Factura Cliente -->
+
+              <!-- Metodo y Monto -->
+              <div class="col-11 wrapper-pagos">
+                <div class="row group-pagos">
+                  <!-- Metodo -->
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="requiredField">
+                        Metodo<span class="asteriskField">*</span>
+                      </label>
+                      <div>
+                        <select class="selector-metodo form-control" name="metodo_1_1" disabled required>
+                          <option value="">---------</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <!--//End Metodo -->
+                  <!-- Monto -->
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="requiredField">
+                        Monto<span class="asteriskField">*</span>
+                      </label>
+                      <div>
+                        <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
+                      </div>
+                    </div>
+                  </div>
+                  <!--//Monto -->
+                </div>
+              </div>
+              <!-- End metodo y monto -->
+
+              <!-- Agrega monto -->
+              <div class="col-1 pl-0">
                 <div class="form-group">
-                  <label class="requiredField">
-                    Monto<span class="asteriskField">*</span>
-                  </label>
+                  <label></label>
                   <div>
-                    <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
+                    <button class="add-pago btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
                   </div>
                 </div>
               </div>
-              <!--//Monto -->
+              <!-- //Agrega monto -->
+
+              <!-- Ganancias, ingresos e IVA -->
+              <div class="col-4">
+                <div class="form-group">
+                  <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
+                  <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
+                  <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
+                  <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
+                </div>
+              </div>
+              <!-- //End Ganancias, ingresos e IVA -->
+
             </div>
           </div>
-          <!-- End metodo y monto -->
+          <!--//End Factura -->
 
-          <!-- Agrega monto -->
-          <div class="col-1 pl-0">
-            <div class="form-group">
-              <label></label>
-              <div>
-                <button class="add-pago btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
+          <!-- Agregar factura -->
+          <div class="row">
+            <div class="offset-6 col-1">
+              <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
+            </div>
+          </div>
+          <!--//Agregar factura -->
+
+          <!-- Total -->
+          <div class="row wrapper-total d-none mt-2">
+            <div class="col-4">
+              <div class="form-group">
+                <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+                <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
               </div>
             </div>
           </div>
-          <!-- //Agrega monto -->
+          <!--//End Total -->
 
-          <!-- Ganancias, ingresos e IVA -->
-          <div class="col-4">
-            <div class="form-group">
-              <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
-              <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="form-group">
-              <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
-              <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="form-group">
-              <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
-              <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
-            </div>
-          </div>
-          <!-- //End Ganancias, ingresos e IVA -->
+        </fieldset>
 
-        </div>
-      </div>
-      <!--//End Factura -->
-
-      <!-- Agregar factura -->
-      <div class="row">
-        <div class="offset-6 col-1">
-          <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
-        </div>
-      </div>
-      <!--//Agregar factura -->
-
-      <!-- Total -->
-      <div class="row wrapper-total d-none mt-2">
-        <div class="col-4">
-          <div class="form-group">
-            <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
-            <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
+        <div class="form-group">
+          <div>
+            <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+            <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
           </div>
         </div>
-      </div>
-      <!--//End Total -->
 
-    </fieldset>
-
-    <div class="form-group">
-      <div>
-        <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
-        <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
-      </div>
+      </form>
     </div>
-
-  </form>
-</div>
 {% endblock %}
 {% block extra_js %}
 // Cliente
 let cliente;
 $('#id_cliente').select2({
+    placeholder: 'Selecciona un cliente',
     ajax: {
         url: '/api/cliente/',
         processResults: function (response) {
@@ -186,6 +194,7 @@ $('#id_cliente').select2({
 
 // Factura inicial
 $('#cobranza_factura_1 .selector-factura').select2({
+    placeholder: 'Selecciona una factura',
     ajax: {
         beforeSend: function(jqXHR, settings) {
             let idCliente = $('#id_cliente').find(":selected").val();
@@ -262,6 +271,7 @@ $('.add-factura').click(function(e){
     $('.wrapper-factura:last').after(clone); // clonar luego del último
     $(`#${idFactura} input`).each(function(){$(this).val('0.0')}); // remuevo valores
     $(`#${idFactura} .add-pago`).addClass('d-none');
+    $(`#${idFactura} .close`).removeClass('d-none');
 
     // Selector factura, destruye los eventos de select2 y vuelve a construir
     $(`#${idFactura} .wrapper-selector-factura`).empty();
@@ -270,6 +280,7 @@ $('.add-factura').click(function(e){
     $(`#${idFactura} .wrapper-selector-factura`).append(htmlselector);
 
     $(`#${idFactura} .selector-factura`).select2({
+        placeholder: 'Selecciona una factura',
         ajax: {
             beforeSend: function(jqXHR, settings) {
                 let idCliente = $('#id_cliente').find(":selected").val();
@@ -300,6 +311,10 @@ $('.add-factura').click(function(e){
     $(`#${idFactura} .input-ganancias`).attr('name', `ganancias_${cloneIdFactura}`);
     $(`#${idFactura} .input-ingresos-brutos`).attr('name', `ingresos_brutos_${cloneIdFactura}`);
     $(`#${idFactura} .input-iva`).attr('name', `iva_${cloneIdFactura}`);
+});
+
+$('.close').click(function(){
+    $(this).closest('.wrapper-factura').remove();
 });
 
 // Guardar
