@@ -16,23 +16,23 @@
       <div class="row">
         <div class="col-5">
           <div class="form-group">
-            <label class=" requiredField">
+            <label class="requiredField">
               Cliente<span class="asteriskField">*</span>
             </label>
             <div class="">
-              <select id="id_cliente" name="cliente" class="select form-control" required >
-                <option value="" >---------</option>
+              <select class="select form-control" id="id_cliente" name="cliente" required>
+                <option value="">---------</option>
               </select>
             </div>
           </div>
         </div>
       </div>
-      <div id="info_cliente" class="row" >
+      <div class="row" id="info_cliente">
       </div>
       <!--//End Cliente -->
 
       <!-- Factura -->
-    <div id="cobranza_factura_1" class="wrapper-factura card p-4 mb-3" style="width: 38rem;" data-id="1">
+    <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
         <div class="row">
 
           <!-- Factura Cliente -->
@@ -42,7 +42,7 @@
                 Factura<span class="asteriskField">*</span>
               </label>
               <div class="wrapper-selector-factura">
-                <select name="factura_0" class="form-control selector-factura" required>
+                <select class="form-control selector-factura" name="factura_0" required>
                   <option value="" selected="">---------</option>
                 </select>
               </div>
@@ -60,7 +60,7 @@
                     Metodo<span class="asteriskField">*</span>
                   </label>
                   <div>
-                    <select name="metodo_1_1" class="selector-metodo form-control" required>
+                    <select class="selector-metodo form-control" name="metodo_1_1" required>
                       <option value="">---------</option>
                     </select>
                   </div>
@@ -74,7 +74,7 @@
                     Monto<span class="asteriskField">*</span>
                   </label>
                   <div>
-                    <input name="monto_1_1" class="input-monto numberinput form-control" type="number" value="0.0" step="0.01" required>
+                    <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
                   </div>
                 </div>
               </div>
@@ -98,19 +98,19 @@
           <div class="col-4">
             <div class="form-group">
               <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
-              <div><input class="input-ganancias numberinput form-control" type="number" name="ganancias_1" value="0.0" step="0.01" required /></div>
+              <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
             </div>
           </div>
           <div class="col-4">
             <div class="form-group">
               <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
-              <div><input class="input-ingresos-brutos numberinput form-control" type="number" name="ingresos_brutos_1" value="0.0" step="0.01" required /></div>
+              <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
             </div>
           </div>
           <div class="col-4">
             <div class="form-group">
               <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
-              <div><input class="input-iva numberinput form-control" type="number" name="iva_1" value="0.0" step="0.01" required /></div>
+              <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
             </div>
           </div>
           <!-- //End Ganancias, ingresos e IVA -->
@@ -122,7 +122,7 @@
       <!-- Agregar factura -->
       <div class="row">
         <div class="offset-6 col-1">
-          <button id="add_factura" class="btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
+          <button class="add-factura btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
         </div>
       </div>
       <!--//Agregar factura -->
@@ -130,9 +130,9 @@
       <!-- Total -->
       <div class="row mt-2">
         <div class="col-4">
-          <div id="div_id_total" class="form-group">
-            <label for="id_total" class="requiredField"> Total<span class="asteriskField">*</span> </label>
-            <div class=""><input type="number" name="total" value="0.0" step="0.01" class="numberinput form-control" required="" id="id_total" /></div>
+          <div class="form-group">
+            <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+            <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
           </div>
         </div>
       </div>
@@ -141,9 +141,9 @@
     </fieldset>
 
     <div class="form-group">
-      <div class="">
-        <input type="submit" name="submit" value="Guardar" class="btn btn-primary float-right" id="submit-id-submit" />
-        <input type="reset" name="reset" value="Limpiar" class="btn btn-inverse float-right" id="reset-id-reset" />
+      <div>
+        <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+        <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
       </div>
     </div>
 
@@ -239,7 +239,7 @@ $('.wrapper-pagos').on('click', '.btn-metodo-remove', function(e){
 })
 
 // Clona factura
-$('#add_factura').click(function(e){
+$('.add-factura').click(function(e){
     e.preventDefault();
 
     if (!validateForm()){return;}
@@ -300,36 +300,37 @@ $('#add_factura').click(function(e){
 $('#submit-id-submit').click(function(e){
     e.preventDefault();
 
-    validateForm();
+    if (!validateForm()){return;}
+
     let total = $('input[name=total]').val();
     let facturas = [];
 
-    $('.facturas').each(function(){
-        let factura = $(this).find('select[name=factura]').val();
-        let ganancias = $(this).find('input[name=ganancias]').val();
-        let ingresos_brutos = $(this).find('input[name=ingresos_brutos]').val();
-        let iva = $(this).find('input[name=iva]').val();
-        let pagos = [];
-        $(this).find('.pagos').each(function(e){
-            pagos.push({
-                'metodo': $(this).find('[name=metodo]').val(),
-                'monto': $(this).find('[name=monto]').val()
-            });
-        });
-        facturas.push({
-            'factura': parseInt(factura),
-            'ganancias': ganancias,
-            'ingresos_brutos': ingresos_brutos,
-            'iva': iva,
-            'cobranza_factura_pagos': pagos
-        });
-    });
+    // $('.facturas').each(function(){
+    //     let factura = $(this).find('select[name=factura]').val();
+    //     let ganancias = $(this).find('input[name=ganancias]').val();
+    //     let ingresos_brutos = $(this).find('input[name=ingresos_brutos]').val();
+    //     let iva = $(this).find('input[name=iva]').val();
+    //     let pagos = [];
+    //     $(this).find('.pagos').each(function(e){
+    //         pagos.push({
+    //             'metodo': $(this).find('[name=metodo]').val(),
+    //             'monto': $(this).find('[name=monto]').val()
+    //         });
+    //     });
+    //     facturas.push({
+    //         'factura': parseInt(factura),
+    //         'ganancias': ganancias,
+    //         'ingresos_brutos': ingresos_brutos,
+    //         'iva': iva,
+    //         'cobranza_factura_pagos': pagos
+    //     });
+    // });
 
-    let formCobranzaData = {
-        'total': parseInt(total),
-        'cobranza_facturas': facturas
-    };
-    formCobranzaData['cliente'] = cliente;
+    // let formCobranzaData = {
+    //     'total': parseInt(total),
+    //     'cobranza_facturas': facturas
+    // };
+    // formCobranzaData['cliente'] = cliente;
 
     // $.ajax({
     //     type        : 'POST',
@@ -390,7 +391,7 @@ function displayMetodoPagoData(){
 
 
 function setTotal(value){
-    let elementTotal = $('#id_total');
+    let elementTotal = $('.input-total');
     let totalFactura = 0;
     $('.selector-factura').find(':selected').each(function(){
         totalFactura += parseInt($(this).text().split('$')[1]);
