@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Clientes - Liqueed{% endblock %}
+{% block header %}
+    <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
+    <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+      <h1 class="h3 mb-2 text-gray-800">Cobranza Cliente</h1>
+      <form id="cobranza-form">
+        <fieldset>
+          <legend>Datos</legend>
+          <!-- Cobranza -->
+          <input id="cobranza" name="cobranza" type="hidden" value="{{ pk }}">
+          <!-- End Cobranza -->
+
+          <!-- Client -->
+          <div class="row">
+            <div class="col-5">
+              <div class="form-group">
+                <label class="requiredField">
+                  Cliente<span class="asteriskField">*</span>
+                </label>
+                <div class="">
+                  <select class="select form-control" id="cliente" name="cliente" disabled required>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="info_cliente">
+          </div>
+          <!--//End Cliente -->
+
+          <!-- Factura -->
+          <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" style="width: 38rem;">
+            <div class="row">
+              <div class="col-12">
+                <button type="button" class="close" aria-label="Elimar" title="Eliminar">
+                  <span class="text-danger">&times;</span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <!-- Factura Cliente -->
+              <div class="col-12">
+                <div class="form-group">
+                  <label class="requiredField">
+                    Factura<span class="asteriskField">*</span>
+                  </label>
+                  <div class="wrapper-selector-factura">
+                    <select class="form-control selector-factura" name="factura_1" required>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <!--//End Factura Cliente -->
+
+              <!-- Metodo y Monto -->
+              <div class="col-11 wrapper-pagos">
+                <div class="row group-pagos">
+                  <!-- Metodo -->
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="requiredField">
+                        Metodo<span class="asteriskField">*</span>
+                      </label>
+                      <div>
+                        <select class="selector-metodo form-control" name="metodo_1_1" required>
+                          <option value="">---------</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <!--//End Metodo -->
+                  <!-- Monto -->
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="requiredField">
+                        Monto<span class="asteriskField">*</span>
+                      </label>
+                      <div>
+                        <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
+                      </div>
+                    </div>
+                  </div>
+                  <!--//Monto -->
+                </div>
+              </div>
+              <!-- End metodo y monto -->
+
+              <!-- Agrega monto -->
+              <div class="col-1 pl-0">
+                <div class="form-group">
+                  <label></label>
+                  <div>
+                    <button class="add-pago btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
+                  </div>
+                </div>
+              </div>
+              <!-- //Agrega monto -->
+
+              <!-- Ganancias, ingresos e IVA -->
+              <div class="col-4">
+                <div class="form-group">
+                  <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
+                  <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
+                  <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
+                  <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
+                </div>
+              </div>
+              <!-- //End Ganancias, ingresos e IVA -->
+
+            </div>
+          </div>
+          <!--//End Factura -->
+
+          <!-- Agregar factura -->
+          <div class="row">
+            <div class="offset-6 col-1">
+              <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
+            </div>
+          </div>
+          <!--//Agregar factura -->
+
+          <!-- Total -->
+          <div class="row wrapper-total mt-2">
+            <div class="col-4">
+              <div class="form-group">
+                <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+                <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
+              </div>
+            </div>
+          </div>
+          <!--//End Total -->
+
+        </fieldset>
+
+        <div class="form-group">
+          <div>
+            <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+            <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+{% endblock %}
+{% block extra_js %}
+$(document).ready(function() {
+    let idCobranza = $('#cobranza').val();
+
+    $.get(`/api/cobranza/${idCobranza}/`, function(response) {
+        let cliente = response.cliente;
+        let cobranzaFacturas = response.cobranza_facturas
+        // cliente
+        $('#cliente').append(new Option(`${cliente.razon_social} - CUIT ${cliente.cuit}`, `${cliente.id}`));
+        $('.input-total').val(response.total);
+        // facturas
+        cobranzaFacturas.forEach(function(factura, _index) {
+            let indexFactura = _index + 1;
+
+            if (indexFactura > 1){ // Si no es el primero previamente tengo que clonar
+                let cloneFactura = $('.wrapper-factura:first').clone();
+                cloneFactura.attr('id', `cobranza_factura_${indexFactura}`);
+                cloneFactura.find('.selector-factura').attr('name', `factura_${indexFactura}`);
+                cloneFactura.find('.group-pagos').not(':first').remove();
+                cloneFactura.find('[name*="metodo"]').attr('name', `metodo_${indexFactura}_1`);
+                cloneFactura.find('[name*="monto"]').attr('name', `monto_${indexFactura}_1`);
+
+                // Selector factura, destruye los eventos de select2 y los vuelve a construir
+                cloneFactura.find('.wrapper-selector-factura').children().remove();
+                let htmlselector = `<select name="factura" class="select form-control selector-factura" required>`;
+                htmlselector += `<option value="" selected="">---------</option></select>`;
+                cloneFactura.find('.wrapper-selector-factura').append(htmlselector);
+
+                $.get(`/api/factura/${factura.factura}/`, function(response) {
+                    $(`#cobranza_factura_${indexFactura} .selector-factura`).append(
+                        new Option(`${response.fecha} - ${response.cliente.razon_social} - $${response.total}`, `${response.id}`, true, true)
+                    );
+                });
+
+                cloneFactura.find('[name*="ganancias"]').attr('name', `ganancias_${indexFactura}`);
+                cloneFactura.find('[name*="ingresos_brutos"]').attr('name', `ingresos_brutos_${indexFactura}`);
+                cloneFactura.find('[name*="iva"]').attr('name', `iva_${indexFactura}`);
+
+                $('.wrapper-factura:last').after(cloneFactura);
+            }
+
+
+            // factura
+            $.get(`/api/factura/${factura.factura}/`, function(response) {
+                $(`#cobranza_factura_${indexFactura} .selector-factura`).append(
+                    new Option(`${response.fecha} - ${response.cliente.razon_social} - $${response.total}`, `${response.id}`, true, true)
+                );
+            });
+
+            $(`#cobranza_factura_${indexFactura} .selector-factura`).select2({
+                ajax: {
+                    beforeSend: function(jqXHR, settings) {
+                        let idCliente = $('#cliente').find(":selected").val();
+                        settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
+                    },
+                    url: '/api/factura/',
+                    processResults: function (response) {
+                        let data = $.map(response, function (obj) {
+                            obj.id = obj.id;
+                            obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
+                            return obj;
+                        });
+
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+            });
+
+            // pagos
+            factura.cobranza_factura_pagos.forEach(function(pago, _index){
+                let indexPago = _index + 1;
+
+                if (indexPago > 1){ // Si no es el primero previamente tengo que clonar
+                    let clone = $('.group-pagos:first').clone();
+                    clone.find('[name*="metodo"]').attr('name', `metodo_${indexFactura}_${indexPago}`);
+                    clone.find('[name*="monto"]').attr('name', `monto_${indexFactura}_${indexPago}`);
+
+                    $('.group-pagos:last').after(clone);
+                }
+                $(`[name="metodo_${indexFactura}_${indexPago}"]`).val(`${pago.metodo}`);
+                $(`[name="monto_${indexFactura}_${indexPago}"]`).val(`${pago.monto}`);
+            });
+
+            // ganancias, ingresos e iva
+            $(`[name="ganancias_${indexFactura}"]`).val(`${factura.ganancias}`);
+            $(`[name="ingresos_brutos_${indexFactura}"]`).val(`${factura.ingresos_brutos}`);
+            $(`[name="iva_${indexFactura}"]`).val(`${factura.iva}`);
+        });
+
+    }).fail(function(){
+        alert('Se produjo un error, inténtalo nuevamente.')
+    });
+
+    // metodos de pago
+    $.ajax({
+        url: '/api/mediopago/',
+        success: function (response) {
+            var data = $.map(response, function (obj) {
+                obj.id = obj.id;
+                obj.text = obj.nombre
+                return obj;
+            });
+            $.each(data, function(key, value) {
+                $('.selector-metodo').append($("<option></option>")
+                                       .attr("value", value['id'])
+                                       .text(value['nombre']));
+            });
+        }
+    });
+});
+{% endblock %}

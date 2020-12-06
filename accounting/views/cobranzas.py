@@ -47,5 +47,15 @@ class CobranzaListView(LoginRequiredMixin, ListView):
 
 
 class CobranzaAgregarTemplateView(LoginRequiredMixin, TemplateView):
-    """Formulario para agregar y editar cobranzas."""
+    """Formulario para agregar cobranzas."""
     template_name = 'accounting/cliente_cobranza_form.html'
+
+
+class CobranzaEditarTemplateView(LoginRequiredMixin, TemplateView):
+    """Formulario para editar cobranzas."""
+    template_name = 'accounting/cliente_cobranza_edit.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pk'] = kwargs['pk']
+        return context

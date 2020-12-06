@@ -20,7 +20,7 @@
                   Cliente<span class="asteriskField">*</span>
                 </label>
                 <div class="">
-                  <select class="select form-control" id="id_cliente" name="cliente" required>
+                  <select class="select form-control" id="cliente" name="cliente" required>
                     <option value="">---------</option>
                   </select>
                 </div>
@@ -33,7 +33,7 @@
 
           <!-- Factura -->
 
-          <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
+          <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" style="width: 38rem;">
             <div class="row">
               <div class="col-12">
                 <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
@@ -160,7 +160,7 @@
 {% block extra_js %}
 // Cliente
 let cliente;
-$('#id_cliente').select2({
+$('#cliente').select2({
     placeholder: 'Selecciona un cliente',
     ajax: {
         url: '/api/cliente/',
@@ -197,7 +197,7 @@ $('#cobranza_factura_1 .selector-factura').select2({
     placeholder: 'Selecciona una factura',
     ajax: {
         beforeSend: function(jqXHR, settings) {
-            let idCliente = $('#id_cliente').find(":selected").val();
+            let idCliente = $('#cliente').find(":selected").val();
             settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
         },
         url: '/api/factura/',
@@ -283,7 +283,7 @@ $('.add-factura').click(function(e){
         placeholder: 'Selecciona una factura',
         ajax: {
             beforeSend: function(jqXHR, settings) {
-                let idCliente = $('#id_cliente').find(":selected").val();
+                let idCliente = $('#cliente').find(":selected").val();
                 settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
             },
             url: '/api/factura/',
