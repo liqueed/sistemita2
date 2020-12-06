@@ -268,18 +268,30 @@ $('.add-factura').click(function(e){
     clone.attr('id', idFactura); // agrego id
     clone.attr('data-id', cloneIdFactura);
 
-    $('.wrapper-factura:last').after(clone); // clonar luego del último
-    $(`#${idFactura} input`).each(function(){$(this).val('0.0')}); // remuevo valores
-    $(`#${idFactura} .add-pago`).addClass('d-none');
-    $(`#${idFactura} .close`).removeClass('d-none');
+    clone.find('input').each(function(){$(this).val('0.0')}); // remuevo valores
+    clone.find('.add-pago').addClass('d-none');
+    clone.find('.close').removeClass('d-none');
 
-    // Selector factura, destruye los eventos de select2 y vuelve a construir
-    $(`#${idFactura} .wrapper-selector-factura`).empty();
+    // Selector factura, destruye los eventos de select2
+    clone.find(`.wrapper-selector-factura`).children().remove();
     let htmlselector = `<select name="factura" class="select form-control selector-factura" required>`;
     htmlselector += `<option value="" selected="">---------</option></select>`;
-    $(`#${idFactura} .wrapper-selector-factura`).append(htmlselector);
+    clone.find('.wrapper-selector-factura').append(htmlselector);
 
-    $(`#${idFactura} .selector-factura`).select2({
+    clone.find('.wrapper-pagos').children().not(':first').remove(); // Remueve metodos clonados
+
+    // setea atributos
+    clone.find('.selector-factura').attr('name', `factura_${cloneIdFactura}`);
+    clone.find('.selector-metodo').attr('name', `metodo_${cloneIdFactura}_1`);
+    clone.find('.input-monto').attr('name', `monto_${cloneIdFactura}_1`);
+    clone.find('.input-ganancias').attr('name', `ganancias_${cloneIdFactura}`);
+    clone.find('.input-ingresos-brutos').attr('name', `ingresos_brutos_${cloneIdFactura}`);
+    clone.find('.input-iva').attr('name', `iva_${cloneIdFactura}`);
+
+    $('.wrapper-factura:last').after(clone); // clonar luego del último
+
+    // Vuelvo a construir selector
+    clone.find('.selector-factura').select2({
         placeholder: 'Selecciona una factura',
         ajax: {
             beforeSend: function(jqXHR, settings) {
@@ -303,14 +315,6 @@ $('.add-factura').click(function(e){
         var obj = $(this).select2("data")[0];
         setTotal(obj.total);
     });
-    $(`#${idFactura} .wrapper-pagos`).children().not(':first').remove(); // Remueve metodos clonados
-    // setea atributos
-    $(`#${idFactura} .selector-factura`).attr('name', `factura_${cloneIdFactura}`);
-    $(`#${idFactura} .selector-metodo`).attr('name', `metodo_${cloneIdFactura}_1`);
-    $(`#${idFactura} .input-monto`).attr('name', `monto_${cloneIdFactura}_1`);
-    $(`#${idFactura} .input-ganancias`).attr('name', `ganancias_${cloneIdFactura}`);
-    $(`#${idFactura} .input-ingresos-brutos`).attr('name', `ingresos_brutos_${cloneIdFactura}`);
-    $(`#${idFactura} .input-iva`).attr('name', `iva_${cloneIdFactura}`);
 });
 
 $('.close').click(function(){
@@ -371,7 +375,6 @@ $('#submit-id-submit').click(function(e){
     }).done(function(data) {
         console.log(data);
     });
-
 });
 
 // funciones
