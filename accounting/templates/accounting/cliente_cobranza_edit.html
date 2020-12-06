@@ -34,7 +34,7 @@
           <!--//End Cliente -->
 
           <!-- Factura -->
-          <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" style="width: 38rem;">
+          <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
             <div class="row">
               <div class="col-12">
                 <button type="button" class="close" aria-label="Elimar" title="Eliminar">
@@ -95,7 +95,7 @@
                 <div class="form-group">
                   <label></label>
                   <div>
-                    <button class="add-pago btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
+                    <button class="add-pago btn btn-success btn-xs mt-3"><i class="fas fa-plus-circle"></i></button>
                   </div>
                 </div>
               </div>
@@ -129,7 +129,7 @@
           <!-- Agregar factura -->
           <div class="row">
             <div class="offset-6 col-1">
-              <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
+              <button class="add-factura btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
             </div>
           </div>
           <!--//Agregar factura -->
@@ -159,6 +159,7 @@
 
 {% endblock %}
 {% block extra_js %}
+// Carga datos
 $(document).ready(function() {
     let idCobranza = $('#cobranza').val();
 
@@ -173,8 +174,9 @@ $(document).ready(function() {
             let indexFactura = _index + 1;
 
             if (indexFactura > 1){ // Si no es el primero previamente tengo que clonar
-                let cloneFactura = $('.wrapper-factura:first').clone();
+                let cloneFactura = $('.wrapper-factura:first').clone(true);
                 cloneFactura.attr('id', `cobranza_factura_${indexFactura}`);
+                cloneFactura.attr('data-id', `${indexFactura}`);
                 cloneFactura.find('.selector-factura').attr('name', `factura_${indexFactura}`);
                 cloneFactura.find('.group-pagos').not(':first').remove();
                 cloneFactura.find('[name*="metodo"]').attr('name', `metodo_${indexFactura}_1`);
@@ -271,4 +273,132 @@ $(document).ready(function() {
         }
     });
 });
+
+// Edición
+
+$('.selector-metodo').on('change', function(e){
+    // Boton agregar metodos
+    let idFactura = $(this).closest('.wrapper-factura').attr('id');
+    $(`#${idFactura} .add-pago`).removeClass('d-none');
+});
+
+
+$(".add-pago").click(function(e){
+    e.preventDefault();
+
+    let idElementFactura = $(this).closest('.wrapper-factura').attr('id');
+    let idDataFactura = $(this).closest('.wrapper-factura').attr('data-id');
+    let countPagos = $(`#${idElementFactura} .group-pagos`).length;
+    let cloneIdPago = countPagos + 1; // Id del proximo elemento clonado
+    let clonePago = $(`#${idElementFactura} .wrapper-pagos .row:first`).clone();
+
+    if (!validateForm()){return;}
+    clonePago.find('.selector-metodo').attr('name', `metodo_${idDataFactura}_${cloneIdPago}`);
+    clonePago.find('.input-monto').attr('name', `monto_${idDataFactura}_${cloneIdPago}`);
+    clonePago.find('.numberinput').val('0.0');
+    clonePago.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
+    $(`#${idElementFactura} .wrapper-pagos`).append(clonePago);
+});
+
+// Clona factura
+$('.add-factura').click(function(e){
+    e.preventDefault();
+
+    if (!validateForm()){return;}
+
+    let wrapperFactura = $('.wrapper-factura:first'); // clono primera factura
+    let countFacturas = $('.wrapper-factura').length;
+    let cloneIdFactura = countFacturas + 1; // Id del elemento clonado
+    let clone = wrapperFactura.clone(true); // clono con datos y eventos
+    let idFactura = 'cobranza_factura_' + cloneIdFactura; // establezco el id
+
+    clone.attr('id', idFactura); // agrego id
+    clone.attr('data-id', cloneIdFactura);
+
+    $('.wrapper-factura:last').after(clone); // clonar luego del último
+    $(`#${idFactura} input`).each(function(){$(this).val('0.0')}); // remuevo valores
+    $(`#${idFactura} .add-pago`).addClass('d-none');
+    $(`#${idFactura} .close`).removeClass('d-none');
+
+    // Selector factura, destruye los eventos de select2 y vuelve a construir
+    $(`#${idFactura} .wrapper-selector-factura`).empty();
+    let htmlselector = `<select name="factura" class="select form-control selector-factura" required>`;
+    htmlselector += `<option value="" selected="">---------</option></select>`;
+    $(`#${idFactura} .wrapper-selector-factura`).append(htmlselector);
+
+    $(`#${idFactura} .selector-factura`).select2({
+        placeholder: 'Selecciona una factura',
+        ajax: {
+            beforeSend: function(jqXHR, settings) {
+                let idCliente = $('#cliente').find(":selected").val();
+                settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
+            },
+            url: '/api/factura/',
+            processResults: function (response) {
+                let data = $.map(response, function (obj) {
+                    obj.id = obj.id;
+                    obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
+                    return obj;
+                });
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        }
+    }).on('change', function(){
+        var obj = $(this).select2("data")[0];
+        setTotal(obj.total);
+    });
+    $(`#${idFactura} .wrapper-pagos`).children().not(':first').remove(); // Remueve metodos clonados
+    // setea atributos
+    $(`#${idFactura} .selector-factura`).attr('name', `factura_${cloneIdFactura}`);
+    $(`#${idFactura} .selector-metodo`).attr('name', `metodo_${cloneIdFactura}_1`);
+    $(`#${idFactura} .input-monto`).attr('name', `monto_${cloneIdFactura}_1`);
+    $(`#${idFactura} .input-ganancias`).attr('name', `ganancias_${cloneIdFactura}`);
+    $(`#${idFactura} .input-ingresos-brutos`).attr('name', `ingresos_brutos_${cloneIdFactura}`);
+    $(`#${idFactura} .input-iva`).attr('name', `iva_${cloneIdFactura}`);
+});
+
+$('.close').click(function(){
+    $(this).closest('.wrapper-factura').remove();
+});
+
+// Guardar
+$('#submit-id-submit').click(function(e){
+    e.preventDefault();
+    alert('Quiero Guardar')
+});
+
+// funciones
+function validateForm(){
+    var validator = $('#cobranza-form').validate({
+        lang: 'es',
+    });
+
+    // Validaciones dinamicas
+    $('[name*="monto"]').each(function () {
+        $(this).rules('add', {
+            required: true,
+            notEqual: '0.0'
+        });
+    });
+
+    // Metodos
+    jQuery.validator.addMethod("notEqual", function(value, element, param) {
+        return this.optional(element) || value !== param;
+    }, "Este campo es obligatorio.");
+
+    return $("#cobranza-form").valid();
+}
+
+function setTotal(value){
+    let elementTotal = $('.input-total');
+    let totalFactura = 0;
+    $('.selector-factura').find(':selected').each(function(){
+        totalFactura += parseInt($(this).text().split('$')[1]);
+    });
+    elementTotal.val(totalFactura);
+}
+
 {% endblock %}
