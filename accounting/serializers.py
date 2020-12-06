@@ -17,15 +17,15 @@ class CobranzaFacturaPagoSerializer(serializers.ModelSerializer):
     """Factura cobranza pago Serializer.
 
     Aparte de las propiedades del modelo, este serializer agrega el campo
-    'id_pago' para ser utilizado en la petición PUT. Si el campo no viene es
-    porque el metodo de pago es nuevo y debe agregarse. Por defecto debe
-    enviarse el id del objeto.
+    'data' para ser utilizado en la petición PUT. Este campo contiene si el objeto
+    que lo contiene tiene que ser agregado, editado o eliminado.
     """
-    id_pago = serializers.IntegerField(required=False)
+    data = serializers.DictField(required=False)
+
     class Meta:
         """Clase meta."""
         model = CobranzaFacturaPago
-        fields = ('id', 'id_pago', 'metodo', 'monto')
+        fields = ('id', 'data', 'metodo', 'monto')
         read_only_fields = ('id',)
 
 
@@ -33,18 +33,17 @@ class CobranzaFacturaSerializer(serializers.ModelSerializer):
     """Factura cobranza Serializer.
 
     Aparte de las propiedades del modelo, este serializer agrega el campo
-    'id_cobranza_factura' para ser utilizado en la petición PUT. si el campo
-    no viene es porque la factura es nueva y debe agregarse. Por defecto debe
-    enviarse el id del objeto.
+    'data' para ser utilizado en la petición PUT. Este campo contiene si el objeto
+    que lo contiene tiene que ser agregado, editado o eliminado.
     """
-    id_cobranza_factura = serializers.IntegerField(required=False)
+    data = serializers.DictField(required=False)
     cobranza_factura_pagos = CobranzaFacturaPagoSerializer(many=True)
 
     class Meta:
         """Clase meta."""
         model = CobranzaFactura
         fields = (
-            'id', 'id_cobranza_factura',
+            'id', 'data',
             'factura', 'ganancias', 'ingresos_brutos', 'iva',
             'cobranza_factura_pagos'
         )
@@ -107,4 +106,9 @@ class CobranzaSerializer(serializers.ModelSerializer):
 
     def update(self, instance, data):
         # TODO: Agrega lógica para editar la cobranza
-        print(data)
+        try:
+            instance.total = data['total']
+            instance.save()
+            return instance
+        except Exception as error:
+            raise serializers.ValidationError(error)

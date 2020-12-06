@@ -37,7 +37,7 @@
           <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
             <div class="row">
               <div class="col-12">
-                <button type="button" class="close" aria-label="Elimar" title="Eliminar">
+                <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
                   <span class="text-danger">&times;</span>
                 </button>
               </div>
@@ -159,22 +159,31 @@
 
 {% endblock %}
 {% block extra_js %}
+
+var cliente; // global
+
 // Carga datos
 $(document).ready(function() {
     let idCobranza = $('#cobranza').val();
 
     $.get(`/api/cobranza/${idCobranza}/`, function(response) {
-        let cliente = response.cliente;
+        cliente = response.cliente;
         let cobranzaFacturas = response.cobranza_facturas
+
         // cliente
         $('#cliente').append(new Option(`${cliente.razon_social} - CUIT ${cliente.cuit}`, `${cliente.id}`));
         $('.input-total').val(response.total);
+
         // facturas
         cobranzaFacturas.forEach(function(factura, _index) {
             let indexFactura = _index + 1;
+            let idFactura = factura.id;
 
             if (indexFactura > 1){ // Si no es el primero previamente tengo que clonar
                 let cloneFactura = $('.wrapper-factura:first').clone(true);
+
+                cloneFactura.find('.close').removeClass('d-none'); // La primera factura no se puede borrar
+                cloneFactura.attr('data-inline', `{"id": ${idFactura}, "action": "update"}`);
                 cloneFactura.attr('id', `cobranza_factura_${indexFactura}`);
                 cloneFactura.attr('data-id', `${indexFactura}`);
                 cloneFactura.find('.selector-factura').attr('name', `factura_${indexFactura}`);
@@ -193,6 +202,9 @@ $(document).ready(function() {
                 cloneFactura.find('[name*="iva"]').attr('name', `iva_${indexFactura}`);
 
                 $('.wrapper-factura:last').after(cloneFactura);
+            } else {
+                // Defino data line para el elemento existente
+                $(`#cobranza_factura_${indexFactura}`).attr('data-inline', `{"id": ${idFactura}, 'action': "update"}`);
             }
 
             // factura
@@ -215,26 +227,33 @@ $(document).ready(function() {
                             obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
                             return obj;
                         });
-
                         return {
                             results: data
                         };
                     },
                     cache: true
-                },
+                }
+            }).on('change', function(){
+                var obj = $(this).select2("data")[0];
+                setTotal(obj.total);
             });
 
             // pagos
             factura.cobranza_factura_pagos.forEach(function(pago, _index){
                 let indexPago = _index + 1;
+                let idPago = pago.id;
 
                 if (indexPago > 1){ // Si no es el primero previamente tengo que clonar
                     let clone = $('.group-pagos:first').clone();
+                    clone.attr('data-inline', `{"id": ${idPago} ,"action": "update"}`);
                     clone.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
                     clone.find('[name*="metodo"]').attr('name', `metodo_${indexFactura}_${indexPago}`);
                     clone.find('[name*="monto"]').attr('name', `monto_${indexFactura}_${indexPago}`);
 
                     $('.group-pagos:last').after(clone);
+                } else {
+                    // Defino data inline para el elemento existente
+                    $(`#cobranza_factura_${indexFactura} .group-pagos`).attr('data-inline', `{"id": ${idPago} ,"action": "update"}`);
                 }
                 $(`[name="metodo_${indexFactura}_${indexPago}"]`).val(`${pago.metodo}`);
                 $(`[name="monto_${indexFactura}_${indexPago}"]`).val(`${pago.monto}`);
@@ -282,9 +301,10 @@ $(".add-pago").click(function(e){
     let idDataFactura = $(this).closest('.wrapper-factura').attr('data-id');
     let countPagos = $(`#${idElementFactura} .group-pagos`).length;
     let cloneIdPago = countPagos + 1; // Id del proximo elemento clonado
-    let clonePago = $(`#${idElementFactura} .wrapper-pagos .row:first`).clone();
+    let clonePago = $(`#${idElementFactura} .group-pagos:first`).clone();
 
     if (!validateForm()){return;}
+    clonePago.attr('data-inline', '{"action": "add"}'); // Modifico el data line a nuevo
     clonePago.find('.selector-metodo').attr('name', `metodo_${idDataFactura}_${cloneIdPago}`);
     clonePago.find('.input-monto').attr('name', `monto_${idDataFactura}_${cloneIdPago}`);
     clonePago.find('.numberinput').val('0.0');
@@ -294,7 +314,14 @@ $(".add-pago").click(function(e){
 
 $('.wrapper-pagos').on('click', '.btn-metodo-remove', function(e){
     e.preventDefault();
-    $(this).closest(".row").remove();
+    let data = $(this).closest('.group-pagos').attr('data-inline');
+    data = JSON.parse(data);
+    let idPago = data.id;
+
+    $(this).closest('.group-pagos').attr('data-inline', `{"id": ${idPago}, "action": "delete"}`);
+    $(this).closest('.group-pagos').addClass('d-none');
+
+    $(this).closest(".group-pagos").addClass('d-none');
 })
 
 // Clona factura
@@ -311,6 +338,7 @@ $('.add-factura').click(function(e){
 
     clone.attr('id', idFactura); // agrego id
     clone.attr('data-id', cloneIdFactura);
+    clone.attr('data-inline', '{"action": "add"}');
 
     clone.find('input').each(function(){$(this).val('0.0')}); // remuevo valores
     clone.find('.add-pago').addClass('d-none');
@@ -362,13 +390,74 @@ $('.add-factura').click(function(e){
 });
 
 $('.close').click(function(){
-    $(this).closest('.wrapper-factura').remove();
+    let data = $(this).closest('.wrapper-factura').attr('data-inline');
+    data = JSON.parse(data);
+    let idFactura = data.id;
+
+    $(this).closest('.wrapper-factura').attr('data-inline', `{"id": ${idFactura}, "action": "delete"}`);
+    $(this).closest('.wrapper-factura').addClass('d-none');
+
 });
 
 // Guardar
 $('#submit-id-submit').click(function(e){
     e.preventDefault();
-    alert('Quiero Guardar')
+    if (!validateForm()){return;}
+
+    let cobranza = $('#cobranza').val();
+    let total = $('input[name=total]').val();
+    let facturas = [];
+
+    $('.wrapper-factura').each(function(){
+        let factura = $(this).find('[name*="factura"]').val();
+        let data = $(this).attr('data-inline');
+        let pagos = [];
+        let ganancias = $(this).find('[name*="ganancias"]').val();
+        let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
+        let iva = $(this).find('[name*="iva"]').val();
+
+        // pagos
+        $(this).find('.group-pagos').each(function(e){
+            let dataPago = $(this).attr('data-inline');
+            let metodo = $(this).find('[name*="metodo"]').val();
+            let monto = $(this).find('[name*="monto"]').val();
+            pagos.push({
+                'data': JSON.parse(dataPago.replace(/'/g, '"')),
+                'metodo': metodo,
+                'monto': monto
+            });
+        });
+
+        facturas.push({
+            'factura': parseInt(factura),
+            'data': JSON.parse(data.replace(/'/g, '"')),
+            'cobranza_factura_pagos': pagos,
+            'ganancias': ganancias,
+            'ingresos_brutos': ingresos_brutos,
+            'iva': iva
+        });
+    });
+
+    let formCobranzaData = {
+        'cobranza_facturas': facturas,
+        'total': parseInt(total)
+    }
+    formCobranzaData['cliente'] = cliente;
+
+    console.log(formCobranzaData);
+    $.ajax({
+        type        : 'PUT',
+        url         : `/api/cobranza/${cobranza}/`,
+        data        : JSON.stringify(formCobranzaData),
+        dataType    : 'json',
+        contentType : 'application/json',
+        encode      : true,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        }
+    }).done(function(data) {
+        console.log(data);
+    });
 });
 
 // funciones

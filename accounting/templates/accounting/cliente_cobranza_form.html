@@ -238,7 +238,7 @@ $(".add-pago").click(function(e){
     let idDataFactura = $(this).closest('.wrapper-factura').attr('data-id');
     let countPagos = $(`#${idElementFactura} .group-pagos`).length;
     let cloneIdPago = countPagos + 1; // Id del proximo elemento clonado
-    let clonePago = $(`#${idElementFactura} .wrapper-pagos .row:first`).clone();
+    let clonePago = $(`#${idElementFactura} .group-pagos:first`).clone();
 
     if (!validateForm()){return;}
     clonePago.find('.selector-metodo').attr('name', `metodo_${idDataFactura}_${cloneIdPago}`);
@@ -250,7 +250,7 @@ $(".add-pago").click(function(e){
 
 $('.wrapper-pagos').on('click', '.btn-metodo-remove', function(e){
     e.preventDefault();
-    $(this).closest(".row").remove();
+    $(this).closest(".group-pagos").remove();
 })
 
 // Clona factura
