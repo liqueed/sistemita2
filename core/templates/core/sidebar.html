@@ -41,7 +41,7 @@
       <span>&Oacute;rdenes de compra</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name in 'cobranza-listado, cobranza-agregar' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'cobranza-listado, cobranza-agregar, cobranza-modificar' %} active{% endif %}">
     <a class="nav-link" href="{% url 'accounting:cobranza-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Cobranzas</span></a>

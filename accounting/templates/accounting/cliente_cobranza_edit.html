@@ -172,6 +172,9 @@ $(document).ready(function() {
 
         // cliente
         $('#cliente').append(new Option(`${cliente.razon_social} - CUIT ${cliente.cuit}`, `${cliente.id}`));
+        displayInfoCliente(cliente);
+
+        // Total
         $('.input-total').val(response.total);
 
         // facturas
@@ -446,7 +449,6 @@ $('#submit-id-submit').click(function(e){
     }
     formCobranzaData['cliente'] = cliente;
 
-    console.log(formCobranzaData);
     $.ajax({
         type        : 'PUT',
         url         : `/api/cobranza/${cobranza}/`,
@@ -458,8 +460,10 @@ $('#submit-id-submit').click(function(e){
             xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         }
     }).done(function(data) {
-        console.log(data);
-    });
+        window.location.href = '{% url 'accounting:cobranza-listado' %}';
+    }).fail(function() {
+        alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
+    })
 });
 
 // funciones
@@ -494,6 +498,21 @@ function setTotal(){
             elementTotal.val(totalFactura);
         }
     });
+}
+
+
+function displayInfoCliente(obj){
+    if(obj !== ''){
+        var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 11px;" class="card col-6">`;
+        data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
+        data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
+        data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
+        data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
+        data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
+        data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">${obj.localidad.nombre} ${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+        data += `</dl></div></div>`;
+        $('#info_cliente').html(data);
+    }
 }
 
 {% endblock %}
