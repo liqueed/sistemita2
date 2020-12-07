@@ -105,9 +105,66 @@ class CobranzaSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(error)
 
     def update(self, instance, data):
-        # TODO: Agrega lógica para editar la cobranza
         try:
             instance.total = data['total']
+            facturas = data['cobranza_facturas']
+
+            # Recorro las facturas
+            for factura in facturas:
+                if factura['data']['action'] == 'update':
+                    # Actualizo factura
+                    CobranzaFactura.objects.filter(
+                        pk=factura['data']['id']
+                    ).update(
+                        factura=factura['factura'],
+                        ganancias=factura['ganancias'],
+                        ingresos_brutos=factura['ingresos_brutos'],
+                        iva=factura['iva']
+                    )
+                    # Pagos
+                    pagos = factura['cobranza_factura_pagos']
+                    for pago in pagos:
+                        if pago['data']['action'] == 'update':
+                            # Actualiza pago
+                            CobranzaFacturaPago.objects.filter(
+                                pk=pago['data']['id']
+                            ).update(
+                                metodo=pago['metodo'],
+                                monto=pago['monto']
+                            )
+                        elif pago['data']['action'] == 'add':
+                            # Agrega Pago
+                            cobranza_factura = CobranzaFactura.objects.get(pk=factura['data']['id'])
+                            CobranzaFacturaPago.objects.create(
+                                cobranza_factura=cobranza_factura,
+                                metodo=pago['metodo'],
+                                monto=pago['monto']
+                            )
+                        elif pago['data']['action'] == 'delete':
+                            # Elimina Pago
+                            CobranzaFacturaPago.objects.get(pk=pago['data']['id']).delete()
+                elif factura['data']['action'] == 'add':
+                    # Agrego factura
+                    cobranza_factura = CobranzaFactura.objects.create(
+                        cobranza=instance,
+                        factura=factura['factura'],
+                        ganancias=factura['ganancias'],
+                        ingresos_brutos=factura['ingresos_brutos'],
+                        iva=factura['iva']
+                    )
+
+                    # pagos
+                    pagos = factura['cobranza_factura_pagos']
+                    for pago in pagos:
+                        # Todos los pagos son nuevos al ser nueva la factura
+                        CobranzaFacturaPago.objects.create(
+                            cobranza_factura=cobranza_factura,
+                            metodo=pago['metodo'],
+                            monto=pago['monto']
+                        )
+                elif factura['data']['action'] == 'delete':
+                    CobranzaFactura.objects.get(pk=factura['data']['id']).delete()
+
             instance.save()
             return instance
         except Exception as error:
