@@ -10,7 +10,6 @@ from django.urls import reverse_lazy
 from rest_framework import permissions
 from rest_framework import mixins, status
 from rest_framework import viewsets
-from rest_framework.response import Response
 
 # Models
 from accounting.models.cobranza import Cobranza
@@ -40,8 +39,9 @@ class CobranzaListView(LoginRequiredMixin, ListView):
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(razon_social__search=search) | Q(correo__icontains=search)
-                | Q(cuit__icontains=search)
+                Q(cliente__razon_social__icontains=search) |
+                Q(cliente__correo__icontains=search) |
+                Q(cliente__cuit__icontains=search)
             )
 
         return queryset
