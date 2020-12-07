@@ -389,11 +389,15 @@ $('.add-factura').click(function(e){
 
 $('.close').click(function(){
     let data = $(this).closest('.wrapper-factura').attr('data-inline');
-    data = JSON.parse(data);
-    let idFactura = data.id;
+    if (data.includes('add')){ // Si el wrapper es nuevo y lo elimino, lo remuevo del DOM
+        $(this).closest('.wrapper-factura').remove();
+    } else {
+        data = JSON.parse(data);
+        let idFactura = data.id;
 
-    $(this).closest('.wrapper-factura').attr('data-inline', `{"id": ${idFactura}, "action": "delete"}`);
-    $(this).closest('.wrapper-factura').addClass('d-none');
+        $(this).closest('.wrapper-factura').attr('data-inline', `{"id": ${idFactura}, "action": "delete"}`);
+        $(this).closest('.wrapper-factura').addClass('d-none');
+    }
     setTotal();
 });
 
