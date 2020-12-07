@@ -191,6 +191,14 @@ $('#cliente').select2({
     $('.selector-metodo').prop('disabled', false);
 
     displayInfoCliente(obj);
+
+    // Si el usuario cambia de cliente entonces remuevo las facturas creadas
+    // con facturas de otro cliente, excepto la primera, que únicamente seteo
+    // el selector de facturas
+    let firstSelector = $('.wrapper-factura:first .selector-factura');
+    firstSelector.val('').trigger('change');
+    $('.wrapper-factura').not(':first').remove();
+
 });
 // TODO: mostrar datos de cliente
 
