@@ -214,8 +214,7 @@ $('#cobranza_factura_1 .selector-factura').select2({
         cache: true
     }
 }).on('change', function(){
-    var obj = $(this).select2("data")[0];
-    setTotal(obj.total);
+    setTotal();
     $('.add-factura').removeClass('d-none');
 });
 
@@ -312,13 +311,13 @@ $('.add-factura').click(function(e){
             cache: true
         }
     }).on('change', function(){
-        var obj = $(this).select2("data")[0];
-        setTotal(obj.total);
+        setTotal();
     });
 });
 
 $('.close').click(function(){
     $(this).closest('.wrapper-factura').remove();
+    setTotal();
 });
 
 // Guardar
@@ -419,7 +418,7 @@ function displayMetodoPagoData(){
 }
 
 
-function setTotal(value){
+function setTotal(){
     let elementTotal = $('.input-total');
     let totalFactura = 0;
     $('.selector-factura').find(':selected').each(function(){

@@ -234,8 +234,7 @@ $(document).ready(function() {
                     cache: true
                 }
             }).on('change', function(){
-                var obj = $(this).select2("data")[0];
-                setTotal(obj.total);
+                setTotal();
             });
 
             // pagos
@@ -384,8 +383,7 @@ $('.add-factura').click(function(e){
             cache: true
         }
     }).on('change', function(){
-        var obj = $(this).select2("data")[0];
-        setTotal(obj.total);
+        setTotal();
     });
 });
 
@@ -396,7 +394,7 @@ $('.close').click(function(){
 
     $(this).closest('.wrapper-factura').attr('data-inline', `{"id": ${idFactura}, "action": "delete"}`);
     $(this).closest('.wrapper-factura').addClass('d-none');
-
+    setTotal();
 });
 
 // Guardar
@@ -482,13 +480,16 @@ function validateForm(){
     return $("#cobranza-form").valid();
 }
 
-function setTotal(value){
+function setTotal(){
     let elementTotal = $('.input-total');
     let totalFactura = 0;
     $('.selector-factura').find(':selected').each(function(){
-        totalFactura += parseInt($(this).text().split('$')[1]);
+        // Si el wrapper factura esta oculto no se debe sumar
+        if (!$(this).closest('.wrapper-factura').hasClass('d-none')){
+            totalFactura += parseInt($(this).text().split('$')[1]);
+            elementTotal.val(totalFactura);
+        }
     });
-    elementTotal.val(totalFactura);
 }
 
 {% endblock %}
