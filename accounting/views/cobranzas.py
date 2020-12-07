@@ -3,7 +3,7 @@
 # Django
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.views.generic import DeleteView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.urls import reverse_lazy
 
 # Django Rest Framework
@@ -62,6 +62,12 @@ class CobranzaEditarTemplateView(LoginRequiredMixin, TemplateView):
         return context
 
 
+class CobranzaDetalleView(LoginRequiredMixin, DetailView):
+    """Template con los detalle de la cobranza."""
+    queryset = Cobranza.objects.all()
+
+
 class CobranzaEliminarView(LoginRequiredMixin, DeleteView):
+    """Vista para eliminar cobranza."""
     queryset = Cobranza.objects.all()
     success_url = reverse_lazy('accounting:cobranza-listado')

@@ -33,10 +33,10 @@
                     <tbody>
                         {% for object in object_list %}
                         <tr>
-                            <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.pk }}</td>
-                            <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.cliente.razon_social }}</td>
-                            <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.cliente.cuit }}</td>
-                            <td onclick="location.href='{# url 'cliente-detalle' object.pk #}';">{{ object.creado }}</td>
+                            <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.pk }}</td>
+                            <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.cliente.razon_social }}</td>
+                            <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.cliente.cuit }}</td>
+                            <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.creado }}</td>
                             <td>
                               <a href="{% url 'accounting:cobranza-modificar' object.pk %}">
                                   <i class="fas fa-wrench"></i>

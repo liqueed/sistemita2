@@ -9,7 +9,7 @@ from rest_framework import routers
 # Views
 from accounting.views.cobranzas import (
     CobranzaViewSet, CobranzaListView, CobranzaAgregarTemplateView,
-    CobranzaEditarTemplateView, CobranzaEliminarView
+    CobranzaDetalleView, CobranzaEditarTemplateView, CobranzaEliminarView
 )
 
 router = routers.DefaultRouter()
@@ -22,6 +22,7 @@ urlpatterns = [
     # Cobranza cliente
     path('cobranza/', CobranzaListView.as_view(), name='cobranza-listado'),
     path('cobranza/agregar', CobranzaAgregarTemplateView.as_view(), name='cobranza-agregar'),
+    path('cobranza/<int:pk>/', CobranzaDetalleView.as_view(), name='cobranza-detalle'),
     path('cobranza/<int:pk>/editar/', CobranzaEditarTemplateView.as_view(), name='cobranza-modificar'),
     path('cobranza/<int:pk>/eliminar/', CobranzaEliminarView.as_view(), name='cobranza-eliminar'),
 ]
