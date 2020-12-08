@@ -34,7 +34,7 @@ class CobranzaListView(LoginRequiredMixin, ListView):
     template_name = 'accounting/cliente_cobranza_list.html'
 
     def get_queryset(self):
-        queryset = Cobranza.objects.all()
+        queryset = Cobranza.objects.all().order_by('-creado')
         # Search filter
         search = self.request.GET.get('search', None)
         if search:
