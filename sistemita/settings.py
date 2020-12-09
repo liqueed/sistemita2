@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
     # Apps
     'authorization',
+    'accounting',
     'core',
     'facturacion_clientes'
 ]

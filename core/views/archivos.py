@@ -2,7 +2,7 @@ from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import viewsets
 
-from core.models import Archivo
+from core.models.archivo import Archivo
 
 from core.serializers import ArchivoSerializer
 

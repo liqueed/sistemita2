@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 
-from core.models import OrdenCompra
+from core.models.cliente import OrdenCompra
 from core.forms import OrdenCompraForm
 
 
