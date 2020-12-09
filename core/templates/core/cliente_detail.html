@@ -18,7 +18,11 @@
         <dt class="col-sm-2">Direcci&oacute;n</dt>
         <dd class="col-sm-10">{{ object.calle}} {{ object.numero}} {{ object.piso}} {{ object.dpto}}</dd>
         <dt class="col-sm-2"></dt>
-        <dd class="col-sm-10">{{ object.localidad}}, {{ object.distrito}}, {{ object.provincia}}</dd>
+        <dd class="col-sm-10">
+          {% if object.localidad %}{{ object.localidad}},{% endif %}
+          {% if object.distrito %}{{ object.distrito}},{% endif %}
+          {% if object.provincia %}{{ object.provincia}}{% endif %}
+        </dd>
     </dl>
 
     <p class="lead">Facturaci&oacute;n</p>

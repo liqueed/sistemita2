@@ -509,7 +509,10 @@ function displayInfoCliente(obj){
         data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
         data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
         data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
-        data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">${obj.localidad.nombre} ${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+        if (obj.localidad !== null){
+            data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
+            data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+        }
         data += `</dl></div></div>`;
         $('#info_cliente').html(data);
     }
