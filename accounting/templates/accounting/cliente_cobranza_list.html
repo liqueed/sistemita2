@@ -24,9 +24,10 @@
                     <thead>
                         <tr>
                         <th>ID</th>
+                        <th>Fecha</th>
                         <th>Raz&oacute;n Social</th>
                         <th>CUIT</th>
-                        <th>Fecha</th>
+                        <th>Total</th>
                         <th></th>
                         </tr>
                     </thead>
@@ -34,9 +35,10 @@
                         {% for object in object_list %}
                         <tr>
                             <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.pk }}</td>
+                            <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.creado }}</td>
                             <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.cliente.razon_social }}</td>
                             <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.cliente.cuit }}</td>
-                            <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.creado }}</td>
+                            <td onclick="location.href='{% url 'accounting:cobranza-detalle' object.pk %}';">{{ object.total }}</td>
                             <td>
                               <a href="{% url 'accounting:cobranza-modificar' object.pk %}">
                                   <i class="fas fa-wrench"></i>
@@ -48,7 +50,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan=5>Sin resultados</td>
+                            <td colspan=6>Sin resultados</td>
                         </tr>
                         {% endfor %}
                     </tbody>
