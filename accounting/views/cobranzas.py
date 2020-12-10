@@ -79,9 +79,9 @@ class CobranzaEliminarView(LoginRequiredMixin, DeleteView):
         # Las facturas asociadas pasan estar no cobradas
         cobranza_facturas = self.object.cobranza_facturas.all()
         for c_factura in cobranza_facturas:
-            factura = c_factura.factura
-            factura.cobrado = False
-            factura.save()
+            Factura.objects.filter(pk=c_factura.factura.id).update(
+                cobrado=False
+            )
 
         success_url = self.get_success_url()
         self.object.delete()
