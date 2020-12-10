@@ -3,9 +3,9 @@
 # Django
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.urls import reverse_lazy
-
 # Django Rest Framework
 from rest_framework import permissions
 from rest_framework import mixins, status
@@ -71,3 +71,18 @@ class CobranzaEliminarView(LoginRequiredMixin, DeleteView):
     """Vista para eliminar cobranza."""
     queryset = Cobranza.objects.all()
     success_url = reverse_lazy('accounting:cobranza-listado')
+
+    def delete(self, request, *args, **kwargs):
+        """Sobreescribe método para modificar facturas asociadas."""
+        self.object = self.get_object()
+
+        # Las facturas asociadas pasan estar no cobradas
+        cobranza_facturas = self.object.cobranza_facturas.all()
+        for c_factura in cobranza_facturas:
+            factura = c_factura.factura
+            factura.cobrado = False
+            factura.save()
+
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)

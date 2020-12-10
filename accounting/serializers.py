@@ -3,11 +3,11 @@
 # Django REST Framework
 from rest_framework import serializers
 
-# Serializer
+# Serialize
 from core.serializers import ClienteSerializer
 
 # Models
-from core.models.cliente import Cliente
+from core.models.cliente import Cliente, Factura
 from accounting.models.cobranza import (
     Cobranza, CobranzaFactura, CobranzaFacturaPago
 )
@@ -17,8 +17,9 @@ class CobranzaFacturaPagoSerializer(serializers.ModelSerializer):
     """Factura cobranza pago Serializer.
 
     Aparte de las propiedades del modelo, este serializer agrega el campo
-    'data' para ser utilizado en la petición PUT. Este campo contiene si el objeto
-    que lo contiene tiene que ser agregado, editado o eliminado.
+    'data' para ser utilizado en la petición PUT.
+    Este campo 'data' contiene informacion sobre si el objeto que lo contiene
+    tiene que ser agregado, editado o eliminado.
     """
     data = serializers.DictField(required=False)
 
@@ -33,8 +34,9 @@ class CobranzaFacturaSerializer(serializers.ModelSerializer):
     """Factura cobranza Serializer.
 
     Aparte de las propiedades del modelo, este serializer agrega el campo
-    'data' para ser utilizado en la petición PUT. Este campo contiene si el objeto
-    que lo contiene tiene que ser agregado, editado o eliminado.
+    'data' para ser utilizado en la petición PUT.
+    Este campo 'data' contiene informacion sobre si el objeto que lo contiene
+    tiene que ser agregado, editado o eliminado.
     """
     data = serializers.DictField(required=False)
     cobranza_factura_pagos = CobranzaFacturaPagoSerializer(many=True)
@@ -85,9 +87,14 @@ class CobranzaSerializer(serializers.ModelSerializer):
             # Factura cobranza
             facturas = data['cobranza_facturas']
             for factura in facturas:
+                # La factura pasa a estar cobrada
+                factura_entry = factura['factura']
+                factura_entry.cobrado = True
+                factura_entry.save()
+
                 cobranza_factura = CobranzaFactura.objects.create(
                     cobranza=cobranza,
-                    factura=factura['factura'],
+                    factura=factura_entry,
                     ganancias=factura['ganancias'],
                     ingresos_brutos=factura['ingresos_brutos'],
                     iva=factura['iva']
@@ -111,40 +118,14 @@ class CobranzaSerializer(serializers.ModelSerializer):
 
             # Recorro las facturas
             for factura in facturas:
-                if factura['data']['action'] == 'update':
-                    # Actualizo factura
-                    CobranzaFactura.objects.filter(
-                        pk=factura['data']['id']
-                    ).update(
-                        factura=factura['factura'],
-                        ganancias=factura['ganancias'],
-                        ingresos_brutos=factura['ingresos_brutos'],
-                        iva=factura['iva']
-                    )
-                    # Pagos
-                    pagos = factura['cobranza_factura_pagos']
-                    for pago in pagos:
-                        if pago['data']['action'] == 'update':
-                            # Actualiza pago
-                            CobranzaFacturaPago.objects.filter(
-                                pk=pago['data']['id']
-                            ).update(
-                                metodo=pago['metodo'],
-                                monto=pago['monto']
-                            )
-                        elif pago['data']['action'] == 'add':
-                            # Agrega Pago
-                            cobranza_factura = CobranzaFactura.objects.get(pk=factura['data']['id'])
-                            CobranzaFacturaPago.objects.create(
-                                cobranza_factura=cobranza_factura,
-                                metodo=pago['metodo'],
-                                monto=pago['monto']
-                            )
-                        elif pago['data']['action'] == 'delete':
-                            # Elimina Pago
-                            CobranzaFacturaPago.objects.get(pk=pago['data']['id']).delete()
-                elif factura['data']['action'] == 'add':
-                    # Agrego factura
+                if factura['data']['action'] == 'add':
+                    # Agrego factura cobranza
+
+                    # La factura del cliente pasa a estar cobrada
+                    factura_entry = factura['factura']
+                    factura_entry.cobrado = True
+                    factura_entry.save()
+
                     cobranza_factura = CobranzaFactura.objects.create(
                         cobranza=instance,
                         factura=factura['factura'],
@@ -162,7 +143,56 @@ class CobranzaSerializer(serializers.ModelSerializer):
                             metodo=pago['metodo'],
                             monto=pago['monto']
                         )
+                elif factura['data']['action'] == 'update':
+                    # Actualizo factura de la cobranza
+                    cobranza_factura = CobranzaFactura.objects.get(
+                        pk=factura['data']['id']  # data contiene la pk de la factura cobranza
+                    )
+
+                    factura_entry = factura['factura']
+                    if cobranza_factura.factura.id != factura_entry.id:
+                        # Si la factura es diferente, la anterior pasa a estar no cobrada
+                        factura_pre = Factura.objects.get(pk=cobranza_factura.factura.id)
+                        factura_pre.cobrado = False
+                        factura_pre.save()
+
+                    # La factura actual del cliente pasa a estar cobrada
+                    factura_entry.cobrado = True
+                    factura_entry.save()
+
+                    cobranza_factura.factura = factura_entry
+                    cobranza_factura.ganancias = factura['ganancias']
+                    cobranza_factura.ingresos_brutos = factura['ingresos_brutos']
+                    cobranza_factura.iva = factura['iva']
+                    cobranza_factura.save()
+
+                    # Pagos
+                    pagos = factura['cobranza_factura_pagos']
+                    for pago in pagos:
+                        if pago['data']['action'] == 'update':
+                            # Actualiza pago
+                            factura_pago = CobranzaFacturaPago.objects.get(pk=pago['data']['id'])
+                            factura_pago.metodo = pago['metodo']
+                            factura_pago.monto = pago['monto']
+                            factura_pago.save()
+                        elif pago['data']['action'] == 'add':
+                            # Agrega Pago
+                            CobranzaFacturaPago.objects.create(
+                                cobranza_factura=cobranza_factura,
+                                metodo=pago['metodo'],
+                                monto=pago['monto']
+                            )
+                        elif pago['data']['action'] == 'delete':
+                            # Elimina Pago
+                            CobranzaFacturaPago.objects.get(pk=pago['data']['id']).delete()
                 elif factura['data']['action'] == 'delete':
+                    # Elimino la factura cobranza
+
+                    # La facturas asociadas pasan a ser no cobradas
+                    factura_entry = factura['factura']
+                    factura_entry.cobrado = False
+                    factura_entry.save()
+
                     CobranzaFactura.objects.get(pk=factura['data']['id']).delete()
 
             instance.save()

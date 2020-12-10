@@ -1,3 +1,6 @@
+"""Cliente views."""
+
+# Django
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -6,13 +9,22 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django_filters.views import FilterView
 
+# Django REST Framework
 from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import viewsets
 
+# Models
 from core.models.cliente import Factura
+from accounting.models.cobranza import Cobranza, CobranzaFactura
+
+# Forms
 from core.forms import FacturaForm
+
+# Serializer
 from core.serializers import FacturaSerializer
+
+# Filters
 from core.filters import FacturaFilterSet
 
 
@@ -31,6 +43,15 @@ class FacturaEliminarView(LoginRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
+
+        # Si elimino una factura y está asociada a una cobranza que la tiene por única
+        # factura, elimino la cobranza
+        cobranza_factura = CobranzaFactura.objects.filter(factura=self.object).first()
+        if cobranza_factura:
+            count = cobranza_factura.cobranza.cobranza_facturas.count()
+            if count == 1:
+                Cobranza.objects.get(pk=cobranza_factura.cobranza.pk).delete()
+
         self.object.archivos.all().delete()
         success_url = self.get_success_url()
         self.object.delete()
