@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags commontags %}
+{% block title %}Pago a Proveedor - Liqueed{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Pago a Proveedor</h1>
+    <dl class="row">
+      <dt class="col-sm-2">Proveedor</dt>
+      <dd class="col-sm-10">{{ object.proveedor.razon_social }} - CUIT: {{ object.proveedor.cuit}}</dd>
+        {% for pago_factura in object.pago_facturas.all %}
+          <dt class="col-sm-2 mt-2">-------------</dt>
+          <dd class="col-sm-10 mt-2"></dd>
+          <dt class="col-sm-2">Factura #{{ forloop.counter }}</dt>
+          <dd class="col-sm-10">{{ pago_factura.factura.fecha }} - ${{ pago_factura.factura.total }}</dd>
+          <dt class="col-sm-2">Pagos</dt>
+          <dd class="col-sm-10"></dd>
+          {% for pago in pago_factura.pago_factura_pagos.all %}
+            <dt class="col-sm-2">#{{ forloop.counter }}</dt>
+            <dd class="col-sm-10"><strong>Metodo:</strong> {{ pago.metodo }} - <strong>Pago:</strong> ${{ pago.monto }}</dd>
+          {% endfor %}
+          <dt class="col-sm-2">Ganancias</dt>
+          <dd class="col-sm-10"> ${{ pago_factura.ganancias }}</dd>
+          <dt class="col-sm-2">Ingresos brutos</dt>
+          <dd class="col-sm-10"> ${{ pago_factura.ingresos_brutos }}</dd>
+          <dt class="col-sm-2">Iva</dt>
+          <dd class="col-sm-10"> ${{ pago_factura.iva }}</dd>
+          {% endfor %}
+        <dt class="col-sm-2 mt-3">TOTAL</dt>
+        <dd class="col-sm-10 mt-3"> ${{ object.total }}</dd>
+    </dl>
+    <a href="{% url 'accounting:pago-listado' %}" class="btn btn-primary float-right">Volver</a>
+</div>
+{% endblock %}
