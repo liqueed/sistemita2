@@ -12,7 +12,7 @@ from rest_framework import mixins, permissions, viewsets
 
 # Accounting
 from accounting.models.cobranza import Cobranza
-from accounting.serializers import CobranzaSerializer
+from accounting.serializers.cobranzas import CobranzaSerializer
 
 # Core
 from core.models.cliente import Factura

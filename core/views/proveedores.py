@@ -13,7 +13,9 @@ from core.forms import ProveedorForm
 from core.serializers import ProveedorSerializer
 
 
-class ProveedorViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class ProveedorViewSet(mixins.RetrieveModelMixin,
+                       mixins.ListModelMixin,
+                       viewsets.GenericViewSet):
     queryset = Proveedor.objects.all()
     serializer_class = ProveedorSerializer
     permission_classes = (permissions.IsAuthenticated,)
