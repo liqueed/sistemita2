@@ -48,7 +48,7 @@ class FacturaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Factura
-        fields = ['id', 'archivos', 'cliente', 'cobrado', 'fecha', 'total']
+        fields = ['id', 'cliente', 'cobrado', 'fecha', 'total', 'archivos']
 
 
 class ProveedorSerializer(serializers.ModelSerializer):
@@ -64,10 +64,11 @@ class ProveedorSerializer(serializers.ModelSerializer):
 
 class FacturaProveedorSerializer(serializers.ModelSerializer):
     archivos = ArchivoSerializer(many=True, read_only=True)
+    proveedor = ProveedorSerializer(read_only=True)
 
     class Meta:
         model = FacturaProveedor
-        fields = ['id', 'archivos']
+        fields = ['id', 'proveedor', 'cobrado', 'fecha', 'total', 'archivos']
 
 class MedioPagoSerializer(serializers.ModelSerializer):
     class Meta:
