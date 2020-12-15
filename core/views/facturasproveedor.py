@@ -16,10 +16,13 @@ from core.forms import FacturaProveedorForm
 from core.serializers import FacturaProveedorSerializer
 
 
-class FacturaProveedorViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class FacturaProveedorViewSet(mixins.ListModelMixin,
+                              mixins.RetrieveModelMixin,
+                              viewsets.GenericViewSet):
     queryset = FacturaProveedor.objects.all()
     serializer_class = FacturaProveedorSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    filter_fields = ('proveedor', 'cobrado')
 
 
 class FacturaProveedorListView(LoginRequiredMixin, FilterView):

@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Clientes - Liqueed{% endblock %}
+{% block title %}Editar Cobranza #{{ pk }} | Liqueed{% endblock %}
 {% block header %}
     <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
     <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
-      <h1 class="h3 mb-2 text-gray-800">Cobranza Cliente</h1>
+      <h1 class="h3 mb-2 text-gray-800">Editar Cobranza #{{ pk }}</h1>
+      <hr class="sidebar-divider">
+
       <form id="cobranza-form">
         <fieldset>
           <legend>Datos</legend>
@@ -15,7 +17,7 @@
           <input id="cobranza" name="cobranza" type="hidden" value="{{ pk }}">
           <!-- End Cobranza -->
 
-          <!-- Client -->
+          <!-- Cliente -->
           <div class="row">
             <div class="col-5">
               <div class="form-group">
@@ -31,7 +33,7 @@
           </div>
           <div class="row" id="info_cliente">
           </div>
-          <!--//End Cliente -->
+          <!-- End Cliente -->
 
           <!-- Factura -->
           <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
@@ -55,7 +57,7 @@
                   </div>
                 </div>
               </div>
-              <!--//End Factura Cliente -->
+              <!-- End Factura Cliente -->
 
               <!-- Metodo y Monto -->
               <div class="col-11 wrapper-pagos">
@@ -73,7 +75,7 @@
                       </div>
                     </div>
                   </div>
-                  <!--//End Metodo -->
+                  <!-- End Metodo -->
                   <!-- Monto -->
                   <div class="col-6">
                     <div class="form-group">
@@ -85,7 +87,7 @@
                       </div>
                     </div>
                   </div>
-                  <!--//Monto -->
+                  <!-- End Monto -->
                 </div>
               </div>
               <!-- End metodo y monto -->
@@ -99,7 +101,7 @@
                   </div>
                 </div>
               </div>
-              <!-- //Agrega monto -->
+              <!-- End Agrega monto -->
 
               <!-- Ganancias, ingresos e IVA -->
               <div class="col-4">
@@ -120,11 +122,11 @@
                   <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
                 </div>
               </div>
-              <!-- //End Ganancias, ingresos e IVA -->
+              <!--  End Ganancias, ingresos e IVA -->
 
             </div>
           </div>
-          <!--//End Factura -->
+          <!-- End Factura -->
 
           <!-- Agregar factura -->
           <div class="row">
@@ -132,7 +134,7 @@
               <button class="add-factura btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
             </div>
           </div>
-          <!--//Agregar factura -->
+          <!-- Agregar factura -->
 
           <!-- Total -->
           <div class="row wrapper-total mt-2">
@@ -143,7 +145,7 @@
               </div>
             </div>
           </div>
-          <!--//End Total -->
+          <!-- End Total -->
 
         </fieldset>
 
@@ -390,6 +392,7 @@ $('.add-factura').click(function(e){
     });
 });
 
+// Eliminar factura
 $('.close').click(function(){
     let data = $(this).closest('.wrapper-factura').attr('data-inline');
     if (data.includes('add')){ // Si el wrapper es nuevo y lo elimino, lo remuevo del DOM

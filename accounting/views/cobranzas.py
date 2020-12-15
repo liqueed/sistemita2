@@ -6,16 +6,16 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.urls import reverse_lazy
+
 # Django Rest Framework
-from rest_framework import permissions
-from rest_framework import mixins, status
-from rest_framework import viewsets
+from rest_framework import mixins, permissions, viewsets
 
-# Models
+# Accounting
 from accounting.models.cobranza import Cobranza
+from accounting.serializers.cobranzas import CobranzaSerializer
 
-# Serializers
-from accounting.serializers import CobranzaSerializer
+# Core
+from core.models.cliente import Factura
 
 
 class CobranzaViewSet(mixins.CreateModelMixin,
@@ -26,7 +26,7 @@ class CobranzaViewSet(mixins.CreateModelMixin,
     """Cobranza view set."""
     serializer_class = CobranzaSerializer
     queryset = Cobranza.objects.all()
-    permission_classes = (permissions.AllowAny,)  # TODO: Only test
+    permission_classes = (permissions.IsAuthenticated,)
 
 
 class CobranzaListView(LoginRequiredMixin, ListView):

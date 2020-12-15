@@ -1,40 +1,40 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Agregar Cobranza a Cliente | Liqueed{% endblock %}
+{% block title %}Agregar Pago a Proveedor | Liqueed{% endblock %}
 {% block header %}
     <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
     <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
-      <h1 class="h3 mb-2 text-gray-800">Agregar Cobranza a Cliente</h1>
+      <h1 class="h3 mb-2 text-gray-800">Agregar Pago a Proveedor</h1>
       <hr class="sidebar-divider">
 
-      <form id="cobranza-form">
+      <form id="pago-form">
         <fieldset>
           <legend>Datos</legend>
 
-          <!-- Cliente -->
+          <!-- Proveedor -->
           <div class="row">
             <div class="col-5">
               <div class="form-group">
                 <label class="requiredField">
-                  Cliente<span class="asteriskField">*</span>
+                  Proveedor<span class="asteriskField">*</span>
                 </label>
                 <div class="">
-                  <select class="select form-control" id="cliente" name="cliente" required>
+                  <select class="select form-control" id="proveedor" name="proveedor" required>
                     <option value="">---------</option>
                   </select>
                 </div>
               </div>
             </div>
           </div>
-          <div class="row" id="info_cliente">
+          <div class="row" id="info_proveedor">
           </div>
-          <!--End Cliente -->
+          <!-- End Proveedor -->
 
           <!-- Factura -->
-          <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
+          <div class="wrapper-factura card p-4 mb-3" id="pago_factura_1" data-id="1" style="width: 38rem;">
             <div class="row">
               <div class="col-12">
                 <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
@@ -43,7 +43,7 @@
               </div>
             </div>
             <div class="row">
-              <!-- Factura Cliente -->
+              <!-- Factura Proveedor -->
               <div class="col-12">
                 <div class="form-group">
                   <label class="requiredField">
@@ -56,7 +56,7 @@
                   </div>
                 </div>
               </div>
-              <!-- End Factura Cliente -->
+              <!-- End Factura Proveedor -->
 
               <!-- Metodo y Monto -->
               <div class="col-11 wrapper-pagos">
@@ -133,7 +133,7 @@
               <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
             </div>
           </div>
-          <!-- End Agregar factura -->
+          <!-- Agregar factura -->
 
           <!-- Total -->
           <div class="row wrapper-total d-none mt-2">
@@ -159,13 +159,13 @@
     </div>
 {% endblock %}
 {% block extra_js %}
-// Cliente
-let cliente; // global
+// Proveedor
+let proveedor; // global
 
-$('#cliente').select2({
-    placeholder: 'Selecciona un cliente',
+$('#proveedor').select2({
+    placeholder: 'Selecciona un proveedor',
     ajax: {
-        url: '/api/cliente/',
+        url: '/api/proveedor/',
         processResults: function (response) {
             var data = $.map(response, function (obj) {
                 obj.id = obj.id;
@@ -179,9 +179,9 @@ $('#cliente').select2({
         cache: true
     }
 }).on('change', function(e) {
-    // Obtengo objeto Cliente
+    // Obtengo objeto Proveedor
     var obj = $(this).select2("data")[0];
-    cliente = {
+    proveedor = {
         "razon_social": obj.razon_social,
         "cuit": obj.cuit,
         "correo": obj.correo,
@@ -192,10 +192,10 @@ $('#cliente').select2({
     $('.selector-factura').prop('disabled', false);
     $('.selector-metodo').prop('disabled', false);
 
-    displayInfoCliente(obj);
+    displayInfoProveedor(obj);
 
-    // Si el usuario cambia de cliente entonces remuevo las facturas creadas
-    // con facturas de otro cliente, excepto la primera, que únicamente seteo
+    // Si el usuario cambia de Proveedor entonces remuevo las facturas creadas
+    // con facturas del anterior proveedor, excepto la primera, que únicamente seteo
     // el selector de facturas
     let firstSelector = $('.wrapper-factura:first .selector-factura');
     firstSelector.val('').trigger('change');
@@ -204,18 +204,18 @@ $('#cliente').select2({
 });
 
 // Factura inicial
-$('#cobranza_factura_1 .selector-factura').select2({
+$('#pago_factura_1 .selector-factura').select2({
     placeholder: 'Selecciona una factura',
     ajax: {
         beforeSend: function(jqXHR, settings) {
-            let idCliente = $('#cliente').find(":selected").val();
-            settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
+            let idProveedor = $('#proveedor').find(":selected").val();
+            settings.url = '/api/factura-proveedor?cobrado=0&proveedor=' + idProveedor;
         },
-        url: '/api/factura/',
+        url: '/api/factura-proveedor/',
         processResults: function (response) {
             let data = $.map(response, function (obj) {
                 obj.id = obj.id;
-                obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
+                obj.text = `${obj.fecha} - ${obj.proveedor.razon_social} - $${obj.total}`;
                 return obj;
             });
             return {
@@ -273,7 +273,7 @@ $('.add-factura').click(function(e){
     let countFacturas = $('.wrapper-factura').length;
     let cloneIdFactura = countFacturas + 1; // Id del elemento clonado
     let clone = wrapperFactura.clone(true); // clono con datos y eventos
-    let idFactura = 'cobranza_factura_' + cloneIdFactura; // establezco el id
+    let idFactura = 'pago_factura_' + cloneIdFactura; // establezco el id
 
     clone.attr('id', idFactura); // agrego id
     clone.attr('data-id', cloneIdFactura);
@@ -305,14 +305,14 @@ $('.add-factura').click(function(e){
         placeholder: 'Selecciona una factura',
         ajax: {
             beforeSend: function(jqXHR, settings) {
-                let idCliente = $('#cliente').find(":selected").val();
-                settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
+                let idProveedor = $('#proveedor').find(":selected").val();
+                settings.url = '/api/factura-proveedor?cobrado=0&proveedor=' + idProveedor;
             },
-            url: '/api/factura/',
+            url: '/api/factura-proveedor/',
             processResults: function (response) {
                 let data = $.map(response, function (obj) {
                     obj.id = obj.id;
-                    obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
+                    obj.text = `${obj.fecha} - ${obj.proveedor.razon_social} - $${obj.total}`;
                     return obj;
                 });
                 return {
@@ -326,7 +326,7 @@ $('.add-factura').click(function(e){
     });
 });
 
-// Eliminar factura
+// Elimina factura
 $('.close').click(function(){
     $(this).closest('.wrapper-factura').remove();
     setTotal();
@@ -360,23 +360,23 @@ $('#submit-id-submit').click(function(e){
 
         facturas.push({
             'factura': parseInt(factura),
-            'cobranza_factura_pagos': pagos,
+            'pago_factura_pagos': pagos,
             'ganancias': ganancias,
             'ingresos_brutos': ingresos_brutos,
             'iva': iva
         });
     });
 
-    let formCobranzaData = {
-        'cobranza_facturas': facturas,
+    let formPagoData = {
+        'pago_facturas': facturas,
         'total': parseInt(total)
     }
-    formCobranzaData['cliente'] = cliente;
+    formPagoData['proveedor'] = proveedor;
 
     $.ajax({
         type        : 'POST',
-        url         : '/api/cobranza/',
-        data        : JSON.stringify(formCobranzaData),
+        url         : '/api/pago/',
+        data        : JSON.stringify(formPagoData),
         dataType    : 'json',
         contentType : 'application/json',
         encode      : true,
@@ -384,7 +384,7 @@ $('#submit-id-submit').click(function(e){
             xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         }
     }).done(function(data) {
-        window.location.href = '{% url 'accounting:cobranza-listado' %}';
+        window.location.href = '{% url 'accounting:pago-listado' %}';
     }).fail(function() {
         alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
     })
@@ -392,7 +392,7 @@ $('#submit-id-submit').click(function(e){
 
 // funciones
 function validateForm(){
-    var validator = $('#cobranza-form').validate({
+    var validator = $('#pago-form').validate({
         lang: 'es',
     });
 
@@ -409,7 +409,7 @@ function validateForm(){
         return this.optional(element) || value !== param;
     }, "Este campo es obligatorio.");
 
-    return $("#cobranza-form").valid();
+    return $("#pago-form").valid();
 }
 
 
@@ -441,7 +441,7 @@ function setTotal(){
     elementTotal.val(totalFactura);
 }
 
-function displayInfoCliente(obj){
+function displayInfoProveedor(obj){
     if(obj !== ''){
         var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 11px;" class="card col-6">`;
         data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
@@ -454,7 +454,7 @@ function displayInfoCliente(obj){
             data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
         }
         data += `</dl></div></div>`;
-        $('#info_cliente').html(data);
+        $('#info_proveedor').html(data);
     }
 }
 

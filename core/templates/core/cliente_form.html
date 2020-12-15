@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Clientes - Liqueed{% endblock %}
+{% block title %}
+    {% if cliente.pk %}Editar Cliente #{{ cliente.pk }}{% else %}Agregar Cliente{% endif %} | Liqueed
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
+    {% if cliente.pk %}
+      <h1 class="h3 text-gray-800">Editar Cliente #{{ cliente.pk }}</h1>
+    {% else %}
+      <h1 class="h3 text-gray-800">Agregar Cliente</h1>
+    {% endif %}
+    <hr class="sidebar-divider">
 
-    <h1 class="h3 mb-2 text-gray-800">Clientes</h1>
     {% crispy form %}
 </div>
 {% endblock %}

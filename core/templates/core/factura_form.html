@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Facturas - Liqueed{% endblock %}
+{% block title %}
+    {% if factura.pk %}Editar Facturación #{{ factura.pk  }} - Cliente: {{ factura.cliente.razon_social }} {% else %}Agregar Facturación de Cliente{% endif %} | Liqueed{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Factura Cliente</h1>
+    {% if factura.pk %}
+      <h1 class="h3 text-gray-800">Editar Facturación #{{ factura.pk }} - Cliente: {{ factura.cliente.razon_social}}</h1>
+    {% else %}
+      <h1 class="h3 text-gray-800">Agregar Facturación a Cliente</h1>
+    {% endif %}
+    <hr class="sidebar-divider">
+
     {% crispy form %}
     <input id="id_factura" type="hidden" value="{{ object.id }}">
 {% endblock %}

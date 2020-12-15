@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Medio de Pago - Liqueed{% endblock %}
+{% block title %}Detalle de Medio de Pago #{{ object.pk }} | Liqueed{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Medio de Pago</h1>
+    <h1 class="h3 mb-2 text-gray-800">Detalle de Medio de Pago #{{ object.pk }}</h1>
+    <hr class="sidebar-divider">
 
     <dl class="row">
         <dt class="col-sm-2">Nombre</dt>

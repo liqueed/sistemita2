@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Eliminar Pago #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}  | Liqueed{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <h1 class="h3 mb-2 text-gray-800">Eliminar Pago #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h1>
+  <hr class="sidebar-divider">
+
+  <form method="post" action="{% url 'accounting:pago-eliminar' object.pk %}">
+    {% csrf_token %}
+    <p>
+      <strong>Atenci&oacute;n!</strong>
+      Est&aacute; por eliminar la cobranza #{{ object.pk }} del proveedor<em> {{ object.proveedor.razon_social}}</em>
+      con CUIT <em>{{ object.proveedor.cuit}}</em>.</p>
+    <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+    <div class="row">
+      <div class="col">
+        <button class="btn btn-danger" type="submit">Eliminar</button>
+        <a class="btn" href="{% url 'accounting:pago-listado' %}">No eliminar</a>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
