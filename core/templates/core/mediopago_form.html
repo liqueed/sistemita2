@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Medio de pago - Liqueed{% endblock %}
+{% block title %}
+    {% if mediopago.pk %}Editar Medio de Pago #{{ mediopago.pk }}{% else %}Agregar Medio de Pago{% endif %} | Liqueed
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
+    {% if mdiopago.pk %}
+      <h1 class="h3 text-gray-800">Editar Medio de Pago #{{ mediopago.pk }}</h1>
+    {% else %}
+      <h1 class="h3 text-gray-800">Agregar Medio de Pago</h1>
+    {% endif %}
+    <hr class="sidebar-divider">
 
-    <h1 class="h3 mb-2 text-gray-800">Medio de pago</h1>
     {% crispy form %}
 </div>
 {% endblock %}

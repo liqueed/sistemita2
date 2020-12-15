@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Facturas - Liqueed{% endblock %}
+{% block title %}Eliminar Facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }} | Liqueed{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Factura</h1>
+    <h1 class="h3 mb-2 text-gray-800">Eliminar Facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h1>
+    <hr class="sidebar-divider">
 
     <form method="post" action="{% url 'factura-proveedor-eliminar' object.pk %}">
         {% csrf_token %}

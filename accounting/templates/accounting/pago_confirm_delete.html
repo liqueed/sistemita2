@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Proveedor - Liqueed{% endblock %}
+{% block title %}Eliminar Pago #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}  | Liqueed{% endblock %}
 {% block content %}
 <div class="container-fluid">
-  <h1 class="h3 mb-2 text-gray-800">Proveedor</h1>
-  <form method="post" action="{% url 'accounting:proveedor-eliminar' object.pk %}">
+  <h1 class="h3 mb-2 text-gray-800">Eliminar Pago #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h1>
+  <hr class="sidebar-divider">
+
+  <form method="post" action="{% url 'accounting:pago-eliminar' object.pk %}">
     {% csrf_token %}
     <p>
       <strong>Atenci&oacute;n!</strong>

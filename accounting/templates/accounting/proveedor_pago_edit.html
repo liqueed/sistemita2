@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Proveedores - Liqueed{% endblock %}
+{% block title %}Editar Pago #{{ pk }} | Liqueed{% endblock %}
 {% block header %}
     <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
     <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
-      <h1 class="h3 mb-2 text-gray-800">Pagos a Proveedores</h1>
+      <h1 class="h3 mb-2 text-gray-800">Editar Pago #{{ pk }}</h1>
+      <hr class="sidebar-divider">
+
       <form id="pago-form">
         <fieldset>
           <legend>Datos</legend>

@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Proveedores - Liqueed{% endblock %}
+{% block title %}
+    {% if proveedor.pk %}Editar Proveedor #{{ proveedor.pk }}{% else %}Agregar Proveedor{% endif %} | Liqueed
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
+    {% if proveedor.pk %}
+      <h1 class="h3 text-gray-800">Editar Proveedor #{{ proveedor.pk }}</h1>
+    {% else %}
+      <h1 class="h3 text-gray-800">Agregar Proveedor</h1>
+    {% endif %}
+    <hr class="sidebar-divider">
 
-    <h1 class="h3 mb-2 text-gray-800">Proveedores</h1>
     {% crispy form %}
 </div>
 {% endblock %}

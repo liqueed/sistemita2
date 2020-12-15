@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Facturas - Liqueed{% endblock %}
+{% block title %}
+    {% if facturaproveedor.pk %}Editar Facturación #{{ facturaproveedor.pk  }} - Proveedor: {{ facturaproveedor.proveedor.razon_social }} {% else %}Agregar Facturación a Proveedor{% endif %} | Liqueed
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Factura</h1>
+    {% if facturaproveedor.pk %}
+      <h1 class="h3 text-gray-800">Editar Facturación #{{ facturaproveedor.pk }} - Proveedor: {{ facturaproveedor.proveedor.razon_social}}</h1>
+    {% else %}
+      <h1 class="h3 text-gray-800">Agregar Facturación a Proveedor</h1>
+    {% endif %}
+    <hr class="sidebar-divider">
+
     {% crispy form %}
     <input id="id_factura_proveedor" type="hidden" value="{{ object.id }}">
 {% endblock %}

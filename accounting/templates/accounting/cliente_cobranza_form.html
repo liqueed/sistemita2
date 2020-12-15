@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Clientes - Liqueed{% endblock %}
+{% block title %}Agregar Cobranza a Cliente | Liqueed{% endblock %}
 {% block header %}
     <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
     <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
 {% endblock %}
 {% block content %}
     <div class="container-fluid">
-      <h1 class="h3 mb-2 text-gray-800">Cobranza Cliente</h1>
+      <h1 class="h3 mb-2 text-gray-800">Agregar Cobranza a Cliente</h1>
+      <hr class="sidebar-divider">
+
       <form id="cobranza-form">
         <fieldset>
           <legend>Datos</legend>

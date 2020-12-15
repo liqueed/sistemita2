@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Orden de compra - Liqueed{% endblock %}
+{% block title %}
+    {% if ordencompra.pk %}Editar Orden de Compra #{{ ordencompra.pk }} - Cliente: {{ ordencompra.cliente.razon_social }}{% else %}Agregar Orden de Compra{% endif %} | Liqueed
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
+    {% if ordencompra.pk %}
+      <h1 class="h3 text-gray-800">Editar Orden de compra #{{ ordencompra.pk}} - Cliente: {{ ordencompra.cliente.razon_social }}</h1>
+    {% else %}
+      <h1 class="h3 text-gray-800">Agregar Orden de compra</h1>
+    {% endif %}
+    <hr class="sidebar-divider">
 
-    <h1 class="h3 mb-2 text-gray-800">Orden de compra</h1>
     {% crispy form %}
 </div>
 {% endblock %}

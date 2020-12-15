@@ -23,25 +23,25 @@
     Clientes
   </div>
 
-  <li class="nav-item{% if request.resolver_match.url_name in 'cliente-listado, cliente-detalle' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'cliente-listado, cliente-detalle, cliente-agregar, cliente-modificar, cliente-eliminar' %} active{% endif %}">
     <a class="nav-link" href="{% url 'cliente-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Clientes</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name in 'factura-listado, factura-detalle' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'factura-listado, factura-detalle, factura-agregar, factura-modificar, factura-eliminar' %} active{% endif %}">
     <a class="nav-link" href="{% url 'factura-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name in 'ordencompra-listado, ordencompra-detalle' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'ordencompra-listado, ordencompra-detalle, ordencompra-agregar, ordencompra-modificar, ordencompra-eliminar' %} active{% endif %}">
     <a class="nav-link" href="{% url 'ordencompra-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>&Oacute;rdenes de compra</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name in 'cobranza-listado, cobranza-agregar, cobranza-modificar, cobranza-detalle' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'cobranza-listado, cobranza-agregar, cobranza-modificar, cobranza-detalle, cobranza-eliminar' %} active{% endif %}">
     <a class="nav-link" href="{% url 'accounting:cobranza-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Cobranzas</span></a>
@@ -54,19 +54,19 @@
     Proveedores
   </div>
 
-  <li class="nav-item{% if request.resolver_match.url_name in 'proveedor-listado, proveedor-detalle' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'proveedor-listado, proveedor-agregar, proveedor-modificar, proveedor-detalle, proveedor-eliminar' %} active{% endif %}">
     <a class="nav-link" href="{% url 'proveedor-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Proveedores</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name == 'factura-proveedor-listado' or request.resolver_match.url_name == 'factura-proveedor-detalle'  %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'factura-proveedor-listado, factura-proveedor-agregar, factura-proveedor-modificar, factura-proveedor-detalle, factura-proveedor-eliminar'  %} active{% endif %}">
     <a class="nav-link" href="{% url 'factura-proveedor-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
   </li>
 
-  <li class="nav-item{% if request.resolver_match.url_name in 'pago-listado, pago-agregar, pago-modificar, pago-detalle' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'pago-listado, pago-agregar, pago-modificar, pago-detalle, pago-eliminar' %} active{% endif %}">
     <a class="nav-link" href="{% url 'accounting:pago-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Pagos</span></a>
@@ -80,7 +80,7 @@
     Medios de pago
   </div>
 
-  <li class="nav-item{% if request.resolver_match.url_name in 'mediopago-listado, mediopago-detalle' and not request.resolver_match.url_name in 'pago-detalle, pago-listado' %} active{% endif %}">
+  <li class="nav-item{% if request.resolver_match.url_name in 'mediopago-listado, mediopago-detalle, mediopago-agregar, mediopago-modificar, mediopago-eliminar' and not request.resolver_match.url_name in 'pago-detalle, pago-listado, pago-eliminar' %} active{% endif %}">
     <a class="nav-link" href="{% url 'mediopago-listado' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Medios de pago</span></a>
