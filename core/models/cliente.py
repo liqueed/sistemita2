@@ -1,11 +1,14 @@
 """Modelo de cliente y sus relaciones."""
 
+# Django
 from django.db import models
 
+# Models
 from core.models.archivo import Archivo
 from core.models.entidad import Provincia, Distrito, Localidad
 from core.models.utils import TimeStampedModel, FacturaAbstract
 
+# Utils
 from core.constants import MONEDAS
 
 
@@ -33,11 +36,12 @@ class Cliente(TimeStampedModel, models.Model):
     correo_envio_factura = models.EmailField(blank=True, verbose_name='Correo de envío')
 
     def __str__(self):
-        """Retorna la razón soscial y cuit del cliente."""
+        """Devuelve una represetación legible del modelo."""
         return f'{self.razon_social} - {self.cuit}'
 
     class Meta:
-        """Meta class"""
+        """Configuraciones del modelo."""
+
         ordering = ('razon_social',)
         verbose_name = 'cliente'
         verbose_name_plural = 'clientes'
@@ -45,14 +49,17 @@ class Cliente(TimeStampedModel, models.Model):
 
 class Factura(FacturaAbstract):
     """Modelo factura de cliente."""
+
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
 
     def __str__(self):
+        """Devuelve una represetación legible del modelo."""
         return '{} - {} - {}'.format(self.fecha, self.cliente, self.moneda_monto)
 
     class Meta:
-        """Meta class."""
+        """Configuraciones del modelo."""
+
         ordering = ('fecha',)
         verbose_name = 'factura'
         verbose_name_plural = 'facturas'
@@ -60,6 +67,7 @@ class Factura(FacturaAbstract):
 
 class OrdenCompra(TimeStampedModel, models.Model):
     """Modelo orden de compra del cliente."""
+
     fecha = models.DateField(blank=False)
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
@@ -71,7 +79,8 @@ class OrdenCompra(TimeStampedModel, models.Model):
         return f'{self.get_moneda_display()} {self.monto}'
 
     class Meta:
-        """Meta class."""
+        """Configuraciones del modelo."""
+
         ordering = ('fecha',)
         verbose_name = 'orden de compra'
         verbose_name_plural = 'ordenes de compras'

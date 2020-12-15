@@ -1,19 +1,31 @@
+"""Modelos utiles para utilizar en otros modelos."""
+
+# Django
 from django.db import models
 
+# Constantes
 from core.constants import MONEDAS
 
 
 class TimeStampedModel(models.Model):
+    """Modelo TimeStamped.
+
+    Agrega al modelo los atributos para obtener cuando fue creado y modificado el objecto.
+    """
+
     creado = models.DateTimeField('Creado', editable=False, blank=True, auto_now_add=True)
     modificado = models.DateTimeField('Modificado', editable=False, blank=True, auto_now=True)
 
     class Meta:
+        """Configuraciones del modelo."""
+
         get_latest_by = 'modificado'
         abstract = True
 
 
 class FacturaAbstract(TimeStampedModel, models.Model):
     """Clase abstracta de facturas."""
+
     TIPOS_FACTURA = (
         ('A', 'A'),
         ('B', 'B'),
@@ -38,7 +50,10 @@ class FacturaAbstract(TimeStampedModel, models.Model):
 
     @property
     def moneda_monto(self):
+        """Retorna el total y su moneda."""
         return f'{self.get_moneda_display()} {self.total}'
 
     class Meta:
+        """Configuraciones del modelo."""
+
         abstract = True
