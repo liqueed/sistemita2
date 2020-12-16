@@ -25,7 +25,7 @@
     <p class="lead">Pagos</p>
     <dl class="row">
         <dt class="col-sm-2">CBU</dt>
-        <dd class="col-sm-10">{{ object.cbu}}</dd>
+        <dd class="col-sm-10">{% if object.cbu %}{{ object.cbu}}{% else %}-{% endif %}</dd>
     </dl>
 
     <a href="{% url 'cliente-listado' %}" class="btn btn-primary float-right">Volver</a>
