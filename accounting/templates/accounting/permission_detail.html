@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Detalle del Permiso #{{ object.pk }} | Liqueed{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Detalle del Permiso #{{ object.pk }}</h1>
+    <hr class="sidebar-divider">
+
+    <dl class="row">
+        <dt class="col-sm-2">Nombre</dt>
+        <dd class="col-sm-10">{{ object.name }}</dd>
+        <dt class="col-sm-2">Módulo</dt>
+        <dd class="col-sm-10">{{ object.content_type }}</dd>
+        <dt class="col-sm-2">Nombre código</dt>
+        <dd class="col-sm-10">{{ object.codename }}</dd>
+    </dl>
+
+    <a href="{% url 'accounting:permission-listado' %}" class="btn btn-primary float-right">Volver</a>
+
+</div>
+
+{% endblock %}

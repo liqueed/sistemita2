@@ -1,4 +1,4 @@
-"""Accounting URLs modulo"""
+"""Accounting URLs."""
 
 # Django
 from django.urls import include, path
@@ -14,6 +14,10 @@ from accounting.views.cobranzas import (
 from accounting.views.pagos import (
     PagoViewSet, PagoListView, PagoAgregarTemplateView,
     PagoDetalleView, PagoEditarTemplateView, PagoEliminarView
+)
+from accounting.views.permissions import (
+    PermissionCreateView, PermissionDeleteView, PermissionDetailView,
+    PermissionListView, PermisoUpdateView
 )
 
 router = routers.DefaultRouter()
@@ -37,4 +41,11 @@ urlpatterns = [
     path('pago/<int:pk>/', PagoDetalleView.as_view(), name='pago-detalle'),
     path('pago/<int:pk>/editar/', PagoEditarTemplateView.as_view(), name='pago-modificar'),
     path('pago/<int:pk>/eliminar/', PagoEliminarView.as_view(), name='pago-eliminar'),
+
+    # Permisos
+    path('permiso/', PermissionListView.as_view(), name='permission-listado'),
+    path('permiso/agregar', PermissionCreateView.as_view(), name='permission-agregar'),
+    path('permiso/<int:pk>/', PermissionDetailView.as_view(), name='permission-detalle'),
+    path('permiso/<int:pk>/editar/', PermisoUpdateView.as_view(), name='permission-modificar'),
+    path('permiso/<int:pk>/eliminar/', PermissionDeleteView.as_view(), name='permission-eliminar'),
 ]
