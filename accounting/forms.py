@@ -1,4 +1,4 @@
-"""Formulario del modulo de accounting."""
+"""Formularios del módulo Accounting."""
 
 # Django
 from django import forms

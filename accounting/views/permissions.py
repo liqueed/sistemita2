@@ -2,7 +2,6 @@
 
 # Django
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
@@ -18,7 +17,7 @@ class PermissionListView(LoginRequiredMixin, ListView):
     """Vista de listado de permisos."""
 
     template_name = 'accounting/permission_list.html'
-    paginate_by = 12
+    paginate_by = 10
 
     # def dispatch(self, request, *args, **kwargs):
     #     """Sobrescribe dispatch."""
@@ -29,7 +28,7 @@ class PermissionListView(LoginRequiredMixin, ListView):
     #     return super(PermisoListView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        """Obtiene los permisos de interés."""
+        """Devuelve los resultados de la búsqueda realizada por el usuario."""
         queryset = Permission.objects.filter(
              content_type__app_label__in=['accounting', 'auth', 'authentication', 'core'],
              content_type__model__in=[

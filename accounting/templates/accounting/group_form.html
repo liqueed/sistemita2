@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}
+    {% if object.pk %}Editar Grupo #{{ object.pk }}{% else %}Agregar Grupo{% endif %} | Liqueed
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    {% if object.pk %}
+      <h1 class="h3 text-gray-800">Editar Grupo #{{ object.pk }}</h1>
+    {% else %}
+      <h1 class="h3 text-gray-800">Agregar Grupo</h1>
+    {% endif %}
+    <hr class="sidebar-divider">
+
+    {% crispy form %}
+</div>
+{% endblock %}
