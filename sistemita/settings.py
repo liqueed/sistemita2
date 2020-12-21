@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'authorization',
     'accounting',
     'core',
-    'facturacion_clientes'
+    'facturacion_clientes',
+    'permission'
 ]
 
 MIDDLEWARE = [

@@ -1,4 +1,4 @@
-"""Formularios del módulo Accounting."""
+"""Formularios del módulo Permission."""
 
 # Django
 from django import forms
@@ -12,7 +12,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, Div, Reset
 
 # Utils
-from accounting.models.utils import ContentType, Permission
+from permission.models.utils import ContentType, Permission
 
 
 class PermissionForm(forms.ModelForm):

@@ -17,7 +17,7 @@
           <div class="row float-right">
             {% include 'components/search_form.html' %}
             <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-              <a class="btn btn-primary" role="button" href="{% url 'accounting:permission-agregar' %}">Agregar</a>
+              <a class="btn btn-primary" role="button" href="{% url 'permission:permission-agregar' %}">Agregar</a>
             </div>
           </div>
 
@@ -31,12 +31,12 @@
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td onclick="location.href='{% url 'accounting:permission-detalle' object.pk %}';">{{ object.name }}</td>
+                  <td onclick="location.href='{% url 'permission:permission-detalle' object.pk %}';">{{ object.name }}</td>
                   <td>
-                    <a href="{% url 'accounting:permission-modificar' object.pk %}">
+                    <a href="{% url 'permission:permission-modificar' object.pk %}">
                       <i class="fas fa-wrench"></i>
                     </a>
-                    <a href="{% url 'accounting:permission-eliminar' object.pk %}">
+                    <a href="{% url 'permission:permission-eliminar' object.pk %}">
                       <i class="fas fa-trash"></i>
                     </a>
                   </td>

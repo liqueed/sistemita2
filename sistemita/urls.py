@@ -112,4 +112,7 @@ urlpatterns = [
     # Accounting module
     path('', include(('accounting.urls', 'accounting'), namespace='accounting')),
 
+    # Auth module
+    path('', include(('permission.urls', 'permission'), namespace='permission')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
