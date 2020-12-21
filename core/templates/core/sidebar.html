@@ -30,7 +30,7 @@
   </li>
 
   <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'factura-proveedor' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'factura-listado' %}">
+    <a class="nav-link" href="{% url 'factura-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
   </li>

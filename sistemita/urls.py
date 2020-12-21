@@ -11,8 +11,8 @@ from core.views.clientes import (
 )
 from core.views.distritos import DistritoViewSet
 from core.views.facturascliente import (
-    FacturaViewSet, FacturaModificarView, FacturaListView, FacturaEliminarView,
-    FacturaDetalleView, FacturaAgregarView
+    FacturaViewSet, FacturaListView, FacturaCreateView, FacturaDetailView, FacturaUpdateView,
+    FacturaDeleteView
 )
 from core.views.facturasproveedor import (
     FacturaProveedorViewSet, FacturaProveedorListView, FacturaProveedorDetalleView,
@@ -66,11 +66,11 @@ urlpatterns = [
     path('cliente/<int:pk>/editar/', ClienteUpdateView.as_view(), name='cliente-update'),
     path('cliente/<int:pk>/eliminar/', ClienteDeleteView.as_view(), name='cliente-delete'),
 
-    path('factura/', FacturaListView.as_view(), name='factura-listado'),
-    path('factura/<int:pk>/', FacturaDetalleView.as_view(), name='factura-detalle'),
-    path('factura/<int:pk>/editar/', FacturaModificarView.as_view(), name='factura-modificar'),
-    path('factura/<int:pk>/eliminar/', FacturaEliminarView.as_view(), name='factura-eliminar'),
-    path('factura/agregar/', FacturaAgregarView.as_view(), name='factura-agregar'),
+    path('factura/', FacturaListView.as_view(), name='factura-list'),
+    path('factura/agregar/', FacturaCreateView.as_view(), name='factura-agregar'),
+    path('factura/<int:pk>/', FacturaDetailView.as_view(), name='factura-detalle'),
+    path('factura/<int:pk>/editar/', FacturaUpdateView.as_view(), name='factura-modificar'),
+    path('factura/<int:pk>/eliminar/', FacturaDeleteView.as_view(), name='factura-eliminar'),
 
     path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-listado'),
     path('ordencompra/<int:pk>/', OrdenCompraDetalleView.as_view(), name='ordencompra-detalle'),
