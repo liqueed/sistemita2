@@ -6,14 +6,14 @@
     <h1 class="h3 mb-2 text-gray-800">Eliminar Orden de Compra #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }}</h1>
     <hr class="sidebar-divider">
 
-    <form method="post" action="{% url 'ordencompra-eliminar' object.pk %}">
+    <form method="post" action="{% url 'ordencompra-delete' object.pk %}">
         {% csrf_token %}
         <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la &oacute;rden de compra <em>Nro. {{ object.pk}}</em> del cliente <em>{{ object.cliente.razon_social}}</em> con CUIT <em>{{ object.cliente.cuit}}</em>.</p>
         <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
         <div class="row">
             <div class="col">
                 <button class="btn btn-danger" type="submit">Eliminar</button>
-                <a class="btn" href="{% url 'ordencompra-listado' %}">No eliminar</a>
+                <a class="btn" href="{% url 'ordencompra-list' %}">No eliminar</a>
             </div>
         </div>
 

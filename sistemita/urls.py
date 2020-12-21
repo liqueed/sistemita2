@@ -1,3 +1,5 @@
+"""URLs de sistemita."""
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
@@ -29,8 +31,8 @@ from core.views.proveedores import (
     ProveedorModificarView, ProveedorEliminarView, ProveedorViewSet
 )
 from core.views.ordencompra import (
-    OrdenCompraListView, OrdenCompraDetalleView, OrdenCompraModificarView,
-    OrdenCompraEliminarView, OrdenCompraAgregarView
+    OrdenCompraListView, OrdenCompraCreateView, OrdenCompraDetailView, OrdenCompraUpdateView,
+    OrdenCompraDeleteView
 )
 from core.views.usuarios import UsuarioListView
 
@@ -67,16 +69,18 @@ urlpatterns = [
     path('cliente/<int:pk>/eliminar/', ClienteDeleteView.as_view(), name='cliente-delete'),
 
     path('factura/', FacturaListView.as_view(), name='factura-list'),
-    path('factura/agregar/', FacturaCreateView.as_view(), name='factura-agregar'),
-    path('factura/<int:pk>/', FacturaDetailView.as_view(), name='factura-detalle'),
+    path('factura/agregar/', FacturaCreateView.as_view(), name='factura-create'),
+    path('factura/<int:pk>/', FacturaDetailView.as_view(), name='factura-detail'),
     path('factura/<int:pk>/editar/', FacturaUpdateView.as_view(), name='factura-modificar'),
     path('factura/<int:pk>/eliminar/', FacturaDeleteView.as_view(), name='factura-eliminar'),
 
-    path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-listado'),
-    path('ordencompra/<int:pk>/', OrdenCompraDetalleView.as_view(), name='ordencompra-detalle'),
-    path('ordencompra/<int:pk>/editar/', OrdenCompraModificarView.as_view(), name='ordencompra-modificar'),
-    path('ordencompra/<int:pk>/eliminar/', OrdenCompraEliminarView.as_view(), name='ordencompra-eliminar'),
-    path('ordencompra/agregar/', OrdenCompraAgregarView.as_view(), name='ordencompra-agregar'),
+    path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-list'),
+    path('ordencompra/agregar/', OrdenCompraCreateView.as_view(), name='ordencompra-create'),
+    path('ordencompra/<int:pk>/', OrdenCompraDetailView.as_view(), name='ordencompra-detail'),
+    path('ordencompra/<int:pk>/editar/', OrdenCompraUpdateView.as_view(),
+         name='ordencompra-update'),
+    path('ordencompra/<int:pk>/eliminar/', OrdenCompraDeleteView.as_view(),
+         name='ordencompra-delete'),
 
     # Proveedores
     path('proveedor/', ProveedorListView.as_view(), name='proveedor-listado'),

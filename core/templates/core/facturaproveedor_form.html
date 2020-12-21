@@ -99,7 +99,7 @@ function buildLinkFacturaCliente(){
     let idFactura = $('#id_factura').val();
 
     if(idFactura !== ''){
-        let url = `{% url "factura-detalle" pk=0 %}`.replace('0', idFactura);
+        let url = `{% url "factura-detail" pk=0 %}`.replace('0', idFactura);
         elemFacturaCliente.removeClass('d-none');
         elemFacturaCliente.attr('href', url);
     } else {
