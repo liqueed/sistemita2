@@ -16,7 +16,7 @@
                     {% include 'components/search_form.html' %}
 
                       <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                        <a class="btn btn-primary" role="button" href="{% url 'accounting:pago-agregar' %}">Agregar</a>
+                        <a class="btn btn-primary" role="button" href="{% url 'accounting:pago-create' %}">Agregar</a>
                       </div>
 
                 </div>
@@ -34,16 +34,16 @@
                     <tbody>
                         {% for object in object_list %}
                         <tr>
-                            <td onclick="location.href='{% url 'accounting:pago-detalle' object.pk %}';">{{ object.pk }}</td>
-                            <td onclick="location.href='{% url 'accounting:pago-detalle' object.pk %}';">{{ object.creado }}</td>
-                            <td onclick="location.href='{% url 'accounting:pago-detalle' object.pk %}';">{{ object.proveedor.razon_social }}</td>
-                            <td onclick="location.href='{% url 'accounting:pago-detalle' object.pk %}';">{{ object.proveedor.cuit }}</td>
-                            <td onclick="location.href='{% url 'accounting:pago-detalle' object.pk %}';">{{ object.total }}</td>
+                            <td onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';">{{ object.pk }}</td>
+                            <td onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';">{{ object.creado }}</td>
+                            <td onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';">{{ object.proveedor.razon_social }}</td>
+                            <td onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';">{{ object.proveedor.cuit }}</td>
+                            <td onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';">{{ object.total }}</td>
                             <td>
-                              <a href="{% url 'accounting:pago-modificar' object.pk %}">
+                              <a href="{% url 'accounting:pago-update' object.pk %}">
                                   <i class="fas fa-wrench"></i>
                               </a>
-                              <a href="{% url 'accounting:pago-eliminar' object.pk %}">
+                              <a href="{% url 'accounting:pago-delete' object.pk %}">
                                   <i class="fas fa-trash"></i>
                               </a>
                             </td>

@@ -12,8 +12,8 @@ from accounting.views.cobranzas import (
     CobranzaDetailView, CobranzaUpdateTemplateView, CobranzaDeleteView
 )
 from accounting.views.pagos import (
-    PagoViewSet, PagoListView, PagoAgregarTemplateView,
-    PagoDetalleView, PagoEditarTemplateView, PagoEliminarView
+    PagoViewSet, PagoListView, PagoCreateTemplateView,
+    PagoDetailView, PagoUpdateTemplateView, PagoDeleteView
 )
 from accounting.views.permissions import (
     PermissionCreateView, PermissionDeleteView, PermissionDetailView,
@@ -39,11 +39,11 @@ urlpatterns = [
     path('cobranza/<int:pk>/eliminar/', CobranzaDeleteView.as_view(), name='cobranza-delete'),
 
     # Pago a proveedor
-    path('pago/', PagoListView.as_view(), name='pago-listado'),
-    path('pago/agregar', PagoAgregarTemplateView.as_view(), name='pago-agregar'),
-    path('pago/<int:pk>/', PagoDetalleView.as_view(), name='pago-detalle'),
-    path('pago/<int:pk>/editar/', PagoEditarTemplateView.as_view(), name='pago-modificar'),
-    path('pago/<int:pk>/eliminar/', PagoEliminarView.as_view(), name='pago-eliminar'),
+    path('pago/', PagoListView.as_view(), name='pago-list'),
+    path('pago/agregar', PagoCreateTemplateView.as_view(), name='pago-create'),
+    path('pago/<int:pk>/', PagoDetailView.as_view(), name='pago-detail'),
+    path('pago/<int:pk>/editar/', PagoUpdateTemplateView.as_view(), name='pago-update'),
+    path('pago/<int:pk>/eliminar/', PagoDeleteView.as_view(), name='pago-delete'),
 
     # Permisos
     path('permiso/', PermissionListView.as_view(), name='permission-listado'),

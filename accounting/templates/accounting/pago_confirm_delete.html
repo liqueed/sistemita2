@@ -6,7 +6,7 @@
   <h1 class="h3 mb-2 text-gray-800">Eliminar Pago #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h1>
   <hr class="sidebar-divider">
 
-  <form method="post" action="{% url 'accounting:pago-eliminar' object.pk %}">
+  <form method="post" action="{% url 'accounting:pago-delete' object.pk %}">
     {% csrf_token %}
     <p>
       <strong>Atenci&oacute;n!</strong>
@@ -16,7 +16,7 @@
     <div class="row">
       <div class="col">
         <button class="btn btn-danger" type="submit">Eliminar</button>
-        <a class="btn" href="{% url 'accounting:pago-listado' %}">No eliminar</a>
+        <a class="btn" href="{% url 'accounting:pago-list' %}">No eliminar</a>
       </div>
     </div>
   </form>

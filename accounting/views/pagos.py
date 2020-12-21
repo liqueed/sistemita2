@@ -1,11 +1,11 @@
-"""Views de pagos."""
+"""Vistas del módulo de pagos."""
 
 # Django
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.urls import reverse_lazy
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 # Django Rest Framework
 from rest_framework import mixins, permissions, viewsets
@@ -24,18 +24,22 @@ class PagoViewSet(mixins.CreateModelMixin,
                   mixins.ListModelMixin,
                   viewsets.GenericViewSet):
     """Pago view set."""
+
     serializer_class = PagoSerializer
     queryset = Pago.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class PagoListView(LoginRequiredMixin, ListView):
-    """Lista de pagos"""
+class PagoListView(PermissionRequiredMixin, ListView):
+    """Listado de pagos."""
+
     template_name = 'accounting/proveedor_pago_list.html'
+    permission_required = 'accounting.list_pago'
 
     def get_queryset(self):
+        """Modifica el orden y devuelve los resultados de la búsqueda realizada por el usuario."""
         queryset = Pago.objects.all().order_by('-creado')
-        # Search filter
+
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
@@ -47,36 +51,44 @@ class PagoListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class PagoAgregarTemplateView(LoginRequiredMixin, TemplateView):
-    """Formulario para agregar pagos."""
+class PagoCreateTemplateView(PermissionRequiredMixin, TemplateView):
+    """Formulario para un pago."""
+
     template_name = 'accounting/proveedor_pago_form.html'
+    permission_required = 'accounting.add_pago'
 
 
-class PagoEditarTemplateView(LoginRequiredMixin, TemplateView):
-    """Formulario para editar pagos."""
+class PagoUpdateTemplateView(PermissionRequiredMixin, TemplateView):
+    """Formulario para editar un pago."""
+
     template_name = 'accounting/proveedor_pago_edit.html'
+    permission_requred = 'accounting.change_pago'
 
     def get_context_data(self, **kwargs):
+        """Envía al template la clave primaria."""
         context = super().get_context_data(**kwargs)
         context['pk'] = kwargs['pk']
         return context
 
 
-class PagoDetalleView(LoginRequiredMixin, DetailView):
-    """Template con los detalle del pago."""
+class PagoDetailView(PermissionRequiredMixin, DetailView):
+    """Vista que muestra los detalles de un pago."""
+
     queryset = Pago.objects.all()
+    permission_required = 'accounting.view_pago'
 
 
-class PagoEliminarView(LoginRequiredMixin, DeleteView):
-    """Vista para eliminar pago."""
+class PagoDeleteView(PermissionRequiredMixin, DeleteView):
+    """Vista para eliminar un pago."""
+
     queryset = Pago.objects.all()
-    success_url = reverse_lazy('accounting:pago-listado')
+    success_url = reverse_lazy('accounting:pago-list')
+    permission_required = 'accounting.delete_pago'
 
     def delete(self, request, *args, **kwargs):
-        """Sobreescribe método para modificar facturas asociadas."""
+        """Modifica el estado de las facturas que son desasociadas del pago al eliminarse."""
         self.object = self.get_object()
 
-        # Las facturas asociadas pasan estar no cobradas
         pago_facturas = self.object.pago_facturas.all()
         for c_factura in pago_facturas:
             FacturaProveedor.objects.filter(pk=c_factura.factura.id).update(

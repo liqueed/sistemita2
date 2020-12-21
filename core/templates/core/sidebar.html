@@ -68,7 +68,7 @@
   </li>
 
   <li class="nav-item{% if 'pago' in request.resolver_match.url_name and not 'mediopago' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'accounting:pago-listado' %}">
+    <a class="nav-link" href="{% url 'accounting:pago-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Pagos</span></a>
   </li>
