@@ -17,8 +17,8 @@ from core.views.facturascliente import (
     FacturaDeleteView
 )
 from core.views.facturasproveedor import (
-    FacturaProveedorViewSet, FacturaProveedorListView, FacturaProveedorDetalleView,
-    FacturaProveedorAgregarView, FacturaProveedorModificarView, FacturaProveedorEliminarView
+    FacturaProveedorViewSet, FacturaProveedorListView, FacturaProveedorCreateView,
+    FacturaProveedorDetailView, FacturaProveedorUpdateView, FacturaProveedorDeleteView
 )
 from core.views.home import HomeView, error_403
 from core.views.localidades import LocalidadViewSet
@@ -89,11 +89,15 @@ urlpatterns = [
     path('proveedor/<int:pk>/editar/', ProveedorUpdateView.as_view(), name='proveedor-update'),
     path('proveedor/<int:pk>/eliminar/', ProveedorDeleteView.as_view(), name='proveedor-delete'),
 
-    path('factura-proveedor/', FacturaProveedorListView.as_view(), name='factura-proveedor-listado'),
-    path('factura-proveedor/<int:pk>/', FacturaProveedorDetalleView.as_view(), name='factura-proveedor-detalle'),
-    path('factura-proveedor/<int:pk>/editar/', FacturaProveedorModificarView.as_view(), name='factura-proveedor-modificar'),
-    path('factura-proveedor/<int:pk>/eliminar/', FacturaProveedorEliminarView.as_view(), name='factura-proveedor-eliminar'),
-    path('factura-proveedor/agregar/', FacturaProveedorAgregarView.as_view(), name='factura-proveedor-agregar'),
+    path('factura-proveedor/', FacturaProveedorListView.as_view(), name='facturaproveedor-list'),
+    path('factura-proveedor/agregar/', FacturaProveedorCreateView.as_view(),
+         name='facturaproveedor-create'),
+    path('factura-proveedor/<int:pk>/', FacturaProveedorDetailView.as_view(),
+         name='facturaproveedor-detail'),
+    path('factura-proveedor/<int:pk>/editar/', FacturaProveedorUpdateView.as_view(),
+         name='facturaproveedor-update'),
+    path('factura-proveedor/<int:pk>/eliminar/', FacturaProveedorDeleteView.as_view(),
+         name='facturaproveedor-delete'),
 
     # Medio de pago
     path('mediopago/', MedioPagoListView.as_view(), name='mediopago-listado'),

@@ -29,7 +29,7 @@
       <span>Clientes</span></a>
   </li>
 
-  <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'factura-proveedor' in request.resolver_match.url_name %} active{% endif %}">
+  <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
     <a class="nav-link" href="{% url 'factura-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
@@ -54,15 +54,15 @@
     Proveedores
   </div>
 
-  <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'factura-proveedor' in request.resolver_match.url_name %} active{% endif %}">
+  <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
     <a class="nav-link" href="{% url 'proveedor-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Proveedores</span></a>
   </li>
 
  {{ request.resolver_match.func }}
-  <li class="nav-item{% if 'factura-proveedor' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'factura-proveedor-listado' %}">
+  <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+    <a class="nav-link" href="{% url 'facturaproveedor-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
   </li>
