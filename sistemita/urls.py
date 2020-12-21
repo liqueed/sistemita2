@@ -27,8 +27,8 @@ from core.views.mediopago import (
     MedioPagoEliminarView, MedioPagoModificarView, MedioPagoViewSet
 )
 from core.views.proveedores import (
-    ProveedorListView, ProveedorDetalleView, ProveedorAgregarView,
-    ProveedorModificarView, ProveedorEliminarView, ProveedorViewSet
+    ProveedorViewSet, ProveedorListView, ProveedorCreateView, ProveedorDetailView,
+    ProveedorUpdateView, ProveedorDeleteView
 )
 from core.views.ordencompra import (
     OrdenCompraListView, OrdenCompraCreateView, OrdenCompraDetailView, OrdenCompraUpdateView,
@@ -83,11 +83,11 @@ urlpatterns = [
          name='ordencompra-delete'),
 
     # Proveedores
-    path('proveedor/', ProveedorListView.as_view(), name='proveedor-listado'),
-    path('proveedor/<int:pk>/', ProveedorDetalleView.as_view(), name='proveedor-detalle'),
-    path('proveedor/<int:pk>/editar/', ProveedorModificarView.as_view(), name='proveedor-modificar'),
-    path('proveedor/<int:pk>/eliminar/', ProveedorEliminarView.as_view(), name='proveedor-eliminar'),
-    path('proveedor/agregar/', ProveedorAgregarView.as_view(), name='proveedor-agregar'),
+    path('proveedor/', ProveedorListView.as_view(), name='proveedor-list'),
+    path('proveedor/agregar/', ProveedorCreateView.as_view(), name='proveedor-create'),
+    path('proveedor/<int:pk>/', ProveedorDetailView.as_view(), name='proveedor-detail'),
+    path('proveedor/<int:pk>/editar/', ProveedorUpdateView.as_view(), name='proveedor-update'),
+    path('proveedor/<int:pk>/eliminar/', ProveedorDeleteView.as_view(), name='proveedor-delete'),
 
     path('factura-proveedor/', FacturaProveedorListView.as_view(), name='factura-proveedor-listado'),
     path('factura-proveedor/<int:pk>/', FacturaProveedorDetalleView.as_view(), name='factura-proveedor-detalle'),
