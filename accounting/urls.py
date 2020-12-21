@@ -8,8 +8,8 @@ from rest_framework import routers
 
 # Views
 from accounting.views.cobranzas import (
-    CobranzaViewSet, CobranzaListView, CobranzaAgregarTemplateView,
-    CobranzaDetalleView, CobranzaEditarTemplateView, CobranzaEliminarView
+    CobranzaViewSet, CobranzaListView, CobranzaCreateTemplateView,
+    CobranzaDetailView, CobranzaUpdateTemplateView, CobranzaDeleteView
 )
 from accounting.views.pagos import (
     PagoViewSet, PagoListView, PagoAgregarTemplateView,
@@ -32,11 +32,11 @@ urlpatterns = [
     path(r'api/', include(router.urls)),
 
     # Cobranza cliente
-    path('cobranza/', CobranzaListView.as_view(), name='cobranza-listado'),
-    path('cobranza/agregar', CobranzaAgregarTemplateView.as_view(), name='cobranza-agregar'),
-    path('cobranza/<int:pk>/', CobranzaDetalleView.as_view(), name='cobranza-detalle'),
-    path('cobranza/<int:pk>/editar/', CobranzaEditarTemplateView.as_view(), name='cobranza-modificar'),
-    path('cobranza/<int:pk>/eliminar/', CobranzaEliminarView.as_view(), name='cobranza-eliminar'),
+    path('cobranza/', CobranzaListView.as_view(), name='cobranza-list'),
+    path('cobranza/agregar', CobranzaCreateTemplateView.as_view(), name='cobranza-create'),
+    path('cobranza/<int:pk>/', CobranzaDetailView.as_view(), name='cobranza-detail'),
+    path('cobranza/<int:pk>/editar/', CobranzaUpdateTemplateView.as_view(), name='cobranza-update'),
+    path('cobranza/<int:pk>/eliminar/', CobranzaDeleteView.as_view(), name='cobranza-delete'),
 
     # Pago a proveedor
     path('pago/', PagoListView.as_view(), name='pago-listado'),

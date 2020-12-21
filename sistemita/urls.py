@@ -18,7 +18,7 @@ from core.views.facturasproveedor import (
     FacturaProveedorViewSet, FacturaProveedorListView, FacturaProveedorDetalleView,
     FacturaProveedorAgregarView, FacturaProveedorModificarView, FacturaProveedorEliminarView
 )
-from core.views.home import HomeView
+from core.views.home import HomeView, error_403
 from core.views.localidades import LocalidadViewSet
 from core.views.mediopago import (
     MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView,
@@ -43,6 +43,8 @@ router.register(r'factura-proveedor', FacturaProveedorViewSet)
 router.register(r'localidad', LocalidadViewSet)
 router.register(r'proveedor', ProveedorViewSet)
 router.register(r'mediopago', MedioPagoViewSet)
+
+handler400 = error_403
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
