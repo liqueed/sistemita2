@@ -23,8 +23,8 @@ from core.views.facturasproveedor import (
 from core.views.home import HomeView, error_403
 from core.views.localidades import LocalidadViewSet
 from core.views.mediopago import (
-    MedioPagoListView, MedioPagoAgregarView, MedioPagoDetalleView,
-    MedioPagoEliminarView, MedioPagoModificarView, MedioPagoViewSet
+    MedioPagoViewSet, MedioPagoListView, MedioPagoCreateView, MedioPagoDetailView,
+    MedioPagoUpdateView, MedioPagoDeleteView
 )
 from core.views.proveedores import (
     ProveedorViewSet, ProveedorListView, ProveedorCreateView, ProveedorDetailView,
@@ -100,11 +100,11 @@ urlpatterns = [
          name='facturaproveedor-delete'),
 
     # Medio de pago
-    path('mediopago/', MedioPagoListView.as_view(), name='mediopago-listado'),
-    path('mediopago/agregar/', MedioPagoAgregarView.as_view(), name='mediopago-agregar'),
-    path('mediopago/<int:pk>/', MedioPagoDetalleView.as_view(), name='mediopago-detalle'),
-    path('mediopago/<int:pk>/editar/', MedioPagoModificarView.as_view(), name='mediopago-modificar'),
-    path('medio/<int:pk>/eliminar/', MedioPagoEliminarView.as_view(), name='mediopago-eliminar'),
+    path('mediopago/', MedioPagoListView.as_view(), name='mediopago-list'),
+    path('mediopago/agregar/', MedioPagoCreateView.as_view(), name='mediopago-create'),
+    path('mediopago/<int:pk>/', MedioPagoDetailView.as_view(), name='mediopago-detail'),
+    path('mediopago/<int:pk>/editar/', MedioPagoUpdateView.as_view(), name='mediopago-update'),
+    path('medio/<int:pk>/eliminar/', MedioPagoDeleteView.as_view(), name='mediopago-delete'),
 
     # Usuarios
     path('usuarios/', UsuarioListView.as_view(), name='usuario-list'),

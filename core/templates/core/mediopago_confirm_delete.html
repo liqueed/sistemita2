@@ -6,13 +6,13 @@
     <h1 class="h3 mb-2 text-gray-800">Eliminar Medio de Pago #{{ object.pk }}</h1>
     <hr class="sidebar-divider">
 
-    <form method="post" action="{% url 'mediopago-eliminar' object.pk %}">
+    <form method="post" action="{% url 'mediopago-delete' object.pk %}">
         {% csrf_token %}
         <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el medio de pago <em>{{ object.nombre}}</em>.</p>
         <div class="row">
             <div class="col">
                 <button class="btn btn-danger" type="submit">Eliminar</button>
-                <a class="btn" href="{% url 'mediopago-listado' %}">No eliminar</a>
+                <a class="btn" href="{% url 'mediopago-list' %}">No eliminar</a>
             </div>
         </div>
     </form>

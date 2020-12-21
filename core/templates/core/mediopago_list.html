@@ -16,7 +16,7 @@
                     {% include 'components/search_form.html' %}
 
                       <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                        <a class="btn btn-primary" role="button" href="{% url 'mediopago-agregar' %}">Agregar</a>
+                        <a class="btn btn-primary" role="button" href="{% url 'mediopago-create' %}">Agregar</a>
                       </div>
 
                 </div>
@@ -31,13 +31,13 @@
                     <tbody>
                         {% for object in object_list %}
                         <tr>
-                            <td onclick="location.href='{% url 'mediopago-detalle' object.pk %}';">{{ object.pk }}</td>
-                            <td onclick="location.href='{% url 'mediopago-detalle' object.pk %}';">{{ object.nombre }}</td>
+                            <td onclick="location.href='{% url 'mediopago-detail' object.pk %}';">{{ object.pk }}</td>
+                            <td onclick="location.href='{% url 'mediopago-detail' object.pk %}';">{{ object.nombre }}</td>
                             <td>
-                              <a href="{% url 'mediopago-modificar' object.pk %}">
+                              <a href="{% url 'mediopago-update' object.pk %}">
                                   <i class="fas fa-wrench"></i>
                               </a>
-                              <a href="{% url 'mediopago-eliminar' object.pk %}">
+                              <a href="{% url 'mediopago-delete' object.pk %}">
                                   <i class="fas fa-trash"></i>
                               </a>
                             </td>
