@@ -6,8 +6,8 @@ from rest_framework import routers
 # Views
 from core.views.archivos import ArchivoViewSet
 from core.views.clientes import (
-    ClienteDetalleView, ClienteModificarView, ClienteAgregarView,
-    ClienteListView, ClienteEliminarView, ClienteViewSet
+    ClienteViewSet, ClienteListView, ClienteCreateView, ClienteDetailView, ClienteUpdateView,
+    ClienteDeleteView
 )
 from core.views.distritos import DistritoViewSet
 from core.views.facturascliente import (
@@ -60,11 +60,11 @@ urlpatterns = [
     path(r'api/', include(router.urls)),
 
     # Cliente
-    path('cliente/', ClienteListView.as_view(), name='cliente-listado'),
-    path('cliente/<int:pk>/', ClienteDetalleView.as_view(), name='cliente-detalle'),
-    path('cliente/<int:pk>/editar/', ClienteModificarView.as_view(), name='cliente-modificar'),
-    path('cliente/<int:pk>/eliminar/', ClienteEliminarView.as_view(), name='cliente-eliminar'),
-    path('cliente/agregar/', ClienteAgregarView.as_view(), name='cliente-agregar'),
+    path('cliente/', ClienteListView.as_view(), name='cliente-list'),
+    path('cliente/agregar/', ClienteCreateView.as_view(), name='cliente-create'),
+    path('cliente/<int:pk>/', ClienteDetailView.as_view(), name='cliente-detail'),
+    path('cliente/<int:pk>/editar/', ClienteUpdateView.as_view(), name='cliente-update'),
+    path('cliente/<int:pk>/eliminar/', ClienteDeleteView.as_view(), name='cliente-delete'),
 
     path('factura/', FacturaListView.as_view(), name='factura-listado'),
     path('factura/<int:pk>/', FacturaDetalleView.as_view(), name='factura-detalle'),

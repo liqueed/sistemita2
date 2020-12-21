@@ -2,7 +2,7 @@
 load-plugins=pylint_django, pylint_celery
 
 [FORMAT]
-max-line-length=120
+max-line-length=100
 
 [MESSAGES CONTROL]
 disable=invalid-name

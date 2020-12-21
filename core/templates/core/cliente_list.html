@@ -16,7 +16,7 @@
                     {% include 'components/search_form.html' %}
 
                       <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                        <a class="btn btn-primary" role="button" href="{% url 'cliente-agregar' %}">Agregar</a>
+                        <a class="btn btn-primary" role="button" href="{% url 'cliente-create' %}">Agregar</a>
                       </div>
 
                 </div>
@@ -33,15 +33,15 @@
                     <tbody>
                         {% for object in object_list %}
                         <tr>
-                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.pk }}</td>
-                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.razon_social }}</td>
-                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.cuit }}</td>
-                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.correo }}</td>
+                            <td onclick="location.href='{% url 'cliente-detail' object.pk %}';">{{ object.pk }}</td>
+                            <td onclick="location.href='{% url 'cliente-detail' object.pk %}';">{{ object.razon_social }}</td>
+                            <td onclick="location.href='{% url 'cliente-detail' object.pk %}';">{{ object.cuit }}</td>
+                            <td onclick="location.href='{% url 'cliente-detail' object.pk %}';">{{ object.correo }}</td>
                             <td>
-                              <a href="{% url 'cliente-modificar' object.pk %}">
+                              <a href="{% url 'cliente-update' object.pk %}">
                                   <i class="fas fa-wrench"></i>
                               </a>
-                              <a href="{% url 'cliente-eliminar' object.pk %}">
+                              <a href="{% url 'cliente-delete' object.pk %}">
                                   <i class="fas fa-trash"></i>
                               </a>
                             </td>
