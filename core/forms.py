@@ -69,7 +69,10 @@ class OrdenCompraForm(forms.ModelForm):
 
 
 class FacturaForm(forms.ModelForm):
+    """Formuarlio de Facturación a cliente."""
+
     def __init__(self, *args, **kwargs):
+        """Inicialización de formulario."""
         super().__init__(*args, **kwargs)
         self.fields['numero'].label = 'Número de factura'
         self.helper = FormHelper()
@@ -86,7 +89,7 @@ class FacturaForm(forms.ModelForm):
                     css_class='row'
                 ),
                 Div(
-                    Div('cliente', css_class='col-6'),
+                    Div('cliente', css_class='col-4'),
                     css_class='row'
                 ),
                 # Aca va la data extra del cliente por JS
@@ -124,9 +127,13 @@ class FacturaForm(forms.ModelForm):
             )
         )
 
-    archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+    archivos = forms.FileField(
+        widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False
+    )
 
     class Meta:
+        """Configuraciones del formulario."""
+
         model = Factura
         fields = (
             'numero', 'tipo', 'fecha', 'cliente', 'detalle',
@@ -135,21 +142,22 @@ class FacturaForm(forms.ModelForm):
         )
 
     def save(self, *args, **kwargs):
+        """Guarda los datos recibidos del formulario."""
         data = self.cleaned_data
         data.pop('archivos')
-        factura_id = self.instance.pk
+        instance = self.instance
 
-        if factura_id is None:
-            factura = Factura.objects.create(**data)
+        if instance.pk is None:
+            instance = Factura.objects.create(**data)
         else:
-            Factura.objects.filter(pk=factura_id).update(**data)
-            factura = Factura.objects.get(pk=factura_id)
+            Factura.objects.filter(pk=instance.pk).update(**data)
+            instance = Factura.objects.get(pk=instance.pk)
 
         for f in self.files.getlist('archivos'):
             document = Archivo.objects.create(documento=f)
-            factura.archivos.add(document)
+            instance.archivos.add(document)
 
-        return super(FacturaForm, self).save(commit=False)
+        return instance
 
 
 class FacturaProveedorForm(forms.ModelForm):
@@ -315,27 +323,38 @@ class ProveedorForm(forms.ModelForm):
 
 
 class ClienteForm(forms.ModelForm):
+    """Formulario de cliente."""
+
     def __init__(self, *args, **kwargs):
+        """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
 
         if 'data' in kwargs.keys():
             if 'provincia' in kwargs['data'].keys():
                 provincia = kwargs['data'].get('provincia', None)
                 if provincia:
-                    self.fields['distrito'].queryset = Distrito.objects.filter(provincia=provincia)
+                    self.fields['distrito'].queryset = Distrito.objects.filter(
+                        provincia=provincia
+                    )
 
             if 'distrito' in kwargs['data'].keys():
                 distrito = kwargs['data'].get('distrito', None)
                 if distrito:
-                    self.fields['localidad'].queryset = Localidad.objects.filter(distrito=distrito)
+                    self.fields['localidad'].queryset = Localidad.objects.filter(
+                        distrito=distrito
+                    )
         else:
             if self.instance and self.instance.provincia:
-                self.fields['distrito'].queryset = Distrito.objects.filter(provincia=self.instance.provincia)
+                self.fields['distrito'].queryset = Distrito.objects.filter(
+                    provincia=self.instance.provincia
+                )
             else:
                 self.fields['distrito'].queryset = Distrito.objects.none()
 
             if self.instance and self.instance.distrito:
-                self.fields['localidad'].queryset = Localidad.objects.filter(distrito=self.instance.distrito)
+                self.fields['localidad'].queryset = Localidad.objects.filter(
+                    distrito=self.instance.distrito
+                )
             else:
                 self.fields['localidad'].queryset = Localidad.objects.none()
 
@@ -382,8 +401,12 @@ class ClienteForm(forms.ModelForm):
         )
 
     class Meta:
+        """Configuraciones del formulario."""
+
         model = Cliente
         fields = (
-            'razon_social', 'cuit', 'correo', 'telefono', 'calle', 'numero', 'piso', 'dpto', 'provincia',
-            'distrito', 'localidad', 'tipo_envio_factura', 'link_envio_factura', 'correo_envio_factura'
+            'razon_social', 'cuit', 'correo', 'telefono',
+            'calle', 'numero', 'piso', 'dpto',
+            'provincia', 'distrito', 'localidad',
+            'tipo_envio_factura', 'link_envio_factura', 'correo_envio_factura'
         )

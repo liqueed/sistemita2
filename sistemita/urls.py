@@ -70,8 +70,8 @@ urlpatterns = [
     path('factura/', FacturaListView.as_view(), name='factura-list'),
     path('factura/agregar/', FacturaCreateView.as_view(), name='factura-create'),
     path('factura/<int:pk>/', FacturaDetailView.as_view(), name='factura-detail'),
-    path('factura/<int:pk>/editar/', FacturaUpdateView.as_view(), name='factura-modificar'),
-    path('factura/<int:pk>/eliminar/', FacturaDeleteView.as_view(), name='factura-eliminar'),
+    path('factura/<int:pk>/editar/', FacturaUpdateView.as_view(), name='factura-update'),
+    path('factura/<int:pk>/eliminar/', FacturaDeleteView.as_view(), name='factura-delete'),
 
     path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-list'),
     path('ordencompra/agregar/', OrdenCompraCreateView.as_view(), name='ordencompra-create'),

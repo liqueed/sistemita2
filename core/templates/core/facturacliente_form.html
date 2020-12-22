@@ -1,18 +1,35 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if factura.pk %}Editar Facturación #{{ factura.pk  }} - Cliente: {{ factura.cliente.razon_social }} {% else %}Agregar Facturación de Cliente{% endif %} | Liqueed{% endblock %}
+  {% if object.pk %}
+    Editar Facturación #{{ object.pk  }} - Cliente: {{ object.cliente.razon_social }}
+  {% else %}
+    Agregar Facturación de Cliente
+  {% endif %} | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
-    {% if factura.pk %}
-      <h1 class="h3 text-gray-800">Editar Facturación #{{ factura.pk }} - Cliente: {{ factura.cliente.razon_social}}</h1>
-    {% else %}
-      <h1 class="h3 text-gray-800">Agregar Facturación a Cliente</h1>
-    {% endif %}
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <h1 class="h3 text-gray-800">Clientes</h1>
+    {% include 'components/messages.html' %}
 
-    {% crispy form %}
-    <input id="id_factura" type="hidden" value="{{ object.id }}">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          {% if not object.pk %}
+            Agregar Facturación a Cliente
+          {% else %}
+            Editar Facturación #{{ object.pk }} - Cliente: {{ object.cliente.razon_social}}
+          {% endif %}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+            {% crispy form %}
+            <input id="id_factura" type="hidden" value="{{ object.id }}">
+        </div>
+      </div>
+    </div>
+
+  </div>
 {% endblock %}
 
 {% block extra_js %}
@@ -93,6 +110,4 @@ function getTotal(){
     let total = neto + (iva / 100) * neto;
     $('#id_total').val(total);
 }
-
-
 {% endblock %}

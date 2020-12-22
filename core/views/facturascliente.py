@@ -1,13 +1,15 @@
 """Vistas del módulo facturación a clientes."""
 
 # Django
+from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
+from django_filters.views import FilterView
 from django.http import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse_lazy
-from django_filters.views import FilterView
 
 # Django REST Framework
 from rest_framework import permissions
@@ -27,6 +29,11 @@ from core.serializers import FacturaSerializer
 # Filters
 from core.filters import FacturaFilterSet
 
+# Utils
+from core.utils.strings import (
+    _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_UPDATE, _MESSAGE_SUCCESS_DELETE
+)
+
 
 class FacturaViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
@@ -39,11 +46,12 @@ class FacturaViewSet(mixins.ListModelMixin,
     filter_fields = ('cliente', 'cobrado')
 
 
-class FacturaListView(PermissionRequiredMixin, FilterView):
+class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que muestra un listado de facturas."""
 
     filterset_class = FacturaFilterSet
     permission_required = 'core.list_factura'
+    template_name = 'core/facturacliente_list.html'
 
     def get_queryset(self):
         """Sobreescribe queryset.
@@ -62,37 +70,51 @@ class FacturaListView(PermissionRequiredMixin, FilterView):
         return self.queryset
 
 
-class FacturaCreateView(PermissionRequiredMixin, CreateView):
+class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista para agregar una factura."""
 
     model = Factura
     form_class = FacturaForm
     permission_required = 'core.add_factura'
-    success_url = reverse_lazy('factura-list')
+    success_message = _MESSAGE_SUCCESS_CREATED.format('factura del cliente')
+    success_url = reverse_lazy('facturacliente-list')
+    template_name = 'core/facturacliente_form.html'
+
+    def get_success_url(self):
+        """Luego de agregar al objecto muestra la misma vista."""
+        return reverse('factura-update', args=(self.object.id,))
 
 
 class FacturaDetailView(PermissionRequiredMixin, DetailView):
     """Vista que muestra el detalle de una factura."""
 
-    queryset = Factura.objects.all()
+    model = Factura
     permission_required = 'core.view_factura'
+    template_name = 'core/facturacliente_detail.html'
 
 
-class FacturaUpdateView(PermissionRequiredMixin, UpdateView):
+class FacturaUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     """Vista que modifica un factura."""
 
-    queryset = Factura.objects.all()
+    model = Factura
     form_class = FacturaForm
     permission_required = 'core.change_factura'
-    success_url = reverse_lazy('factura-list')
+    success_message = _MESSAGE_SUCCESS_UPDATE.format('factura del cliente')
+    template_name = 'core/facturacliente_form.html'
+
+    def get_success_url(self):
+        """Luego de editar al objecto muestra la misma vista."""
+        return reverse('factura-update', args=(self.object.id,))
 
 
 class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista que elimina una factura."""
 
-    queryset = Factura.objects.all()
+    model = Factura
     permission_required = 'core.delete_factura'
+    success_message = _MESSAGE_SUCCESS_DELETE.format('factura del cliente')
     success_url = reverse_lazy('factura-list')
+    template_name = 'core/facturacliente_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         """Sobreescribe método para eliminar una factura.
@@ -109,6 +131,6 @@ class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
                 Cobranza.objects.get(pk=cobranza_factura.cobranza.pk).delete()
 
         self.object.archivos.all().delete()
-        success_url = self.get_success_url()
         self.object.delete()
-        return HttpResponseRedirect(success_url)
+        messages.success(request, self.success_message)
+        return HttpResponseRedirect(self.success_url)

@@ -5,10 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
-from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 # Django REST Framework
 from rest_framework import permissions
@@ -71,7 +70,6 @@ class ClienteCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
     form_class = ClienteForm
     permission_required = 'core.add_cliente'
     success_message = MESSAGE_SUCCESS_CREATED.format('cliente')
-    success_url = reverse_lazy('cliente-list')
 
     def get_success_url(self):
         """Luego de agregar al objecto muestra la misma vista."""
