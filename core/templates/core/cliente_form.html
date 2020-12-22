@@ -1,19 +1,26 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if cliente.pk %}Editar Cliente #{{ cliente.pk }}{% else %}Agregar Cliente{% endif %} | Liqueed
+  {% if object.pk %}Editar Cliente #{{ object.pk }}{% else %}Agregar Cliente{% endif %} | Liqueed
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-    {% if cliente.pk %}
-      <h1 class="h3 text-gray-800">Editar Cliente #{{ cliente.pk }}</h1>
-    {% else %}
-      <h1 class="h3 text-gray-800">Agregar Cliente</h1>
-    {% endif %}
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <h1 class="h3 text-gray-800">Clientes</h1>
+    {% include 'components/messages.html' %}
 
-    {% crispy form %}
-</div>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">{% if not object.pk %}Agregar Cliente{% else %}Editar Cliente #{{ object.pk }}{% endif %}</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="row float-right">
+            {% crispy form %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block extra_js %}

@@ -1,25 +1,32 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Eliminar Cliente #{{ cliente.pk }} | Liqueed{% endblock %}
+{% block title %}Eliminar Cliente #{{ object.pk }} | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Eliminar Cliente #{{ cliente.pk }}</h1>
-    <hr class="sidebar-divider">
-
-    <form method="post" action="{% url 'cliente-delete' object.pk %}">
-        {% csrf_token %}
-        <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el cliente <em>{{ object.razon_social}}</em> con CUIT <em>{{ object.cuit}}</em>.</p>
-        <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
-        <div class="row">
+  <div class="container-fluid">
+    <h1 class="h3 text-gray-800">Clientes</h1>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Eliminar Cliente #{{ cliente.pk }}</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="row">
             <div class="col">
-                <button class="btn btn-danger" type="submit">Eliminar</button>
-                <a class="btn" href="{% url 'cliente-list' %}">No eliminar</a>
+            <form method="post" action="{% url 'cliente-delete' object.pk %}">
+              {% csrf_token %}
+              <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el cliente <em>{{ object.razon_social}}</em> con CUIT <em>{{ object.cuit}}</em>.</p>
+              <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-danger" type="submit">Eliminar</button>
+                  <a class="btn" href="{% url 'cliente-list' %}">No eliminar</a>
+                </div>
+              </div>
+            </form>
             </div>
+          </div>
         </div>
-
-    </form>
-
-
-</div>
-
+      </div>
+    </div>
+  </div>
 {% endblock %}

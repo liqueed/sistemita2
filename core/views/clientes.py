@@ -1,11 +1,14 @@
 """Vistas del módulo de cliente."""
 
 # Django
+from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
+from django.urls import reverse
 
 # Django REST Framework
 from rest_framework import permissions
@@ -21,6 +24,11 @@ from core.forms import ClienteForm
 # Serializers
 from core.serializers import ClienteSerializer
 
+# Utils
+from core.utils.strings import (
+    MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+)
+
 
 class ClienteViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
@@ -32,7 +40,7 @@ class ClienteViewSet(mixins.ListModelMixin,
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class ClienteListView(PermissionRequiredMixin, ListView):
+class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista para listar todos los clientes."""
 
     template_name = 'core/cliente_list.html'
@@ -56,34 +64,49 @@ class ClienteListView(PermissionRequiredMixin, ListView):
         return queryset
 
 
-class ClienteCreateView(PermissionRequiredMixin, CreateView):
+class ClienteCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista para crear un cliente."""
 
     model = Cliente
     form_class = ClienteForm
     permission_required = 'core.add_cliente'
+    success_message = MESSAGE_SUCCESS_CREATED.format('cliente')
     success_url = reverse_lazy('cliente-list')
+
+    def get_success_url(self):
+        """Luego de agregar al objecto muestra la misma vista."""
+        return reverse('cliente-update', args=(self.object.id,))
 
 
 class ClienteDetailView(PermissionRequiredMixin, DetailView):
     """Vista para ver el detalle de un cliente."""
 
-    queryset = Cliente.objects.all()
+    model = Cliente
     permission_required = 'core.view_cliente'
 
 
-class ClienteUpdateView(PermissionRequiredMixin, UpdateView):
+class ClienteUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     """Vista para editar un cliente."""
 
-    queryset = Cliente.objects.all()
+    model = Cliente
     form_class = ClienteForm
     permission_required = 'core.change_cliente'
-    success_url = reverse_lazy('cliente-list')
+    success_message = MESSAGE_SUCCESS_UPDATE.format('cliente')
+
+    def get_success_url(self):
+        """Luego de editar al objecto muestra la misma vista."""
+        return reverse('cliente-update', args=(self.object.id,))
 
 
 class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista para eliminar un cliente."""
 
-    queryset = Cliente.objects.all()
+    model = Cliente
     permission_required = 'core.delete_cliente'
+    success_message = MESSAGE_SUCCESS_DELETE.format('cliente')
     success_url = reverse_lazy('cliente-list')
+
+    def delete(self, request, *args, **kwargs):
+        """Muestra un mensaje sobre el resultado de la acción."""
+        messages.success(request, self.success_message)
+        return super(ClienteDeleteView, self).delete(request, *args, **kwargs)
