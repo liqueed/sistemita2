@@ -4,15 +4,25 @@
 from django.urls import path
 
 # Views
+from permission.views.groups import (
+    GroupListView, GroupCreateView, GroupDetailtView, GroupUpdateView, GroupDeleteView
+)
 from permission.views.permissions import (
     PermissionCreateView, PermissionDeleteView, PermissionDetailView,
     PermissionListView, PermisoUpdateView
 )
-from permission.views.groups import (
-    GroupListView, GroupCreateView, GroupDetailtView, GroupUpdateView, GroupDeleteView
+from permission.views.users import (
+    UserListView, UserCreateView, UserDetailView, UserUpdateView, UserDeleteView
 )
 
 urlpatterns = [
+    # Usuarios
+    path('usuario/', UserListView.as_view(), name='user-list'),
+    path('usuario/agregar', UserCreateView.as_view(), name='user-create'),
+    path('usuario/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
+    path('usuario/<int:pk>/editar/', UserUpdateView.as_view(), name='user-update'),
+    path('usuario/<int:pk>/eliminar/', UserDeleteView.as_view(), name='user-delete'),
+
     # Permisos
     path('permiso/', PermissionListView.as_view(), name='permission-listado'),
     path('permiso/agregar', PermissionCreateView.as_view(), name='permission-agregar'),

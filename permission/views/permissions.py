@@ -22,14 +22,14 @@ class PermissionListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
         queryset = Permission.objects.filter(
-             content_type__app_label__in=['accounting', 'auth', 'authentication', 'core'],
+             content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
              content_type__model__in=[
                  'cliente', 'factura', 'ordencompra', 'cobranza',
                  'proveedor', 'facturaproveedor', 'pago',
                  'mediopago',
                  'permission', 'user', 'group'
              ]
-        )
+        ).order_by('content_type__model', 'name')
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(name__icontains=search)

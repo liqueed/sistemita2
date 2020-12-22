@@ -4,7 +4,7 @@
 from django import forms
 
 # Models
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 
 # Forms
 from crispy_forms.bootstrap import FormActions
@@ -91,14 +91,14 @@ class GroupForm(forms.ModelForm):
 
     permissions = forms.ModelMultipleChoiceField(
          queryset=Permission.objects.filter(
-             content_type__app_label__in=['accounting', 'auth', 'authentication', 'core'],
+             content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
              content_type__model__in=[
                  'cliente', 'factura', 'ordencompra', 'cobranza',
                  'proveedor', 'facturaproveedor', 'pago',
                  'mediopago',
                  'permission', 'user', 'group'
              ]
-         )
+         ).order_by('content_type__model', 'name')
     )
 
     class Meta:
@@ -106,3 +106,54 @@ class GroupForm(forms.ModelForm):
 
         model = Group
         fields = ('name', 'permissions')
+
+
+class UserForm(forms.ModelForm):
+    """Formulario de usuario."""
+
+    def __init__(self, *args, **kwargs):
+        """Inicializacion del Formulario."""
+        super().__init__(*args, **kwargs)
+        # Remuevo campo password si es para editar
+        if self.instance and self.instance.pk:
+            self.fields.pop('password', None)
+        self.helper = FormHelper()
+        self.fields['groups'].widget.attrs['size'] = 10
+        self.helper.layout = Layout(
+            Fieldset(
+                '',
+                Div(
+                    Div('username', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('first_name', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('last_name', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('password', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('groups', css_class='col-6'),
+                    css_class='row'
+                ),
+            ),
+            FormActions(
+                Submit('submit', 'Guardar', css_class='float-right'),
+                Reset('reset', 'Limpiar', css_class='float-right')
+            )
+        )
+
+    class Meta:
+        """Configuraciones de formulario."""
+
+        model = User
+        fields = (
+            'username', 'first_name', 'last_name', 'password',
+            'groups'
+        )

@@ -95,8 +95,8 @@
     Autenticaci&oacute;n
   </div>
 
-  <li class="nav-item{% if request.resolver_match.url_name == 'usuario-list' %} active{% endif %}">
-    <a class="nav-link" href="{% url 'usuario-list' %}">
+  <li class="nav-item{% if 'user' in request.resolver_match.url_name %} active{% endif %}">
+    <a class="nav-link" href="{% url 'permission:user-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Usuarios</span></a>
   </li>

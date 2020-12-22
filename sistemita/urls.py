@@ -34,7 +34,6 @@ from core.views.ordencompra import (
     OrdenCompraListView, OrdenCompraCreateView, OrdenCompraDetailView, OrdenCompraUpdateView,
     OrdenCompraDeleteView
 )
-from core.views.usuarios import UsuarioListView
 
 router = routers.DefaultRouter()
 router.register(r'archivo', ArchivoViewSet)
@@ -105,9 +104,6 @@ urlpatterns = [
     path('mediopago/<int:pk>/', MedioPagoDetailView.as_view(), name='mediopago-detail'),
     path('mediopago/<int:pk>/editar/', MedioPagoUpdateView.as_view(), name='mediopago-update'),
     path('medio/<int:pk>/eliminar/', MedioPagoDeleteView.as_view(), name='mediopago-delete'),
-
-    # Usuarios
-    path('usuarios/', UsuarioListView.as_view(), name='usuario-list'),
 
     # Accounting module
     path('', include(('accounting.urls', 'accounting'), namespace='accounting')),
