@@ -1,22 +1,27 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Eliminar Grupo #{{ object.pk }} | Liqueed{% endblock %}
+{% block title %}Eliminar Grupo {{ object.name }} | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Eliminar Grupo #{{ object.pk }}</h1>
+    <h1 class="h3 mb-2 text-gray-800">Eliminar Grupo {{ object.name }}</h1>
     <hr class="sidebar-divider">
 
-    <form method="post" action="{% url 'permission:group-eliminar' object.pk %}">
+    <form method="post" action="{% url 'permission:group-delete' object.pk %}">
       {% csrf_token %}
       <p>
         <strong>Atenci&oacute;n!</strong>
-        Est&aacute; por eliminar el grupo #{{ object.pk }}.
+        Est&aacute; por eliminar el grupo {{ object.name }}. Este Grupo tiene los permisos:
+        <ul>
+          {% for permission in object.permissions.all %}
+            <li>{{ permission }}</li>
+          {% endfor %}
+        </ul>
       </p>
       <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
       <div class="row">
         <div class="col">
           <button class="btn btn-danger" type="submit">Eliminar</button>
-          <a class="btn" href="{% url 'permission:group-listado' %}">No eliminar</a>
+          <a class="btn" href="{% url 'permission:group-list' %}">No eliminar</a>
         </div>
       </div>
     </form>

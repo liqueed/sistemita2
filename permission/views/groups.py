@@ -1,7 +1,7 @@
 """Vistas de grupos."""
 
 # Django
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import DetailView, DeleteView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
@@ -13,9 +13,11 @@ from django.contrib.auth.models import Group
 from permission.forms import GroupForm
 
 
-class GroupListView(LoginRequiredMixin, ListView):
+class GroupListView(PermissionRequiredMixin, ListView):
     """Listado de Grupos."""
 
+    permission_required = 'auth.list_group'
+    paginate_by = 10
     template_name = 'permission/group_list.html'
 
     def get_queryset(self):
@@ -29,34 +31,38 @@ class GroupListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class GroupCreateView(LoginRequiredMixin, CreateView):
+class GroupCreateView(PermissionRequiredMixin, CreateView):
     """Vista para crear un grupo."""
 
     model = Group
     form_class = GroupForm
+    permission_required = 'auth.add_group'
     template_name = 'permission/group_form.html'
-    success_url = reverse_lazy('permission:group-listado')
+    success_url = reverse_lazy('permission:group-list')
 
 
-class GroupDetailtView(LoginRequiredMixin, DetailView):
+class GroupDetailtView(PermissionRequiredMixin, DetailView):
     """Vista para ver el detalle de un grupo."""
 
     model = Group
+    permission_required = 'auth.view_group'
     template_name = 'permission/group_detail.html'
 
 
-class GroupUpdateView(LoginRequiredMixin, UpdateView):
+class GroupUpdateView(PermissionRequiredMixin, UpdateView):
     """Vista para editar un grupo."""
 
     model = Group
     form_class = GroupForm
+    permission_required = 'auth.change_group'
     template_name = 'permission/group_form.html'
-    success_url = reverse_lazy('permission:group-listado')
+    success_url = reverse_lazy('permission:group-list')
 
 
-class GroupDeleteView(LoginRequiredMixin, DeleteView):
+class GroupDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista para eliminar un grupo."""
 
     model = Group
+    permission_required = 'auth.delete_group'
     template_name = 'permission/group_confirm_delete.html'
-    success_url = reverse_lazy('permission:group-listado')
+    success_url = reverse_lazy('permission:group-list')

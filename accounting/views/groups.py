@@ -35,7 +35,7 @@ class GroupCreateView(LoginRequiredMixin, CreateView):
     model = Group
     form_class = GroupForm
     template_name = 'accounting/group_form.html'
-    success_url = reverse_lazy('accounting:group-listado')
+    success_url = reverse_lazy('accounting:group-list')
 
 
 class GroupDetailtView(LoginRequiredMixin, DetailView):
@@ -51,7 +51,7 @@ class GroupUpdateView(LoginRequiredMixin, UpdateView):
     model = Group
     form_class = GroupForm
     template_name = 'accounting/group_form.html'
-    success_url = reverse_lazy('accounting:group-listado')
+    success_url = reverse_lazy('accounting:group-list')
 
 
 class GroupDeleteView(LoginRequiredMixin, DeleteView):
@@ -59,4 +59,4 @@ class GroupDeleteView(LoginRequiredMixin, DeleteView):
 
     model = Group
     template_name = 'accounting/group_confirm_delete.html'
-    success_url = reverse_lazy('accounting:group-listado')
+    success_url = reverse_lazy('accounting:group-list')

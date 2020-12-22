@@ -31,9 +31,9 @@ urlpatterns = [
     path('permiso/<int:pk>/eliminar/', PermissionDeleteView.as_view(), name='permission-eliminar'),
 
     # Grupos
-    path('grupo/', GroupListView.as_view(), name='group-listado'),
-    path('grupo/agregar', GroupCreateView.as_view(), name='group-agregar'),
-    path('grupo/<int:pk>/', GroupDetailtView.as_view(), name='group-detalle'),
-    path('grupo/<int:pk>/editar/', GroupUpdateView.as_view(), name='group-modificar'),
-    path('grupo/<int:pk>/eliminar/', GroupDeleteView.as_view(), name='group-eliminar'),
+    path('grupo/', GroupListView.as_view(), name='group-list'),
+    path('grupo/agregar', GroupCreateView.as_view(), name='group-create'),
+    path('grupo/<int:pk>/', GroupDetailtView.as_view(), name='group-detail'),
+    path('grupo/<int:pk>/editar/', GroupUpdateView.as_view(), name='group-update'),
+    path('grupo/<int:pk>/eliminar/', GroupDeleteView.as_view(), name='group-delete'),
 ]

@@ -16,7 +16,7 @@
             {% include 'components/search_form.html' %}
 
             <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-              <a class="btn btn-primary" role="button" href="{% url 'permission:group-agregar' %}">Agregar</a>
+              <a class="btn btn-primary" role="button" href="{% url 'permission:group-create' %}">Agregar</a>
             </div>
 
           </div>
@@ -31,13 +31,13 @@
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td onclick="location.href='{% url 'permission:group-detalle' object.pk %}';">{{ object.pk }}</td>
-                  <td onclick="location.href='{% url 'permission:group-detalle' object.pk %}';">{{ object.name }}</td>
+                  <td onclick="location.href='{% url 'permission:group-detail' object.pk %}';">{{ object.pk }}</td>
+                  <td onclick="location.href='{% url 'permission:group-detail' object.pk %}';">{{ object.name }}</td>
                   <td>
-                    <a href="{% url 'permission:group-modificar' object.pk %}">
+                    <a href="{% url 'permission:group-update' object.pk %}">
                       <i class="fas fa-wrench"></i>
                     </a>
-                    <a href="{% url 'permission:group-eliminar' object.pk %}">
+                    <a href="{% url 'permission:group-delete' object.pk %}">
                       <i class="fas fa-trash"></i>
                     </a>
                   </td>
@@ -50,6 +50,53 @@
             </tbody>
           </table>
         </div>
+
+        <!--Pagination-->
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+              </li>
+            {% endif %}
+
+            {% if page_obj.number|add:'-4' > 1 %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+              {% if page_obj.number == i %}
+                <li class="page-item active" aria-current="page">
+                  <span class="page-link">
+                    {{ i }}
+                    <span class="sr-only">(current)</span>
+                  </span>
+                </li>
+              {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+
+            {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+              <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+              </li>
+            {% else %}
+              <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Siguiente</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+        <!--end of Pagination-->
       </div>
     </div>
   </div>
