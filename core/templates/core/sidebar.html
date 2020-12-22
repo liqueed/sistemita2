@@ -2,7 +2,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
   <!-- Sidebar - Brand -->
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'home' %}">
     <div class="sidebar-brand-icon">
       <img width='134px' height='50px' src="{% static 'images/logo-top-light.png' %}" />
     </div>
@@ -15,105 +15,137 @@
       <i class="fas fa-fw fa-home"></i>
       <span>Inicio</span></a>
   </li>
-  <!-- Divider -->
-  <hr class="sidebar-divider">
 
-  <!-- Heading Clientes -->
-  <div class="sidebar-heading">
-    Clientes
-  </div>
+  {% if perms.core.list_cliente or perms.core.list_factura or perms.core.list_ordencompra or perms.accounting.list_cobranza %}
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
-  <li class="nav-item{% if 'cliente' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'cliente-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Clientes</span></a>
-  </li>
+    <!-- Heading Clientes -->
+    <div class="sidebar-heading">
+      Clientes
+    </div>
+  {% endif %}
 
+  {% if perms.core.list_cliente %}
+    <li class="nav-item{% if 'cliente' in request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'cliente-list' %}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Clientes</span></a>
+    </li>
+  {% endif %}
+
+  {% if perms.core.list_factura %}
   <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
     <a class="nav-link" href="{% url 'factura-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
   </li>
+  {% endif %}
 
+  {% if perms.core.list_ordencompra %}
   <li class="nav-item{% if 'ordencompra' in request.resolver_match.url_name %} active{% endif %}">
     <a class="nav-link" href="{% url 'ordencompra-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>&Oacute;rdenes de compra</span></a>
   </li>
+  {% endif %}
 
+  {% if perms.accounting.list_cobranza %}
   <li class="nav-item{% if 'cobranza' in request.resolver_match.url_name %} active{% endif %}">
     <a class="nav-link" href="{% url 'accounting:cobranza-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Cobranzas</span></a>
   </li>
+  {% endif %}
+
+  {% if perms.core.list_proveedor or perms.core.list_facturaproveedor or perms.accounting.list_pago %}
     <!-- Divider -->
-  <hr class="sidebar-divider">
+    <hr class="sidebar-divider">
 
-  <!-- Heading Proveedores -->
-  <div class="sidebar-heading">
-    Proveedores
-  </div>
+    <!-- Heading Proveedores -->
+    <div class="sidebar-heading">
+      Proveedores
+    </div>
+  {% endif %}
 
+  {% if perms.core.list_proveedor %}
   <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
     <a class="nav-link" href="{% url 'proveedor-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Proveedores</span></a>
   </li>
+  {% endif %}
 
- {{ request.resolver_match.func }}
+
+  {% if perms.core.list_facturaproveedor %}
   <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
     <a class="nav-link" href="{% url 'facturaproveedor-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Facturaci&oacute;n</span></a>
   </li>
+  {% endif %}
 
+  {% if perms.accounting.list_pago %}
   <li class="nav-item{% if 'pago' in request.resolver_match.url_name and not 'mediopago' in request.resolver_match.url_name %} active{% endif %}">
     <a class="nav-link" href="{% url 'accounting:pago-list' %}">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Pagos</span></a>
   </li>
+  {% endif %}
 
-  <!-- Divider -->
-  <hr class="sidebar-divider">
+  {% if perms.core.list_mediopago %}
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
-  <!-- Heading -->
-  <div class="sidebar-heading">
-    Medios de pago
-  </div>
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      Medios de pago
+    </div>
+  {% endif %}
 
-  <li class="nav-item{% if 'mediopago' in request.resolver_match.url_name  %} active{% endif %}">
-    <a class="nav-link" href="{% url 'mediopago-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Medios de pago</span></a>
-  </li>
+  {% if perms.core.list_mediopago %}
+    <li class="nav-item{% if 'mediopago' in request.resolver_match.url_name  %} active{% endif %}">
+      <a class="nav-link" href="{% url 'mediopago-list' %}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Medios de pago</span></a>
+    </li>
+  {% endif %}
 
-  <!-- Divider -->
-  <hr class="sidebar-divider">
+  {% if perms.authorization.list_user or perms.auth.list_group or perms.auth.list_permission %}
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
-  <!-- Heading -->
-  <div class="sidebar-heading">
-    Autenticaci&oacute;n
-  </div>
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      Autenticaci&oacute;n
+    </div>
+  {% endif %}
 
-  <li class="nav-item{% if 'user' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'permission:user-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Usuarios</span></a>
-  </li>
+  {% if perms.authorization.list_user %}
+    <li class="nav-item{% if 'user' in request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'permission:user-list' %}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Usuarios</span></a>
+    </li>
+  {% endif %}
 
-  <li class="nav-item{% if 'group' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'permission:group-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Grupos</span></a>
-  </li>
+  {% if perms.auth.list_group %}
+    <li class="nav-item{% if 'group' in request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'permission:group-list' %}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Grupos</span></a>
+    </li>
+  {% endif %}
 
-  <li class="nav-item{% if 'permission' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'permission:permission-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Permisos</span></a>
-  </li>
+  {% if perms.auth.list_permission %}
+    <li class="nav-item{% if 'permission' in request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'permission:permission-list' %}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Permisos</span></a>
+    </li>
+  {% endif %}
 
-{% comment %}
+  {% comment %}
   <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
       <i class="fas fa-fw fa-cog"></i>
@@ -194,6 +226,6 @@
   <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
-  {% endcomment %}
+{% endcomment %}
 </ul>
 <!-- End of Sidebar -->
