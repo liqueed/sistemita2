@@ -51,7 +51,7 @@ class PermissionCreateView(LoginRequiredMixin, CreateView):
     model = Permission
     form_class = PermissionForm
     template_name = 'accounting/permission_form.html'
-    success_url = reverse_lazy('accounting:permission-listado')
+    success_url = reverse_lazy('accounting:permission-list')
 
 
 class PermissionDetailView(LoginRequiredMixin, DetailView):
@@ -67,7 +67,7 @@ class PermisoUpdateView(LoginRequiredMixin, UpdateView):
     model = Permission
     form_class = PermissionForm
     template_name = 'accounting/permission_form.html'
-    success_url = reverse_lazy('accounting:permission-listado')
+    success_url = reverse_lazy('accounting:permission-list')
 
 
 class PermissionDeleteView(LoginRequiredMixin, DeleteView):
@@ -75,4 +75,4 @@ class PermissionDeleteView(LoginRequiredMixin, DeleteView):
 
     model = Permission
     template_name = 'accounting/permission_confirm_delete.html'
-    success_url = reverse_lazy('accounting:permission-listado')
+    success_url = reverse_lazy('accounting:permission-list')

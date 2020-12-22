@@ -23,17 +23,18 @@ urlpatterns = [
     path('usuario/<int:pk>/editar/', UserUpdateView.as_view(), name='user-update'),
     path('usuario/<int:pk>/eliminar/', UserDeleteView.as_view(), name='user-delete'),
 
-    # Permisos
-    path('permiso/', PermissionListView.as_view(), name='permission-listado'),
-    path('permiso/agregar', PermissionCreateView.as_view(), name='permission-agregar'),
-    path('permiso/<int:pk>/', PermissionDetailView.as_view(), name='permission-detalle'),
-    path('permiso/<int:pk>/editar/', PermisoUpdateView.as_view(), name='permission-modificar'),
-    path('permiso/<int:pk>/eliminar/', PermissionDeleteView.as_view(), name='permission-eliminar'),
-
     # Grupos
     path('grupo/', GroupListView.as_view(), name='group-list'),
     path('grupo/agregar', GroupCreateView.as_view(), name='group-create'),
     path('grupo/<int:pk>/', GroupDetailtView.as_view(), name='group-detail'),
     path('grupo/<int:pk>/editar/', GroupUpdateView.as_view(), name='group-update'),
     path('grupo/<int:pk>/eliminar/', GroupDeleteView.as_view(), name='group-delete'),
+
+    # Permiso
+    path('permiso/', PermissionListView.as_view(), name='permission-list'),
+    path('permiso/agregar', PermissionCreateView.as_view(), name='permission-create'),
+    path('permiso/<int:pk>/', PermissionDetailView.as_view(), name='permission-detail'),
+    path('permiso/<int:pk>/editar/', PermisoUpdateView.as_view(), name='permission-update'),
+    path('permiso/<int:pk>/eliminar/', PermissionDeleteView.as_view(), name='permission-delete'),
+
 ]

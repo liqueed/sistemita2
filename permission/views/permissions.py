@@ -1,7 +1,7 @@
 """Vistas de permisos."""
 
 # Django
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
@@ -13,11 +13,12 @@ from django.contrib.auth.models import Permission
 from permission.forms import PermissionForm
 
 
-class PermissionListView(LoginRequiredMixin, ListView):
+class PermissionListView(PermissionRequiredMixin, ListView):
     """Vista de listado de permisos."""
 
-    template_name = 'permission/permission_list.html'
     paginate_by = 10
+    permission_required = 'auth.list_permission'
+    template_name = 'permission/permission_list.html'
 
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
@@ -37,34 +38,37 @@ class PermissionListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class PermissionCreateView(LoginRequiredMixin, CreateView):
+class PermissionCreateView(PermissionRequiredMixin, CreateView):
     """Vista para crear un permiso."""
 
-    model = Permission
     form_class = PermissionForm
+    permission_required = 'auth.add_permission'
+    success_url = reverse_lazy('permission:permission-list')
     template_name = 'permission/permission_form.html'
-    success_url = reverse_lazy('permission:permission-listado')
 
 
-class PermissionDetailView(LoginRequiredMixin, DetailView):
+class PermissionDetailView(PermissionRequiredMixin, DetailView):
     """Vista que devuelve el detalle de un permiso."""
 
     model = Permission
+    permission_required = 'auth.view_permission'
     template_name = 'permission/permission_detail.html'
 
 
-class PermisoUpdateView(LoginRequiredMixin, UpdateView):
+class PermisoUpdateView(PermissionRequiredMixin, UpdateView):
     """Vista para editar un permiso existente."""
 
-    model = Permission
     form_class = PermissionForm
+    model = Permission
+    permission_required = 'auth.change_permission'
+    success_url = reverse_lazy('permission:permission-list')
     template_name = 'permission/permission_form.html'
-    success_url = reverse_lazy('permission:permission-listado')
 
 
-class PermissionDeleteView(LoginRequiredMixin, DeleteView):
+class PermissionDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista para eliminar n permiso."""
 
     model = Permission
+    permission_required = 'auth.delete_permission'
+    success_url = reverse_lazy('permission:permission-list')
     template_name = 'permission/permission_confirm_delete.html'
-    success_url = reverse_lazy('permission:permission-listado')
