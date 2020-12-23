@@ -1,18 +1,35 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if ordencompra.pk %}Editar Orden de Compra #{{ ordencompra.pk }} - Cliente: {{ ordencompra.cliente.razon_social }}{% else %}Agregar Orden de Compra{% endif %} | Liqueed
+  {% if object.pk %}
+    Editar Orden de Compra #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }}
+  {% else %}
+    Agregar Orden de Compra
+  {% endif %} | Liqueed
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
-    {% if ordencompra.pk %}
-      <h1 class="h3 text-gray-800">Editar Orden de compra #{{ ordencompra.pk}} - Cliente: {{ ordencompra.cliente.razon_social }}</h1>
-    {% else %}
-      <h1 class="h3 text-gray-800">Agregar Orden de compra</h1>
-    {% endif %}
-    <hr class="sidebar-divider">
+    <h1 class="h3 text-gray-800">Orden de Compra</h1>
+    {% include 'components/messages.html' %}
 
-    {% crispy form %}
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          {% if not object.pk %}
+            Agregar Orden de compra
+          {% else %}
+            Editar Orden de compra #{{ ordencompra.pk}} - Cliente: {{ ordencompra.cliente.razon_social }}
+          {% endif %}
+        </h6>
+      </div>
+
+      <div class="card-body">
+        <div class="table-responsive">
+          {% crispy form %}
+        </div>
+      </div>
+    </div>
+
 </div>
 {% endblock %}
 

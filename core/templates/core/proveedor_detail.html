@@ -2,34 +2,42 @@
 {% load static crispy_forms_tags %}
 {% block title %}Detalle Proveedor #{{ object.pk }} | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Detalle Proveedor #{{ object.pk }}</h1>
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <h1 class="h3 text-gray-800">Proveedores</h1>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Detalle del Proveedor #{{ object.pk }}</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <dl class="row">
+            <dt class="col-sm-2">Raz&oacute;n social</dt>
+            <dd class="col-sm-10">{{ object.razon_social}}</dd>
+            <dt class="col-sm-2">CUIT</dt>
+            <dd class="col-sm-10">{{ object.cuit}}</dd>
+            <dt class="col-sm-2">Correo</dt>
+            <dd class="col-sm-10"><a href="mailto:{{ object.correo }}">{{ object.correo }}</a></dd>
+            <dt class="col-sm-2">Tel&eacute;fono</dt>
+            <dd class="col-sm-10">{{ object.telefono}}</dd>
+            <dt class="col-sm-2">Direcci&oacute;n</dt>
+            <dd class="col-sm-10">{{ object.calle}} {{ object.numero}} {{ object.piso}} {{ object.dpto}}</dd>
+            <dt class="col-sm-2"></dt>
+            <dd class="col-sm-10">
+              {% if object.localidad %}{{ object.localidad}},{% endif %}
+              {% if object.distrito %}{{ object.distrito}},{% endif %}
+              {% if object.provincia %}{{ object.provincia}}{% endif %}
+            </dd>
+          </dl>
 
-    <p class="lead">Datos generales</p>
-    <dl class="row">
-        <dt class="col-sm-2">Raz&oacute;n social</dt>
-        <dd class="col-sm-10">{{ object.razon_social}}</dd>
-        <dt class="col-sm-2">CUIT</dt>
-        <dd class="col-sm-10">{{ object.cuit}}</dd>
-        <dt class="col-sm-2">Correo</dt>
-        <dd class="col-sm-10"><a href="mailto:{{ object.correo }}">{{ object.correo }}</a></dd>
-        <dt class="col-sm-2">Tel&eacute;fono</dt>
-        <dd class="col-sm-10">{{ object.telefono}}</dd>
-        <dt class="col-sm-2">Direcci&oacute;n</dt>
-        <dd class="col-sm-10">{{ object.calle}} {{ object.numero}} {{ object.piso}} {{ object.dpto}}</dd>
-        <dt class="col-sm-2"></dt>
-        <dd class="col-sm-10">{{ object.localidad}}, {{ object.distrito}}, {{ object.provincia}}</dd>
-    </dl>
-
-    <p class="lead">Pagos</p>
-    <dl class="row">
-        <dt class="col-sm-2">CBU</dt>
-        <dd class="col-sm-10">{% if object.cbu %}{{ object.cbu}}{% else %}-{% endif %}</dd>
-    </dl>
-
-    <a href="{% url 'cliente-list' %}" class="btn btn-primary float-right">Volver</a>
-
-</div>
+          <p class="lead">Pagos</p>
+          <dl class="row">
+            <dt class="col-sm-2">CBU</dt>
+            <dd class="col-sm-10">{% if object.cbu %}{{ object.cbu}}{% else %}-{% endif %}</dd>
+          </dl>
+          <a href="{% url 'proveedor-list' %}" class="btn btn-primary float-right">Volver</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
 {% endblock %}

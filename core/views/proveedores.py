@@ -1,11 +1,13 @@
-"""Vistas del módulo de proveedores."""
+"""Vistas del módulo de proveedor."""
 
 # Django
+from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
 # Django REST Framework
 from rest_framework import permissions
@@ -21,6 +23,11 @@ from core.forms import ProveedorForm
 # Serializers
 from core.serializers import ProveedorSerializer
 
+# Utils
+from core.utils.strings import (
+    MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+)
+
 
 class ProveedorViewSet(mixins.RetrieveModelMixin,
                        mixins.ListModelMixin,
@@ -32,7 +39,7 @@ class ProveedorViewSet(mixins.RetrieveModelMixin,
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class ProveedorListView(PermissionRequiredMixin, ListView):
+class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que devuelve un listado de proveedores."""
 
     permission_required = 'core.list_proveedor'
@@ -54,34 +61,48 @@ class ProveedorListView(PermissionRequiredMixin, ListView):
         return queryset
 
 
-class ProveedorCreateView(PermissionRequiredMixin, CreateView):
+class ProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista que agrega un proveedor."""
 
     model = Proveedor
     form_class = ProveedorForm
     permission_required = 'core.add_proveedor'
-    success_url = reverse_lazy('proveedor-list')
+    success_message = MESSAGE_SUCCESS_CREATED.format('proveedor')
+
+    def get_success_url(self):
+        """Luego de agregar al objecto muestra la misma vista."""
+        return reverse('proveedor-update', args=(self.object.id,))
 
 
 class ProveedorDetailView(PermissionRequiredMixin, DetailView):
     """Vista que muestra el detalle de un proveedor."""
 
-    queryset = Proveedor.objects.all()
+    model = Proveedor
     permission_required = 'core.view_proveedor'
 
 
-class ProveedorUpdateView(PermissionRequiredMixin, UpdateView):
+class ProveedorUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     """Vista que modifica un proveedor."""
 
-    queryset = Proveedor.objects.all()
+    model = Proveedor
     form_class = ProveedorForm
     permission_required = 'core.change_proveedor'
-    success_url = reverse_lazy('proveedor-list')
+    success_message = MESSAGE_SUCCESS_UPDATE.format('proveedor')
+
+    def get_success_url(self):
+        """Luego de editar al objecto muestra la misma vista."""
+        return reverse('proveedor-update', args=(self.object.id,))
 
 
 class ProveedorDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista que elimina a un proveedor."""
 
-    queryset = Proveedor.objects.all()
+    model = Proveedor
     permission_required = 'core.delete_proveedor'
+    success_message = MESSAGE_SUCCESS_DELETE.format('proveedor')
     success_url = reverse_lazy('proveedor-list')
+
+    def delete(self, request, *args, **kwargs):
+        """Muestra un mensaje sobre el resultado de la acción."""
+        messages.success(request, self.success_message)
+        return super(ProveedorDeleteView, self).delete(request, *args, **kwargs)

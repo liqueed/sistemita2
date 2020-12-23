@@ -77,7 +77,6 @@ class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
     form_class = FacturaForm
     permission_required = 'core.add_factura'
     success_message = _MESSAGE_SUCCESS_CREATED.format('factura del cliente')
-    success_url = reverse_lazy('facturacliente-list')
     template_name = 'core/facturacliente_form.html'
 
     def get_success_url(self):

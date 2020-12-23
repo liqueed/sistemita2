@@ -2,60 +2,63 @@
 {% load static %}
 {% block title %}Proveedores | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
+  <div class="container-fluid">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Proveedores</h1>
+    {% include 'components/messages.html' %}
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3"></div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <div class="row float-right">
-                    {% include 'components/search_form.html' %}
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Proveedores</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="row float-right">
+            {% include 'components/search_form.html' %}
 
-                      <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                        <a class="btn btn-primary" role="button" href="{% url 'proveedor-create' %}">Agregar</a>
-                      </div>
-
-                </div>
-                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                        <th>ID</th>
-                        <th>Raz&oacute;n Social</th>
-                        <th>CUIT</th>
-                        <th>Correo</th>
-                        <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for object in object_list %}
-                        <tr>
-                            <td onclick="location.href='{% url 'proveedor-detail' object.pk %}';">{{ object.pk }}</td>
-                            <td onclick="location.href='{% url 'proveedor-detail' object.pk %}';">{{ object.razon_social }}</td>
-                            <td onclick="location.href='{% url 'proveedor-detail' object.pk %}';">{{ object.cuit }}</td>
-                            <td onclick="location.href='{% url 'proveedor-detail' object.pk %}';">{{ object.correo }}</td>
-                            <td>
-                              <a href="{% url 'proveedor-update' object.pk %}">
-                                  <i class="fas fa-wrench"></i>
-                              </a>
-                              <a href="{% url 'proveedor-delete' object.pk %}">
-                                  <i class="fas fa-trash"></i>
-                              </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan=5>Sin resultados</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+              <a class="btn btn-primary" role="button" href="{% url 'proveedor-create' %}">Agregar</a>
             </div>
+
+          </div>
+          <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Raz&oacute;n Social</th>
+                <th>CUIT</th>
+                <th>Correo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td onclick="location.href='{% url 'proveedor-detail' object.pk %}';">{{ object.pk }}</td>
+                  <td onclick="location.href='{% url 'proveedor-detail' object.pk %}';">{{ object.razon_social }}</td>
+                  <td onclick="location.href='{% url 'proveedor-detail' object.pk %}';">{{ object.cuit }}</td>
+                  <td onclick="location.href='{% url 'proveedor-detail' object.pk %}';">{{ object.correo }}</td>
+                  <td>
+                    <a href="{% url 'proveedor-update' object.pk %}">
+                      <i class="fas fa-wrench"></i>
+                    </a>
+                    <a href="{% url 'proveedor-delete' object.pk %}">
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan=5>Sin resultados</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
 {% endblock %}
