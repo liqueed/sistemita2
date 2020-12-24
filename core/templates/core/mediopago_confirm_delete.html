@@ -1,20 +1,32 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Eliminar Medio de Pago #{{ object.pk }} | Liqueed{% endblock %}
+{% block title %}Eliminar Medio de pago #{{ object.pk }} | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Eliminar Medio de Pago #{{ object.pk }}</h1>
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Medios de pago</h1>
 
-    <form method="post" action="{% url 'mediopago-delete' object.pk %}">
-        {% csrf_token %}
-        <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el medio de pago <em>{{ object.nombre}}</em>.</p>
-        <div class="row">
-            <div class="col">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          Eliminar Medio de pago #{{ object.pk }}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+
+          <form method="post" action="{% url 'mediopago-delete' object.pk %}">
+            {% csrf_token %}
+            <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el medio de pago <em>{{ object.nombre}}</em>.</p>
+            <div class="row">
+              <div class="col">
                 <button class="btn btn-danger" type="submit">Eliminar</button>
                 <a class="btn" href="{% url 'mediopago-list' %}">No eliminar</a>
+              </div>
             </div>
+          </form>
         </div>
-    </form>
-</div>
+      </div>
+    </div>
+
+  </div>
 {% endblock %}

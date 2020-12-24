@@ -1,10 +1,12 @@
 """Vistas del módulo de medios de pago."""
 
 # Django
+from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
 # Django REST Framework
 from rest_framework import permissions
@@ -20,6 +22,10 @@ from core.models.mediopago import MedioPago
 # Serializers
 from core.serializers import MedioPagoSerializer
 
+from core.utils.strings import (
+    MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+)
+
 
 class MedioPagoViewSet(mixins.ListModelMixin,
                        mixins.RetrieveModelMixin,
@@ -31,7 +37,7 @@ class MedioPagoViewSet(mixins.ListModelMixin,
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class MedioPagoListView(PermissionRequiredMixin, ListView):
+class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que retorna un listado con los medios de pagos."""
 
     permission_required = 'core.list_mediopago'
@@ -50,34 +56,48 @@ class MedioPagoListView(PermissionRequiredMixin, ListView):
         return queryset
 
 
-class MedioPagoCreateView(PermissionRequiredMixin, CreateView):
+class MedioPagoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista que agrega un medio de pago."""
 
     model = MedioPago
     form_class = MedioPagoForm
     permission_required = 'core.add_mediopago'
-    success_url = reverse_lazy('mediopago-list')
+    success_message = MESSAGE_SUCCESS_CREATED.format('medio de pago')
+
+    def get_success_url(self):
+        """Luego de agregar al objecto muestra la misma vista."""
+        return reverse('mediopago-update', args=(self.object.id,))
 
 
 class MedioPagoDetailView(PermissionRequiredMixin, DetailView):
     """Vista que muestra el detall de un medio de pago."""
 
-    queryset = MedioPago.objects.all()
+    model = MedioPago
     permission_required = 'core.view_mediopago'
 
 
-class MedioPagoUpdateView(PermissionRequiredMixin, UpdateView):
+class MedioPagoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     """Vista que modifica un medio de pago."""
 
-    queryset = MedioPago.objects.all()
+    model = MedioPago
     form_class = MedioPagoForm
     permission_required = 'core.change_mediopago'
-    success_url = reverse_lazy('mediopago-list')
+    success_message = MESSAGE_SUCCESS_UPDATE.format('medio de pago')
+
+    def get_success_url(self):
+        """Luego de editar al objecto muestra la misma vista."""
+        return reverse('mediopago-update', args=(self.object.id,))
 
 
 class MedioPagoDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista que elimina un medio de pago."""
 
-    queryset = MedioPago.objects.all()
+    model = MedioPago
     permission_required = 'core.delete_mediopago'
+    success_message = MESSAGE_SUCCESS_DELETE.format('medio de pago')
     success_url = reverse_lazy('mediopago-list')
+
+    def delete(self, request, *args, **kwargs):
+        """Muestra un mensaje sobre el resultado de la acción."""
+        messages.success(request, self.success_message)
+        return super(MedioPagoDeleteView, self).delete(request, *args, **kwargs)
