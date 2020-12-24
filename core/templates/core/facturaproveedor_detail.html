@@ -2,45 +2,53 @@
 {% load static crispy_forms_tags commontags %}
 {% block title %}Detalle de Facturación #{{object.pk }} - Proveedor: {{ object.proveedor.razon_social }} | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Detalle de Facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h1>
-    <hr class="sidebar-divider">
-    <dl class="row">
-        <dt class="col-sm-2">Fecha</dt>
-        <dd class="col-sm-10">{{ object.fecha }}</dd>
-        <dt class="col-sm-2">Número de factura</dt>
-        <dd class="col-sm-10">{% if object.numero %}{{ object.numero }}{% else %}-{% endif %}</dd>
-        <dt class="col-sm-2">Tipo</dt>
-        <dd class="col-sm-10">{{ object.tipo }}</dd>
-        <dt class="col-sm-2">Proveedor</dt>
-        <dd class="col-sm-10">{{ object.proveedor }}</dd>
-        <dt class="col-sm-2">Factura de cliente</dt>
-        <dd class="col-sm-10">{{ object.factura }}<a class="btn btn-light btn-xs ml-1" target="_blank" href="{% url 'factura-detail' object.factura.pk %}"><i class="far fa-eye"></i></a></dd>
-        <dt class="col-sm-2">Detalle</dt>
-        <dd class="col-sm-10">{% if object.detalle %}{{ object.detalle }}{% else %}-{% endif %}</dd>
-        <dt class="col-sm-2">Neto</dt>
-        <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.neto }}</dd>
-        <dt class="col-sm-2">IVA %</dt>
-        <dd class="col-sm-10">{{ object.iva }}</dd>
-        <dt class="col-sm-2">Total</dt>
-        <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.total }}</dd>
-    <dt class="col-sm-2">Pagado</dt>
-        <dd class="col-sm-10">{% if object.cobrado %}<i class="fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}</dd>
-    <dt class="col-sm-2">Archivos</dt>
-    {% if object.archivos.all|length %}
-      {% for archivo in object.archivos.all %}
-        <div class="col-3 mt-1">
-          {{ archivo.documento|filename }}
-        </div>
-        <div class="col-7">
-          <a class="btn btn-light btn-sm" target="_blank" href="{{ archivo.documento.url }}"><i class="far fa-eye"></i></a>
-        </div>
-        <dt class="col-sm-2"></dt>
+  <div class="container-fluid">
+    <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Detalle de Facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <dl class="row">
+            <dt class="col-sm-2">Fecha</dt>
+            <dd class="col-sm-10">{{ object.fecha }}</dd>
+            <dt class="col-sm-2">Número de factura</dt>
+            <dd class="col-sm-10">{% if object.numero %}{{ object.numero }}{% else %}-{% endif %}</dd>
+            <dt class="col-sm-2">Tipo</dt>
+            <dd class="col-sm-10">{{ object.tipo }}</dd>
+            <dt class="col-sm-2">Proveedor</dt>
+            <dd class="col-sm-10">{{ object.proveedor }}</dd>
+            <dt class="col-sm-2">Factura de cliente</dt>
+            <dd class="col-sm-10">{{ object.factura }}<a class="btn btn-light btn-xs ml-1" target="_blank" href="{% url 'factura-detail' object.factura.pk %}"><i class="far fa-eye"></i></a></dd>
+            <dt class="col-sm-2">Detalle</dt>
+            <dd class="col-sm-10">{% if object.detalle %}{{ object.detalle }}{% else %}-{% endif %}</dd>
+            <dt class="col-sm-2">Neto</dt>
+            <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.neto }}</dd>
+            <dt class="col-sm-2">IVA %</dt>
+            <dd class="col-sm-10">{{ object.iva }}</dd>
+            <dt class="col-sm-2">Total</dt>
+            <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.total }}</dd>
+            <dt class="col-sm-2">Pagado</dt>
+            <dd class="col-sm-10">{% if object.cobrado %}<i class="fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}</dd>
+            <dt class="col-sm-2">Archivos</dt>
+            {% if object.archivos.all|length %}
+              {% for archivo in object.archivos.all %}
+                <div class="col-3 mt-1">
+                  {{ archivo.documento|filename }}
+                </div>
+                <div class="col-7">
+                  <a class="btn btn-light btn-sm" target="_blank" href="{{ archivo.documento.url }}"><i class="far fa-eye"></i></a>
+                </div>
+            <dt class="col-sm-2"></dt>
           {% endfor %}
-    {% else %}
-      <dd class="col-sm-10">-</dd>
+        {% else %}
+          <dd class="col-sm-10">-</dd>
         {% endif %}
-        </dl>
-    <a href="{% url 'facturaproveedor-list' %}" class="btn btn-primary float-right">Volver</a>
-</div>
+          </dl>
+          <a href="{% url 'facturaproveedor-list' %}" class="btn btn-primary float-right">Volver</a>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

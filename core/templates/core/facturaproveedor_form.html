@@ -1,19 +1,34 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if facturaproveedor.pk %}Editar Facturación #{{ facturaproveedor.pk  }} - Proveedor: {{ facturaproveedor.proveedor.razon_social }} {% else %}Agregar Facturación a Proveedor{% endif %} | Liqueed
+  {% if object.pk %}
+    Editar Facturación #{{ object.pk  }} - Proveedor: {{ object.proveedor.razon_social }}
+  {% else %}
+    Agregar Facturación a Proveedor
+  {% endif %} | Liqueed
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-    {% if facturaproveedor.pk %}
-      <h1 class="h3 text-gray-800">Editar Facturación #{{ facturaproveedor.pk }} - Proveedor: {{ facturaproveedor.proveedor.razon_social}}</h1>
-    {% else %}
-      <h1 class="h3 text-gray-800">Agregar Facturación a Proveedor</h1>
-    {% endif %}
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
+    {% include 'components/messages.html' %}
 
-    {% crispy form %}
-    <input id="id_factura_proveedor" type="hidden" value="{{ object.id }}">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          {% if not object.pk %}
+            Agregar facturación a Proveedor
+          {% else %}
+            Editar Facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social}}          {% endif %}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          {% crispy form %}
+        </div>
+      </div>
+    </div>
+
+  </div>
 {% endblock %}
 
 {% block extra_js %}
@@ -61,8 +76,8 @@ if (idFacturaProveedor) {
     });
 
     $(adjuntos).on("click",".remove_document", function(e){
-    e.preventDefault();
-    var element = $(this).parent("div");
+        e.preventDefault();
+        var element = $(this).parent("div");
         $.ajax({
             url: `/api/archivo/${this.id}/`,
             type: 'DELETE',
