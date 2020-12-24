@@ -8,7 +8,6 @@
 {% block content %}
   <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Cobranzas a Clientes</h1>
-    {% include 'components/messages.html' %}
 
     <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create and not request.GET.update %}d-none{% endif %}" role="alert">
      {% if request.GET.create %}La cobranza ha sido creada exitosamente.{% endif %}
@@ -21,7 +20,7 @@
     <div class="card shadow mb-4">
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">
-          Editar cobranza a Cliente
+          Editar cobranza a Cliente #{{ pk }}
         </h6>
       </div>
       <div class="card-body">

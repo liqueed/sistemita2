@@ -39,7 +39,6 @@ class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que devuelve un listado de cobranzas."""
 
     permission_required = 'accounting.list_cobranza'
-    template_name = 'accounting/cobranza_list.html'
 
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
@@ -57,21 +56,21 @@ class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
 
 class CobranzaCreateTemplateView(PermissionRequiredMixin, TemplateView):
-    """Formulario para agregar cobranzas."""
+    """Vista que devuelve un formulario para agregar una cobranza."""
 
     permission_required = 'accounting.add_cobranza'
     template_name = 'accounting/cobranza_create.html'
 
 
 class CobranzaDetailView(PermissionRequiredMixin, DetailView):
-    """Vista con los detalles de una cobranza."""
+    """Vista que muestra los deltalle de una cobranza."""
 
     model = Cobranza
     permission_required = 'accounting.view_cobranza'
 
 
 class CobranzaUpdateTemplateView(PermissionRequiredMixin, TemplateView):
-    """Formulario para editar cobranzas."""
+    """Vista para editar una cobranza."""
 
     permission_required = 'accounting.change_cobranza'
     template_name = 'accounting/cobranza_update.html'
