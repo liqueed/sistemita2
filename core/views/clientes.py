@@ -1,4 +1,4 @@
-"""Vistas del módulo de cliente."""
+"""Vistas del modelo Cliente."""
 
 # Django
 from django.contrib import messages
@@ -18,7 +18,7 @@ from rest_framework import viewsets
 from core.models.cliente import Cliente
 
 # Forms
-from core.forms import ClienteForm
+from core.forms.clientes import ClienteForm
 
 # Serializers
 from core.serializers import ClienteSerializer

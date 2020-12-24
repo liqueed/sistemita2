@@ -1,4 +1,4 @@
-"""Vistas del módulo de medios de pago."""
+"""Vistas del modelo MedioPago."""
 
 # Django
 from django.contrib import messages
@@ -14,7 +14,7 @@ from rest_framework import mixins
 from rest_framework import viewsets
 
 # Forms
-from core.forms import MedioPagoForm
+from core.forms.mediospago import MedioPagoForm
 
 # Models
 from core.models.mediopago import MedioPago

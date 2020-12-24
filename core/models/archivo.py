@@ -1,14 +1,14 @@
-"""Modelo Archivo."""
+"""Modelo Archivo.
+
+Este modelo es utilizado para cualquier archivo adjunto de otro modelo.
+"""
 
 # Django
 from django.db import models
 
 
 class Archivo(models.Model):
-    """Modelo de Archivo.
-
-    Este modelo es utilizado para cualquier archivo adjunto de otro modelo.
-    """
+    """Modelo de Archivo."""
 
     documento = models.FileField(upload_to='archivos/documentos/')
 

@@ -23,9 +23,12 @@ class Proveedor(TimeStampedModel, models.Model):
     numero = models.CharField('Número', max_length=12, blank=True)
     piso = models.CharField('Piso', max_length=4, blank=True)
     dpto = models.CharField('Departamento', max_length=4, blank=True)
-    provincia = models.ForeignKey(Provincia, null=True, blank=True, verbose_name='Provincia', on_delete=models.SET_NULL)
-    distrito = models.ForeignKey(Distrito, null=True, blank=True, verbose_name='Distrito', on_delete=models.SET_NULL)
-    localidad = models.ForeignKey(Localidad, null=True, blank=True, verbose_name='Localidad', on_delete=models.SET_NULL)
+    provincia = models.ForeignKey(Provincia, null=True, blank=True, verbose_name='Provincia',
+                                  on_delete=models.SET_NULL)
+    distrito = models.ForeignKey(Distrito, null=True, blank=True, verbose_name='Distrito',
+                                 on_delete=models.SET_NULL)
+    localidad = models.ForeignKey(Localidad, null=True, blank=True, verbose_name='Localidad',
+                                  on_delete=models.SET_NULL)
     cbu = models.CharField(max_length=22, blank=True, null=True, verbose_name='CBU')
 
     class Meta:

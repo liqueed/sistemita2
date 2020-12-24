@@ -1,4 +1,4 @@
-"""Vistas del módulo principal."""
+"""Vistas de la sección principal."""
 
 # Django
 from django.contrib.auth.mixins import LoginRequiredMixin

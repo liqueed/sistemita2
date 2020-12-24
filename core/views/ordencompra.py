@@ -1,4 +1,4 @@
-"""Vistas del módulo de órdenes de compra."""
+"""Vistas del modelo OrdenCompra."""
 
 # Django
 from django.contrib import messages
@@ -13,7 +13,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from core.models.cliente import OrdenCompra
 
 # Forms
-from core.forms import OrdenCompraForm
+from core.forms.clientes import OrdenCompraForm
 
 # Utils
 from core.utils.strings import (

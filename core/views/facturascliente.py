@@ -1,4 +1,7 @@
-"""Vistas del módulo facturación a clientes."""
+"""Vistas del modelo Factura.
+
+El modelo Factura está asociado al modelo cliente.
+"""
 
 # Django
 from django.contrib import messages
@@ -21,7 +24,7 @@ from core.models.cliente import Factura
 from accounting.models.cobranza import Cobranza, CobranzaFactura
 
 # Forms
-from core.forms import FacturaForm
+from core.forms.clientes import FacturaForm
 
 # Serializer
 from core.serializers import FacturaSerializer

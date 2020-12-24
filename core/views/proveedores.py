@@ -1,4 +1,4 @@
-"""Vistas del módulo de proveedor."""
+"""Vistas del modelo Proveedor."""
 
 # Django
 from django.contrib import messages
@@ -18,7 +18,7 @@ from rest_framework import viewsets
 from core.models.proveedor import Proveedor
 
 # Forms
-from core.forms import ProveedorForm
+from core.forms.proveedores import ProveedorForm
 
 # Serializers
 from core.serializers import ProveedorSerializer

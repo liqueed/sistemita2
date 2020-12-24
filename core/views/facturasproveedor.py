@@ -1,4 +1,4 @@
-"""Vistas del módulo de facturación a proveedores."""
+"""Vistas del modelo FacturaProveedor."""
 
 # Django
 from django.contrib import messages
@@ -23,7 +23,7 @@ from core.models.proveedor import FacturaProveedor
 from core.filters import FacturaProveedorFilterSet
 
 # Forms
-from core.forms import FacturaProveedorForm
+from core.forms.proveedores import FacturaProveedorForm
 
 # Serializers
 from core.serializers import FacturaProveedorSerializer
