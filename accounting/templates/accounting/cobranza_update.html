@@ -2,163 +2,182 @@
 {% load static crispy_forms_tags %}
 {% block title %}Editar Cobranza #{{ pk }} | Liqueed{% endblock %}
 {% block header %}
-    <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
-    <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
+  <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
+  <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
 {% endblock %}
 {% block content %}
-    <div class="container-fluid">
-      <h1 class="h3 mb-2 text-gray-800">Editar Cobranza #{{ pk }}</h1>
-      <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Cobranzas a Clientes</h1>
+    {% include 'components/messages.html' %}
 
-      <form id="cobranza-form">
-        <fieldset>
-          <legend>Datos</legend>
-          <!-- Cobranza -->
-          <input id="cobranza" name="cobranza" type="hidden" value="{{ pk }}">
-          <!-- End Cobranza -->
+    <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create and not request.GET.update %}d-none{% endif %}" role="alert">
+     {% if request.GET.create %}La cobranza ha sido creada exitosamente.{% endif %}
+     {% if request.GET.update %}La cobranza ha sido modificada exitosamente.{% endif %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
 
-          <!-- Cliente -->
-          <div class="row">
-            <div class="col-5">
-              <div class="form-group">
-                <label class="requiredField">
-                  Cliente<span class="asteriskField">*</span>
-                </label>
-                <div class="">
-                  <select class="select form-control" id="cliente" name="cliente" disabled required>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row" id="info_cliente">
-          </div>
-          <!-- End Cliente -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          Editar cobranza a Cliente
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
 
-          <!-- Factura -->
-          <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
-            <div class="row">
-              <div class="col-12">
-                <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
-                  <span class="text-danger">&times;</span>
-                </button>
-              </div>
-            </div>
-            <div class="row">
-              <!-- Factura Cliente -->
-              <div class="col-12">
-                <div class="form-group">
-                  <label class="requiredField">
-                    Factura<span class="asteriskField">*</span>
-                  </label>
-                  <div class="wrapper-selector-factura">
-                    <select class="form-control selector-factura" name="factura_1" required>
-                    </select>
+          <form id="cobranza-form">
+            <fieldset>
+              <legend>Datos</legend>
+              <!-- Cobranza -->
+              <input id="cobranza" name="cobranza" type="hidden" value="{{ pk }}">
+              <!-- End Cobranza -->
+
+              <!-- Cliente -->
+              <div class="row">
+                <div class="col-5">
+                  <div class="form-group">
+                    <label class="requiredField">
+                      Cliente<span class="asteriskField">*</span>
+                    </label>
+                    <div class="">
+                      <select class="select form-control" id="cliente" name="cliente" disabled required>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
-              <!-- End Factura Cliente -->
+              <div class="row" id="info_cliente">
+              </div>
+              <!-- End Cliente -->
 
-              <!-- Metodo y Monto -->
-              <div class="col-11 wrapper-pagos">
-                <div class="row group-pagos">
-                  <!-- Metodo -->
-                  <div class="col-6">
+              <!-- Factura -->
+              <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
+                <div class="row">
+                  <div class="col-12">
+                    <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
+                      <span class="text-danger">&times;</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <!-- Factura Cliente -->
+                  <div class="col-12">
                     <div class="form-group">
                       <label class="requiredField">
-                        Metodo<span class="asteriskField">*</span>
+                        Factura<span class="asteriskField">*</span>
                       </label>
-                      <div>
-                        <select class="selector-metodo form-control" name="metodo_1_1" required>
-                          <option value="">---------</option>
+                      <div class="wrapper-selector-factura">
+                        <select class="form-control selector-factura" name="factura_1" required>
                         </select>
                       </div>
                     </div>
                   </div>
-                  <!-- End Metodo -->
-                  <!-- Monto -->
-                  <div class="col-6">
+                  <!-- End Factura Cliente -->
+
+                  <!-- Metodo y Monto -->
+                  <div class="col-11 wrapper-pagos">
+                    <div class="row group-pagos">
+                      <!-- Metodo -->
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label class="requiredField">
+                            Metodo<span class="asteriskField">*</span>
+                          </label>
+                          <div>
+                            <select class="selector-metodo form-control" name="metodo_1_1" required>
+                              <option value="">---------</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Metodo -->
+                      <!-- Monto -->
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label class="requiredField">
+                            Monto<span class="asteriskField">*</span>
+                          </label>
+                          <div>
+                            <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Monto -->
+                    </div>
+                  </div>
+                  <!-- End metodo y monto -->
+
+                  <!-- Agrega monto -->
+                  <div class="col-1 pl-0">
                     <div class="form-group">
-                      <label class="requiredField">
-                        Monto<span class="asteriskField">*</span>
-                      </label>
+                      <label></label>
                       <div>
-                        <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
+                        <button class="add-pago btn btn-success btn-xs mt-3"><i class="fas fa-plus-circle"></i></button>
                       </div>
                     </div>
                   </div>
-                  <!-- End Monto -->
+                  <!-- End Agrega monto -->
+
+                  <!-- Ganancias, ingresos e IVA -->
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
+                      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
+                      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
+                      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
+                    </div>
+                  </div>
+                  <!--  End Ganancias, ingresos e IVA -->
+
                 </div>
               </div>
-              <!-- End metodo y monto -->
+              <!-- End Factura -->
 
-              <!-- Agrega monto -->
-              <div class="col-1 pl-0">
-                <div class="form-group">
-                  <label></label>
-                  <div>
-                    <button class="add-pago btn btn-success btn-xs mt-3"><i class="fas fa-plus-circle"></i></button>
+              <!-- Agregar factura -->
+              <div class="row">
+                <div class="offset-6 col-1">
+                  <button class="add-factura btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
+                </div>
+              </div>
+              <!-- Agregar factura -->
+
+              <!-- Total -->
+              <div class="row wrapper-total mt-2">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+                    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
                   </div>
                 </div>
               </div>
-              <!-- End Agrega monto -->
+              <!-- End Total -->
 
-              <!-- Ganancias, ingresos e IVA -->
-              <div class="col-4">
-                <div class="form-group">
-                  <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
-                  <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
-                  <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
-                </div>
-              </div>
-              <div class="col-4">
-                <div class="form-group">
-                  <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
-                  <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
-                </div>
-              </div>
-              <!--  End Ganancias, ingresos e IVA -->
+            </fieldset>
 
-            </div>
-          </div>
-          <!-- End Factura -->
-
-          <!-- Agregar factura -->
-          <div class="row">
-            <div class="offset-6 col-1">
-              <button class="add-factura btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
-            </div>
-          </div>
-          <!-- Agregar factura -->
-
-          <!-- Total -->
-          <div class="row wrapper-total mt-2">
-            <div class="col-4">
-              <div class="form-group">
-                <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
-                <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
+            <div class="form-group">
+              <div>
+                <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+                <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
               </div>
             </div>
-          </div>
-          <!-- End Total -->
 
-        </fieldset>
-
-        <div class="form-group">
-          <div>
-            <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
-            <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
-          </div>
+          </form>
         </div>
-
-      </form>
+      </div>
     </div>
-
+  </div>
 {% endblock %}
 {% block extra_js %}
 
@@ -284,8 +303,8 @@ $(document).ready(function() {
             });
             $.each(data, function(key, value) {
                 $('.selector-metodo').append($("<option></option>")
-                                       .attr("value", value['id'])
-                                       .text(value['nombre']));
+                                             .attr("value", value['id'])
+                                             .text(value['nombre']));
             });
         }
     });
@@ -463,7 +482,7 @@ $('#submit-id-submit').click(function(e){
             xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         }
     }).done(function(data) {
-        window.location.href = '{% url 'accounting:cobranza-list' %}';
+        window.location.href = '{% url 'accounting:cobranza-update' pk=0 %}?update=1'.replace('0', data.id);
     }).fail(function() {
         alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
     })

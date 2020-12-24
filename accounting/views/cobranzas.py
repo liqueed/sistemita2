@@ -1,11 +1,13 @@
-"""Vistas del módulo de cobranza."""
+"""Vistas del modelo de Cobranza."""
 
 # Django
+from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.urls import reverse_lazy
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
 # Django Rest Framework
 from rest_framework import mixins, permissions, viewsets
@@ -17,6 +19,9 @@ from accounting.serializers.cobranzas import CobranzaSerializer
 # Core
 from core.models.cliente import Factura
 
+# Utils
+from core.utils.strings import _MESSAGE_SUCCESS_DELETE
+
 
 class CobranzaViewSet(mixins.CreateModelMixin,
                       mixins.RetrieveModelMixin,
@@ -25,16 +30,16 @@ class CobranzaViewSet(mixins.CreateModelMixin,
                       viewsets.GenericViewSet):
     """Cobranza view set."""
 
-    serializer_class = CobranzaSerializer
     queryset = Cobranza.objects.all()
+    serializer_class = CobranzaSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class CobranzaListView(PermissionRequiredMixin, ListView):
+class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que devuelve un listado de cobranzas."""
 
-    template_name = 'accounting/cliente_cobranza_list.html'
     permission_required = 'accounting.list_cobranza'
+    template_name = 'accounting/cobranza_list.html'
 
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
@@ -54,15 +59,22 @@ class CobranzaListView(PermissionRequiredMixin, ListView):
 class CobranzaCreateTemplateView(PermissionRequiredMixin, TemplateView):
     """Formulario para agregar cobranzas."""
 
-    template_name = 'accounting/cliente_cobranza_form.html'
     permission_required = 'accounting.add_cobranza'
+    template_name = 'accounting/cobranza_create.html'
+
+
+class CobranzaDetailView(PermissionRequiredMixin, DetailView):
+    """Vista con los detalles de una cobranza."""
+
+    model = Cobranza
+    permission_required = 'accounting.view_cobranza'
 
 
 class CobranzaUpdateTemplateView(PermissionRequiredMixin, TemplateView):
     """Formulario para editar cobranzas."""
 
-    template_name = 'accounting/cliente_cobranza_edit.html'
     permission_required = 'accounting.change_cobranza'
+    template_name = 'accounting/cobranza_update.html'
 
     def get_context_data(self, **kwargs):
         """Envía la clave primaria como contexto al template."""
@@ -71,19 +83,13 @@ class CobranzaUpdateTemplateView(PermissionRequiredMixin, TemplateView):
         return context
 
 
-class CobranzaDetailView(PermissionRequiredMixin, DetailView):
-    """Vista con los detalles de una cobranza."""
-
-    queryset = Cobranza.objects.all()
-    permission_required = 'accounting.detail_cobranza'
-
-
 class CobranzaDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista para eliminar una cobranza."""
 
-    queryset = Cobranza.objects.all()
-    success_url = reverse_lazy('accounting:cobranza-list')
+    model = Cobranza
     permission_required = 'accounting.delete_cobranza'
+    success_message = _MESSAGE_SUCCESS_DELETE.format('cobranza')
+    success_url = reverse_lazy('accounting:cobranza-list')
 
     def delete(self, request, *args, **kwargs):
         """Sobreescribe método para modificar facturas asociadas."""
@@ -98,4 +104,5 @@ class CobranzaDeleteView(PermissionRequiredMixin, DeleteView):
 
         success_url = self.get_success_url()
         self.object.delete()
+        messages.success(request, self.success_message)
         return HttpResponseRedirect(success_url)
