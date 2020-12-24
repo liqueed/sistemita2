@@ -2,9 +2,9 @@
 {% load static crispy_forms_tags %}
 {% block title %}
   {% if object.pk %}
-    Editar Facturación #{{ object.pk  }} - Proveedor: {{ object.proveedor.razon_social }}
+    Editar facturación #{{ object.pk  }} - Proveedor: {{ object.proveedor.razon_social }}
   {% else %}
-    Agregar Facturación a Proveedor
+    Agregar facturación a Proveedor
   {% endif %} | Liqueed
 {% endblock %}
 {% block content %}
@@ -18,7 +18,7 @@
           {% if not object.pk %}
             Agregar facturación a Proveedor
           {% else %}
-            Editar Facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social}}          {% endif %}
+            Editar facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social}}          {% endif %}
         </h6>
       </div>
       <div class="card-body">

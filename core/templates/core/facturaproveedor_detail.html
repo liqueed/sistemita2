@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags commontags %}
-{% block title %}Detalle de Facturación #{{object.pk }} - Proveedor: {{ object.proveedor.razon_social }} | Liqueed{% endblock %}
+{% block title %}Detalle de facturación #{{object.pk }} - Proveedor: {{ object.proveedor.razon_social }} | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
     <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Detalle de Facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Detalle de facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
       </div>
       <div class="card-body">
         <div class="table-responsive">

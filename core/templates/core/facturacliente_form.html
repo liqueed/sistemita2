@@ -2,22 +2,22 @@
 {% load static crispy_forms_tags %}
 {% block title %}
   {% if object.pk %}
-    Editar Facturación #{{ object.pk  }} - Cliente: {{ object.cliente.razon_social }}
+    Editar facturación #{{ object.pk  }} - Cliente: {{ object.cliente.razon_social }}
   {% else %}
-    Agregar Facturación de Cliente
+    Agregar facturación de Cliente
   {% endif %} | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
-    <h1 class="h3 text-gray-800">Clientes</h1>
+    <h1 class="h3 text-gray-800">Facturación a Clientes</h1>
     {% include 'components/messages.html' %}
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">
           {% if not object.pk %}
-            Agregar Facturación a Cliente
+            Agregar facturación a Cliente
           {% else %}
-            Editar Facturación #{{ object.pk }} - Cliente: {{ object.cliente.razon_social}}
+            Editar facturación #{{ object.pk }} - Cliente: {{ object.cliente.razon_social}}
           {% endif %}
         </h6>
       </div>

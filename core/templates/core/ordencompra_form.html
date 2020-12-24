@@ -2,14 +2,14 @@
 {% load static crispy_forms_tags %}
 {% block title %}
   {% if object.pk %}
-    Editar Orden de Compra #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }}
+    Editar orden de compra #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }}
   {% else %}
-    Agregar Orden de Compra
+    Agregar orden de compra
   {% endif %} | Liqueed
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h3 text-gray-800">Orden de Compra</h1>
+    <h1 class="h3 text-gray-800">Orden de compra</h1>
     {% include 'components/messages.html' %}
 
     <div class="card shadow mb-4">
