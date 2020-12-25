@@ -5,14 +5,14 @@
 {% endblock %}
 {% block content %}
   <div class="container-fluid">
-    <h1 class="h3 text-gray-800">Permisos</h1>
+    <h1 class="h3 text-gray-800">Usuarios</h1>
     {% include 'components/messages.html' %}
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">
           {% if not object.pk %}
-            Agregar usuario
+            Agregar Usuario
           {% else %}
             Editar Usuario #{{ object.pk }}
           {% endif %}

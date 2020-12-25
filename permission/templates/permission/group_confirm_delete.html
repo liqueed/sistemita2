@@ -1,29 +1,38 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Eliminar Grupo {{ object.name }} | Liqueed{% endblock %}
+{% block title %}Eliminar Grupo #{{ object.pk }} | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Eliminar Grupo {{ object.name }}</h1>
-    <hr class="sidebar-divider">
-
-    <form method="post" action="{% url 'permission:group-delete' object.pk %}">
-      {% csrf_token %}
-      <p>
-        <strong>Atenci&oacute;n!</strong>
-        Est&aacute; por eliminar el grupo {{ object.name }}. Este Grupo tiene los permisos:
-        <ul>
-          {% for permission in object.permissions.all %}
-            <li>{{ permission }}</li>
-          {% endfor %}
-        </ul>
-      </p>
-      <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
-      <div class="row">
-        <div class="col">
-          <button class="btn btn-danger" type="submit">Eliminar</button>
-          <a class="btn" href="{% url 'permission:group-list' %}">No eliminar</a>
+    <h1 class="h3 mb-2 text-gray-800">Grupos</h1>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          Eliminar Grupo #{{ object.pk }}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <form method="post" action="{% url 'permission:group-delete' object.pk %}">
+            {% csrf_token %}
+            <p>
+              <strong>Atenci&oacute;n!</strong>
+              Est&aacute; por eliminar el grupo <em>{{ object.name }}</em>. Este Grupo tiene los permisos:
+              <ul>
+                {% for permission in object.permissions.all %}
+                  <li>{{ permission }}</li>
+                {% endfor %}
+              </ul>
+            </p>
+            <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+            <div class="row">
+              <div class="col">
+                <button class="btn btn-danger" type="submit">Eliminar</button>
+                <a class="btn" href="{% url 'permission:group-list' %}">No eliminar</a>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 {% endblock %}
