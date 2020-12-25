@@ -1,17 +1,29 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if object.pk %}Editar Permiso #{{ object.pk }}{% else %}Agregar Permiso{% endif %} | Liqueed
+  {% if not object.pk %}Agregar Permiso {% else %}Editar Permiso{% endif %} | Liqueed
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-    {% if object.pk %}
-      <h1 class="h3 text-gray-800">Editar Permiso #{{ object.pk }}</h1>
-    {% else %}
-      <h1 class="h3 text-gray-800">Agregar Permiso</h1>
-    {% endif %}
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <h1 class="h3 text-gray-800">Permisos</h1>
+    {% include 'components/messages.html' %}
 
-    {% crispy form %}
-</div>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          {% if not object.pk %}
+            Agregar Permiso
+          {% else %}
+            Editar Permiso
+          {% endif %}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          {% crispy form %}
+        </div>
+      </div>
+    </div>
+
+  </div>
 {% endblock %}
