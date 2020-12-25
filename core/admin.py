@@ -1,3 +1,5 @@
-from django.contrib import admin
+"""Módulo admin."""
+
+#  from django.contrib import admin
 
 # Register your models here.
