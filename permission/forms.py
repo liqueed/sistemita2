@@ -4,7 +4,8 @@
 from django import forms
 
 # Models
-from django.contrib.auth.models import Group, User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 
 # Forms
 from crispy_forms.bootstrap import FormActions
@@ -13,6 +14,8 @@ from crispy_forms.layout import Submit, Fieldset, Layout, Div, Reset
 
 # Utils
 from permission.models.utils import ContentType, Permission
+
+User = get_user_model()
 
 
 class PermissionForm(forms.ModelForm):
