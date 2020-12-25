@@ -12,7 +12,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import Group
 
 # Forms
-from authorization.forms import GroupForm
+from authorization.forms.groups import GroupForm
 
 # Utils
 from core.utils.strings import (

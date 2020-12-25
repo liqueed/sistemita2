@@ -31,7 +31,7 @@ class Command(BaseCommand):
             if 'Can add' in name:
                 name = self.change_app_name(name, 8, 'Puede agregar')
             elif 'Can view' in name:
-                name = self.change_app_name(name, 9, 'Puede editar')
+                name = self.change_app_name(name, 9, 'Puede ver')
             elif 'Can change' in name:
                 name = self.change_app_name(name, 11, 'Puede editar')
             elif 'Can delete' in name:

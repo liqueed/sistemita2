@@ -10,7 +10,7 @@ from django.views.generic import DetailView, DeleteView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
 # Forms
-from authorization.forms import UserForm
+from authorization.forms.users import UserCreateForm, UserUpdateForm
 
 # Models
 from django.contrib.auth import get_user_model
@@ -48,11 +48,11 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         return queryset
 
 
-class UserCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+class UserCreateFormView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista que crea un usuario."""
 
-    form_class = UserForm
     model = User
+    form_class = UserCreateForm
     permission_required = 'authorization.add_user'
     success_message = MESSAGE_SUCCESS_CREATED.format('usuario')
     template_name = 'authorization/user_form.html'
@@ -73,7 +73,7 @@ class UserDetailView(PermissionRequiredMixin, DetailView):
 class UserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     """Vista que modifica un usuario."""
 
-    form_class = UserForm
+    form_class = UserUpdateForm
     model = User
     permission_required = 'authorization.change_user'
     success_message = MESSAGE_SUCCESS_UPDATE.format('usuario')

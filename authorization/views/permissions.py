@@ -12,7 +12,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import Permission
 
 # Forms
-from authorization.forms import PermissionForm
+from authorization.forms.permissions import PermissionForm
 
 # Utils
 from core.utils.strings import (
