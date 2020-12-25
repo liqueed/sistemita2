@@ -1,4 +1,4 @@
-"""Modulo serializers."""
+"""Serializers de los modelos Cobranza, CobranzaFactura y CobranzaFacturaPago."""
 
 # Django REST Framework
 from rest_framework import serializers
@@ -21,10 +21,12 @@ class CobranzaFacturaPagoSerializer(serializers.ModelSerializer):
     Este campo 'data' contiene informacion sobre si el objeto que lo contiene
     tiene que ser agregado, editado o eliminado.
     """
+
     data = serializers.DictField(required=False)
 
     class Meta:
         """Clase meta."""
+
         model = CobranzaFacturaPago
         fields = ('id', 'data', 'metodo', 'monto')
         read_only_fields = ('id',)
@@ -38,11 +40,13 @@ class CobranzaFacturaSerializer(serializers.ModelSerializer):
     Este campo 'data' contiene informacion sobre si el objeto que lo contiene
     tiene que ser agregado, editado o eliminado.
     """
+
     data = serializers.DictField(required=False)
     cobranza_factura_pagos = CobranzaFacturaPagoSerializer(many=True)
 
     class Meta:
         """Clase meta."""
+
         model = CobranzaFactura
         fields = (
             'id', 'data',
@@ -54,12 +58,14 @@ class CobranzaFacturaSerializer(serializers.ModelSerializer):
 
 class CobranzaSerializer(serializers.ModelSerializer):
     """Cobranza Serializer."""
+
     cliente = ClienteSerializer()
     total = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
     cobranza_facturas = CobranzaFacturaSerializer(many=True)
 
     class Meta:
         """Clase meta."""
+
         model = Cobranza
         fields = (
             'id', 'cliente', 'total',
@@ -111,6 +117,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(error)
 
     def update(self, instance, data):
+        """Actualiza la intancia."""
         try:
             instance.total = data['total']
             facturas = data['cobranza_facturas']

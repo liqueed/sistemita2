@@ -1,4 +1,4 @@
-"""Modulo serializers de pagos."""
+"""Serializers de los modelos Pago, PagoFactura y PagoFacturaPago."""
 
 # Django REST Framework
 from rest_framework import serializers
@@ -21,10 +21,12 @@ class PagoFacturaPagoSerializer(serializers.ModelSerializer):
     Este campo 'data' contiene informacion sobre si el objeto que lo contiene
     tiene que ser agregado, editado o eliminado.
     """
+
     data = serializers.DictField(required=False)
 
     class Meta:
         """Clase meta."""
+
         model = PagoFacturaPago
         fields = ('id', 'data', 'metodo', 'monto')
         read_only_fields = ('id',)
@@ -38,11 +40,13 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
     Este campo 'data' contiene informacion sobre si el objeto que lo contiene
     tiene que ser agregado, editado o eliminado.
     """
+
     data = serializers.DictField(required=False)
     pago_factura_pagos = PagoFacturaPagoSerializer(many=True)
 
     class Meta:
         """Clase meta."""
+
         model = PagoFactura
         fields = (
             'id', 'data',
@@ -54,12 +58,14 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
 
 class PagoSerializer(serializers.ModelSerializer):
     """Pago Serializer."""
+
     proveedor = ProveedorSerializer()
     total = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
     pago_facturas = PagoFacturaSerializer(many=True)
 
     class Meta:
         """Clase meta."""
+
         model = Pago
         fields = (
             'id', 'proveedor', 'total',
@@ -111,6 +117,7 @@ class PagoSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(error)
 
     def update(self, instance, data):
+        """Actualiza la instancia."""
         try:
             instance.total = data['total']
             facturas = data['pago_facturas']
