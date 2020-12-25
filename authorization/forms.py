@@ -51,12 +51,13 @@ class PermissionForm(forms.ModelForm):
         queryset=ContentType.objects.filter(
             app_label__in=['accounting', 'auth', 'authorization', 'core'],
             model__in=[
+                 'archivo',
                  'cliente', 'factura', 'ordencompra', 'cobranza',
                  'proveedor', 'facturaproveedor', 'pago',
                  'mediopago',
                  'permission', 'user', 'group'
             ]
-        ), label='Modulo'
+        ).order_by('model'), label='Modulo'
     )
 
     class Meta:
@@ -96,6 +97,7 @@ class GroupForm(forms.ModelForm):
          queryset=Permission.objects.filter(
              content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
              content_type__model__in=[
+                 'archivo',
                  'cliente', 'factura', 'ordencompra', 'cobranza',
                  'proveedor', 'facturaproveedor', 'pago',
                  'mediopago',

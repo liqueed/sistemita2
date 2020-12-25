@@ -32,6 +32,7 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
         queryset = Permission.objects.filter(
              content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
              content_type__model__in=[
+                 'archivo',
                  'cliente', 'factura', 'ordencompra', 'cobranza',
                  'proveedor', 'facturaproveedor', 'pago',
                  'mediopago',
