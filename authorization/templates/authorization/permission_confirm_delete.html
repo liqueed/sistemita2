@@ -14,13 +14,13 @@
       <div class="card-body">
         <div class="table-responsive">
 
-          <form method="post" action="{% url 'permission:permission-delete' object.pk %}">
+          <form method="post" action="{% url 'authorization:permission-delete' object.pk %}">
             {% csrf_token %}
             <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el permiso <em>{{ object.name}}</em>.</p>
             <div class="row">
               <div class="col">
                 <button class="btn btn-danger" type="submit">Eliminar</button>
-                <a class="btn" href="{% url 'permission:permission-list' %}">No eliminar</a>
+                <a class="btn" href="{% url 'authorization:permission-list' %}">No eliminar</a>
               </div>
             </div>
           </form>

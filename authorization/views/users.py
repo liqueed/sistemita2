@@ -10,7 +10,7 @@ from django.views.generic import DetailView, DeleteView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
 # Forms
-from permission.forms import UserForm
+from authorization.forms import UserForm
 
 # Models
 from django.contrib.auth import get_user_model
@@ -28,7 +28,7 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
     paginate_by = 10
     permission_required = 'authorization.list_user'
-    template_name = 'permission/user_list.html'
+    template_name = 'authorization/user_list.html'
 
     def get_queryset(self):
         """Sobreescribe queryset.
@@ -55,11 +55,11 @@ class UserCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = User
     permission_required = 'authorization.add_user'
     success_message = MESSAGE_SUCCESS_CREATED.format('usuario')
-    template_name = 'permission/user_form.html'
+    template_name = 'authorization/user_form.html'
 
     def get_success_url(self):
         """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('permission:user-update', args=(self.object.id,))
+        return reverse('authorization:user-update', args=(self.object.id,))
 
 
 class UserDetailView(PermissionRequiredMixin, DetailView):
@@ -67,7 +67,7 @@ class UserDetailView(PermissionRequiredMixin, DetailView):
 
     model = User
     permission_required = 'authorization.view_user'
-    template_name = 'permission/user_detail.html'
+    template_name = 'authorization/user_detail.html'
 
 
 class UserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -77,11 +77,11 @@ class UserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
     permission_required = 'authorization.change_user'
     success_message = MESSAGE_SUCCESS_UPDATE.format('usuario')
-    template_name = 'permission/user_form.html'
+    template_name = 'authorization/user_form.html'
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('permission:user-update', args=(self.object.id,))
+        return reverse('authorization:user-update', args=(self.object.id,))
 
 
 class UserDeleteView(PermissionRequiredMixin, DeleteView):
@@ -90,8 +90,8 @@ class UserDeleteView(PermissionRequiredMixin, DeleteView):
     model = User
     permission_required = 'authorization.delete_user'
     success_message = MESSAGE_SUCCESS_DELETE.format('usuario')
-    success_url = reverse_lazy('permission:user-list')
-    template_name = 'permission/user_confirm_delete.html'
+    success_url = reverse_lazy('authorization:user-list')
+    template_name = 'authorization/user_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

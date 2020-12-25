@@ -12,7 +12,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import Group
 
 # Forms
-from permission.forms import GroupForm
+from authorization.forms import GroupForm
 
 # Utils
 from core.utils.strings import (
@@ -25,7 +25,7 @@ class GroupListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
     paginate_by = 10
     permission_required = 'auth.list_group'
-    template_name = 'permission/group_list.html'
+    template_name = 'authorization/group_list.html'
 
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
@@ -45,12 +45,12 @@ class GroupCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     form_class = GroupForm
     permission_required = 'auth.add_group'
     success_message = MESSAGE_SUCCESS_CREATED.format('grupo')
-    success_url = reverse_lazy('permission:group-list')
-    template_name = 'permission/group_form.html'
+    success_url = reverse_lazy('authorization:group-list')
+    template_name = 'authorization/group_form.html'
 
     def get_success_url(self):
         """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('permission:group-update', args=(self.object.id,))
+        return reverse('authorization:group-update', args=(self.object.id,))
 
 
 class GroupDetailtView(PermissionRequiredMixin, DetailView):
@@ -58,7 +58,7 @@ class GroupDetailtView(PermissionRequiredMixin, DetailView):
 
     model = Group
     permission_required = 'auth.view_group'
-    template_name = 'permission/group_detail.html'
+    template_name = 'authorization/group_detail.html'
 
 
 class GroupUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -68,11 +68,11 @@ class GroupUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = GroupForm
     permission_required = 'auth.change_group'
     success_message = MESSAGE_SUCCESS_UPDATE.format('grupo')
-    template_name = 'permission/group_form.html'
+    template_name = 'authorization/group_form.html'
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('permission:group-update', args=(self.object.id,))
+        return reverse('authorization:group-update', args=(self.object.id,))
 
 
 class GroupDeleteView(PermissionRequiredMixin, DeleteView):
@@ -81,8 +81,8 @@ class GroupDeleteView(PermissionRequiredMixin, DeleteView):
     model = Group
     permission_required = 'auth.delete_group'
     success_message = MESSAGE_SUCCESS_DELETE.format('grupo')
-    success_url = reverse_lazy('permission:group-list')
-    template_name = 'permission/group_confirm_delete.html'
+    success_url = reverse_lazy('authorization:group-list')
+    template_name = 'authorization/group_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

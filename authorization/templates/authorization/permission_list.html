@@ -1,32 +1,30 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Grupos | Liqueed{% endblock %}
+{% block title %}Permisos | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Grupos</h1>
+    <h1 class="h3 mb-2 text-gray-800">Permisos</h1>
     {% include 'components/messages.html' %}
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Listado de Grupos</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Permisos</h6>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <div class="row float-right">
             {% include 'components/search_form.html' %}
-
             <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-              <a class="btn btn-primary" role="button" href="{% url 'permission:group-create' %}">Agregar</a>
+              <a class="btn btn-primary" role="button" href="{% url 'authorization:permission-create' %}">Agregar</a>
             </div>
-
           </div>
+
           <table class="table table-bordered table-hover" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th></th>
               </tr>
@@ -34,13 +32,12 @@
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td onclick="location.href='{% url 'permission:group-detail' object.pk %}';">{{ object.pk }}</td>
-                  <td onclick="location.href='{% url 'permission:group-detail' object.pk %}';">{{ object.name }}</td>
+                  <td onclick="location.href='{% url 'authorization:permission-detail' object.pk %}';">{{ object.name }}</td>
                   <td>
-                    <a href="{% url 'permission:group-update' object.pk %}">
+                    <a href="{% url 'authorization:permission-update' object.pk %}">
                       <i class="fas fa-wrench"></i>
                     </a>
-                    <a href="{% url 'permission:group-delete' object.pk %}">
+                    <a href="{% url 'authorization:permission-delete' object.pk %}">
                       <i class="fas fa-trash"></i>
                     </a>
                   </td>
@@ -57,5 +54,4 @@
       </div>
     </div>
   </div>
-
 {% endblock %}

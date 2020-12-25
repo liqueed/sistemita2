@@ -109,6 +109,6 @@ urlpatterns = [
     path('', include(('accounting.urls', 'accounting'), namespace='accounting')),
 
     # Auth module
-    path('', include(('permission.urls', 'permission'), namespace='permission')),
+    path('', include(('authorization.urls', 'authorization'), namespace='authentication')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

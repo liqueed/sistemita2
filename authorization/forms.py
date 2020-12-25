@@ -13,7 +13,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, Div, Reset
 
 # Utils
-from permission.models.utils import ContentType, Permission
+from authorization.models import ContentType, Permission
 
 User = get_user_model()
 

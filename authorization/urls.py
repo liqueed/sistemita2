@@ -4,14 +4,14 @@
 from django.urls import path
 
 # Views
-from permission.views.groups import (
+from authorization.views.groups import (
     GroupListView, GroupCreateView, GroupDetailtView, GroupUpdateView, GroupDeleteView
 )
-from permission.views.permissions import (
+from authorization.views.permissions import (
     PermissionCreateView, PermissionDeleteView, PermissionDetailView,
     PermissionListView, PermisoUpdateView
 )
-from permission.views.users import (
+from authorization.views.users import (
     UserListView, UserCreateView, UserDetailView, UserUpdateView, UserDeleteView
 )
 
