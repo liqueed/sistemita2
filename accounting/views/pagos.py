@@ -38,6 +38,7 @@ class PagoViewSet(mixins.CreateModelMixin,
 class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que devuelve un listado de pagos."""
 
+    paginate_by = 10
     permission_required = 'accounting.list_pago'
 
     def get_queryset(self):

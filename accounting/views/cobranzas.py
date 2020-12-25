@@ -38,6 +38,7 @@ class CobranzaViewSet(mixins.CreateModelMixin,
 class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que devuelve un listado de cobranzas."""
 
+    paginate_by = 10
     permission_required = 'accounting.list_cobranza'
 
     def get_queryset(self):

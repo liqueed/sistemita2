@@ -53,6 +53,7 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que muestra un listado de facturas."""
 
     filterset_class = FacturaFilterSet
+    paginate_by = 10
     permission_required = 'core.list_factura'
     template_name = 'core/facturacliente_list.html'
 

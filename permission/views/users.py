@@ -17,8 +17,9 @@ from authorization.models import User
 class UserListView(PermissionRequiredMixin, ListView):
     """Vista que retorna un listado de usuarios."""
 
-    template_name = 'permission/user_list.html'
+    paginate_by = 10
     permission_required = 'authorization.list_user'
+    template_name = 'permission/user_list.html'
 
     def get_queryset(self):
         """Sobreescribe queryset.

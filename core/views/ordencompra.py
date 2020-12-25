@@ -24,6 +24,7 @@ from core.utils.strings import (
 class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que retorna un listado de órdenes de compras."""
 
+    paginate_by = 10
     permission_required = 'core.list_ordencompra'
 
     def get_queryset(self):

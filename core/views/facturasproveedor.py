@@ -49,6 +49,7 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
     """Vista que retorna un lista de facturas a proveedores."""
 
     filterset_class = FacturaProveedorFilterSet
+    paginate_by = 10
     permission_required = 'core.list_facturaproveedor'
     template_name = 'core/facturaproveedor_list.html'
 

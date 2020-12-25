@@ -35,14 +35,15 @@ class ClienteViewSet(mixins.ListModelMixin,
     """Cliente View set."""
 
     queryset = Cliente.objects.all()
-    serializer_class = ClienteSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ClienteSerializer
 
 
 class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista para listar todos los clientes."""
 
     template_name = 'core/cliente_list.html'
+    paginate_by = 10
     permission_required = 'core.list_cliente'
 
     def get_queryset(self):

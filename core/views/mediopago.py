@@ -40,6 +40,7 @@ class MedioPagoViewSet(mixins.ListModelMixin,
 class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que retorna un listado con los medios de pagos."""
 
+    paginate_by = 10
     permission_required = 'core.list_mediopago'
 
     def get_queryset(self):

@@ -16,8 +16,8 @@ from permission.forms import GroupForm
 class GroupListView(PermissionRequiredMixin, ListView):
     """Listado de Grupos."""
 
-    permission_required = 'auth.list_group'
     paginate_by = 10
+    permission_required = 'auth.list_group'
     template_name = 'permission/group_list.html'
 
     def get_queryset(self):

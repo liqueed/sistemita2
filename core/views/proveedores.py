@@ -42,6 +42,7 @@ class ProveedorViewSet(mixins.RetrieveModelMixin,
 class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que devuelve un listado de proveedores."""
 
+    paginate_by = 10
     permission_required = 'core.list_proveedor'
 
     def get_queryset(self):
