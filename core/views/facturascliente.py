@@ -84,11 +84,18 @@ class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
     template_name = 'core/facturacliente_form.html'
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('factura-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('core.change_factura'):
+            return reverse('factura-update', args=(self.object.id,))
+        elif self.request.user.has_perm('core.view_factura'):
+            return reverse('factura-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('core.list_factura'):
+            return reverse('factura-list')
+        else:
+            return reverse('home')
 
 
-class FacturaDetailView(PermissionRequiredMixin, DetailView):
+class FacturaDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de una factura."""
 
     model = Factura
