@@ -278,13 +278,29 @@
   {% endif %}
   <!-- End Usuario -->
 
-  {% if perms.auth.list_group %}
+  <!-- Grupos -->
+  {% if perms.auth.list_group or perms.auth.add_group %}
     <li class="nav-item{% if 'group' in request.resolver_match.url_name %} active{% endif %}">
-      <a class="nav-link" href="{% url 'authorization:group-list' %}">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Grupos</span></a>
+      {% if perms.auth.list_group %}
+        <a class="nav-link" href="{% url 'authorization:group-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Grupos</span>
+        </a>
+      {% endif %}
+      {% if not perms.auth.list_group and perms.auth.add_group %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGroup" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Grupos</span>
+        </a>
+        <div id="collapseGroup" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'authorization:group-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
     </li>
   {% endif %}
+  <!-- End Grupos -->
 
   {% if perms.auth.list_permission %}
     <li class="nav-item{% if 'permission' in request.resolver_match.url_name %} active{% endif %}">

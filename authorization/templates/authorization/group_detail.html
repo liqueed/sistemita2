@@ -4,6 +4,7 @@
 {% block content %}
 <div class="container-fluid">
   <h1 class="h3 text-gray-800">Grupos</h1>
+  {% include 'components/messages.html' %}
   <div class="card shadow mb-4">
     <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary">Detalle del Grupo #{{ object.pk }}</h6>
@@ -23,7 +24,9 @@
           <dd class="col-sm-10">-</dd>
           {% endif %}
         </dl>
-        <a href="{% url 'authorization:group-list' %}" class="btn btn-primary float-right">Volver</a>
+        {% if perms.auth.list_group %}
+          <a href="{% url 'authorization:group-list' %}" class="btn btn-primary float-right">Volver</a>
+        {% endif %}
       </div>
     </div>
   </div>

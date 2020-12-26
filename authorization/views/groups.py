@@ -49,11 +49,18 @@ class GroupCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'authorization/group_form.html'
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('authorization:group-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('auth.change_group'):
+            return reverse('authorization:group-update', args=(self.object.id,))
+        elif self.request.user.has_perm('auth.view_group'):
+            return reverse('authorization:group-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('auth.list_group'):
+            return reverse('authorization:group-list')
+        else:
+            return reverse('home')
 
 
-class GroupDetailtView(PermissionRequiredMixin, DetailView):
+class GroupDetailtView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista para ver el detalle de un grupo."""
 
     model = Group
