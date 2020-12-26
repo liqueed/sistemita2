@@ -32,7 +32,7 @@ class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, ListView
 
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = OrdenCompra.objects.all()
+        queryset = OrdenCompra.objects.order_by('id')
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(

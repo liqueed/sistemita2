@@ -58,17 +58,17 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
 
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = FacturaProveedor.objects.all()
+        queryset = FacturaProveedor.objects.order_by('id')
 
         search = self.request.GET.get('search', None)
         if search:
-            self.queryset = queryset.filter(
+            queryset = queryset.filter(
                 Q(proveedor__razon_social__icontains=search) |
                 Q(proveedor__correo__icontains=search) |
                 Q(proveedor__cuit__icontains=search)
             )
 
-        return self.queryset
+        return queryset
 
 
 class FacturaProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):

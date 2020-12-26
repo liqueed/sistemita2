@@ -73,7 +73,7 @@ class UserCreateForm(forms.ModelForm):
     password_confirmation = forms.CharField(max_length=70, widget=forms.PasswordInput(),
                                             label='Repetir contraseña')
 
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(), label='Grupos',
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.order_by('name'), label='Grupos',
                                             required=False)
 
     def clean_username(self):
@@ -159,6 +159,9 @@ class UserUpdateForm(forms.ModelForm):
     last_name = forms.CharField(min_length=2, max_length=50, label='Apellido')
 
     email = forms.EmailField(min_length=6, max_length=70)
+
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.order_by('name'), label='Grupos',
+                                            required=False)
 
     class Meta:
         """Configuraciones del formulario."""

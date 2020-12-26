@@ -43,7 +43,7 @@ class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
-        queryset = Cobranza.objects.all().order_by('-creado')
+        queryset = Cobranza.objects.order_by('id')
 
         search = self.request.GET.get('search', None)
         if search:

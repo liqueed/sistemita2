@@ -50,7 +50,7 @@ class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = Proveedor.objects.all()
+        queryset = Proveedor.objects.order_by('id')
 
         search = self.request.GET.get('search', None)
         if search:

@@ -62,16 +62,16 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
 
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = Factura.objects.all()
+        queryset = Factura.objects.order_by('id')
         search = self.request.GET.get('search', None)
         if search:
-            self.queryset = queryset.filter(
+            queryset = queryset.filter(
                 Q(cliente__razon_social__icontains=search) |
                 Q(cliente__correo__icontains=search) |
                 Q(cliente__cuit__icontains=search)
             )
 
-        return self.queryset
+        return queryset
 
 
 class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):

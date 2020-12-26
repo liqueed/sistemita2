@@ -43,7 +43,7 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
     def get_queryset(self):
         """Modifica el orden y devuelve los resultados de la búsqueda realizada por el usuario."""
-        queryset = Pago.objects.all().order_by('-creado')
+        queryset = Pago.objects.order_by('id')
 
         search = self.request.GET.get('search', None)
         if search:

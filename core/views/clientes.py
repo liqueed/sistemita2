@@ -51,7 +51,7 @@ class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = Cliente.objects.all()
+        queryset = Cliente.objects.order_by('id')
 
         search = self.request.GET.get('search', None)
         if search:
