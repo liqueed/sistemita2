@@ -8,6 +8,13 @@
     <h1 class="h3 mb-2 text-gray-800">Cobranzas a Clientes</h1>
     {% include 'components/messages.html' %}
 
+    <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create %}d-none{% endif %}" role="alert">
+     {% if request.GET.create %}La cobranza ha sido creada exitosamente.{% endif %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
       <div class="card-header py-3">
@@ -17,10 +24,11 @@
         <div class="table-responsive">
           <div class="row float-right">
             {% include 'components/search_form.html' %}
-
-            <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-              <a class="btn btn-primary" role="button" href="{% url 'accounting:cobranza-create' %}">Agregar</a>
-            </div>
+            {% if perms.accounting.add_cobranza %}
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                <a class="btn btn-primary" role="button" href="{% url 'accounting:cobranza-create' %}">Agregar</a>
+              </div>
+            {% endif %}
 
           </div>
           <table class="table table-bordered table-hover" width="100%" cellspacing="0">
@@ -31,25 +39,33 @@
                 <th>Raz&oacute;n Social</th>
                 <th>CUIT</th>
                 <th>Total</th>
-                <th></th>
+                {% if perms.accounting.change_cobranza or perms.accounting.delete_cobranza %}
+                  <th></th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';">{{ object.pk }}</td>
-                  <td onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';">{{ object.creado }}</td>
-                  <td onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';">{{ object.cliente.razon_social }}</td>
-                  <td onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';">{{ object.cliente.cuit }}</td>
-                  <td onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';">{{ object.total }}</td>
-                  <td>
-                    <a href="{% url 'accounting:cobranza-update' object.pk %}">
-                      <i class="fas fa-wrench"></i>
-                    </a>
-                    <a href="{% url 'accounting:cobranza-delete' object.pk %}">
-                      <i class="fas fa-trash"></i>
-                    </a>
-                  </td>
+                  <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.creado }}</td>
+                  <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.cliente.razon_social }}</td>
+                  <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.cliente.cuit }}</td>
+                  <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.total }}</td>
+                  {% if perms.accounting.change_cobranza or perms.accounting.delete_cobranza %}
+                    <td>
+                      {% if perms.accounting.change_cobranza %}
+                        <a href="{% url 'accounting:cobranza-update' object.pk %}">
+                          <i class="fas fa-wrench"></i>
+                        </a>
+                      {% endif %}
+                      {% if perms.accounting.delete_cobranza %}
+                        <a href="{% url 'accounting:cobranza-delete' object.pk %}">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  {% endif %}
                 </tr>
                 {% empty %}
                 <tr>

@@ -395,7 +395,19 @@ $('#submit-id-submit').click(function(e){
             xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
         }
     }).done(function(data) {
-        window.location.href = '{% url 'accounting:cobranza-update' pk=0 %}?create=1'.replace('0', data.id);
+        if ('{{ perms.accounting.change_cobranza }}' === 'True'){
+            window.location.href = '{% url 'accounting:cobranza-update' pk=0 %}?create=1'.replace('0', data.id);
+        } else {
+            if ('{{ perms.accounting.view_cobranza }}' === 'True'){
+                window.location.href = '{% url 'accounting:cobranza-detail' pk=0 %}?create=1'.replace('0', data.id);
+            } else {
+                if ('{{ perms.accounting.list_cobranza }}' === 'True'){
+                    window.location.href = '{% url 'accounting:cobranza-list' %}?create=1';
+                } else {
+                    window.location.href = '{% url 'home' %}?create=1&type=cobranza';
+                }
+            }
+        }
     }).fail(function() {
         alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
     })

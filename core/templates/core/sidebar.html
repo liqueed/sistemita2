@@ -16,6 +16,7 @@
       <span>Inicio</span></a>
   </li>
 
+  <!-- Sección Clientes -->
   {% if perms.core.add_cliente or perms.core.list_cliente or perms.core.add_factura or perms.core.list_factura or perms.core.add_ordencompra or perms.core.list_ordencompra or perms.accounting.add_cobranza or perms.accounting.list_cobranza %}
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -98,14 +99,33 @@
   {% endif %}
   <!-- End Órdenes de compra -->
 
-  {% if perms.accounting.list_cobranza %}
+  <!-- Cobranza -->
+  {% if perms.accounting.add_cobranza or perms.accounting.list_cobranza %}
     <li class="nav-item{% if 'cobranza' in request.resolver_match.url_name %} active{% endif %}">
-      <a class="nav-link" href="{% url 'accounting:cobranza-list' %}">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Cobranzas</span></a>
+      {% if perms.accounting.list_cobranza %}
+        <a class="nav-link" href="{% url 'accounting:cobranza-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Cobranzas</span>
+        </a>
+      {% endif %}
+      {% if not perms.accounting.list_cobranza and perms.accounting.add_cobranza %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCobranza" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Cobranza</span>
+        </a>
+        <div id="collapseCobranza" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'accounting:cobranza-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
     </li>
   {% endif %}
+  <!-- End Cobranza -->
 
+  <!-- End Sección Clientes -->
+
+  <!-- Sección Proveedores -->
   {% if perms.core.add_proveedor or perms.core.list_proveedor or perms.core.add_facturaproveedor or perms.core.list_facturaproveedor or perms.accounting.list_pago %}
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -172,9 +192,9 @@
         <span>Pagos</span></a>
     </li>
   {% endif %}
+  <!-- End Sección Proveedores -->
 
-
-  <!-- Medio de Pago -->
+  <!-- Sección Medio de Pago -->
   {% if perms.core.add_mediopago or perms.core.list_mediopago %}
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -204,7 +224,7 @@
       {% endif %}
     </li>
   {% endif %}
-  <!-- End Medio de Pago -->
+  <!-- End Sección Medio de Pago -->
 
   {% if perms.authorization.list_user or perms.auth.list_group or perms.auth.list_permission %}
     <!-- Divider -->
