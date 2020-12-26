@@ -185,13 +185,30 @@
   {% endif %}
   <!-- End Factura Proveedores -->
 
-  {% if perms.accounting.list_pago %}
+  <!-- Pagos -->
+  {% if perms.accounting.list_pago or perms.accounting.add_pago %}
     <li class="nav-item{% if 'pago' in request.resolver_match.url_name and not 'mediopago' in request.resolver_match.url_name %} active{% endif %}">
-      <a class="nav-link" href="{% url 'accounting:pago-list' %}">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Pagos</span></a>
+      {% if perms.accounting.list_pago %}
+        <a class="nav-link" href="{% url 'accounting:pago-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Pagos</span>
+        </a>
+      {% endif %}
+      {% if not perms.accounting.list_pago and perms.accounting.add_pago %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePago" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Pagos</span>
+        </a>
+        <div id="collapsePago" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'accounting:pago-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
     </li>
   {% endif %}
+  <!-- Pagos -->
+Ñ
   <!-- End Sección Proveedores -->
 
   <!-- Sección Medio de Pago -->

@@ -4,6 +4,14 @@
 {% block content %}
   <div class="container-fluid">
     <h1 class="h3 text-gray-800">Pagos a Proveedores</h1>
+
+    <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create %}d-none{% endif %}" role="alert">
+     {% if request.GET.create %}El pago ha sido creado exitosamente.{% endif %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+
     <div class="card shadow mb-4">
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Detalle Pago #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
@@ -35,7 +43,9 @@
           <dt class="col-sm-2 mt-3">TOTAL</dt>
             <dd class="col-sm-10 mt-3"> ${{ object.total }}</dd>
           </dl>
-          <a href="{% url 'accounting:pago-list' %}" class="btn btn-primary float-right">Volver</a>
+          {% if perms.accounting.list_pago %}
+            <a href="{% url 'accounting:pago-list' %}" class="btn btn-primary float-right">Volver</a>
+          {% endif %}
         </div>
       </div>
     </div>
