@@ -173,7 +173,9 @@
     </li>
   {% endif %}
 
-  {% if perms.core.list_mediopago %}
+
+  <!-- Medio de Pago -->
+  {% if perms.core.add_mediopago or perms.core.list_mediopago %}
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -181,15 +183,28 @@
     <div class="sidebar-heading">
       Medios de pago
     </div>
-  {% endif %}
 
-  {% if perms.core.list_mediopago %}
     <li class="nav-item{% if 'mediopago' in request.resolver_match.url_name  %} active{% endif %}">
-      <a class="nav-link" href="{% url 'mediopago-list' %}">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Medios de pago</span></a>
+      {% if perms.core.list_mediopago %}
+        <a class="nav-link" href="{% url 'mediopago-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Medios de pago</span>
+        </a>
+      {% endif %}
+      {% if not perms.core.list_mediopago and perms.core.add_mediopago %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMedioPago" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Medio de pago</span>
+        </a>
+        <div id="collapseMedioPago" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'mediopago-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
     </li>
   {% endif %}
+  <!-- End Medio de Pago -->
 
   {% if perms.authorization.list_user or perms.auth.list_group or perms.auth.list_permission %}
     <!-- Divider -->

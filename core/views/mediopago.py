@@ -66,11 +66,18 @@ class MedioPagoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateVi
     success_message = MESSAGE_SUCCESS_CREATED.format('medio de pago')
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('mediopago-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('core.change_mediopago'):
+            return reverse('mediopago-update', args=(self.object.id,))
+        elif self.request.user.has_perm('core.view_mediopago'):
+            return reverse('mediopago-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('core.list_mediopago'):
+            return reverse('mediopago-list')
+        else:
+            return reverse('home')
 
 
-class MedioPagoDetailView(PermissionRequiredMixin, DetailView):
+class MedioPagoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detall de un medio de pago."""
 
     model = MedioPago
