@@ -4,6 +4,7 @@
 {% block content %}
   <div class="container-fluid">
     <h1 class="h3 text-gray-800">Órdenes de compra</h1>
+    {% include 'components/messages.html' %}
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
@@ -19,7 +20,9 @@
             <dt class="col-sm-2">Valor</dt>
             <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.monto }}</dd>
           </dl>
-          <a href="{% url 'ordencompra-list' %}" class="btn btn-primary float-right">Volver</a>
+          {% if perms.core.list_ordencompra %}
+            <a href="{% url 'ordencompra-list' %}" class="btn btn-primary float-right">Volver</a>
+          {% endif %}
         </div>
       </div>
     </div>

@@ -54,11 +54,18 @@ class OrdenCompraCreateView(PermissionRequiredMixin, SuccessMessageMixin, Create
     success_url = reverse_lazy('ordencompra-list')
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('ordencompra-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('core.change_ordencompra'):
+            return reverse('ordencompra-update', args=(self.object.id,))
+        elif self.request.user.has_perm('core.view_ordencompra'):
+            return reverse('ordencompra-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('core.list_ordencompra'):
+            return reverse('ordencompra-list')
+        else:
+            return reverse('home')
 
 
-class OrdenCompraDetailView(PermissionRequiredMixin, DetailView):
+class OrdenCompraDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de una orden de compra."""
 
     model = OrdenCompra
