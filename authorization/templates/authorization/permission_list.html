@@ -17,30 +17,40 @@
         <div class="table-responsive">
           <div class="row float-right">
             {% include 'components/search_form.html' %}
-            <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-              <a class="btn btn-primary" role="button" href="{% url 'authorization:permission-create' %}">Agregar</a>
-            </div>
+            {% if perms.auth.add_permission %}
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                <a class="btn btn-primary" role="button" href="{% url 'authorization:permission-create' %}">Agregar</a>
+              </div>
+            {% endif %}
           </div>
 
           <table class="table table-bordered table-hover" width="100%" cellspacing="0">
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th></th>
+                {% if perms.auth.change_permission or perms.auth.delete_permission %}
+                  <th></th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td onclick="location.href='{% url 'authorization:permission-detail' object.pk %}';">{{ object.name }}</td>
-                  <td>
-                    <a href="{% url 'authorization:permission-update' object.pk %}">
-                      <i class="fas fa-wrench"></i>
-                    </a>
-                    <a href="{% url 'authorization:permission-delete' object.pk %}">
-                      <i class="fas fa-trash"></i>
-                    </a>
-                  </td>
+                  <td {% if perms.auth.view_permission %}onclick="location.href='{% url 'authorization:permission-detail' object.pk %}';"{% endif %}>{{ object.name }}</td>
+                  {% if perms.auth.change_permission or perms.auth.delete_permission %}
+                    <td>
+                      {% if perms.auth.change_permission %}
+                        <a href="{% url 'authorization:permission-update' object.pk %}">
+                          <i class="fas fa-wrench"></i>
+                        </a>
+                      {% endif %}
+                      {% if perms.auth.delete_permission %}
+                        <a href="{% url 'authorization:permission-delete' object.pk %}">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  {% endif %}
                 </tr>
                 {% empty %}
                 <tr>

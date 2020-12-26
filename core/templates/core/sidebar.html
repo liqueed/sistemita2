@@ -302,13 +302,29 @@
   {% endif %}
   <!-- End Grupos -->
 
-  {% if perms.auth.list_permission %}
+  <!-- Permisos -->
+  {% if perms.auth.list_permission or perms.auth.add_permission %}
     <li class="nav-item{% if 'permission' in request.resolver_match.url_name %} active{% endif %}">
-      <a class="nav-link" href="{% url 'authorization:permission-list' %}">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Permisos</span></a>
+      {% if perms.auth.list_permission %}
+        <a class="nav-link" href="{% url 'authorization:permission-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Permisos</span>
+        </a>
+      {% endif %}
+      {% if not perms.auth.list_permission and perms.auth.add_permission %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePermission" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Permisos</span>
+        </a>
+        <div id="collapsePermission" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'authorization:permission-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
     </li>
   {% endif %}
+  <!-- End Permisos -->
   <!-- End Sección Autenticación -->
 
   {% comment %}

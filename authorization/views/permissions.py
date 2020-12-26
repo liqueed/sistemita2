@@ -55,11 +55,18 @@ class PermissionCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateV
     template_name = 'authorization/permission_form.html'
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('authorization:permission-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('auth.change_permission'):
+            return reverse('authorization:permission-update', args=(self.object.id,))
+        elif self.request.user.has_perm('auth.view_permission'):
+            return reverse('authorization:permission-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('auth.list_permission'):
+            return reverse('authorization:permission-list')
+        else:
+            return reverse('home')
 
 
-class PermissionDetailView(PermissionRequiredMixin, DetailView):
+class PermissionDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que devuelve el detalle de un permiso."""
 
     model = Permission
