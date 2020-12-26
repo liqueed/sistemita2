@@ -4,6 +4,7 @@
 {% block content %}
   <div class="container-fluid">
     <h1 class="h3 text-gray-800">Usuarios</h1>
+    {% include 'components/messages.html' %}
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
@@ -28,7 +29,9 @@
               <dd class="col-sm-10">-</dd>
             {% endif %}
           </dl>
-          <a href="{% url 'authorization:user-list' %}" class="btn btn-primary float-right">Volver</a>
+          {% if perms.authorization.list_user %}
+            <a href="{% url 'authorization:user-list' %}" class="btn btn-primary float-right">Volver</a>
+          {% endif %}
         </div>
       </div>
     </div>

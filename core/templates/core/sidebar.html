@@ -126,7 +126,7 @@
   <!-- End Sección Clientes -->
 
   <!-- Sección Proveedores -->
-  {% if perms.core.add_proveedor or perms.core.list_proveedor or perms.core.add_facturaproveedor or perms.core.list_facturaproveedor or perms.accounting.list_pago %}
+  {% if perms.core.add_proveedor or perms.core.list_proveedor or perms.core.add_facturaproveedor or perms.core.list_facturaproveedor or perms.accounting.add_pago or perms.accounting.list_pago %}
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -208,7 +208,7 @@
     </li>
   {% endif %}
   <!-- Pagos -->
-Ñ
+
   <!-- End Sección Proveedores -->
 
   <!-- Sección Medio de Pago -->
@@ -243,7 +243,8 @@
   {% endif %}
   <!-- End Sección Medio de Pago -->
 
-  {% if perms.authorization.list_user or perms.auth.list_group or perms.auth.list_permission %}
+  <!-- Sección Autenticación -->
+  {% if perms.authorization.add_user or perms.authorization.list_user or perms.auth.add_group or perms.auth.list_group or perms.auth.add_permission or perms.auth.list_permission %}
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -253,13 +254,29 @@
     </div>
   {% endif %}
 
-  {% if perms.authorization.list_user %}
+  <!-- Usuario -->
+  {% if perms.authorization.list_user or perms.authorization.add_user %}
     <li class="nav-item{% if 'user' in request.resolver_match.url_name %} active{% endif %}">
-      <a class="nav-link" href="{% url 'authorization:user-list' %}">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Usuarios</span></a>
+      {% if perms.authorization.list_user %}
+        <a class="nav-link" href="{% url 'authorization:user-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Usuarios</span>
+        </a>
+      {% endif %}
+      {% if not perms.authorization.list_user and perms.authorization.add_user %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Usuarios</span>
+        </a>
+        <div id="collapseUser" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'authorization:user-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
     </li>
   {% endif %}
+  <!-- End Usuario -->
 
   {% if perms.auth.list_group %}
     <li class="nav-item{% if 'group' in request.resolver_match.url_name %} active{% endif %}">
@@ -276,6 +293,7 @@
         <span>Permisos</span></a>
     </li>
   {% endif %}
+  <!-- End Sección Autenticación -->
 
   {% comment %}
   <li class="nav-item">

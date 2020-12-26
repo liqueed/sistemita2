@@ -58,11 +58,18 @@ class UserCreateFormView(PermissionRequiredMixin, SuccessMessageMixin, CreateVie
     template_name = 'authorization/user_form.html'
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('authorization:user-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('authorization.change_user'):
+            return reverse('authorization:user-update', args=(self.object.id,))
+        elif self.request.user.has_perm('authorization.view_user'):
+            return reverse('authorization:user-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('authorization.list_user'):
+            return reverse('authorization:user-list')
+        else:
+            return reverse('home')
 
 
-class UserDetailView(PermissionRequiredMixin, DetailView):
+class UserDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de un usuario."""
 
     model = User
