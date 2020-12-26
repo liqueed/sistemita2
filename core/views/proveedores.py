@@ -71,11 +71,18 @@ class ProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateVi
     success_message = MESSAGE_SUCCESS_CREATED.format('proveedor')
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('proveedor-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('core.change_proveedor'):
+            return reverse('proveedor-update', args=(self.object.id,))
+        elif self.request.user.has_perm('core.view_proveedor'):
+            return reverse('proveedor-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('core.list_proveedor'):
+            return reverse('proveedor-list')
+        else:
+            return reverse('home')
 
 
-class ProveedorDetailView(PermissionRequiredMixin, DetailView):
+class ProveedorDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de un proveedor."""
 
     model = Proveedor
