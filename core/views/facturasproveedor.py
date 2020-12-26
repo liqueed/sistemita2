@@ -80,11 +80,18 @@ class FacturaProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, C
     success_message = _MESSAGE_SUCCESS_CREATED.format('factura a proveedor')
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('facturaproveedor-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('core.change_facturaproveedor'):
+            return reverse('facturaproveedor-update', args=(self.object.id,))
+        elif self.request.user.has_perm('core.view_facturaproveedor'):
+            return reverse('facturaproveedor-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('core.list_facturaproveedor'):
+            return reverse('facturaproveedor-list')
+        else:
+            return reverse('home')
 
 
-class FacturaProveedorDetailView(PermissionRequiredMixin, DetailView):
+class FacturaProveedorDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de una factura a proveedor."""
 
     model = FacturaProveedor

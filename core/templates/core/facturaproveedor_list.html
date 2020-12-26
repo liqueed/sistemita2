@@ -18,9 +18,11 @@
           <div class="row float-right">
             {% include 'components/filter_form.html' %}
 
-            <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-              <a class="btn btn-primary" role="button" href="{% url 'facturaproveedor-create' %}">Agregar</a>
-            </div>
+            {% if perms.core.add_facturaproveedor %}
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                <a class="btn btn-primary" role="button" href="{% url 'facturaproveedor-create' %}">Agregar</a>
+              </div>
+            {% endif %}
 
           </div>
           <table class="table table-bordered table-hover" width="100%" cellspacing="0">
@@ -32,30 +34,38 @@
                 <th>CUIT</th>
                 <th>Monto</th>
                 <th>Pagado</th>
-                <th></th>
+                {% if perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor %}
+                  <th></th>
+                {% endif %}
               </tr>
             </thead>
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';">{{ object.pk }}</td>
-                  <td onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';">{{ object.fecha }}</td>
-                  <td onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';">{{ object.proveedor.razon_social }}</td>
-                  <td onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';">{{ object.proveedor.cuit }}</td>
-                  <td onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';"><div class="float-right">{{ object.moneda_monto }}</div></td>
-                  <td onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';">
+                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
+                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.proveedor.razon_social }}</td>
+                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.proveedor.cuit }}</td>
+                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';"{% endif %}><div class="float-right">{{ object.moneda_monto }}</div></td>
+                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'facturaproveedor-detail' object.pk %}';"{% endif %}>
                     <div class="float-left">
-                      {% if object.cobrado %}<i class="fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}
+                      {% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}
                     </div>
                   </td>
-                  <td>
-                    <a href="{% url 'facturaproveedor-update' object.pk %}">
-                      <i class="fas fa-wrench"></i>
-                    </a>
-                    <a href="{% url 'facturaproveedor-delete' object.pk %}">
-                      <i class="fas fa-trash"></i>
-                    </a>
-                  </td>
+                  {% if perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor %}
+                    <td>
+                      {% if perms.core.change_facturaproveedor %}
+                        <a href="{% url 'facturaproveedor-update' object.pk %}">
+                          <i class="fas fa-wrench"></i>
+                        </a>
+                      {% endif %}
+                      {% if perms.core.delete_facturaproveedor %}
+                        <a href="{% url 'facturaproveedor-delete' object.pk %}">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  {% endif %}
                 </tr>
                 {% empty %}
                 <tr>

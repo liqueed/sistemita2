@@ -49,7 +49,7 @@
                   <td {% if perms.core.view_factura %}onclick="location.href='{% url 'factura-detail' object.pk %}';"{% endif %}><div class="float-right">{{ object.moneda_monto }}</div></td>
                   <td {% if perms.core.view_factura %}onclick="location.href='{% url 'factura-detail' object.pk %}';"{% endif %}>
                     <div class="float-left">
-                      {% if object.cobrado %}<i class="text-success fas fa-check-square"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}
+                      {% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}
                     </div>
                   </td>
                   {% if perms.core.change_factura or perms.core.delete_factura %}

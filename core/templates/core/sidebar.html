@@ -26,7 +26,6 @@
     </div>
   {% endif %}
 
-
   <!-- Clientes -->
   {% if perms.core.list_cliente or perms.core.add_cliente %}
     <li class="nav-item{% if 'cliente' in request.resolver_match.url_name %} active{% endif %}">
@@ -107,7 +106,7 @@
     </li>
   {% endif %}
 
-  {% if perms.core.add_proveedor or perms.core.list_proveedor or perms.core.list_facturaproveedor or perms.accounting.list_pago %}
+  {% if perms.core.add_proveedor or perms.core.list_proveedor or perms.core.add_facturaproveedor or perms.core.list_facturaproveedor or perms.accounting.list_pago %}
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -142,13 +141,29 @@
   <!-- End Proveedores -->
 
 
-  {% if perms.core.list_facturaproveedor %}
+  <!-- Factura Proveedores -->
+  {% if perms.core.list_facturaproveedor or perms.core.add_facturaproveedor %}
     <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
-      <a class="nav-link" href="{% url 'facturaproveedor-list' %}">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Facturaci&oacute;n</span></a>
+      {% if perms.core.list_facturaproveedor %}
+        <a class="nav-link" href="{% url 'facturaproveedor-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Facturaci&oacute;n</span>
+        </a>
+      {% endif %}
+      {% if not perms.core.list_facturaproveedor and perms.core.add_facturaproveedor %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturaProveedor" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Facturaci&oacute;n</span>
+        </a>
+        <div id="collapseFacturaProveedor" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'facturaproveedor-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
     </li>
   {% endif %}
+  <!-- End Factura Proveedores -->
 
   {% if perms.accounting.list_pago %}
     <li class="nav-item{% if 'pago' in request.resolver_match.url_name and not 'mediopago' in request.resolver_match.url_name %} active{% endif %}">
