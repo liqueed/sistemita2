@@ -4,6 +4,8 @@
 {% block content %}
   <div class="container-fluid">
     <h1 class="h3 text-gray-800">Clientes</h1>
+    {% include 'components/messages.html' %}
+
     <div class="card shadow mb-4">
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Detalle del Cliente #{{ object.pk }}</h6>
@@ -40,8 +42,9 @@
               <dd class="col-sm-10"><a href="mailto:{{ object.correo_envio_factura}}">{{ object.correo_envio_factura}}</a></dd>
             {% endif %}
           </dl>
-
-          <a href="{% url 'cliente-list' %}" class="btn btn-primary float-right">Volver</a>
+          {% if perms.core.list_cliente %}
+            <a href="{% url 'cliente-list' %}" class="btn btn-primary float-right">Volver</a>
+          {% endif %}
         </div>
       </div>
     </div>

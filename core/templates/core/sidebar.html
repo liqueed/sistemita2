@@ -16,7 +16,7 @@
       <span>Inicio</span></a>
   </li>
 
-  {% if perms.core.list_cliente or perms.core.list_factura or perms.core.list_ordencompra or perms.accounting.list_cobranza %}
+  {% if perms.core.add_cliente or perms.core.list_cliente or perms.core.add_factura or perms.core.list_factura or perms.core.add_ordencompra or perms.core.list_ordencompra or perms.accounting.add_cobranza or perms.accounting.list_cobranza %}
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -26,39 +26,88 @@
     </div>
   {% endif %}
 
-  {% if perms.core.list_cliente %}
+
+  <!-- Clientes -->
+  {% if perms.core.list_cliente or perms.core.add_cliente %}
     <li class="nav-item{% if 'cliente' in request.resolver_match.url_name %} active{% endif %}">
-      <a class="nav-link" href="{% url 'cliente-list' %}">
+      {% if perms.core.list_cliente %}
+        <a class="nav-link" href="{% url 'cliente-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Clientes</span>
+        </a>
+      {% endif %}
+      {% if not perms.core.list_cliente and perms.core.add_cliente %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClientes" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Clientes</span>
+        </a>
+        <div id="collapseClientes" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'cliente-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
+    </li>
+  {% endif %}
+  <!-- End Clientes -->
+
+  <!-- Facturación -->
+  {% if perms.core.list_factura or perms.core.add_factura %}
+    <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+      {% if perms.core.list_factura %}
+        <a class="nav-link" href="{% url 'factura-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Facturaci&oacute;n</span>
+        </a>
+      {% endif %}
+      {% if not perms.core.list_factura and perms.core.add_factura %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturas" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Facturaci&oacute;n</span>
+        </a>
+        <div id="collapseFacturas" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'factura-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
+    </li>
+  {% endif %}
+  <!-- End Facturación -->
+
+  <!-- Órdenes de compra -->
+  {% if perms.core.list_ordencompra or perms.core.add_ordencompra %}
+    <li class="nav-item{% if 'ordencompra' in request.resolver_match.url_name %} active{% endif %}">
+      {% if perms.core.list_ordencompra %}
+        <a class="nav-link" href="{% url 'ordencompra-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>&Oacute;rdenes de compra</span>
+        </a>
+      {% endif %}
+      {% if not perms.core.list_ordencompra and perms.core.add_ordencompra %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrdenescompra" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>&Oacute;rdenes de compra</span>
+        </a>
+        <div id="collapseOrdenescompra" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'ordencompra-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
+    </li>
+  {% endif %}
+  <!-- End Órdenes de compra -->
+
+  {% if perms.accounting.list_cobranza %}
+    <li class="nav-item{% if 'cobranza' in request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'accounting:cobranza-list' %}">
         <i class="fas fa-fw fa-chart-area"></i>
-        <span>Clientes</span></a>
+        <span>Cobranzas</span></a>
     </li>
   {% endif %}
 
-  {% if perms.core.list_factura %}
-  <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'factura-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Facturaci&oacute;n</span></a>
-  </li>
-  {% endif %}
-
-  {% if perms.core.list_ordencompra %}
-  <li class="nav-item{% if 'ordencompra' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'ordencompra-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>&Oacute;rdenes de compra</span></a>
-  </li>
-  {% endif %}
-
-  {% if perms.accounting.list_cobranza %}
-  <li class="nav-item{% if 'cobranza' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'accounting:cobranza-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Cobranzas</span></a>
-  </li>
-  {% endif %}
-
-  {% if perms.core.list_proveedor or perms.core.list_facturaproveedor or perms.accounting.list_pago %}
+  {% if perms.core.add_proveedor or perms.core.list_proveedor or perms.core.list_facturaproveedor or perms.accounting.list_pago %}
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -68,29 +117,45 @@
     </div>
   {% endif %}
 
-  {% if perms.core.list_proveedor %}
-  <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'proveedor-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Proveedores</span></a>
-  </li>
+  <!-- Proveedores -->
+  {% if perms.core.list_proveedor or perms.core.add_proveedor %}
+    <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+      {% if perms.core.list_proveedor %}
+        <a class="nav-link" href="{% url 'proveedor-list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Proveedores</span>
+        </a>
+      {% endif %}
+      {% if not perms.core.list_proveedor and perms.core.add_proveedor %}
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProveedor" aria-expanded="true">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Proveedores</span>
+        </a>
+        <div id="collapseProveedor" class="collapse">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a href="{% url 'proveedor-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+          </div>
+        </div>
+      {% endif %}
+    </li>
   {% endif %}
+  <!-- End Proveedores -->
 
 
   {% if perms.core.list_facturaproveedor %}
-  <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'facturaproveedor-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Facturaci&oacute;n</span></a>
-  </li>
+    <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'facturaproveedor-list' %}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Facturaci&oacute;n</span></a>
+    </li>
   {% endif %}
 
   {% if perms.accounting.list_pago %}
-  <li class="nav-item{% if 'pago' in request.resolver_match.url_name and not 'mediopago' in request.resolver_match.url_name %} active{% endif %}">
-    <a class="nav-link" href="{% url 'accounting:pago-list' %}">
-      <i class="fas fa-fw fa-chart-area"></i>
-      <span>Pagos</span></a>
-  </li>
+    <li class="nav-item{% if 'pago' in request.resolver_match.url_name and not 'mediopago' in request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'accounting:pago-list' %}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Pagos</span></a>
+    </li>
   {% endif %}
 
   {% if perms.core.list_mediopago %}

@@ -73,11 +73,18 @@ class ClienteCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
     success_message = MESSAGE_SUCCESS_CREATED.format('cliente')
 
     def get_success_url(self):
-        """Luego de agregar al objecto muestra la misma vista."""
-        return reverse('cliente-update', args=(self.object.id,))
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('core.change_cliente'):
+            return reverse('cliente-update', args=(self.object.id,))
+        elif self.request.user.has_perm('core.view_cliente'):
+            return reverse('cliente-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('core.list_cliente'):
+            return reverse('cliente-list')
+        else:
+            return reverse('home')
 
 
-class ClienteDetailView(PermissionRequiredMixin, DetailView):
+class ClienteDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista para ver el detalle de un cliente."""
 
     model = Cliente
