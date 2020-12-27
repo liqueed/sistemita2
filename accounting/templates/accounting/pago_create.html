@@ -7,7 +7,14 @@
 {% endblock %}
 {% block content %}
   <div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Pagos a Proveedores</h1>
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">Pagos a Proveedores</h1>
+      {% if perms.accounting.list_pago %}
+        <a href="{% url 'accounting:pago-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+          <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+        </a>
+      {% endif %}
+    </div>
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
