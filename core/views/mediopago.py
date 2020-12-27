@@ -68,13 +68,13 @@ class MedioPagoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateVi
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_mediopago'):
-            return reverse('mediopago-update', args=(self.object.id,))
+            return reverse('core:mediopago-update', args=(self.object.id,))
         elif self.request.user.has_perm('core.view_mediopago'):
-            return reverse('mediopago-detail', args=(self.object.id,))
+            return reverse('core:mediopago-detail', args=(self.object.id,))
         elif self.request.user.has_perm('core.list_mediopago'):
-            return reverse('mediopago-list')
+            return reverse('core:mediopago-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class MedioPagoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -94,7 +94,7 @@ class MedioPagoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateVi
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('mediopago-update', args=(self.object.id,))
+        return reverse('core:mediopago-update', args=(self.object.id,))
 
 
 class MedioPagoDeleteView(PermissionRequiredMixin, DeleteView):
@@ -103,7 +103,7 @@ class MedioPagoDeleteView(PermissionRequiredMixin, DeleteView):
     model = MedioPago
     permission_required = 'core.delete_mediopago'
     success_message = MESSAGE_SUCCESS_DELETE.format('medio de pago')
-    success_url = reverse_lazy('mediopago-list')
+    success_url = reverse_lazy('core:mediopago-list')
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

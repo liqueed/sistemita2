@@ -6,7 +6,7 @@
     <div class="d-sm-flex align-items-center justify-content-between">
       <h1 class="h3 text-gray-800">&Oacute;rdenes de compra</h1>
       {% if perms.core.list_ordencompra %}
-        <a href="{% url 'ordencompra-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+        <a href="{% url 'core:ordencompra-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
           <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
         </a>
       {% endif %}
@@ -21,7 +21,7 @@
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <form method="post" action="{% url 'ordencompra-delete' object.pk %}">
+          <form method="post" action="{% url 'core:ordencompra-delete' object.pk %}">
             {% csrf_token %}
             <p>
               <strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la &oacute;rden de compra <em>Nro. {{ object.pk}}</em>
@@ -31,7 +31,7 @@
             <div class="row">
               <div class="col">
                 <button class="btn btn-danger" type="submit">Eliminar</button>
-                <a class="btn" href="{% url 'ordencompra-list' %}">No eliminar</a>
+                <a class="btn" href="{% url 'core:ordencompra-list' %}">No eliminar</a>
               </div>
             </div>
           </form>

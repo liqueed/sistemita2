@@ -8,7 +8,6 @@ from django.db.models import Q
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse, reverse_lazy
-
 # Django REST Framework
 from rest_framework import permissions
 from rest_framework import mixins
@@ -73,13 +72,13 @@ class ProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateVi
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_proveedor'):
-            return reverse('proveedor-update', args=(self.object.id,))
+            return reverse('core:proveedor-update', args=(self.object.id,))
         elif self.request.user.has_perm('core.view_proveedor'):
-            return reverse('proveedor-detail', args=(self.object.id,))
+            return reverse('core:proveedor-detail', args=(self.object.id,))
         elif self.request.user.has_perm('core.list_proveedor'):
-            return reverse('proveedor-list')
+            return reverse('core:proveedor-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class ProveedorDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -99,7 +98,7 @@ class ProveedorUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateVi
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('proveedor-update', args=(self.object.id,))
+        return reverse('core:proveedor-update', args=(self.object.id,))
 
 
 class ProveedorDeleteView(PermissionRequiredMixin, DeleteView):
@@ -108,7 +107,7 @@ class ProveedorDeleteView(PermissionRequiredMixin, DeleteView):
     model = Proveedor
     permission_required = 'core.delete_proveedor'
     success_message = MESSAGE_SUCCESS_DELETE.format('proveedor')
-    success_url = reverse_lazy('proveedor-list')
+    success_url = reverse_lazy('core:proveedor-list')
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

@@ -411,7 +411,7 @@ $('#submit-id-submit').click(function(e){
                 if ('{{ perms.accounting.list_pago }}' === 'True'){
                     window.location.href = '{% url 'accounting:pago-list' %}?create=1';
                 } else {
-                    window.location.href = '{% url 'home' %}?create=1&type=pago';
+                    window.location.href = '{% url 'core:home' %}?create=1&type=pago';
                 }
             }
         }

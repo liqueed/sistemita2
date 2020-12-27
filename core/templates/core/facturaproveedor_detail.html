@@ -6,7 +6,7 @@
     <div class="d-sm-flex align-items-center justify-content-between">
       <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
       {% if perms.core.list_facturaproveedor %}
-      <a href="{% url 'facturaproveedor-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+      <a href="{% url 'core:facturaproveedor-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
         <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
       </a>
       {% endif %}
@@ -29,7 +29,7 @@
             <dt class="col-sm-2">Proveedor</dt>
             <dd class="col-sm-10">{{ object.proveedor }}</dd>
             <dt class="col-sm-2">Factura de cliente</dt>
-            <dd class="col-sm-10">{{ object.factura }}<a class="btn btn-light btn-xs ml-1" target="_blank" href="{% url 'factura-detail' object.factura.pk %}"><i class="far fa-eye"></i></a></dd>
+            <dd class="col-sm-10">{{ object.factura }}<a class="btn btn-light btn-xs ml-1" target="_blank" href="{% url 'core:factura-detail' object.factura.pk %}"><i class="far fa-eye"></i></a></dd>
             <dt class="col-sm-2">Detalle</dt>
             <dd class="col-sm-10">{% if object.detalle %}{{ object.detalle }}{% else %}-{% endif %}</dd>
             <dt class="col-sm-2">Neto</dt>
@@ -56,7 +56,7 @@
         {% endif %}
           </dl>
           {% if perms.core.list_facturaproveedor %}
-            <a href="{% url 'facturaproveedor-list' %}" class="btn btn-primary float-right">Volver</a>
+            <a href="{% url 'core:facturaproveedor-list' %}" class="btn btn-primary float-right">Volver</a>
           {% endif %}
         </div>
       </div>

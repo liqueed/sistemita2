@@ -63,7 +63,7 @@ class PermissionCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateV
         elif self.request.user.has_perm('auth.list_permission'):
             return reverse('authorization:permission-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class PermissionDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):

@@ -75,13 +75,13 @@ class ClienteCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_cliente'):
-            return reverse('cliente-update', args=(self.object.id,))
+            return reverse('core:cliente-update', args=(self.object.id,))
         elif self.request.user.has_perm('core.view_cliente'):
-            return reverse('cliente-detail', args=(self.object.id,))
+            return reverse('core:cliente-detail', args=(self.object.id,))
         elif self.request.user.has_perm('core.list_cliente'):
-            return reverse('cliente-list')
+            return reverse('core:cliente-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class ClienteDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -101,7 +101,7 @@ class ClienteUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('cliente-update', args=(self.object.id,))
+        return reverse('core:cliente-update', args=(self.object.id,))
 
 
 class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
@@ -110,7 +110,7 @@ class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
     model = Cliente
     permission_required = 'core.delete_cliente'
     success_message = MESSAGE_SUCCESS_DELETE.format('cliente')
-    success_url = reverse_lazy('cliente-list')
+    success_url = reverse_lazy('core:cliente-list')
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

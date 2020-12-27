@@ -86,13 +86,13 @@ class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_factura'):
-            return reverse('factura-update', args=(self.object.id,))
+            return reverse('core:factura-update', args=(self.object.id,))
         elif self.request.user.has_perm('core.view_factura'):
-            return reverse('factura-detail', args=(self.object.id,))
+            return reverse('core:factura-detail', args=(self.object.id,))
         elif self.request.user.has_perm('core.list_factura'):
-            return reverse('factura-list')
+            return reverse('core:factura-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class FacturaDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -114,7 +114,7 @@ class FacturaUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('factura-update', args=(self.object.id,))
+        return reverse('core:factura-update', args=(self.object.id,))
 
 
 class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
@@ -123,7 +123,7 @@ class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
     model = Factura
     permission_required = 'core.delete_factura'
     success_message = _MESSAGE_SUCCESS_DELETE.format('factura del cliente')
-    success_url = reverse_lazy('factura-list')
+    success_url = reverse_lazy('core:factura-list')
     template_name = 'core/facturacliente_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):

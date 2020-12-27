@@ -82,13 +82,13 @@ class FacturaProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, C
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_facturaproveedor'):
-            return reverse('facturaproveedor-update', args=(self.object.id,))
+            return reverse('core:facturaproveedor-update', args=(self.object.id,))
         elif self.request.user.has_perm('core.view_facturaproveedor'):
-            return reverse('facturaproveedor-detail', args=(self.object.id,))
+            return reverse('core:facturaproveedor-detail', args=(self.object.id,))
         elif self.request.user.has_perm('core.list_facturaproveedor'):
-            return reverse('facturaproveedor-list')
+            return reverse('core:facturaproveedor-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class FacturaProveedorDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -108,7 +108,7 @@ class FacturaProveedorUpdateView(PermissionRequiredMixin, SuccessMessageMixin, U
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('facturaproveedor-update', args=(self.object.id,))
+        return reverse('core:facturaproveedor-update', args=(self.object.id,))
 
 
 class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
@@ -117,7 +117,7 @@ class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
     model = FacturaProveedor
     permission_required = 'core.delete_facturaproveedor'
     success_message = _MESSAGE_SUCCESS_DELETE.format('factura a proveedor')
-    success_url = reverse_lazy('facturaproveedor-list')
+    success_url = reverse_lazy('core:facturaproveedor-list')
 
     def delete(self, request, *args, **kwargs):
         """Método que elimina los archivos relacionados."""

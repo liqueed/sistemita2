@@ -19,7 +19,7 @@
             {% include 'components/search_form.html' %}
             {% if perms.core.add_cliente %}
               <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                <a class="btn btn-primary" role="button" href="{% url 'cliente-create' %}">Agregar</a>
+                <a class="btn btn-primary" role="button" href="{% url 'core:cliente-create' %}">Agregar</a>
               </div>
             {% endif %}
           </div>
@@ -38,19 +38,19 @@
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'cliente-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
-                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'cliente-detail' object.pk %}';"{% endif %}>{{ object.razon_social }}</td>
-                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'cliente-detail' object.pk %}';"{% endif %}>{{ object.cuit }}</td>
-                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'cliente-detail' object.pk %}';"{% endif %}>{{ object.correo }}</td>
+                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.razon_social }}</td>
+                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.cuit }}</td>
+                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.correo }}</td>
                   {% if perms.core.change_cliente or perms.core.delete_cliente %}
                     <td>
                       {% if perms.core.change_cliente %}
-                        <a href="{% url 'cliente-update' object.pk %}">
+                        <a href="{% url 'core:cliente-update' object.pk %}">
                           <i class="fas fa-wrench"></i>
                         </a>
                       {% endif %}
                       {% if perms.core.delete_cliente %}
-                        <a href="{% url 'cliente-delete' object.pk %}">
+                        <a href="{% url 'core:cliente-delete' object.pk %}">
                           <i class="fas fa-trash "></i>
                         </a>
                       {% endif %}

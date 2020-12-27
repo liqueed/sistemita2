@@ -20,7 +20,7 @@
             {% include 'components/search_form.html' %}
             {% if perms.core.add_ordencompra %}
               <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                <a class="btn btn-primary" role="button" href="{% url 'ordencompra-create' %}">Agregar</a>
+                <a class="btn btn-primary" role="button" href="{% url 'core:ordencompra-create' %}">Agregar</a>
               </div>
             {% endif %}
           </div>
@@ -41,20 +41,20 @@
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'ordencompra-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
-                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'ordencompra-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
-                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'ordencompra-detail' object.pk %}';"{% endif %}>{{ object.cliente.razon_social }}</td>
-                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'ordencompra-detail' object.pk %}';"{% endif %}>{{ object.cliente.cuit }}</td>
-                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'ordencompra-detail' object.pk %}';"{% endif %}><div class="float-right">{{ object.moneda_monto }}</div></td>
+                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'core:ordencompra-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'core:ordencompra-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
+                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'core:ordencompra-detail' object.pk %}';"{% endif %}>{{ object.cliente.razon_social }}</td>
+                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'core:ordencompra-detail' object.pk %}';"{% endif %}>{{ object.cliente.cuit }}</td>
+                  <td {% if perms.core.view_ordencompra %}onclick="location.href='{% url 'core:ordencompra-detail' object.pk %}';"{% endif %}><div class="float-right">{{ object.moneda_monto }}</div></td>
                   {% if perms.core.change_ordencompra or perms.core.delete_ordencompra %}
                     <td>
                       {% if perms.core.change_ordencompra %}
-                        <a href="{% url 'ordencompra-update' object.pk %}">
+                        <a href="{% url 'core:ordencompra-update' object.pk %}">
                         <i class="fas fa-wrench"></i>
                         </a>
                       {% endif %}
                       {% if perms.core.delete_ordencompra %}
-                        <a href="{% url 'ordencompra-delete' object.pk %}">
+                        <a href="{% url 'core:ordencompra-delete' object.pk %}">
                           <i class="fas fa-trash"></i>
                         </a>
                       {% endif %}

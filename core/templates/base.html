@@ -72,7 +72,7 @@
                 select_localidad.append($("<option />").text('----'));
 
                 // Actualizo
-                $.getJSON("{% url 'distrito-list' %}?provincia=" + provincia, function(distritos) {
+                $.getJSON("{% url 'core:distrito-list' %}?provincia=" + provincia, function(distritos) {
                     $.each(distritos, function(index, distrito) {
                         select_distrito.append($("<option />").val(distrito.id).text(distrito.nombre));
                     });
@@ -84,7 +84,7 @@
                 var select_localidad = $('#id_localidad');
                 select_localidad.children().remove().end();
                 select_localidad.append($("<option />").text('----'));
-                $.getJSON("{% url 'localidad-list' %}?distrito=" + distrito, function(localidades) {
+                $.getJSON("{% url 'core:localidad-list' %}?distrito=" + distrito, function(localidades) {
                     $.each(localidades, function(index, localidad) {
                         select_localidad.append($("<option />").val(localidad.id).text(localidad.nombre));
                     });

@@ -51,18 +51,18 @@ class OrdenCompraCreateView(PermissionRequiredMixin, SuccessMessageMixin, Create
     form_class = OrdenCompraForm
     permission_required = 'core.add_ordencompra'
     success_message = _MESSAGE_SUCCESS_CREATED.format('orden de compra')
-    success_url = reverse_lazy('ordencompra-list')
+    success_url = reverse_lazy('core:ordencompra-list')
 
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_ordencompra'):
-            return reverse('ordencompra-update', args=(self.object.id,))
+            return reverse('core:ordencompra-update', args=(self.object.id,))
         elif self.request.user.has_perm('core.view_ordencompra'):
-            return reverse('ordencompra-detail', args=(self.object.id,))
+            return reverse('core:ordencompra-detail', args=(self.object.id,))
         elif self.request.user.has_perm('core.list_ordencompra'):
-            return reverse('ordencompra-list')
+            return reverse('core:ordencompra-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class OrdenCompraDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -82,7 +82,7 @@ class OrdenCompraUpdateView(PermissionRequiredMixin, SuccessMessageMixin, Update
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('ordencompra-update', args=(self.object.id,))
+        return reverse('core:ordencompra-update', args=(self.object.id,))
 
 
 class OrdenCompraDeleteView(PermissionRequiredMixin, DeleteView):
@@ -91,7 +91,7 @@ class OrdenCompraDeleteView(PermissionRequiredMixin, DeleteView):
     model = OrdenCompra
     permission_required = 'core.delete_ordencompra'
     success_message = _MESSAGE_SUCCESS_DELETE.format('orden compra')
-    success_url = reverse_lazy('ordencompra-list')
+    success_url = reverse_lazy('core:ordencompra-list')
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

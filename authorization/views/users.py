@@ -66,7 +66,7 @@ class UserCreateFormView(PermissionRequiredMixin, SuccessMessageMixin, CreateVie
         elif self.request.user.has_perm('authorization.list_user'):
             return reverse('authorization:user-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class UserDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):

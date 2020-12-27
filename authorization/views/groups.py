@@ -57,7 +57,7 @@ class GroupCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
         elif self.request.user.has_perm('auth.list_group'):
             return reverse('authorization:group-list')
         else:
-            return reverse('home')
+            return reverse('core:home')
 
 
 class GroupDetailtView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
