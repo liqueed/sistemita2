@@ -10,3 +10,10 @@ MESSAGE_SUCCESS_DELETE = 'El {} ha sido eliminado exitosamente.'
 _MESSAGE_SUCCESS_CREATED = 'La {} ha sido creada exitosamente.'
 _MESSAGE_SUCCESS_UPDATE = 'La {} ha sido modificada exitosamente.'
 _MESSAGE_SUCCESS_DELETE = 'La {} ha sido eliminada exitosamente.'
+
+HELP_TEXT_PASSWORD_CONFIRMATION = """Introduzca la misma contraseña nuevamente,
+'para poder verificar la misma."""
+HELP_TEXT_USERNAME = """
+Longitud máxima de {} caracteres. Solo puede estar formado por letras,
+números y los caracteres @/./+/-/_.'
+"""
