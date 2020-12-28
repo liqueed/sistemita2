@@ -10,7 +10,8 @@ from django.contrib.auth.models import Group
 # Forms
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Fieldset, Layout, Div, Reset
+from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
+from django.contrib.auth.forms import SetPasswordForm
 
 User = get_user_model()
 
@@ -117,6 +118,13 @@ class UserCreateForm(forms.ModelForm):
         fields = ('username', 'first_name', 'last_name', 'email', 'password', 'groups')
 
 
+class ReadOnlyPasswordWidget(forms.Widget):
+    """Widget para mostrar un campo con una contraseña dummy."""
+
+    template_name = 'widgets/read_only_password.html'
+    read_only = True
+
+
 class UserUpdateForm(forms.ModelForm):
     """Formulario para actualizar datos de usuario."""
 
@@ -130,6 +138,10 @@ class UserUpdateForm(forms.ModelForm):
                 '',
                 Div(
                     Div('username', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('password', css_class='col-6'),
                     css_class='row'
                 ),
                 Div(
@@ -155,6 +167,13 @@ class UserUpdateForm(forms.ModelForm):
             )
         )
 
+    password = forms.CharField(
+        widget=ReadOnlyPasswordWidget,
+        required=False,
+        label='Contraseña',
+        help_text=("Para cambiar la contraseña usar <a href=\"../password/\">este formulario</a>.")
+    )
+
     first_name = forms.CharField(min_length=2, max_length=50, label='Nombre')
     last_name = forms.CharField(min_length=2, max_length=50, label='Apellido')
 
@@ -167,4 +186,30 @@ class UserUpdateForm(forms.ModelForm):
         """Configuraciones del formulario."""
 
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'groups')
+        fields = ('username', 'password', 'first_name', 'last_name', 'email', 'groups')
+
+
+class PasswordResetForm(SetPasswordForm):
+    """Fomulario para resetear contraseña de un usuario."""
+
+    def __init__(self, *args, **kwargs):
+        """Inicializacion del Formulario."""
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                '',
+                Div(
+                    Div('new_password1', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('new_password2', css_class='col-6'),
+                    css_class='row'
+                ),
+            ),
+            FormActions(
+                Submit('submit', 'Guardar', css_class='float-right'),
+                Reset('reset', 'Limpiar', css_class='float-right')
+            )
+        )

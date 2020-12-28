@@ -6,18 +6,19 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, DeleteView, ListView
+from django.views.generic import DetailView, DeleteView, FormView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
 # Forms
-from authorization.forms.users import UserCreateForm, UserUpdateForm
+from authorization.forms.users import PasswordResetForm, UserCreateForm, UserUpdateForm
 
 # Models
 from django.contrib.auth import get_user_model
 
 # Utils
 from core.utils.strings import (
-    MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+    _MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE,
+    MESSAGE_SUCCESS_DELETE
 )
 
 User = get_user_model()
@@ -104,3 +105,37 @@ class UserDeleteView(PermissionRequiredMixin, DeleteView):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
         return super(UserDeleteView, self).delete(request, *args, **kwargs)
+
+
+class PasswordChangeFormView(PermissionRequiredMixin, SuccessMessageMixin, FormView):
+    """Vista que cambia la contraseña de un usuario."""
+
+    form_class = PasswordResetForm
+    permission_required = 'authorization.change_user'
+    success_message = _MESSAGE_SUCCESS_UPDATE.format('contraseña')
+    template_name = 'authorization/password_change.html'
+
+    def get_form_kwargs(self):
+        """Envia a la instancia del formulario al usuario a modificar."""
+        kwargs = super().get_form_kwargs()
+        object_id = self.kwargs['pk']
+        user = User.objects.get(pk=object_id)
+        kwargs['user'] = user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        """Envía al contexto el username del usuario."""
+        context = super().get_context_data(**kwargs)
+        username = context['form'].user.username
+        context['username'] = username
+        return context
+
+    def form_valid(self, form):
+        """Guarda el formulario validado."""
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        """Luego de editar al objecto regreso al formulario principal."""
+        object_id = self.kwargs['pk']
+        return reverse('authorization:user-update', args=(object_id,))

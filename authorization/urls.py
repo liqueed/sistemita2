@@ -12,7 +12,8 @@ from authorization.views.permissions import (
     PermissionListView, PermisoUpdateView
 )
 from authorization.views.users import (
-    UserListView, UserCreateFormView, UserDetailView, UserUpdateView, UserDeleteView
+    UserListView, UserCreateFormView, UserDetailView, UserUpdateView, PasswordChangeFormView,
+    UserDeleteView
 )
 
 urlpatterns = [
@@ -22,6 +23,7 @@ urlpatterns = [
     path('usuario/<int:pk>/', UserDetailView.as_view(), name='user-detail'),
     path('usuario/<int:pk>/editar/', UserUpdateView.as_view(), name='user-update'),
     path('usuario/<int:pk>/eliminar/', UserDeleteView.as_view(), name='user-delete'),
+    path('usuario/<int:pk>/password/', PasswordChangeFormView.as_view(), name='user-pass'),
 
     # Grupos
     path('grupo/', GroupListView.as_view(), name='group-list'),
