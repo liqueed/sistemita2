@@ -2,16 +2,18 @@
 {% load static %}
 {% block title %}Home | Liqueed{% endblock %}
 {% block content %}
+<div class="container-fluid">
   <div class="row">
-    <div class="col-12 text-center">
+    <div class="col-12 offset-md-3 col-md-5 text-center">
       <div class="d-flex justify-content-center align-items-center" id="main">
         <h1 class="mr-3 pr-3 align-top border-right inline-block align-content-center">403</h1>
         <div class="inline-block align-middle">
-          <h2 class="font-weight-normal lead" id="desc"><i class="fas fa-id-card-alt"></i> Acceso denegado.</h2>
-          <p>No estas autorizado a entrar a esta página.<br>Contáctate con el administrador.</p>
-          {{ exception }}
+          <h2 class="font-weight-normal lead pb-3" id="desc"><i class="fas fa-id-card-alt"></i> Acceso denegado.</h2>
+          <p>{{ exception }}</p>
+          <a href="{% url 'core:home' %}">&larr; Volver al inicio</a>
         </div>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}

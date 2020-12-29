@@ -29,15 +29,17 @@ class Cliente(TimeStampedModel, models.Model):
     piso = models.CharField('Piso', max_length=4, blank=True)
     dpto = models.CharField('Departamento', max_length=4, blank=True)
 
-    provincia = models.ForeignKey(Provincia, null=True, blank=True, verbose_name='Provincia',
-                                  on_delete=models.SET_NULL)
-    distrito = models.ForeignKey(Distrito, null=True, blank=True, verbose_name='Distrito',
-                                 on_delete=models.SET_NULL)
-    localidad = models.ForeignKey(Localidad, null=True, blank=True, verbose_name='Localidad',
-                                  on_delete=models.SET_NULL)
+    provincia = models.ForeignKey(Provincia, null=True, blank=True, verbose_name='Provincia', on_delete=models.SET_NULL)
+    distrito = models.ForeignKey(Distrito, null=True, blank=True, verbose_name='Distrito', on_delete=models.SET_NULL)
+    localidad = models.ForeignKey(Localidad, null=True, blank=True, verbose_name='Localidad', on_delete=models.SET_NULL)
 
-    tipo_envio_factura = models.CharField(blank=False, verbose_name='Forma de envío',
-                                          choices=FORMAS_ENVIO, max_length=1, default='C')
+    tipo_envio_factura = models.CharField(
+        blank=False,
+        verbose_name='Forma de envío',
+        choices=FORMAS_ENVIO,
+        max_length=1,
+        default='C'
+    )
     link_envio_factura = models.URLField(blank=True, verbose_name='URL de envío')
     correo_envio_factura = models.EmailField(blank=True, verbose_name='Correo de envío')
 

@@ -15,9 +15,12 @@ from authorization.forms.users import PasswordResetForm, UserCreateForm, UserUpd
 # Models
 from django.contrib.auth import get_user_model
 
+# Views
+from core.views.home import error_403
+
 # Utils
 from core.utils.strings import (
-    _MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE,
+    MESSAGE_403, _MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE,
     MESSAGE_SUCCESS_DELETE
 )
 
@@ -29,6 +32,7 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
     paginate_by = 10
     permission_required = 'authorization.list_user'
+    raise_exception = True
     template_name = 'authorization/user_list.html'
 
     def get_queryset(self):
@@ -41,12 +45,15 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(username__search=search) |
-                Q(first_name__icontains=search) |
-                Q(last_name__icontains=search)
+                Q(username__search=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search)
             )
 
         return queryset
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class UserCreateFormView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -55,6 +62,7 @@ class UserCreateFormView(PermissionRequiredMixin, SuccessMessageMixin, CreateVie
     model = User
     form_class = UserCreateForm
     permission_required = 'authorization.add_user'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_CREATED.format('usuario')
     template_name = 'authorization/user_form.html'
 
@@ -69,13 +77,24 @@ class UserCreateFormView(PermissionRequiredMixin, SuccessMessageMixin, CreateVie
         else:
             return reverse('core:home')
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class UserDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de un usuario."""
 
     model = User
     permission_required = 'authorization.view_user'
+    raise_exception = True
     template_name = 'authorization/user_detail.html'
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class UserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -84,6 +103,7 @@ class UserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = UserUpdateForm
     model = User
     permission_required = 'authorization.change_user'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_UPDATE.format('usuario')
     template_name = 'authorization/user_form.html'
 
@@ -91,12 +111,18 @@ class UserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
         """Luego de editar al objecto muestra la misma vista."""
         return reverse('authorization:user-update', args=(self.object.id,))
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class UserDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista que elimina un usuario."""
 
     model = User
     permission_required = 'authorization.delete_user'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_DELETE.format('usuario')
     success_url = reverse_lazy('authorization:user-list')
     template_name = 'authorization/user_confirm_delete.html'
@@ -106,12 +132,18 @@ class UserDeleteView(PermissionRequiredMixin, DeleteView):
         messages.success(request, self.success_message)
         return super(UserDeleteView, self).delete(request, *args, **kwargs)
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class PasswordChangeFormView(PermissionRequiredMixin, SuccessMessageMixin, FormView):
     """Vista que cambia la contraseña de un usuario."""
 
     form_class = PasswordResetForm
     permission_required = 'authorization.change_user'
+    raise_exception = True
     success_message = _MESSAGE_SUCCESS_UPDATE.format('contraseña')
     template_name = 'authorization/password_change.html'
 
@@ -139,3 +171,8 @@ class PasswordChangeFormView(PermissionRequiredMixin, SuccessMessageMixin, FormV
         """Luego de editar al objecto regreso al formulario principal."""
         object_id = self.kwargs['pk']
         return reverse('authorization:user-update', args=(object_id,))
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)

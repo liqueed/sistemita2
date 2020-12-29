@@ -72,8 +72,7 @@ class Localidad(models.Model):
     """Modelo Localidad."""
 
     nombre = models.CharField(max_length=150, verbose_name='Nombre')
-    distrito = models.ForeignKey(Distrito, null=True, verbose_name='Distrito',
-                                 on_delete=models.CASCADE)
+    distrito = models.ForeignKey(Distrito, null=True, verbose_name='Distrito', on_delete=models.CASCADE)
 
     class Meta:
         """Configuraciones del modelo."""

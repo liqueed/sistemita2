@@ -22,20 +22,21 @@ from core.forms.proveedores import ProveedorForm
 # Serializers
 from core.serializers import ProveedorSerializer
 
+# Views
+from core.views.home import error_403
+
 # Utils
 from core.utils.strings import (
-    MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+    MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
 )
 
 
-class ProveedorViewSet(mixins.RetrieveModelMixin,
-                       mixins.ListModelMixin,
-                       viewsets.GenericViewSet):
-    """Proveedor view ser."""
+class ProveedorViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+    """Proveedor view set."""
 
     queryset = Proveedor.objects.all()
-    serializer_class = ProveedorSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ProveedorSerializer
 
 
 class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
@@ -43,6 +44,7 @@ class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
     paginate_by = 10
     permission_required = 'core.list_proveedor'
+    raise_exception = True
 
     def get_queryset(self):
         """Sobreescribe queryset.
@@ -54,19 +56,23 @@ class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(razon_social__search=search) |
-                Q(correo__icontains=search) |
-                Q(cuit__icontains=search)
+                Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
             )
         return queryset
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class ProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista que agrega un proveedor."""
 
-    model = Proveedor
     form_class = ProveedorForm
+    model = Proveedor
     permission_required = 'core.add_proveedor'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_CREATED.format('proveedor')
 
     def get_success_url(self):
@@ -80,25 +86,42 @@ class ProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateVi
         else:
             return reverse('core:home')
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class ProveedorDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de un proveedor."""
 
     model = Proveedor
     permission_required = 'core.view_proveedor'
+    raise_exception = True
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class ProveedorUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     """Vista que modifica un proveedor."""
 
-    model = Proveedor
     form_class = ProveedorForm
+    model = Proveedor
     permission_required = 'core.change_proveedor'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_UPDATE.format('proveedor')
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
         return reverse('core:proveedor-update', args=(self.object.id,))
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class ProveedorDeleteView(PermissionRequiredMixin, DeleteView):
@@ -106,6 +129,7 @@ class ProveedorDeleteView(PermissionRequiredMixin, DeleteView):
 
     model = Proveedor
     permission_required = 'core.delete_proveedor'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_DELETE.format('proveedor')
     success_url = reverse_lazy('core:proveedor-list')
 
@@ -113,3 +137,8 @@ class ProveedorDeleteView(PermissionRequiredMixin, DeleteView):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
         return super(ProveedorDeleteView, self).delete(request, *args, **kwargs)
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)

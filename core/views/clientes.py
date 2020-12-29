@@ -23,9 +23,12 @@ from core.forms.clientes import ClienteForm
 # Serializers
 from core.serializers import ClienteSerializer
 
+# Views
+from core.views.home import error_403
+
 # Utils
 from core.utils.strings import (
-    MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+    MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
 )
 
 
@@ -42,9 +45,10 @@ class ClienteViewSet(mixins.ListModelMixin,
 class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista para listar todos los clientes."""
 
-    template_name = 'core/cliente_list.html'
     paginate_by = 10
     permission_required = 'core.list_cliente'
+    raise_exception = True
+    template_name = 'core/cliente_list.html'
 
     def get_queryset(self):
         """Sobreescribe queryset.
@@ -63,13 +67,19 @@ class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
         return queryset
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class ClienteCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista para crear un cliente."""
 
-    model = Cliente
     form_class = ClienteForm
+    model = Cliente
     permission_required = 'core.add_cliente'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_CREATED.format('cliente')
 
     def get_success_url(self):
@@ -83,12 +93,23 @@ class ClienteCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
         else:
             return reverse('core:home')
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class ClienteDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista para ver el detalle de un cliente."""
 
     model = Cliente
     permission_required = 'core.view_cliente'
+    raise_exception = True
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class ClienteUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -97,11 +118,17 @@ class ClienteUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
     model = Cliente
     form_class = ClienteForm
     permission_required = 'core.change_cliente'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_UPDATE.format('cliente')
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
         return reverse('core:cliente-update', args=(self.object.id,))
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
@@ -109,6 +136,7 @@ class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
 
     model = Cliente
     permission_required = 'core.delete_cliente'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_DELETE.format('cliente')
     success_url = reverse_lazy('core:cliente-list')
 
@@ -116,3 +144,8 @@ class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
         return super(ClienteDeleteView, self).delete(request, *args, **kwargs)
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)

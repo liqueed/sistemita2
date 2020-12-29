@@ -15,4 +15,14 @@ class HomeView(LoginRequiredMixin, SuccessMessageMixin, TemplateView):
 
 def error_403(request, exception):
     """Devuelve template de acceso denegado."""
-    return render(request, '403.html')
+    return render(request, '403.html', context={'exception': exception}, status=403)
+
+
+def error_404(request):
+    """Return template 404."""
+    return render(request, '404.html')
+
+
+def error_500(request):
+    """Return template 500."""
+    return render(request, '500.html')

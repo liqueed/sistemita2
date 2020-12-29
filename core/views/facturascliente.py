@@ -32,21 +32,22 @@ from core.serializers import FacturaSerializer
 # Filters
 from core.filters import FacturaFilterSet
 
+# Views
+from core.views.home import error_403
+
 # Utils
 from core.utils.strings import (
-    _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_UPDATE, _MESSAGE_SUCCESS_DELETE
+    MESSAGE_403, _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_UPDATE, _MESSAGE_SUCCESS_DELETE
 )
 
 
-class FacturaViewSet(mixins.ListModelMixin,
-                     mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """Factura view set."""
 
-    queryset = Factura.objects.all()
-    serializer_class = FacturaSerializer
-    permission_classes = (permissions.IsAuthenticated,)
     filter_fields = ('cliente', 'cobrado')
+    queryset = Factura.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = FacturaSerializer
 
 
 class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -55,6 +56,7 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     filterset_class = FacturaFilterSet
     paginate_by = 10
     permission_required = 'core.list_factura'
+    raise_exception = True
     template_name = 'core/facturacliente_list.html'
 
     def get_queryset(self):
@@ -73,6 +75,11 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
 
         return queryset
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista para agregar una factura."""
@@ -80,6 +87,7 @@ class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
     model = Factura
     form_class = FacturaForm
     permission_required = 'core.add_factura'
+    raise_exception = True
     success_message = _MESSAGE_SUCCESS_CREATED.format('factura del cliente')
     template_name = 'core/facturacliente_form.html'
 
@@ -94,21 +102,33 @@ class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
         else:
             return reverse('core:home')
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class FacturaDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de una factura."""
 
     model = Factura
     permission_required = 'core.view_factura'
+    raise_exception = True
     template_name = 'core/facturacliente_detail.html'
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class FacturaUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     """Vista que modifica un factura."""
 
-    model = Factura
     form_class = FacturaForm
+    model = Factura
     permission_required = 'core.change_factura'
+    raise_exception = True
     success_message = _MESSAGE_SUCCESS_UPDATE.format('factura del cliente')
     template_name = 'core/facturacliente_form.html'
 
@@ -116,12 +136,18 @@ class FacturaUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
         """Luego de editar al objecto muestra la misma vista."""
         return reverse('core:factura-update', args=(self.object.id,))
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista que elimina una factura."""
 
     model = Factura
     permission_required = 'core.delete_factura'
+    raise_exception = True
     success_message = _MESSAGE_SUCCESS_DELETE.format('factura del cliente')
     success_url = reverse_lazy('core:factura-list')
     template_name = 'core/facturacliente_confirm_delete.html'
@@ -144,3 +170,8 @@ class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
         self.object.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(self.success_url)
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)

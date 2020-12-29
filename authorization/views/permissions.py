@@ -8,15 +8,18 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Models
-from django.contrib.auth.models import Permission
-
 # Forms
 from authorization.forms.permissions import PermissionForm
 
+# Models
+from django.contrib.auth.models import Permission
+
+# Views
+from core.views.home import error_403
+
 # Utils
 from core.utils.strings import (
-    MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+    MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
 )
 
 
@@ -25,6 +28,7 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
 
     paginate_by = 10
     permission_required = 'auth.list_permission'
+    raise_exception = True
     template_name = 'authorization/permission_list.html'
 
     def get_queryset(self):
@@ -45,12 +49,18 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
 
         return queryset
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class PermissionCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista para crear un permiso."""
 
     form_class = PermissionForm
     permission_required = 'auth.add_permission'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_CREATED.format('permiso')
     template_name = 'authorization/permission_form.html'
 
@@ -65,13 +75,24 @@ class PermissionCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateV
         else:
             return reverse('core:home')
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class PermissionDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que devuelve el detalle de un permiso."""
 
     model = Permission
     permission_required = 'auth.view_permission'
+    raise_exception = True
     template_name = 'authorization/permission_detail.html'
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
 class PermisoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -80,6 +101,7 @@ class PermisoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
     form_class = PermissionForm
     model = Permission
     permission_required = 'auth.change_permission'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_UPDATE.format('permiso')
     template_name = 'authorization/permission_form.html'
 
@@ -87,12 +109,18 @@ class PermisoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
         """Luego de editar al objecto muestra la misma vista."""
         return reverse('authorization:permission-update', args=(self.object.id,))
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
 
 class PermissionDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista para eliminar n permiso."""
 
     model = Permission
     permission_required = 'auth.delete_permission'
+    raise_exception = True
     success_message = MESSAGE_SUCCESS_DELETE.format('permiso')
     success_url = reverse_lazy('authorization:permission-list')
     template_name = 'authorization/permission_confirm_delete.html'
@@ -101,3 +129,8 @@ class PermissionDeleteView(PermissionRequiredMixin, DeleteView):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
         return super(PermissionDeleteView, self).delete(request, *args, **kwargs)
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
