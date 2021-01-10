@@ -27,6 +27,8 @@
         <div class="table-responsive">
 
           <dl class="row">
+            <dt class="col-sm-2">Fecha</dt>
+            <dd class="col-sm-10">{{ object.fecha }}</dd>
             <dt class="col-sm-2">Proveedor</dt>
             <dd class="col-sm-10">{{ object.proveedor.razon_social }} - CUIT: {{ object.proveedor.cuit}}</dd>
             {% for pago_factura in object.pago_facturas.all %}

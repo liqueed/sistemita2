@@ -59,6 +59,7 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
 class PagoSerializer(serializers.ModelSerializer):
     """Pago Serializer."""
 
+    fecha = serializers.DateField(required=True)
     proveedor = ProveedorSerializer()
     total = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
     pago_facturas = PagoFacturaSerializer(many=True)
@@ -68,7 +69,7 @@ class PagoSerializer(serializers.ModelSerializer):
 
         model = Pago
         fields = (
-            'id', 'proveedor', 'total',
+            'id', 'fecha', 'proveedor', 'total',
             'pago_facturas',
         )
         read_only_fields = ('id', 'proveedor')
@@ -86,9 +87,10 @@ class PagoSerializer(serializers.ModelSerializer):
         """Genera un pago con factura/s y su/s correspondiente/s pago/s."""
         try:
             # Factura
+            fecha = data['fecha']
             proveedor = self.context['proveedor']
             total = data['total']
-            pago = Pago.objects.create(proveedor=proveedor, total=total)
+            pago = Pago.objects.create(fecha=fecha, proveedor=proveedor, total=total)
 
             # Factura pago
             facturas = data['pago_facturas']
@@ -119,6 +121,7 @@ class PagoSerializer(serializers.ModelSerializer):
     def update(self, instance, data):
         """Actualiza la instancia."""
         try:
+            instance.fecha = data['fecha']
             instance.total = data['total']
             facturas = data['pago_facturas']
 
