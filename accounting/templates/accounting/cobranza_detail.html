@@ -26,6 +26,8 @@
       <div class="card-body">
         <div class="table-responsive">
           <dl class="row">
+            <dt class="col-sm-2">Fecha</dt>
+            <dd class="col-sm-10">{{ object.fecha }}</dd>
             <dt class="col-sm-2">Cliente</dt>
             <dd class="col-sm-10">{{ object.cliente.razon_social }} - CUIT: {{ object.cliente.cuit}}</dd>
             {% for cobranza_factura in object.cobranza_facturas.all %}

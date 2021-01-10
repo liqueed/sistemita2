@@ -20,7 +20,7 @@ from accounting.serializers.pagos import PagoSerializer
 from core.models.proveedor import FacturaProveedor
 
 # Views
-from core.views.home import error_403, error_403
+from core.views.home import error_403
 
 # Utils
 from core.utils.strings import MESSAGE_SUCCESS_DELETE, MESSAGE_403

@@ -59,6 +59,7 @@ class CobranzaFacturaSerializer(serializers.ModelSerializer):
 class CobranzaSerializer(serializers.ModelSerializer):
     """Cobranza Serializer."""
 
+    fecha = serializers.DateField(required=True)
     cliente = ClienteSerializer()
     total = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
     cobranza_facturas = CobranzaFacturaSerializer(many=True)
@@ -68,7 +69,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
 
         model = Cobranza
         fields = (
-            'id', 'cliente', 'total',
+            'id', 'fecha', 'cliente', 'total',
             'cobranza_facturas',
         )
         read_only_fields = ('id', 'cliente')
@@ -87,8 +88,9 @@ class CobranzaSerializer(serializers.ModelSerializer):
         try:
             # Factura
             cliente = self.context['cliente']
+            fecha = data['fecha']
             total = data['total']
-            cobranza = Cobranza.objects.create(cliente=cliente, total=total)
+            cobranza = Cobranza.objects.create(fecha=fecha, cliente=cliente, total=total)
 
             # Factura cobranza
             facturas = data['cobranza_facturas']
@@ -119,6 +121,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
     def update(self, instance, data):
         """Actualiza la intancia."""
         try:
+            instance.fecha = data['fecha']
             instance.total = data['total']
             facturas = data['cobranza_facturas']
 
@@ -130,7 +133,6 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     # La factura del cliente pasa a estar cobrada
                     factura_entry = factura['factura']
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
-
                     cobranza_factura = CobranzaFactura.objects.create(
                         cobranza=instance,
                         factura=factura['factura'],

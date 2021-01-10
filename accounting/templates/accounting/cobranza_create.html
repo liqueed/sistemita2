@@ -29,6 +29,21 @@
             <fieldset>
               <legend>Datos</legend>
 
+              <!-- Fecha -->
+              <div class="row">
+                <div class="col-4">
+                  <div id="div_id_fecha" class="form-group">
+                    <label for="id_fecha" class=" requiredField">
+                      Fecha<span class="asteriskField">*</span>
+                    </label>
+                    <div>
+                      <input type="text" name="fecha" class="dateinput form-control" required="" id="id_fecha">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Fecha -->
+
               <!-- Cliente -->
               <div class="row">
                 <div class="col-5">
@@ -177,6 +192,8 @@
   </div>
 {% endblock %}
 {% block extra_js %}
+$('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+
 // Cliente
 let cliente; // global
 
@@ -356,6 +373,9 @@ $('#submit-id-submit').click(function(e){
 
     if (!validateForm()){return;}
 
+    let fecha = $('input[name=fecha]').val().split("/");
+    fecha = new Date(fecha[2], fecha[1] - 1, fecha[0]).toISOString().slice(0, 10);
+
     let total = $('input[name=total]').val();
     let facturas = [];
 
@@ -386,6 +406,7 @@ $('#submit-id-submit').click(function(e){
     });
 
     let formCobranzaData = {
+        'fecha': fecha,
         'cobranza_facturas': facturas,
         'total': parseInt(total)
     }

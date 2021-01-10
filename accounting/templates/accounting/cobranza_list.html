@@ -49,7 +49,7 @@
               {% for object in object_list %}
                 <tr>
                   <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
-                  <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.creado }}</td>
+                  <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
                   <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.cliente.razon_social }}</td>
                   <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.cliente.cuit }}</td>
                   <td {% if perms.accounting.view_cobranza %}onclick="location.href='{% url 'accounting:cobranza-detail' object.pk %}';"{% endif %}>{{ object.total }}</td>
