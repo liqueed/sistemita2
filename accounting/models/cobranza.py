@@ -12,6 +12,7 @@ from core.models.utils import TimeStampedModel
 class Cobranza(TimeStampedModel, models.Model):
     """Modelo cobraza a clientes."""
 
+    fecha = models.DateField(blank=False)
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 

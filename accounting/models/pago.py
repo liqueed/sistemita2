@@ -12,6 +12,7 @@ from core.models.utils import TimeStampedModel
 class Pago(TimeStampedModel, models.Model):
     """Modelo pago a proveedores."""
 
+    fecha = models.DateField(blank=False)
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
