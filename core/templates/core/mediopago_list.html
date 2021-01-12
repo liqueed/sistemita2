@@ -1,57 +1,71 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Medios de Pago | Liqueed{% endblock %}
+{% block title %}Medios de pago | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
+  <div class="container-fluid">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Medios de pago</h1>
+    {% include 'components/messages.html' %}
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3"></div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <div class="row float-right">
-                    {% include 'components/search_form.html' %}
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Medios de pago</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="row float-right">
+            {% include 'components/search_form.html' %}
 
-                      <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                        <a class="btn btn-primary" role="button" href="{% url 'mediopago-agregar' %}">Agregar</a>
-                      </div>
+            {% if perms.core.add_mediopago %}
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                <a class="btn btn-primary" role="button" href="{% url 'core:mediopago-create' %}">Agregar</a>
+              </div>
+            {% endif %}
 
-                </div>
-                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for object in object_list %}
-                        <tr>
-                            <td onclick="location.href='{% url 'mediopago-detalle' object.pk %}';">{{ object.pk }}</td>
-                            <td onclick="location.href='{% url 'mediopago-detalle' object.pk %}';">{{ object.nombre }}</td>
-                            <td>
-                              <a href="{% url 'mediopago-modificar' object.pk %}">
-                                  <i class="fas fa-wrench"></i>
-                              </a>
-                              <a href="{% url 'mediopago-eliminar' object.pk %}">
-                                  <i class="fas fa-trash"></i>
-                              </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan=5>Sin resultados</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+          </div>
+          <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                {% if perms.core.change_mediopago or perms.core.delete_mediopago %}
+                  <th></th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td {% if perms.core.view_mediopago %}onclick="location.href='{% url 'core:mediopago-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.core.view_mediopago %}onclick="location.href='{% url 'core:mediopago-detail' object.pk %}';"{% endif %}>{{ object.nombre }}</td>
+                  {% if perms.core.change_mediopago or perms.core.delete_mediopago %}
+                    <td>
+                      {% if perms.core.change_mediopago %}
+                        <a href="{% url 'core:mediopago-update' object.pk %}">
+                          <i class="fas fa-wrench"></i>
+                        </a>
+                      {% endif %}
+                      {% if perms.core.delete_mediopago %}
+                        <a href="{% url 'core:mediopago-delete' object.pk %}">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan=5>Sin resultados</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% include 'components/pagination.html' %}
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
 {% endblock %}

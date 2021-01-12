@@ -1,4 +1,4 @@
-"""Modulo serializers de pagos."""
+"""Serializers de los modelos Pago, PagoFactura y PagoFacturaPago."""
 
 # Django REST Framework
 from rest_framework import serializers
@@ -21,10 +21,12 @@ class PagoFacturaPagoSerializer(serializers.ModelSerializer):
     Este campo 'data' contiene informacion sobre si el objeto que lo contiene
     tiene que ser agregado, editado o eliminado.
     """
+
     data = serializers.DictField(required=False)
 
     class Meta:
         """Clase meta."""
+
         model = PagoFacturaPago
         fields = ('id', 'data', 'metodo', 'monto')
         read_only_fields = ('id',)
@@ -38,11 +40,13 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
     Este campo 'data' contiene informacion sobre si el objeto que lo contiene
     tiene que ser agregado, editado o eliminado.
     """
+
     data = serializers.DictField(required=False)
     pago_factura_pagos = PagoFacturaPagoSerializer(many=True)
 
     class Meta:
         """Clase meta."""
+
         model = PagoFactura
         fields = (
             'id', 'data',
@@ -54,15 +58,18 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
 
 class PagoSerializer(serializers.ModelSerializer):
     """Pago Serializer."""
+
+    fecha = serializers.DateField(required=True)
     proveedor = ProveedorSerializer()
     total = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
     pago_facturas = PagoFacturaSerializer(many=True)
 
     class Meta:
         """Clase meta."""
+
         model = Pago
         fields = (
-            'id', 'proveedor', 'total',
+            'id', 'fecha', 'proveedor', 'total',
             'pago_facturas',
         )
         read_only_fields = ('id', 'proveedor')
@@ -80,9 +87,10 @@ class PagoSerializer(serializers.ModelSerializer):
         """Genera un pago con factura/s y su/s correspondiente/s pago/s."""
         try:
             # Factura
+            fecha = data['fecha']
             proveedor = self.context['proveedor']
             total = data['total']
-            pago = Pago.objects.create(proveedor=proveedor, total=total)
+            pago = Pago.objects.create(fecha=fecha, proveedor=proveedor, total=total)
 
             # Factura pago
             facturas = data['pago_facturas']
@@ -111,7 +119,9 @@ class PagoSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(error)
 
     def update(self, instance, data):
+        """Actualiza la instancia."""
         try:
+            instance.fecha = data['fecha']
             instance.total = data['total']
             facturas = data['pago_facturas']
 

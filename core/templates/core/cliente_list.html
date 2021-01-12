@@ -2,60 +2,72 @@
 {% load static %}
 {% block title %}Clientes | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
+  <div class="container-fluid">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Clientes</h1>
+    {% include 'components/messages.html' %}
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3"></div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <div class="row float-right">
-                    {% include 'components/search_form.html' %}
-
-                      <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                        <a class="btn btn-primary" role="button" href="{% url 'cliente-agregar' %}">Agregar</a>
-                      </div>
-
-                </div>
-                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                        <th>ID</th>
-                        <th>Raz&oacute;n Social</th>
-                        <th>CUIT</th>
-                        <th>Correo</th>
-                        <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for object in object_list %}
-                        <tr>
-                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.pk }}</td>
-                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.razon_social }}</td>
-                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.cuit }}</td>
-                            <td onclick="location.href='{% url 'cliente-detalle' object.pk %}';">{{ object.correo }}</td>
-                            <td>
-                              <a href="{% url 'cliente-modificar' object.pk %}">
-                                  <i class="fas fa-wrench"></i>
-                              </a>
-                              <a href="{% url 'cliente-eliminar' object.pk %}">
-                                  <i class="fas fa-trash"></i>
-                              </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan=5>Sin resultados</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Clientes</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="row float-right">
+            {% include 'components/search_form.html' %}
+            {% if perms.core.add_cliente %}
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                <a class="btn btn-primary" role="button" href="{% url 'core:cliente-create' %}">Agregar</a>
+              </div>
+            {% endif %}
+          </div>
+          <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Raz&oacute;n Social</th>
+                <th>CUIT</th>
+                <th>Correo</th>
+                {% if perms.core.change_cliente or perms.core.delete_cliente %}
+                  <th></th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.razon_social }}</td>
+                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.cuit }}</td>
+                  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.correo }}</td>
+                  {% if perms.core.change_cliente or perms.core.delete_cliente %}
+                    <td>
+                      {% if perms.core.change_cliente %}
+                        <a href="{% url 'core:cliente-update' object.pk %}">
+                          <i class="fas fa-wrench"></i>
+                        </a>
+                      {% endif %}
+                      {% if perms.core.delete_cliente %}
+                        <a href="{% url 'core:cliente-delete' object.pk %}">
+                          <i class="fas fa-trash "></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan=5>Sin resultados</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% include 'components/pagination.html' %}
         </div>
+      </div>
     </div>
-</div>
+  </div>
 
 {% endblock %}

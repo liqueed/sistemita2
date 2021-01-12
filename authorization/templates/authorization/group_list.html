@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Grupos | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Grupos</h1>
+    {% include 'components/messages.html' %}
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Grupos</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="row float-right">
+            {% include 'components/search_form.html' %}
+            {% if perms.auth.add_group %}
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                <a class="btn btn-primary" role="button" href="{% url 'authorization:group-create' %}">Agregar</a>
+              </div>
+            {% endif %}
+          </div>
+          <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                {% if perms.auth.change_group or perms.auth.delete_group %}
+                  <th></th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td {% if perms.auth.view_group %}onclick="location.href='{% url 'authorization:group-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.auth.view_group %}onclick="location.href='{% url 'authorization:group-detail' object.pk %}';"{% endif %}>{{ object.name }}</td>
+                  {% if perms.auth.change_group or perms.auth.delete_group %}
+                    <td>
+                      {% if perms.auth.change_group %}
+                        <a href="{% url 'authorization:group-update' object.pk %}">
+                          <i class="fas fa-wrench"></i>
+                        </a>
+                      {% endif %}
+                      {% if perms.auth.delete_group %}
+                        <a href="{% url 'authorization:group-delete' object.pk %}">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan=5>Sin resultados</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% include 'components/pagination.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

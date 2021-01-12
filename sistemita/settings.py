@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'authorization',
     'accounting',
     'core',
-    'facturacion_clientes'
+    'facturacion_clientes',
 ]
 
 MIDDLEWARE = [
@@ -148,7 +148,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'authorization.User'
 LOGOUT_REDIRECT_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'core:home'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (

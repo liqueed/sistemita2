@@ -1,53 +1,140 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+"""Vistas del modelo MedioPago."""
+
+# Django
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, DetailView, DeleteView
 from django.views.generic.edit import CreateView, UpdateView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
+# Django REST Framework
 from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import viewsets
 
-from core.forms import MedioPagoForm
+# Forms
+from core.forms.mediospago import MedioPagoForm
+
+# Models
 from core.models.mediopago import MedioPago
+
+# Serializers
 from core.serializers import MedioPagoSerializer
 
+# Views
+from core.views.home import error_403
 
-class MedioPagoViewSet(mixins.ListModelMixin,
-                       mixins.RetrieveModelMixin,
-                       viewsets.GenericViewSet):
+from core.utils.strings import (
+    MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+)
+
+
+class MedioPagoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """Medio de pago view set."""
+
     queryset = MedioPago.objects.all()
     serializer_class = MedioPagoSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
 
-class MedioPagoListView(LoginRequiredMixin, ListView):
+class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
+    """Vista que retorna un listado con los medios de pagos."""
+
+    paginate_by = 10
+    permission_required = 'core.list_mediopago'
+    raise_exception = True
+
     def get_queryset(self):
-        # Search filter
-        queryset = MedioPago.objects.all()
+        """Sobreescribe queryset.
+
+        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        """
+        queryset = MedioPago.objects.order_by('id')
         search = self.request.GET.get('search', None)
         if search:
-            queryset = queryset.filter(
-                nombre__icontains=search
-            )
+            queryset = queryset.filter(nombre__icontains=search)
         return queryset
 
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
-class MedioPagoAgregarView(LoginRequiredMixin, CreateView):
+
+class MedioPagoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    """Vista que agrega un medio de pago."""
+
+    form_class = MedioPagoForm
     model = MedioPago
+    permission_required = 'core.add_mediopago'
+    raise_exception = True
+    success_message = MESSAGE_SUCCESS_CREATED.format('medio de pago')
+
+    def get_success_url(self):
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('core.change_mediopago'):
+            return reverse('core:mediopago-update', args=(self.object.id,))
+        elif self.request.user.has_perm('core.view_mediopago'):
+            return reverse('core:mediopago-detail', args=(self.object.id,))
+        elif self.request.user.has_perm('core.list_mediopago'):
+            return reverse('core:mediopago-list')
+        else:
+            return reverse('core:home')
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
+
+class MedioPagoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
+    """Vista que muestra el detall de un medio de pago."""
+
+    model = MedioPago
+    permission_required = 'core.view_mediopago'
+    raise_exception = True
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
+
+
+class MedioPagoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+    """Vista que modifica un medio de pago."""
+
     form_class = MedioPagoForm
-    success_url = reverse_lazy('mediopago-listado')
+    model = MedioPago
+    permission_required = 'core.change_mediopago'
+    raise_exception = True
+    success_message = MESSAGE_SUCCESS_UPDATE.format('medio de pago')
+
+    def get_success_url(self):
+        """Luego de editar al objecto muestra la misma vista."""
+        return reverse('core:mediopago-update', args=(self.object.id,))
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)
 
 
-class MedioPagoDetalleView(LoginRequiredMixin, DetailView):
-    queryset = MedioPago.objects.all()
+class MedioPagoDeleteView(PermissionRequiredMixin, DeleteView):
+    """Vista que elimina un medio de pago."""
 
+    model = MedioPago
+    permission_required = 'core.delete_mediopago'
+    raise_exception = True
+    success_message = MESSAGE_SUCCESS_DELETE.format('medio de pago')
+    success_url = reverse_lazy('core:mediopago-list')
 
-class MedioPagoModificarView(LoginRequiredMixin, UpdateView):
-    queryset = MedioPago.objects.all()
-    form_class = MedioPagoForm
-    success_url = reverse_lazy('mediopago-listado')
+    def delete(self, request, *args, **kwargs):
+        """Muestra un mensaje sobre el resultado de la acción."""
+        messages.success(request, self.success_message)
+        return super(MedioPagoDeleteView, self).delete(request, *args, **kwargs)
 
-
-class MedioPagoEliminarView(LoginRequiredMixin, DeleteView):
-    queryset = MedioPago.objects.all()
-    success_url = reverse_lazy('mediopago-listado')
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos."""
+        if self.raise_exception:
+            return error_403(self.request, MESSAGE_403)

@@ -1,19 +1,41 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if facturaproveedor.pk %}Editar Facturación #{{ facturaproveedor.pk  }} - Proveedor: {{ facturaproveedor.proveedor.razon_social }} {% else %}Agregar Facturación a Proveedor{% endif %} | Liqueed
+  {% if object.pk %}
+    Editar facturación #{{ object.pk  }} - Proveedor: {{ object.proveedor.razon_social }}
+  {% else %}
+    Agregar facturación a Proveedor
+  {% endif %} | Liqueed
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-    {% if facturaproveedor.pk %}
-      <h1 class="h3 text-gray-800">Editar Facturación #{{ facturaproveedor.pk }} - Proveedor: {{ facturaproveedor.proveedor.razon_social}}</h1>
-    {% else %}
-      <h1 class="h3 text-gray-800">Agregar Facturación a Proveedor</h1>
-    {% endif %}
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
+      {% if perms.core.list_facturaproveedor %}
+      <a href="{% url 'core:facturaproveedor-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+        <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+      </a>
+      {% endif %}
+    </div>
+    {% include 'components/messages.html' %}
 
-    {% crispy form %}
-    <input id="id_factura_proveedor" type="hidden" value="{{ object.id }}">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          {% if not object.pk %}
+            Agregar facturación a Proveedor
+          {% else %}
+            Editar facturación #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social}}          {% endif %}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          {% crispy form %}
+        </div>
+      </div>
+    </div>
+
+  </div>
 {% endblock %}
 
 {% block extra_js %}
@@ -27,7 +49,7 @@ function updateInfoProveedor(){
     var idProveedor = $('#id_proveedor').val();
     if(idProveedor !== ''){
         $.get("/api/proveedor/" + idProveedor + "/", function(obj) {
-            var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 11px;" class="card col-6">`;
+            var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-6">`;
             data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
             data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
             data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
@@ -61,8 +83,8 @@ if (idFacturaProveedor) {
     });
 
     $(adjuntos).on("click",".remove_document", function(e){
-    e.preventDefault();
-    var element = $(this).parent("div");
+        e.preventDefault();
+        var element = $(this).parent("div");
         $.ajax({
             url: `/api/archivo/${this.id}/`,
             type: 'DELETE',
@@ -99,7 +121,7 @@ function buildLinkFacturaCliente(){
     let idFactura = $('#id_factura').val();
 
     if(idFactura !== ''){
-        let url = `{% url "factura-detalle" pk=0 %}`.replace('0', idFactura);
+        let url = `{% url "core:factura-detail" pk=0 %}`.replace('0', idFactura);
         elemFacturaCliente.removeClass('d-none');
         elemFacturaCliente.attr('href', url);
     } else {

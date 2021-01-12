@@ -12,6 +12,7 @@ from core.models.utils import TimeStampedModel
 class Pago(TimeStampedModel, models.Model):
     """Modelo pago a proveedores."""
 
+    fecha = models.DateField(blank=False)
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
@@ -30,8 +31,7 @@ class PagoFactura(TimeStampedModel, models.Model):
     Cada pago a proveedor puede tener una o muchas facturas asociadas.
     """
 
-    pago = models.ForeignKey(Pago, blank=False, on_delete=models.CASCADE,
-                             related_name='pago_facturas')
+    pago = models.ForeignKey(Pago, blank=False, on_delete=models.CASCADE, related_name='pago_facturas')
     factura = models.ForeignKey(FacturaProveedor, blank=False, on_delete=models.CASCADE)
     ganancias = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     ingresos_brutos = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)

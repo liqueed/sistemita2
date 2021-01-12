@@ -1,17 +1,36 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if mediopago.pk %}Editar Medio de Pago #{{ mediopago.pk }}{% else %}Agregar Medio de Pago{% endif %} | Liqueed
+    {% if object.pk %}Editar Medio de pago #{{ object.pk }}{% else %}Agregar Medio de Pago{% endif %} | Liqueed
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-    {% if mdiopago.pk %}
-      <h1 class="h3 text-gray-800">Editar Medio de Pago #{{ mediopago.pk }}</h1>
-    {% else %}
-      <h1 class="h3 text-gray-800">Agregar Medio de Pago</h1>
-    {% endif %}
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">Medios de pago</h1>
+      {% if perms.core.list_mediopago %}
+      <a href="{% url 'core:mediopago-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+        <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+      </a>
+      {% endif %}
+    </div>
+    {% include 'components/messages.html' %}
 
-    {% crispy form %}
-</div>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          {% if not object.pk %}
+            Agregar Medio de pago
+          {% else %}
+            Editar Medio de pago #{{ mediopago.pk }}
+          {% endif %}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          {% crispy form %}
+        </div>
+      </div>
+    </div>
+
+  </div>
 {% endblock %}

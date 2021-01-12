@@ -1,27 +1,35 @@
 <form class="form-inline" method="get">
-  <div class="form-group mb-2">
+  <div class="form-group mr-1 mb-2">
     <input type="checkbox" class="form-check-input" name="cobrado" id="id_cobrado" {% if request.GET.cobrado %}checked{% endif %}>
     <label class="form-check-label mr-2" for="exampleCheck1">Cobrado/Pagado</label>
-    <input onfocus="this.select()" autofocus autocomplete="off" value="{{ request.GET.search }}" type="text" class="form-control form-control-sm" name="search" id="id_search" placeholder="Buscar">
+    <input onfocus="this.select()" autofocus autocomplete="off" value="{{ request.GET.search }}"
+           type="text" class="form-control form-control-sm" name="search" id="id_search"
+           placeholder="Buscar"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-primary btn-sm" type="submit">
+        <i class="fas fa-search fa-sm"></i>
+      </button>
+    </div>
   </div>
 </form>
 
 {% block extra_js %}
-  <script>
-    $('#id_cobrado').click(function(){
-	set_value()
-        $('form').submit();
-    });
-    $('#id_search').keypress(function(event){
-	var keycode = (event.keyCode ? event.keyCode : event.which);
-	if(keycode == '13'){
-	    set_value()
-	}
-    });
-    function set_value(){
-	if ($('#id_cobrado').is(":checked")){
-    	    $('#id_cobrado').val('1');
-    	}
+<script>
+$('#id_cobrado').click(function(){
+    set_value()
+    $('form').submit();
+});
+$('#id_search').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if(keycode == '13'){
+        set_value()
     }
-  </script>
+});
+function set_value(){
+    if ($('#id_cobrado').is(":checked")){
+        $('#id_cobrado').val('1');
+    }
+  }
+</script>
 {% endblock %}

@@ -6,11 +6,13 @@ from django.db import models
 
 class Pais(models.Model):
     """Modelo País."""
+
     codigo = models.CharField(primary_key=True, max_length=3, verbose_name='Código')
     nombre = models.CharField(max_length=150, verbose_name='Nombre')
 
     class Meta:
         """Configuraciones del modelo."""
+
         verbose_name = 'País'
         verbose_name_plural = 'Países'
         ordering = ('nombre',)
@@ -26,10 +28,12 @@ class Pais(models.Model):
 
 class Provincia(models.Model):
     """Modelo Provincia."""
+
     nombre = models.CharField(max_length=150, verbose_name='Nombre')
 
     class Meta:
         """Configuraciones del modelo."""
+
         verbose_name = 'Provincia'
         verbose_name_plural = 'Provincias'
 
@@ -44,11 +48,13 @@ class Provincia(models.Model):
 
 class Distrito(models.Model):
     """Modelo Distrito."""
+
     nombre = models.CharField(max_length=150, verbose_name='Nombre')
     provincia = models.ForeignKey(Provincia, verbose_name='Provincia', on_delete=models.CASCADE)
 
     class Meta:
         """Configuraciones del modelo."""
+
         verbose_name = 'Distrito'
         verbose_name_plural = 'Distritos'
         ordering = ('nombre',)
@@ -64,11 +70,13 @@ class Distrito(models.Model):
 
 class Localidad(models.Model):
     """Modelo Localidad."""
+
     nombre = models.CharField(max_length=150, verbose_name='Nombre')
     distrito = models.ForeignKey(Distrito, null=True, verbose_name='Distrito', on_delete=models.CASCADE)
 
     class Meta:
         """Configuraciones del modelo."""
+
         verbose_name = 'Localidad'
         verbose_name_plural = 'Localidades'
         ordering = ('nombre',)

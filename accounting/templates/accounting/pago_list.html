@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Pagos a Proveedores | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Pagos a Proveedores</h1>
+    {% include 'components/messages.html' %}
+
+    <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create %}d-none{% endif %}" role="alert">
+     {% if request.GET.create %}El pago ha sido creado exitosamente.{% endif %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de pagos a Proveedores</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="row float-right">
+            {% include 'components/search_form.html' %}
+
+            {% if perms.accounting.add_pago %}
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                <a class="btn btn-primary" role="button" href="{% url 'accounting:pago-create' %}">Agregar</a>
+              </div>
+            {% endif %}
+
+          </div>
+          <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Raz&oacute;n Social</th>
+                <th>CUIT</th>
+                <th>Total</th>
+                {% if perms.accounting.change_pago or perms.accounting.delete_pago %}
+                  <th></th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
+                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.proveedor.razon_social }}</td>
+                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.proveedor.cuit }}</td>
+                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.total }}</td>
+                  {% if perms.accounting.change_pago or perms.accounting.delete_pago %}
+                    <td>
+                      {% if perms.accounting.change_pago %}
+                        <a href="{% url 'accounting:pago-update' object.pk %}">
+                          <i class="fas fa-wrench"></i>
+                        </a>
+                      {% endif %}
+                      {% if perms.accounting.delete_pago %}
+                        <a href="{% url 'accounting:pago-delete' object.pk %}">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan=6>Sin resultados</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% include 'components/pagination.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

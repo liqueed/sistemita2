@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Eliminar Grupo #{{ object.pk }} | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">Grupos</h1>
+      {% if perms.auth.list_group %}
+        <a href="{% url 'authorization:group-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+          <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+        </a>
+      {% endif %}
+    </div>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          Eliminar Grupo #{{ object.pk }}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <form method="post" action="{% url 'authorization:group-delete' object.pk %}">
+            {% csrf_token %}
+            <p>
+              <strong>Atenci&oacute;n!</strong>
+              Est&aacute; por eliminar el grupo <em>{{ object.name }}</em>. Este Grupo tiene los permisos:
+              <ul>
+                {% for permission in object.permissions.all %}
+                  <li>{{ permission }}</li>
+                {% endfor %}
+              </ul>
+            </p>
+            <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+            <div class="row">
+              <div class="col">
+                <button class="btn btn-danger" type="submit">Eliminar</button>
+                <a class="btn" href="{% url 'authorization:group-list' %}">No eliminar</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

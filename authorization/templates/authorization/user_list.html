@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Usuarios | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Usuarios</h1>
+    {% include 'components/messages.html' %}
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Usuarios</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <div class="row float-right">
+            {% include 'components/search_form.html' %}
+
+            {% if perms.authorization.add_user %}
+              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+                <a class="btn btn-primary" role="button" href="{% url 'authorization:user-create' %}">Agregar</a>
+              </div>
+            {% endif %}
+          </div>
+
+          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                {% if perms.authorization.change_user or perms.authorization.delete_user %}
+                  <th></th>
+                {% endif %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.username }}</td>
+                  <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.email }}</td>
+                  <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.first_name }}</td>
+                  <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.last_name }}</td>
+                  {% if perms.authorization.change_user or perms.authorization.delete_user %}
+                    <td>
+                      {% if perms.authorization.change_user %}
+                        <a href="{% url 'authorization:user-update' object.pk %}">
+                          <i class="fas fa-wrench"></i>
+                        </a>
+                      {% endif %}
+                      {% if perms.authorization.delete_user %}
+                        <a href="{% url 'authorization:user-delete' object.pk %}">
+                          <i class="fas fa-trash"></i>
+                        </a>
+                      {% endif %}
+                    </td>
+                {% endif %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% include 'components/pagination.html' %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+{% endblock %}

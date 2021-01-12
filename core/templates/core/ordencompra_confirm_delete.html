@@ -2,24 +2,42 @@
 {% load static crispy_forms_tags %}
 {% block title %}Eliminar Orden de Compra #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }}  | Liqueed{% endblock %}
 {% block content %}
-<div class="container-fluid">
-    <h1 class="h3 mb-2 text-gray-800">Eliminar Orden de Compra #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }}</h1>
-    <hr class="sidebar-divider">
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">&Oacute;rdenes de compra</h1>
+      {% if perms.core.list_ordencompra %}
+        <a href="{% url 'core:ordencompra-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+          <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+        </a>
+      {% endif %}
+    </div>
+    {% include 'components/messages.html' %}
 
-    <form method="post" action="{% url 'ordencompra-eliminar' object.pk %}">
-        {% csrf_token %}
-        <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la &oacute;rden de compra <em>Nro. {{ object.pk}}</em> del cliente <em>{{ object.cliente.razon_social}}</em> con CUIT <em>{{ object.cliente.cuit}}</em>.</p>
-        <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
-        <div class="row">
-            <div class="col">
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+          Eliminar Orden de Compra #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }}
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <form method="post" action="{% url 'core:ordencompra-delete' object.pk %}">
+            {% csrf_token %}
+            <p>
+              <strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la &oacute;rden de compra <em>Nro. {{ object.pk}}</em>
+              del cliente <em>{{ object.cliente.razon_social}}</em> con CUIT <em>{{ object.cliente.cuit}}</em>.
+            </p>
+            <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+            <div class="row">
+              <div class="col">
                 <button class="btn btn-danger" type="submit">Eliminar</button>
-                <a class="btn" href="{% url 'ordencompra-listado' %}">No eliminar</a>
+                <a class="btn" href="{% url 'core:ordencompra-list' %}">No eliminar</a>
+              </div>
             </div>
+          </form>
         </div>
+      </div>
+    </div>
 
-    </form>
-
-
-</div>
-
+  </div>
 {% endblock %}

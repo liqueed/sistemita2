@@ -1,4 +1,4 @@
-"""Accounting URLs modulo"""
+"""Accounting URLs."""
 
 # Django
 from django.urls import include, path
@@ -8,12 +8,12 @@ from rest_framework import routers
 
 # Views
 from accounting.views.cobranzas import (
-    CobranzaViewSet, CobranzaListView, CobranzaAgregarTemplateView,
-    CobranzaDetalleView, CobranzaEditarTemplateView, CobranzaEliminarView
+    CobranzaViewSet, CobranzaListView, CobranzaCreateTemplateView,
+    CobranzaDetailView, CobranzaUpdateTemplateView, CobranzaDeleteView
 )
 from accounting.views.pagos import (
-    PagoViewSet, PagoListView, PagoAgregarTemplateView,
-    PagoDetalleView, PagoEditarTemplateView, PagoEliminarView
+    PagoViewSet, PagoListView, PagoCreateTemplateView,
+    PagoDetailView, PagoUpdateTemplateView, PagoDeleteView
 )
 
 router = routers.DefaultRouter()
@@ -25,16 +25,16 @@ urlpatterns = [
     path(r'api/', include(router.urls)),
 
     # Cobranza cliente
-    path('cobranza/', CobranzaListView.as_view(), name='cobranza-listado'),
-    path('cobranza/agregar', CobranzaAgregarTemplateView.as_view(), name='cobranza-agregar'),
-    path('cobranza/<int:pk>/', CobranzaDetalleView.as_view(), name='cobranza-detalle'),
-    path('cobranza/<int:pk>/editar/', CobranzaEditarTemplateView.as_view(), name='cobranza-modificar'),
-    path('cobranza/<int:pk>/eliminar/', CobranzaEliminarView.as_view(), name='cobranza-eliminar'),
+    path('cobranza/', CobranzaListView.as_view(), name='cobranza-list'),
+    path('cobranza/agregar', CobranzaCreateTemplateView.as_view(), name='cobranza-create'),
+    path('cobranza/<int:pk>/', CobranzaDetailView.as_view(), name='cobranza-detail'),
+    path('cobranza/<int:pk>/editar/', CobranzaUpdateTemplateView.as_view(), name='cobranza-update'),
+    path('cobranza/<int:pk>/eliminar/', CobranzaDeleteView.as_view(), name='cobranza-delete'),
 
     # Pago a proveedor
-    path('pago/', PagoListView.as_view(), name='pago-listado'),
-    path('pago/agregar', PagoAgregarTemplateView.as_view(), name='pago-agregar'),
-    path('pago/<int:pk>/', PagoDetalleView.as_view(), name='pago-detalle'),
-    path('pago/<int:pk>/editar/', PagoEditarTemplateView.as_view(), name='pago-modificar'),
-    path('pago/<int:pk>/eliminar/', PagoEliminarView.as_view(), name='pago-eliminar'),
+    path('pago/', PagoListView.as_view(), name='pago-list'),
+    path('pago/agregar', PagoCreateTemplateView.as_view(), name='pago-create'),
+    path('pago/<int:pk>/', PagoDetailView.as_view(), name='pago-detail'),
+    path('pago/<int:pk>/editar/', PagoUpdateTemplateView.as_view(), name='pago-update'),
+    path('pago/<int:pk>/eliminar/', PagoDeleteView.as_view(), name='pago-delete'),
 ]
