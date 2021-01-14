@@ -31,6 +31,7 @@ class UserCreateForm(forms.ModelForm):
         """Inicializacion del Formulario."""
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.fields['is_superuser'].widget.attrs['checked'] = False
         self.fields['groups'].widget.attrs['size'] = 10
         self.helper.layout = Layout(
             Fieldset(
@@ -57,6 +58,10 @@ class UserCreateForm(forms.ModelForm):
                 ),
                 Div(
                     Div('password_confirmation', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('is_superuser', css_class='col-6'),
                     css_class='row'
                 ),
                 Div(
@@ -96,6 +101,7 @@ class UserCreateForm(forms.ModelForm):
         help_text=HELP_TEXT_PASSWORD_CONFIRMATION
     )
 
+    is_superuser = forms.BooleanField(required=False, label='Administrador')
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.order_by('name'),
         label='Grupos',
@@ -203,6 +209,10 @@ class UserUpdateForm(forms.ModelForm):
                     css_class='row'
                 ),
                 Div(
+                    Div('is_superuser', css_class='col-6'),
+                    css_class='row'
+                ),
+                Div(
                     Div('groups', css_class='col-6'),
                     css_class='row'
                 ),
@@ -225,6 +235,8 @@ class UserUpdateForm(forms.ModelForm):
         help_text=("Para cambiar la contraseña usar <a href=\"../password/\">este formulario</a>.")
     )
 
+    is_superuser = forms.BooleanField(required=False, label='Administrador')
+
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.order_by('name'),
         label='Grupos',
@@ -235,7 +247,7 @@ class UserUpdateForm(forms.ModelForm):
         """Configuraciones del formulario."""
 
         model = User
-        fields = ('first_name', 'last_name', 'username', 'email', 'groups')
+        fields = ('first_name', 'last_name', 'username', 'email', 'is_superuser', 'groups')
 
 
 class PasswordResetForm(SetPasswordForm):

@@ -26,6 +26,8 @@
             <dd class="col-sm-10">{{ object.last_name }}</dd>
             <dt class="col-sm-2">Usuario</dt>
             <dd class="col-sm-10">{{ object.username }}</dd>
+            <dt class="col-sm-2">Administrador</dt>
+            <dd class="col-sm-10">{% if object.is_superuser %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="far fa-square"></i>{% endif %}</dd>
             <dt class="col-sm-2">Grupos</dt>
             {% if object.groups.all|length %}
               {% for group in object.groups.all %}

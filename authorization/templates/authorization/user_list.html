@@ -32,7 +32,7 @@
                 <th>Usuario</th>
                 <th>Correo</th>
                 <th>Nombre</th>
-                <th>Apellido</th>
+                <th>Admin</th>
                 {% if perms.authorization.change_user or perms.authorization.delete_user %}
                   <th></th>
                 {% endif %}
@@ -44,10 +44,16 @@
                   <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
                   <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.username }}</td>
                   <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.email }}</td>
-                  <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.first_name }}</td>
-                  <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.last_name }}</td>
+                  <td {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>{{ object.full_name }}</td>
+                  <td class="text-center" {% if perms.authorization.view_user %}onclick="location.href='{% url 'authorization:user-detail' object.pk %}';"{% endif %}>
+                    {% if object.is_superuser %}
+                      <i class="fas fa-check-square text-success"></i>
+                    {% else %}
+                      <i class="far fa-square"></i>
+                    {% endif %}
+                  </td>
                   {% if perms.authorization.change_user or perms.authorization.delete_user %}
-                    <td>
+                    <td class="text-center">
                       {% if perms.authorization.change_user %}
                         <a href="{% url 'authorization:user-update' object.pk %}">
                           <i class="fas fa-wrench"></i>
