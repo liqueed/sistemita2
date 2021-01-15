@@ -15,8 +15,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         """Controlador del comandos."""
+
+        counter = 0
         try:
             permissions = [
+                # Listados
                 {'name': 'Puede listar Archivos', 'codename': 'list_archivo',
                  'content_type': ContentType.objects.get(model='archivo')},
                 {'name': 'Puede listar Clientes', 'codename': 'list_cliente',
@@ -41,11 +44,17 @@ class Command(BaseCommand):
                  'content_type': ContentType.objects.get(model='proveedor')},
                 {'name': 'Puede listar Usuarios', 'codename': 'list_user',
                  'content_type': ContentType.objects.get(model='user')},
+                # Reportes
+                {'name': 'Puede ver reportes de Facturas A Clientes', 'codename': 'view_reports_factura',
+                 'content_type': ContentType.objects.get(model='factura')},
+                {'name': 'Puede ver reportes de Facturas A Proveedores', 'codename': 'view_reports_facturaproveedor',
+                 'content_type': ContentType.objects.get(model='facturaproveedor')},
             ]
 
             for permission in permissions:
                 if not Permission.objects.filter(codename=permission.get('codename')).exists():
                     Permission.objects.create(**permission)
-
+                    counter += 1
+            print('Se agregaron {} permisos nuevos.'.format(counter))
         except ContentType.DoesNotExist as err:
             print(err)
