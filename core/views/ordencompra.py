@@ -1,27 +1,25 @@
 """Vistas del modelo OrdenCompra."""
 
+# Datetime
+from datetime import datetime, timedelta
+
 # Django
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Models
-from core.models.cliente import OrdenCompra
-
-# Forms
+# Core
 from core.forms.clientes import OrdenCompraForm
-
-# Views
+from core.models.cliente import OrdenCompra
+from core.utils.strings import (_MESSAGE_SUCCESS_CREATED,
+                                _MESSAGE_SUCCESS_DELETE,
+                                _MESSAGE_SUCCESS_UPDATE, MESSAGE_403)
 from core.views.home import error_403
-
-# Utils
-from core.utils.strings import (
-    MESSAGE_403, _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_UPDATE, _MESSAGE_SUCCESS_DELETE
-)
 
 
 class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
@@ -31,12 +29,23 @@ class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, ListView
     permission_required = 'core.list_ordencompra'
     raise_exception = True
 
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+
+        context['last_created'] = queryset.filter(
+            creado__gte=datetime.now()-timedelta(days=7)
+        ).count()
+
+        return context
+
     def get_queryset(self):
         """Sobreescribe queryset.
 
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = OrdenCompra.objects.order_by('id')
+        queryset = OrdenCompra.objects.order_by('-creado')
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
@@ -46,9 +55,10 @@ class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, ListView
         return queryset
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class OrdenCompraCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -65,17 +75,17 @@ class OrdenCompraCreateView(PermissionRequiredMixin, SuccessMessageMixin, Create
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_ordencompra'):
             return reverse('core:ordencompra-update', args=(self.object.id,))
-        elif self.request.user.has_perm('core.view_ordencompra'):
+        if self.request.user.has_perm('core.view_ordencompra'):
             return reverse('core:ordencompra-detail', args=(self.object.id,))
-        elif self.request.user.has_perm('core.list_ordencompra'):
+        if self.request.user.has_perm('core.list_ordencompra'):
             return reverse('core:ordencompra-list')
-        else:
-            return reverse('core:home')
+        return reverse('core:home')
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class OrdenCompraDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -86,9 +96,10 @@ class OrdenCompraDetailView(PermissionRequiredMixin, SuccessMessageMixin, Detail
     raise_exception = True
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class OrdenCompraUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -105,9 +116,10 @@ class OrdenCompraUpdateView(PermissionRequiredMixin, SuccessMessageMixin, Update
         return reverse('core:ordencompra-update', args=(self.object.id,))
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class OrdenCompraDeleteView(PermissionRequiredMixin, DeleteView):
@@ -122,9 +134,10 @@ class OrdenCompraDeleteView(PermissionRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
-        return super(OrdenCompraDeleteView, self).delete(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')

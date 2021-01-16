@@ -67,7 +67,7 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     def get_queryset(self):
         """Sobreescribe queryset.
 
-        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        Devuelve un conjunto de resultados si el usuario realiza una búsqueda.
         """
         queryset = Factura.objects.order_by('-fecha')
         search = self.request.GET.get('search', None)
