@@ -1,29 +1,27 @@
 """Vistas del modelo de Pago."""
 
+# Datetime
+from datetime import date
+
 # Django
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
-
 # Django Rest Framework
 from rest_framework import mixins, permissions, viewsets
 
 # Accounting
 from accounting.models.pago import Pago
 from accounting.serializers.pagos import PagoSerializer
-
 # Core
 from core.models.proveedor import FacturaProveedor
-
-# Views
+from core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
 from core.views.home import error_403
-
-# Utils
-from core.utils.strings import MESSAGE_SUCCESS_DELETE, MESSAGE_403
 
 
 class PagoViewSet(mixins.CreateModelMixin,
@@ -45,9 +43,19 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     permission_required = 'accounting.list_pago'
     raise_exception = True
 
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
+
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
+
+        return context
+
     def get_queryset(self):
         """Modifica el orden y devuelve los resultados de la búsqueda realizada por el usuario."""
-        queryset = Pago.objects.order_by('id')
+        queryset = Pago.objects.order_by('-fecha')
 
         search = self.request.GET.get('search', None)
         if search:
@@ -59,9 +67,10 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         return queryset
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class PagoCreateTemplateView(PermissionRequiredMixin, TemplateView):
@@ -72,9 +81,10 @@ class PagoCreateTemplateView(PermissionRequiredMixin, TemplateView):
     template_name = 'accounting/pago_create.html'
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class PagoDetailView(PermissionRequiredMixin, DetailView):
@@ -85,9 +95,10 @@ class PagoDetailView(PermissionRequiredMixin, DetailView):
     raise_exception = True
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class PagoUpdateTemplateView(PermissionRequiredMixin, TemplateView):
@@ -104,9 +115,10 @@ class PagoUpdateTemplateView(PermissionRequiredMixin, TemplateView):
         return context
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class PagoDeleteView(PermissionRequiredMixin, DeleteView):
@@ -120,20 +132,21 @@ class PagoDeleteView(PermissionRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         """Modifica el estado de las facturas que son desasociadas del pago al eliminarse."""
-        self.object = self.get_object()
+        pago = self.get_object()
 
-        pago_facturas = self.object.pago_facturas.all()
+        pago_facturas = pago.pago_facturas.all()
         for c_factura in pago_facturas:
             FacturaProveedor.objects.filter(pk=c_factura.factura.id).update(
                 cobrado=False
             )
 
         success_url = self.get_success_url()
-        self.object.delete()
+        pago.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(success_url)
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
