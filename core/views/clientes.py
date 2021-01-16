@@ -1,40 +1,31 @@
 """Vistas del modelo Cliente."""
 
+# Datetime
+from datetime import datetime, timedelta
+
 # Django
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
-from django.views.generic import ListView, DetailView, DeleteView
-from django.views.generic.edit import CreateView, UpdateView
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
+from django.views.generic import DeleteView, DetailView, ListView
+from django.views.generic.edit import CreateView, UpdateView
 
 # Django REST Framework
-from rest_framework import permissions
-from rest_framework import mixins
-from rest_framework import viewsets
+from rest_framework import mixins, permissions, viewsets
 
-# Models
-from core.models.cliente import Cliente
-
-# Forms
+# Core
 from core.forms.clientes import ClienteForm
-
-# Serializers
+from core.models.cliente import Cliente
 from core.serializers import ClienteSerializer
-
-# Views
+from core.utils.strings import (MESSAGE_403, MESSAGE_SUCCESS_CREATED,
+                                MESSAGE_SUCCESS_DELETE, MESSAGE_SUCCESS_UPDATE)
 from core.views.home import error_403
 
-# Utils
-from core.utils.strings import (
-    MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
-)
 
-
-class ClienteViewSet(mixins.ListModelMixin,
-                     mixins.RetrieveModelMixin,
-                     viewsets.GenericViewSet):
+class ClienteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """Cliente View set."""
 
     queryset = Cliente.objects.all()
@@ -50,6 +41,17 @@ class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     raise_exception = True
     template_name = 'core/cliente_list.html'
 
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+
+        context['last_created'] = queryset.filter(
+            creado__gte=datetime.now()-timedelta(days=7)
+        ).count()
+
+        return context
+
     def get_queryset(self):
         """Sobreescribe queryset.
 
@@ -60,17 +62,16 @@ class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(razon_social__search=search) |
-                Q(correo__icontains=search) |
-                Q(cuit__icontains=search)
+                Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
             )
 
         return queryset
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class ClienteCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -86,17 +87,17 @@ class ClienteCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_cliente'):
             return reverse('core:cliente-update', args=(self.object.id,))
-        elif self.request.user.has_perm('core.view_cliente'):
+        if self.request.user.has_perm('core.view_cliente'):
             return reverse('core:cliente-detail', args=(self.object.id,))
-        elif self.request.user.has_perm('core.list_cliente'):
+        if self.request.user.has_perm('core.list_cliente'):
             return reverse('core:cliente-list')
-        else:
-            return reverse('core:home')
+        return reverse('core:home')
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class ClienteDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -107,9 +108,10 @@ class ClienteDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView
     raise_exception = True
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class ClienteUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -126,9 +128,10 @@ class ClienteUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
         return reverse('core:cliente-update', args=(self.object.id,))
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
@@ -143,9 +146,10 @@ class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
-        return super(ClienteDeleteView, self).delete(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')

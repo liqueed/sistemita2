@@ -2,7 +2,6 @@
 
 El modelo Factura está asociado al modelo cliente.
 """
-
 # Datetime
 from datetime import datetime, timedelta
 
@@ -60,7 +59,7 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
             Sum('total'), Count('id')
         )
         context['last_created'] = queryset.filter(
-            creado__lte=datetime.now()-timedelta(days=7)
+            creado__gte=datetime.now()-timedelta(days=7)
         ).count()
 
         return context
