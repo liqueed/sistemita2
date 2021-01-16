@@ -16,9 +16,7 @@ from django.views.generic.edit import CreateView, UpdateView
 # Core
 from core.forms.clientes import OrdenCompraForm
 from core.models.cliente import OrdenCompra
-from core.utils.strings import (_MESSAGE_SUCCESS_CREATED,
-                                _MESSAGE_SUCCESS_DELETE,
-                                _MESSAGE_SUCCESS_UPDATE, MESSAGE_403)
+from core.utils.strings import _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_DELETE, _MESSAGE_SUCCESS_UPDATE, MESSAGE_403
 from core.views.home import error_403
 
 
