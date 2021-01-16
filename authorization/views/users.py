@@ -1,28 +1,26 @@
 """Vistas del módulo de usuarios."""
 
+# Datetime
+from datetime import date
+
 # Django
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, DeleteView, FormView, ListView
+from django.views.generic import DeleteView, DetailView, FormView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Forms
+# Authorization
 from authorization.forms.users import PasswordResetForm, UserCreateForm, UserUpdateForm
 
-# Models
-from django.contrib.auth import get_user_model
-
-# Views
+# Core
+from core.utils.strings import (_MESSAGE_SUCCESS_UPDATE, MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_DELETE,
+                                MESSAGE_SUCCESS_UPDATE)
 from core.views.home import error_403
-
-# Utils
-from core.utils.strings import (
-    MESSAGE_403, _MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE,
-    MESSAGE_SUCCESS_DELETE
-)
 
 User = get_user_model()
 
@@ -34,6 +32,16 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     permission_required = 'authorization.list_user'
     raise_exception = True
     template_name = 'authorization/user_list.html'
+
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
+
+        context['last_created'] = queryset.filter(date_joined__week=current_week).count()
+
+        return context
 
     def get_queryset(self):
         """Sobreescribe queryset.
@@ -51,9 +59,10 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         return queryset
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class UserCreateFormView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -70,17 +79,17 @@ class UserCreateFormView(PermissionRequiredMixin, SuccessMessageMixin, CreateVie
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('authorization.change_user'):
             return reverse('authorization:user-update', args=(self.object.id,))
-        elif self.request.user.has_perm('authorization.view_user'):
+        if self.request.user.has_perm('authorization.view_user'):
             return reverse('authorization:user-detail', args=(self.object.id,))
-        elif self.request.user.has_perm('authorization.list_user'):
+        if self.request.user.has_perm('authorization.list_user'):
             return reverse('authorization:user-list')
-        else:
-            return reverse('core:home')
+        return reverse('core:home')
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class UserDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -92,9 +101,10 @@ class UserDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     template_name = 'authorization/user_detail.html'
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class UserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -112,9 +122,10 @@ class UserUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
         return reverse('authorization:user-update', args=(self.object.id,))
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class UserDeleteView(PermissionRequiredMixin, DeleteView):
@@ -130,12 +141,13 @@ class UserDeleteView(PermissionRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
-        return super(UserDeleteView, self).delete(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class PasswordChangeFormView(PermissionRequiredMixin, SuccessMessageMixin, FormView):
@@ -173,6 +185,7 @@ class PasswordChangeFormView(PermissionRequiredMixin, SuccessMessageMixin, FormV
         return reverse('authorization:user-update', args=(object_id,))
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')

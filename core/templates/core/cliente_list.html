@@ -82,7 +82,7 @@
                   <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.cuit }}</td>
                   <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.correo }}</td>
                   {% if perms.core.change_cliente or perms.core.delete_cliente %}
-                    <td>
+                    <td class="text-center">
                       {% if perms.core.change_cliente %}
                         <a href="{% url 'core:cliente-update' object.pk %}">
                           <i class="fas fa-wrench"></i>
