@@ -1,40 +1,30 @@
 """Vistas del modelo FacturaProveedor."""
 
+# Datetime
+from datetime import datetime, timedelta
+
 # Django
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q
-from django_filters.views import FilterView
+from django.db.models import Count, Q, Sum
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView, DeleteView
-from django.views.generic.edit import CreateView, UpdateView
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
+from django.views.generic import DeleteView, DetailView
+from django.views.generic.edit import CreateView, UpdateView
+from django_filters.views import FilterView
 
 # Django REST Framework
-from rest_framework import permissions
-from rest_framework import mixins
-from rest_framework import viewsets
+from rest_framework import mixins, permissions, viewsets
 
-# Models
-from core.models.proveedor import FacturaProveedor
-
-# Filters
+# Core
 from core.filters import FacturaProveedorFilterSet
-
-# Forms
 from core.forms.proveedores import FacturaProveedorForm
-
-# Serializers
+from core.models.proveedor import FacturaProveedor
 from core.serializers import FacturaProveedorSerializer
-
-# Views
+from core.utils.strings import _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_DELETE, _MESSAGE_SUCCESS_UPDATE, MESSAGE_403
 from core.views.home import error_403
-
-# Utils
-from core.utils.strings import (
-    MESSAGE_403, _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_UPDATE, _MESSAGE_SUCCESS_DELETE
-)
 
 
 class FacturaProveedorViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -55,6 +45,20 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
     raise_exception = True
     template_name = 'core/facturaproveedor_list.html'
 
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+
+        context['due'] = queryset.filter(cobrado=False).aggregate(
+            Sum('total'), Count('id')
+        )
+        context['last_created'] = queryset.filter(
+            creado__gte=datetime.now()-timedelta(days=7)
+        ).count()
+
+        return context
+
     def get_queryset(self):
         """Sobreescribe queryset.
 
@@ -72,9 +76,10 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
         return queryset
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class FacturaProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -90,17 +95,17 @@ class FacturaProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, C
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_facturaproveedor'):
             return reverse('core:facturaproveedor-update', args=(self.object.id,))
-        elif self.request.user.has_perm('core.view_facturaproveedor'):
+        if self.request.user.has_perm('core.view_facturaproveedor'):
             return reverse('core:facturaproveedor-detail', args=(self.object.id,))
-        elif self.request.user.has_perm('core.list_facturaproveedor'):
+        if self.request.user.has_perm('core.list_facturaproveedor'):
             return reverse('core:facturaproveedor-list')
-        else:
-            return reverse('core:home')
+        return reverse('core:home')
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class FacturaProveedorDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -111,9 +116,10 @@ class FacturaProveedorDetailView(PermissionRequiredMixin, SuccessMessageMixin, D
     raise_exception = True
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class FacturaProveedorUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -130,9 +136,10 @@ class FacturaProveedorUpdateView(PermissionRequiredMixin, SuccessMessageMixin, U
         return reverse('core:facturaproveedor-update', args=(self.object.id,))
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
@@ -146,13 +153,14 @@ class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         """Método que elimina los archivos relacionados."""
-        self.object = self.get_object()
-        self.object.archivos.all().delete()
-        self.object.delete()
+        factura = self.get_object()
+        factura.archivos.all().delete()
+        factura.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(self.success_url)
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')

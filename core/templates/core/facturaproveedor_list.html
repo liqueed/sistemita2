@@ -5,8 +5,83 @@
   <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Facturación a Proveedores</h1>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Facturación a Proveedores</h1>
+      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar</a>
+    </div>
     {% include 'components/messages.html' %}
+
+    <!-- Cards -->
+    {% if perms.core.view_reports_facturaproveedor %}
+      <div class="row">
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Cantidad Facturas</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ object_list|length }}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-list fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body" role="button">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nuevas (semanal)</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_created }}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pendientes a cobrar</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ due.id__count }}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-comments fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total adeudado</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">${{ due.total__sum|default_if_none:"0" }}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    {% endif %}
+    <!-- End of Cards -->
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -48,12 +123,12 @@
                   <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.proveedor.cuit }}</td>
                   <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}><div class="float-right">{{ object.moneda_monto }}</div></td>
                   <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>
-                    <div class="float-left">
-                      {% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-circle"></i>{% endif %}
+                    <div class="text-center">
+                      {% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
                     </div>
                   </td>
                   {% if perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor %}
-                    <td>
+                    <td class="text-center">
                       {% if perms.core.change_facturaproveedor %}
                         <a href="{% url 'core:facturaproveedor-update' object.pk %}">
                           <i class="fas fa-wrench"></i>
