@@ -3,7 +3,7 @@
 El modelo Factura está asociado al modelo cliente.
 """
 # Datetime
-from datetime import datetime, timedelta
+from datetime import date
 
 # Django
 from django.contrib import messages
@@ -54,13 +54,12 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
 
         context['due'] = queryset.filter(cobrado=False).aggregate(
             Sum('total'), Count('id')
         )
-        context['last_created'] = queryset.filter(
-            creado__gte=datetime.now()-timedelta(days=7)
-        ).count()
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
 

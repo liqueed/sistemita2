@@ -1,7 +1,7 @@
 """Vistas del modelo FacturaProveedor."""
 
 # Datetime
-from datetime import datetime, timedelta
+from datetime import date
 
 # Django
 from django.contrib import messages
@@ -49,13 +49,12 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
 
         context['due'] = queryset.filter(cobrado=False).aggregate(
             Sum('total'), Count('id')
         )
-        context['last_created'] = queryset.filter(
-            creado__gte=datetime.now()-timedelta(days=7)
-        ).count()
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
 
@@ -64,7 +63,7 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
 
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = FacturaProveedor.objects.order_by('id')
+        queryset = FacturaProveedor.objects.order_by('-fecha')
 
         search = self.request.GET.get('search', None)
         if search:
