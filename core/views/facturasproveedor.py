@@ -51,7 +51,10 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['due'] = queryset.filter(cobrado=False).aggregate(
+        context['debt_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(
+            Sum('total'), Count('id')
+        )
+        context['debt_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(
             Sum('total'), Count('id')
         )
         context['last_created'] = queryset.filter(creado__week=current_week).count()
