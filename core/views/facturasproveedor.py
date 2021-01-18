@@ -24,6 +24,7 @@ from core.forms.proveedores import FacturaProveedorForm
 from core.models.proveedor import FacturaProveedor
 from core.serializers import FacturaProveedorSerializer
 from core.utils.strings import _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_DELETE, _MESSAGE_SUCCESS_UPDATE, MESSAGE_403
+from core.utils.export import export_excel
 from core.views.home import error_403
 
 
@@ -45,16 +46,25 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
     raise_exception = True
     template_name = 'core/facturaproveedor_list.html'
 
+    def get(self, request, *args, **kwargs):
+        """Genera reporte en formato excel."""
+        format_list = request.GET.get('formato', False)
+
+        if format_list == 'xls':
+            return export_excel(self.request, self.get_queryset())
+
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['debt_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(
+        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(
             Sum('total'), Count('id')
         )
-        context['debt_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(
+        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(
             Sum('total'), Count('id')
         )
         context['last_created'] = queryset.filter(creado__week=current_week).count()

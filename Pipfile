@@ -13,6 +13,7 @@ pylint-django = "*"
 django-extensions = "*"
 pydotplus = "*"
 selenium = "*"
+ipdb = "==0.13.4"
 
 [packages]
 django = "==3.0.7"
@@ -31,6 +32,7 @@ djangorestframework = "*"
 django-filter = "*"
 pillow = "==8.0.0"
 django-cleanup = "==5.1.0"
+xlsxwriter = "==1.3.7"
 
 
 [requires]

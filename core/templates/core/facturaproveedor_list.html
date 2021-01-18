@@ -7,7 +7,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <h1 class="h3 mb-0 text-gray-800">Facturación a Proveedores</h1>
-      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar</a>
+      <a href="{% url 'core:facturaproveedor-list' %}?formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar</a>
     </div>
     {% include 'components/messages.html' %}
 
@@ -53,7 +53,7 @@
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
                   <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pendientes a cobrar</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ debt_peso.id__count|add:debt_dollar.id__count }}</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ debt_in_peso.id__count|add:debt_in_dollar.id__count }}</div>
                 </div>
                 <div class="col-auto">
                   <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -69,7 +69,7 @@
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
                   <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total adeudado</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">${{ debt_peso.total__sum|default_if_none:"0" }} | U$D{{ debt_dollar.total__sum|default_if_none:"0" }}</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">${{ debt_in_peso.total__sum|default_if_none:"0" }} | U$D{{ debt_in_dollar.total__sum|default_if_none:"0" }}</div>
                 </div>
                 <div class="col-auto">
                   <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
