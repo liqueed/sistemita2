@@ -7,7 +7,9 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <h1 class="h3 mb-0 text-gray-800">Facturación a Proveedores</h1>
-      <a href="{% url 'core:facturaproveedor-list' %}?formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar</a>
+      {% if perms.core.view_reports_factura %}
+        <a href="{% url 'core:facturaproveedor-list' %}?formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar</a>
+      {% endif %}
     </div>
     {% include 'components/messages.html' %}
 
