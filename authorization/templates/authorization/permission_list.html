@@ -38,7 +38,7 @@
                 <tr>
                   <td {% if perms.auth.view_permission %}onclick="location.href='{% url 'authorization:permission-detail' object.pk %}';"{% endif %}>{{ object.name }}</td>
                   {% if perms.auth.change_permission or perms.auth.delete_permission %}
-                    <td>
+                    <td class="text-center">
                       {% if perms.auth.change_permission %}
                         <a href="{% url 'authorization:permission-update' object.pk %}">
                           <i class="fas fa-wrench"></i>
