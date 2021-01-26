@@ -20,7 +20,7 @@ class Cliente(TimeStampedModel, models.Model):
         ('U', 'Link')
     )
     razon_social = models.CharField('Razón Social', blank=False, null=False, max_length=128)
-    cuit = models.CharField('CUIT', blank=False, null=False, max_length=11)
+    cuit = models.CharField('CUIT', blank=False, null=False, max_length=11, unique=True)
     correo = models.EmailField(blank=False)
     telefono = models.CharField('Teléfono', max_length=14)
 

@@ -1,33 +1,26 @@
 """Vistas del modelo MedioPago."""
 
+# Datetime
+from datetime import date
+
 # Django
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import ListView, DetailView, DeleteView
-from django.views.generic.edit import CreateView, UpdateView
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
+from django.views.generic import DeleteView, DetailView, ListView
+from django.views.generic.edit import CreateView, UpdateView
 
 # Django REST Framework
-from rest_framework import permissions
-from rest_framework import mixins
-from rest_framework import viewsets
+from rest_framework import mixins, permissions, viewsets
 
 # Forms
 from core.forms.mediospago import MedioPagoForm
-
-# Models
 from core.models.mediopago import MedioPago
-
-# Serializers
 from core.serializers import MedioPagoSerializer
-
-# Views
+from core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_DELETE, MESSAGE_SUCCESS_UPDATE
 from core.views.home import error_403
-
-from core.utils.strings import (
-    MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
-)
 
 
 class MedioPagoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -45,6 +38,16 @@ class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     permission_required = 'core.list_mediopago'
     raise_exception = True
 
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
+
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
+
+        return context
+
     def get_queryset(self):
         """Sobreescribe queryset.
 
@@ -57,9 +60,10 @@ class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         return queryset
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class MedioPagoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -75,17 +79,17 @@ class MedioPagoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateVi
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_mediopago'):
             return reverse('core:mediopago-update', args=(self.object.id,))
-        elif self.request.user.has_perm('core.view_mediopago'):
+        if self.request.user.has_perm('core.view_mediopago'):
             return reverse('core:mediopago-detail', args=(self.object.id,))
-        elif self.request.user.has_perm('core.list_mediopago'):
+        if self.request.user.has_perm('core.list_mediopago'):
             return reverse('core:mediopago-list')
-        else:
-            return reverse('core:home')
+        return reverse('core:home')
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class MedioPagoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -96,9 +100,10 @@ class MedioPagoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailVi
     raise_exception = True
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class MedioPagoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -115,9 +120,10 @@ class MedioPagoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateVi
         return reverse('core:mediopago-update', args=(self.object.id,))
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')
 
 
 class MedioPagoDeleteView(PermissionRequiredMixin, DeleteView):
@@ -132,9 +138,10 @@ class MedioPagoDeleteView(PermissionRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
-        return super(MedioPagoDeleteView, self).delete(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)
 
     def handle_no_permission(self):
-        """Redirige a la página de error 403 si no tiene los permisos."""
-        if self.raise_exception:
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
+        return redirect('login')

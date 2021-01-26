@@ -5,9 +5,48 @@
   <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Pagos a Proveedores</h1>
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Pagos a Proveedores</h1>
+    </div>
     {% include 'components/messages.html' %}
 
+    <!-- Cards -->
+      <div class="row">
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Cantidad Pagos</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ page_obj.paginator.count }}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-list fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body" role="button">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nuevos (semanal)</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_created }}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    <!-- End Cards -->
     <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create %}d-none{% endif %}" role="alert">
      {% if request.GET.create %}El pago ha sido creado exitosamente.{% endif %}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -52,9 +91,9 @@
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.proveedor.razon_social }}</td>
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.proveedor.cuit }}</td>
-                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.total }}</td>
+                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}><div class="float-right">$ {{ object.total }}</div></td>
                   {% if perms.accounting.change_pago or perms.accounting.delete_pago %}
-                    <td>
+                    <td class="text-center">
                       {% if perms.accounting.change_pago %}
                         <a href="{% url 'accounting:pago-update' object.pk %}">
                           <i class="fas fa-wrench"></i>
