@@ -190,6 +190,9 @@
             <div class="form-group">
               <div>
                 <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+                <a href="{% url 'accounting:pago-generate-pdf' pk %}" class="btn btn-primary float-right mr-1 text-white">
+                  <i class="fas fa-file-pdf fa-sm text-white-50"></i> Comprobante
+                </a>
                 <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
               </div>
             </div>

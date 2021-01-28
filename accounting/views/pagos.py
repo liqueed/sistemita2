@@ -201,7 +201,7 @@ class PagoGeratePDFDetailView(PermissionRequiredMixin, DetailView):
 
         # Creating http response
         response = HttpResponse(content_type='application/pdf;')
-        response['Content-Disposition'] = 'inline; filename=comprobante_de_pago.pdf'
+        response['Content-Disposition'] = 'inline; filename=comprobante_de_pago_{}.pdf'.format(pago.pk)
         response['Content-Transfer-Encoding'] = 'binary'
         with tempfile.NamedTemporaryFile(delete=True) as output:
             output.write(result)
