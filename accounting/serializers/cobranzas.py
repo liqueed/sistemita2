@@ -166,7 +166,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     # La factura actual del cliente pasa a estar cobrada
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
 
-                    CobranzaFactura.objects.filter(pk=factura_entry.id).update(
+                    CobranzaFactura.objects.filter(pk=factura['data']['id']).update(
                         factura=factura_entry,
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],

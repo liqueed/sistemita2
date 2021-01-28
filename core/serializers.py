@@ -58,6 +58,9 @@ class ClienteSerializer(serializers.ModelSerializer):
             'provincia', 'distrito', 'localidad',
             'tipo_envio_factura', 'link_envio_factura', 'correo_envio_factura'
         ]
+        extra_kwargs = {
+            'cuit': {'validators': []},
+        }
 
 
 class ArchivoSerializer(serializers.ModelSerializer):
@@ -100,6 +103,9 @@ class ProveedorSerializer(serializers.ModelSerializer):
             'provincia', 'distrito', 'localidad',
             'cbu'
         ]
+        extra_kwargs = {
+            'cuit': {'validators': []},
+        }
 
 
 class FacturaProveedorSerializer(serializers.ModelSerializer):

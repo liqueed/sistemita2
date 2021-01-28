@@ -167,7 +167,7 @@ class PagoSerializer(serializers.ModelSerializer):
                     # La factura actual del proveedor pasa a estar cobrada
                     FacturaProveedor.objects.filter(pk=factura_entry.id).update(cobrado=True)
 
-                    PagoFactura.objects.filter(pk=factura_entry.id).update(
+                    PagoFactura.objects.filter(pk=factura['data']['id']).update(
                         factura=factura_entry,
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
