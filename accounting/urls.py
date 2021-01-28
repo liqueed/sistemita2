@@ -13,7 +13,7 @@ from accounting.views.cobranzas import (
 )
 from accounting.views.pagos import (
     PagoViewSet, PagoListView, PagoCreateTemplateView,
-    PagoDetailView, PagoUpdateTemplateView, PagoDeleteView
+    PagoDetailView, PagoUpdateTemplateView, PagoDeleteView, PagoGeratePDFDetailView
 )
 
 router = routers.DefaultRouter()
@@ -37,4 +37,5 @@ urlpatterns = [
     path('pago/<int:pk>/', PagoDetailView.as_view(), name='pago-detail'),
     path('pago/<int:pk>/editar/', PagoUpdateTemplateView.as_view(), name='pago-update'),
     path('pago/<int:pk>/eliminar/', PagoDeleteView.as_view(), name='pago-delete'),
+    path('pago/<int:pk>/comprobante/', PagoGeratePDFDetailView.as_view(), name='pago-generate-pdf'),
 ]
