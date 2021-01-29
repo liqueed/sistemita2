@@ -13,6 +13,8 @@ pylint-django = "*"
 django-extensions = "*"
 pydotplus = "*"
 selenium = "*"
+jedi = "==0.17.2"
+parso = "==0.7.1"
 ipdb = "==0.13.4"
 
 [packages]

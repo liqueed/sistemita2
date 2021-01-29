@@ -21,23 +21,51 @@
       border: none;
        /* border: 1px solid; */
      }
+     @page {
+       size: A4;
+       margin: 2.5cm;
+       @top-right{
+         font: 8pt sans-serif;
+         content: "Página " counter(page) " de " counter(pages);
+       }
+     }
+     .border {
+       border-top: 1px solid;
+     }
+     .neto {
+       padding-top: 30px;
+       padding-bottom: 120px;
+     }
+     .pb-10 {
+       padding-bottom: 10px;
+     }
+     .pb-20 {
+       padding-bottom: 20px;
+     }
+     .pb-30 {
+       padding-bottom: 30px;
+     }
+     .text-center{
+       text-align: center;
+     }
+     .vertical-top{
+       vertical-align: top;
+     }
     </style>
   </head>
   <body>
     <table cell>
       <thead>
         <tr>
-          <td colspan="2" style="padding-bottom: 10px; text-align: center;">
+          <td class="text-center pb-10" colspan="2">
             <strong>ORDEN DE PAGO</strong>
           </td>
         </tr>
-      </thead>
-      <tbody>
         <tr>
-          <td style="padding-bottom: 30px; text-align: center;" width="50%">
+          <td class="pb-30 text-center" width="50%">
             <img width='134px' height='50px' src="{% static 'images/logo-top-dark.png' %}" />
           </td>
-          <td style="padding-bottom: 30px; vertical-align: top;" width="50%">
+          <td class="pb-30 vertical-top" width="50%">
             <ul>
               <li>Fecha: {% now 'd.m.Y' %}</li>
               <li><strong>LIQUEED S.A</strong></li>
@@ -47,7 +75,7 @@
           </td>
         </tr>
         <tr>
-          <td style="border-top: 1px solid; padding-bottom: 20px;" width="50%">
+          <td class="border pb-30" width="50%">
             <ul>
               <li><strong>Beneficiario del Pago: </strong></li>
               <li>{{ object.proveedor.razon_social }}</li>
@@ -61,18 +89,20 @@
               <li>CBU: {{ object.proveedor.cbu|default:"-" }}</li>
             </ul>
           </td>
-          <td style="border-top: 1px solid; vertical-align: top;" width="50%">
+          <td class="border vertical-top" width="50%">
             <ul>
               <li>Nro. de Orden de pago: {{ object.pk }}</li>
               <li>Fecha de pago: {{ object.fecha|date:'d.m.Y' }}</li>
             </ul>
           </td>
         </tr>
+      </thead>
+      <tbody>
         <tr>
-          <td style="border-top: 1px solid;" colspan="2"><strong>Detalle de comprobantes pagados</strong></td>
+          <td class="border" colspan="2"><strong>Detalle de comprobantes pagados</strong></td>
         </tr>
         <tr>
-          <td style="padding-bottom: 20px;" colspan="2">
+          <td class="pd-30" colspan="2">
             <table>
               <tr>
                 <td>Fecha</td>
@@ -89,13 +119,13 @@
               </tr>
             {% for pago_factura in object.pago_facturas.all %}
               <tr>
-                <td style="vertical-align: top;">{{ pago_factura.factura.fecha|date:'d.m.Y' }}</td>
-                <td style="vertical-align: top;">{{ pago_factura.factura.nro_factura|default:'-' }}</td>
-                <td style="vertical-align: top;">{{ pago_factura.factura.tipo }}</td>
-                <td style="vertical-align: top;">{% if pago_factura.factura.moneda == 'P'%}ARS{% else %}U$D{% endif %}</td>
-                <td style="vertical-align: top;">{{ pago_factura.factura.neto }}</td>
-                <td style="vertical-align: top;">{{ pago_factura.factura.iva }}</td>
-                <td style="vertical-align: top;">{{ pago_factura.factura.total }}</td>
+                <td class="vertical-top">{{ pago_factura.factura.fecha|date:'d.m.Y' }}</td>
+                <td class="vertical-top">{{ pago_factura.factura.nro_factura|default:'-' }}</td>
+                <td class="vertical-top">{{ pago_factura.factura.tipo }}</td>
+                <td class="vertical-top">{% if pago_factura.factura.moneda == 'P'%}ARS{% else %}U$D{% endif %}</td>
+                <td class="vertical-top">{{ pago_factura.factura.neto }}</td>
+                <td class="vertical-top">{{ pago_factura.factura.iva }}</td>
+                <td class="vertical-top">{{ pago_factura.factura.total }}</td>
                 {% comment %}
                 <td>
                   {% for pago in pago_factura.pago_factura_pagos.all %}
@@ -115,13 +145,13 @@
         </tr>
         <tr>
           <td></td>
-          <td style="padding-bottom: 20px;"><i>Subtotal comprobantes {{ subtotal_comprobantes.total__sum }}</i></td>
+          <td class="pb-30"><i>Subtotal comprobantes {{ subtotal_comprobantes.total__sum }}</i></td>
         </tr>
         <tr>
-          <td style="border-top: 1px solid;" colspan="2"><strong>Detalle de retenciones</strong></td>
+          <td class="border" colspan="2"><strong>Detalle de retenciones</strong></td>
         </tr>
         <tr>
-          <td style="padding-bottom: 20px;" colspan="2">
+          <td class="pb-30" colspan="2">
             <table>
               <tr>
                 <td>Fecha</td>
@@ -148,16 +178,16 @@
         </tr>
         <tr>
           <td></td>
-          <td style="padding-top: 30px; padding-bottom: 120px;"><strong>Importe Neto a pagar {{ object.total }}</strong></td>
+          <td class="neto"><strong>Importe Neto a pagar {{ object.total }}</strong></td>
         </tr>
         <tr>
           <td></td>
           <td>
             <table>
               <tr>
-                <td style="border-top: 1px solid; width: 40%;">PAGÓ</td>
+                <td class="border" style="width: 40%;">PAGÓ</td>
                 <td></td>
-                <td style="border-top: 1px solid; width: 40%;">AUTORIZÓ</td>
+                <td class="border" style="width: 40%;">AUTORIZÓ</td>
               </tr>
             </table>
           </td>
