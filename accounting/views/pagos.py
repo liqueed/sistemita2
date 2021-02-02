@@ -1,5 +1,8 @@
 """Vistas del modelo de Pago."""
 
+# Imports
+import tempfile
+
 # Datetime
 from datetime import date
 
@@ -7,21 +10,27 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.db.models import F, Q, Sum
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
+
 # Django Rest Framework
 from rest_framework import mixins, permissions, viewsets
 
 # Accounting
 from accounting.models.pago import Pago
 from accounting.serializers.pagos import PagoSerializer
+
 # Core
 from core.models.proveedor import FacturaProveedor
 from core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
 from core.views.home import error_403
+
+# Utils
+from weasyprint import HTML
 
 
 class PagoViewSet(mixins.CreateModelMixin,
@@ -144,6 +153,63 @@ class PagoDeleteView(PermissionRequiredMixin, DeleteView):
         pago.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(success_url)
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class PagoGeratePDFDetailView(PermissionRequiredMixin, DetailView):
+    """Vista que muestra los detalles de un pago."""
+
+    model = Pago
+    permission_required = 'accounting.view_pago'
+    raise_exception = True
+    template_name = 'accounting/pago_pdf.html'
+
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        # TODO: Quitar, solo de prueba
+        context = super().get_context_data(**kwargs)
+        pago = context['object']
+        context['subtotal_comprobantes'] = self.get_queryset().filter(pk=pago.pk).aggregate(Sum('total'))
+        context['subtotal_retenciones'] = self.get_queryset().filter(pk=pago.pk).annotate(
+            sub=Sum(F('pago_facturas__ganancias') + F('pago_facturas__iva') + F('pago_facturas__ingresos_brutos')))
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        """Devuelve un comprobante de pago en formato PDF."""
+        pago = self.get_object()
+        queryset = self.get_queryset()
+
+        subtotal_comprobantes = self.get_queryset().filter(pk=pago.pk).aggregate(Sum('total'))
+        subtotal_retenciones = queryset.filter(pk=pago.pk).annotate(
+            sub=Sum(F('pago_facturas__ganancias') + F('pago_facturas__iva') + F('pago_facturas__ingresos_brutos'))
+        )
+
+        # Rendered
+        html_string = render_to_string('accounting/pago_pdf.html', {
+            'object': pago,
+            'subtotal_comprobantes': subtotal_comprobantes,
+            'subtotal_retenciones': subtotal_retenciones
+        })
+        html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
+        result = html.write_pdf(presentational_hints=True)
+
+        # Creating http response
+        response = HttpResponse(content_type='application/pdf;')
+        response['Content-Disposition'] = 'inline; filename=comprobante_de_pago_{}.pdf'.format(pago.pk)
+        response['Content-Transfer-Encoding'] = 'binary'
+        with tempfile.NamedTemporaryFile(delete=True) as output:
+            output.write(result)
+            output.flush()
+            output = open(output.name, 'rb')
+            response.write(output.read())
+
+        return response
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
