@@ -103,6 +103,12 @@ class FacturaProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, C
     raise_exception = True
     success_message = _MESSAGE_SUCCESS_CREATED.format('factura a proveedor')
 
+    def get_form_kwargs(self):
+        """Envía parámetros extras al formulario."""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('core.change_facturaproveedor'):
@@ -142,6 +148,12 @@ class FacturaProveedorUpdateView(PermissionRequiredMixin, SuccessMessageMixin, U
     permission_required = 'core.change_facturaproveedor'
     raise_exception = True
     success_message = _MESSAGE_SUCCESS_UPDATE.format('factura a proveedor')
+
+    def get_form_kwargs(self):
+        """Envía parámetros extras al formulario."""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
