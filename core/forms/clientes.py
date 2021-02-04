@@ -235,6 +235,14 @@ class FacturaForm(forms.ModelForm):
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
         return total
 
+    def clean_archivos(self):
+        """Verifica si el usuario tiene permisos para editar el campo."""
+        archivos = self.files.getlist('archivos')
+        if not self.user.has_perm('core.change_archivos_factura'):
+            if archivos:
+                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+        return archivos
+
     def save(self, commit=True):
         """Guarda los datos recibidos del formulario."""
         data = self.cleaned_data
