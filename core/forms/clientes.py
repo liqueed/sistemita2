@@ -231,7 +231,7 @@ class FacturaForm(forms.ModelForm):
             # Verifico que el total calculado no haya sido modificado
             neto = float(self.instance.neto)
             total_calculado = neto + (self.instance.iva / 100) * neto
-            if total_calculado != total:
+            if total_calculado != float(total):
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
         return total
 
