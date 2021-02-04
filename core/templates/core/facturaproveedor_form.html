@@ -39,7 +39,7 @@
 {% endblock %}
 
 {% block extra_js %}
-var permAddArchivos = '{{ perms.core.add_archivos_facturaproveedor }}';
+var permAddArchivos = '{{ perms.core.change_archivos_facturaproveedor }}';
 if (permAddArchivos !== 'True'){
     $('input[name="archivos"]').prop('disabled', true);
 }

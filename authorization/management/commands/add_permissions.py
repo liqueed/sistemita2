@@ -49,6 +49,30 @@ class Command(BaseCommand):
                  'content_type': ContentType.objects.get(model='factura')},
                 {'name': 'Puede ver reportes de Facturas A Proveedores', 'codename': 'view_reports_facturaproveedor',
                  'content_type': ContentType.objects.get(model='facturaproveedor')},
+                # Facturas a clientes
+                {'name': 'Puede editar número de Facturas A Clientes', 'codename': 'change_nro_factura',
+                 'content_type': ContentType.objects.get(model='factura')},
+                {'name': 'Puede editar neto de Facturas A Clientes', 'codename': 'change_neto_factura',
+                 'content_type': ContentType.objects.get(model='factura')},
+                {'name': 'Puede editar iva de Facturas A Clientes', 'codename': 'change_iva_factura',
+                 'content_type': ContentType.objects.get(model='factura')},
+                {'name': 'Puede editar total de Facturas A Clientes', 'codename': 'change_total_factura',
+                 'content_type': ContentType.objects.get(model='factura')},
+                {'name': 'Puede editar archivos de Facturas A Clientes', 'codename': 'change_archivos_factura',
+                 'content_type': ContentType.objects.get(model='factura')},
+                # Facturas a proveedores
+                {'name': 'Puede editar número de Facturas A Proveedores', 'codename': 'change_nro_facturaproveedor',
+                 'content_type': ContentType.objects.get(model='facturaproveedor')},
+                {'name': 'Puede editar neto de Facturas A Proveedores', 'codename': 'change_neto_facturaproveedor',
+                 'content_type': ContentType.objects.get(model='facturaproveedor')},
+                {'name': 'Puede editar iva de Facturas A Proveedores', 'codename': 'change_iva_facturaproveedor',
+                 'content_type': ContentType.objects.get(model='facturaproveedor')},
+                {'name': 'Puede editar total de Facturas A Proveedores', 'codename': 'change_total_facturaproveedor',
+                 'content_type': ContentType.objects.get(model='facturaproveedor')},
+                {'name': 'Puede editar archivos de Facturas A Proveedores',
+                 'codename': 'change_archivos_facturaproveedor',
+                 'content_type': ContentType.objects.get(model='facturaproveedor')},
+
             ]
 
             for permission in permissions:
