@@ -8,10 +8,11 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Fieldset, Layout, HTML, Div, Reset
 
-# Models
+# Core
 from core.models.archivo import Archivo
 from core.models.entidad import Distrito, Localidad
 from core.models.cliente import Cliente, Factura, OrdenCompra
+from core.utils.strings import MESSAGE_PERMISSION_ERROR
 
 
 class ClienteForm(forms.ModelForm):
@@ -109,7 +110,20 @@ class FacturaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""
+        self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
+
+        # Permisos
+        if not self.user.has_perm('core.change_nro_factura'):
+            self.fields['numero'].widget.attrs['readonly'] = True
+        if not self.user.has_perm('core.change_neto_factura'):
+            self.fields['moneda'].widget.attrs['readonly'] = True
+            self.fields['neto'].widget.attrs['readonly'] = True
+        if not self.user.has_perm('core.change_iva_factura'):
+            self.fields['iva'].widget.attrs['readonly'] = True
+        if not self.user.has_perm('core.change_total_factura'):
+            self.fields['total'].widget.attrs['readonly'] = True
+
         self.fields['numero'].label = 'Número de factura'
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -177,7 +191,51 @@ class FacturaForm(forms.ModelForm):
             'archivos'
         )
 
-    def save(self, *args, **kwargs):
+    def clean_numero(self):
+        """Verifica si el usuario tiene permisos para editar el campo."""
+        numero = self.cleaned_data['numero']
+        if not self.user.has_perm('core.change_nro_factura'):
+            if self.instance.numero != numero:
+                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+        return numero
+
+    def clean_moneda(self):
+        """Verifica si el usuario tiene permisos para editar el campo."""
+        moneda = self.cleaned_data['moneda']
+        if not self.user.has_perm('core.change_neto_factura'):
+            if self.instance.moneda != moneda:
+                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+        return moneda
+
+    def clean_neto(self):
+        """Verifica si el usuario tiene permisos para editar el campo."""
+        neto = self.cleaned_data['neto']
+        if not self.user.has_perm('core.change_neto_factura'):
+            if neto not in [self.fields['neto'].initial, self.instance.neto]:
+                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+        return neto
+
+    def clean_iva(self):
+        """Verifica si el usuario tiene permisos para editar el campo."""
+        iva = self.cleaned_data['iva']
+        if not self.user.has_perm('core.change_iva_factura'):
+            if self.fields['iva'].initial != iva:
+                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+        return iva
+
+    def clean_total(self):
+        """Verifica si el usuario tiene permisos para editar el campo."""
+        total = self.cleaned_data['total']
+
+        if not self.user.has_perm('core.change_total_factura'):
+            # Verifico que el total calculado no haya sido modificado
+            neto = float(self.instance.neto)
+            total_calculado = neto + (self.instance.iva / 100) * neto
+            if total_calculado != total:
+                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+        return total
+
+    def save(self, commit=True):
         """Guarda los datos recibidos del formulario."""
         data = self.cleaned_data
         data.pop('archivos')
