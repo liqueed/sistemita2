@@ -3,7 +3,10 @@
 Contiene mensajes en forma de texto para usuarios.
 """
 
-
+HELP_TEXT_MULTIPLE_CHOICE = """
+Para seleccionar varias opciones, mantenga presionada la tecla Control (Ctrl),
+y haga clic en las opciones que desee seleccionar.
+"""
 HELP_TEXT_PASSWORD_CONFIRMATION = 'Introduzca la misma contraseña nuevamente, para poder verificar la misma.'
 HELP_TEXT_USERNAME = """
 Longitud máxima de {} caracteres. Solo puede estar formado por letras,
