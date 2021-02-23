@@ -19,7 +19,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
 
 # Utils
-from core.utils.strings import HELP_TEXT_PASSWORD_CONFIRMATION, HELP_TEXT_USERNAME
+from core.utils.strings import HELP_TEXT_MULTIPLE_CHOICE, HELP_TEXT_PASSWORD_CONFIRMATION, HELP_TEXT_USERNAME
 
 User = get_user_model()
 
@@ -104,6 +104,7 @@ class UserCreateForm(forms.ModelForm):
     is_superuser = forms.BooleanField(required=False, label='Administrador')
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.order_by('name'),
+        help_text=HELP_TEXT_MULTIPLE_CHOICE,
         label='Grupos',
         required=False
     )
@@ -150,7 +151,7 @@ class UserCreateForm(forms.ModelForm):
 
         return data
 
-    def save(self):
+    def save(self, commit=True):
         """Create user."""
         data = self.cleaned_data
         data.pop('password_confirmation')
@@ -239,6 +240,7 @@ class UserUpdateForm(forms.ModelForm):
 
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.order_by('name'),
+        help_text=HELP_TEXT_MULTIPLE_CHOICE,
         label='Grupos',
         required=False
     )

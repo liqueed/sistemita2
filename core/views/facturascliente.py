@@ -102,12 +102,18 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
 class FacturaCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     """Vista para agregar una factura."""
 
-    model = Factura
     form_class = FacturaForm
+    model = Factura
     permission_required = 'core.add_factura'
     raise_exception = True
     success_message = _MESSAGE_SUCCESS_CREATED.format('factura del cliente')
     template_name = 'core/facturacliente_form.html'
+
+    def get_form_kwargs(self):
+        """Envía parámetros extras al formulario."""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
@@ -150,6 +156,12 @@ class FacturaUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
     raise_exception = True
     success_message = _MESSAGE_SUCCESS_UPDATE.format('factura del cliente')
     template_name = 'core/facturacliente_form.html'
+
+    def get_form_kwargs(self):
+        """Envía parámetros extras al formulario."""
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""

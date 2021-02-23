@@ -39,6 +39,10 @@
 {% endblock %}
 
 {% block extra_js %}
+var permAddArchivos = '{{ perms.core.change_archivos_facturaproveedor }}';
+if (permAddArchivos !== 'True'){
+    $('input[name="archivos"]').prop('disabled', true);
+}
 $('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
 $('#id_proveedor').select2({allowClear: true, language: 'es'});
 $('#id_proveedor').change(function(){

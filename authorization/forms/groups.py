@@ -2,6 +2,7 @@
 
 # Django
 from django import forms
+from django.contrib.auth.models import Group
 
 # Forms
 from crispy_forms.bootstrap import FormActions
@@ -10,7 +11,9 @@ from crispy_forms.layout import Submit, Fieldset, Layout, Div, Reset
 
 # Models
 from authorization.models import Permission
-from django.contrib.auth.models import Group
+
+# Core
+from core.utils.strings import HELP_TEXT_MULTIPLE_CHOICE
 
 
 class GroupForm(forms.ModelForm):
@@ -40,16 +43,17 @@ class GroupForm(forms.ModelForm):
         )
 
     permissions = forms.ModelMultipleChoiceField(
-         queryset=Permission.objects.filter(
-             content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
-             content_type__model__in=[
-                 'archivo',
-                 'cliente', 'factura', 'ordencompra', 'cobranza',
-                 'proveedor', 'facturaproveedor', 'pago',
-                 'mediopago',
-                 'permission', 'user', 'group'
-             ]
-         ).order_by('content_type__model', 'name')
+        help_text=HELP_TEXT_MULTIPLE_CHOICE,
+        queryset=Permission.objects.filter(
+            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
+            content_type__model__in=[
+                'archivo',
+                'cliente', 'factura', 'ordencompra', 'cobranza',
+                'proveedor', 'facturaproveedor', 'pago',
+                'mediopago',
+                'permission', 'user', 'group'
+            ]
+        ).order_by('content_type__model', 'name')
     )
 
     class Meta:
