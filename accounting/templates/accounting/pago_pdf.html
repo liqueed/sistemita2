@@ -126,7 +126,7 @@
             {% for pago_factura in object.pago_facturas.all %}
               <tr>
                 <td class="vertical-top">{{ pago_factura.factura.fecha|date:'d.m.Y' }}</td>
-                <td class="vertical-top">{{ pago_factura.factura.nro_factura|default:'-' }}</td>
+                <td class="vertical-top">{{ pago_factura.factura.numero|default:'-' }}</td>
                 <td class="vertical-top">{{ pago_factura.factura.tipo }}</td>
                 <td class="vertical-top">{% if pago_factura.factura.moneda == 'P'%}ARS{% else %}U$D{% endif %}</td>
                 <td class="vertical-top">{{ pago_factura.factura.neto }}</td>
@@ -169,7 +169,7 @@
               {% for pago_factura in object.pago_facturas.all %}
               <tr>
                 <td>{{ pago_factura.factura.fecha|date:'d.m.Y' }}</td>
-                <td>{{ pago_factura.factura.nro|default:'-' }}</td>
+                <td>{{ pago_factura.factura.numero|default:'-' }}</td>
                 <td>{{ pago_factura.ganancias }}</td>
                 <td>{{ pago_factura.ingresos_brutos }}</td>
                 <td>{{ pago_factura.iva }}</td>
