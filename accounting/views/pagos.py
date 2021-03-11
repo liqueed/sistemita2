@@ -189,12 +189,14 @@ class PagoGeratePDFDetailView(PermissionRequiredMixin, DetailView):
         subtotal_retenciones = queryset.filter(pk=pago.pk).annotate(
             sub=Sum(F('pago_facturas__ganancias') + F('pago_facturas__iva') + F('pago_facturas__ingresos_brutos'))
         )
+        neto_a_pagar = pago.total - subtotal_retenciones[0].sub
 
         # Rendered
         html_string = render_to_string('accounting/pago_pdf.html', {
             'object': pago,
             'subtotal_comprobantes': subtotal_comprobantes,
-            'subtotal_retenciones': subtotal_retenciones
+            'subtotal_retenciones': subtotal_retenciones,
+            'neto_a_pagar': neto_a_pagar
         })
         html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
         result = html.write_pdf(presentational_hints=True)
