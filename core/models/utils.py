@@ -28,8 +28,10 @@ class FacturaAbstract(TimeStampedModel, models.Model):
 
     TIPOS_FACTURA = (
         ('A', 'A'),
+        ('ARETEN', 'A SUJETA A RETENCIÓN'),
         ('B', 'B'),
         ('C', 'C'),
+        ('M', 'M'),
         ('NCA', 'NC A'),
         ('NCB', 'NC B'),
         ('FCPYME', 'FC PYME'),
