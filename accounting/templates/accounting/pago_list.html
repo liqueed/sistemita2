@@ -7,6 +7,9 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <h1 class="h3 mb-0 text-gray-800">Pagos a Proveedores</h1>
+      {% if perms.accounting.view_report_retencion_pago %}
+        <a href="{% url 'accounting:pago-list' %}?tipo=retenciones&formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Retenciones</a>
+      {% endif %}
     </div>
     {% include 'components/messages.html' %}
 

@@ -5,7 +5,7 @@ Para traducir los permisos correr los comando:
 
     docker-compose run app pipenv run python manage.py permissions_translation
 
-Para agregar los permisos de listar que no viene por defecto:
+Para agregar los permisos:
 
     docker-compose run app pipenv run python manage.py add_permissions
 
