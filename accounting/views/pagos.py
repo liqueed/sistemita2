@@ -10,6 +10,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import F, Q, Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -59,7 +60,9 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         type_list = request.GET.get('tipo', False)
 
         if format_list == 'xls' and type_list == 'retenciones':
-            return export_excel(self.request, self.get_queryset())
+            if 'accounting.view_report_retencion_pago' in self.request.user.get_all_permissions():
+                return export_excel(self.request, self.get_queryset())
+            raise PermissionDenied()
 
         return super().get(request, *args, **kwargs)
 
