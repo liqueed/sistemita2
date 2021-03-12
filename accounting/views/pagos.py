@@ -26,6 +26,7 @@ from accounting.serializers.pagos import PagoSerializer
 
 # Core
 from core.models.proveedor import FacturaProveedor
+from core.utils.export import export_excel
 from core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
 from core.views.home import error_403
 
@@ -51,6 +52,16 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     paginate_by = 10
     permission_required = 'accounting.list_pago'
     raise_exception = True
+
+    def get(self, request, *args, **kwargs):
+        """Genera reporte en formato excel."""
+        format_list = request.GET.get('formato', False)
+        type_list = request.GET.get('tipo', False)
+
+        if format_list == 'xls' and type_list == 'retenciones':
+            return export_excel(self.request, self.get_queryset())
+
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
