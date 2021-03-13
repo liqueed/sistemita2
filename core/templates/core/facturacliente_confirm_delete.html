@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Eliminar Facturación #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }} | Liqueed{% endblock %}
+{% block title %}Eliminar Facturación #{{ object.numero|default:"SN" }} - Cliente: {{ object.cliente.razon_social }} | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
@@ -15,7 +15,7 @@
 
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">
-          Eliminar Facturación #{{ object.pk }} - Cliente: {{ object.cliente.razon_social }}
+          Eliminar Facturación #{{ object.numero|default:"SN" }} - Cliente: {{ object.cliente.razon_social }}
         </h6>
       </div>
       <div class="card-body">
@@ -23,7 +23,7 @@
           <form method="post" action="{% url 'core:factura-delete' object.pk %}">
             {% csrf_token %}
             <p>
-              <strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la factura <em>Nro. {{ object.pk}}</em>
+              <strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la factura <em>Nro. {{ object.numero|default:"-" }}</em>
               del cliente <em>{{ object.cliente.razon_social}}</em> con CUIT <em>{{ object.cliente.cuit}}</em>.
             </p>
             <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>

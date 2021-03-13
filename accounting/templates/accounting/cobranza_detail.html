@@ -33,7 +33,7 @@
             {% for cobranza_factura in object.cobranza_facturas.all %}
               <dt class="col-sm-6 mt-2"><hr class="sidebar-divider"></dt>
             <dd class="col-sm-6 mt-2"></dd>
-            <dt class="col-sm-2">Factura #{{ forloop.counter }}</dt>
+            <dt class="col-sm-2">Factura #{{ cobranza_factura.factura.numero|default:"-" }}</dt>
             <dd class="col-sm-10">{{ cobranza_factura.factura.fecha }} - ${{ cobranza_factura.factura.total }}</dd>
             <dt class="col-sm-2">Pagos</dt>
             <dd class="col-sm-10"></dd>

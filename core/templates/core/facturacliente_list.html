@@ -105,7 +105,7 @@
           <table class="table table-bordered table-hover" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>Número</th>
                 <th>Fecha</th>
                 <th>Cliente</th>
                 <th>CUIT</th>
@@ -119,7 +119,7 @@
             <tbody>
               {% for object in object_list %}
                 <tr>
-                  <td {% if perms.core.view_factura %}onclick="location.href='{% url 'core:factura-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
+                  <td {% if perms.core.view_factura %}onclick="location.href='{% url 'core:factura-detail' object.pk %}';"{% endif %}>{{ object.numero|default:"-" }}</td>
                   <td {% if perms.core.view_factura %}onclick="location.href='{% url 'core:factura-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
                   <td {% if perms.core.view_factura %}onclick="location.href='{% url 'core:factura-detail' object.pk %}';"{% endif %}>{{ object.cliente.razon_social }}</td>
                   <td {% if perms.core.view_factura %}onclick="location.href='{% url 'core:factura-detail' object.pk %}';"{% endif %}>{{ object.cliente.cuit }}</td>
