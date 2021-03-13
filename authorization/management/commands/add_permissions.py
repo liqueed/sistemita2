@@ -72,7 +72,9 @@ class Command(BaseCommand):
                 {'name': 'Puede editar archivos de Facturas A Proveedores',
                  'codename': 'change_archivos_facturaproveedor',
                  'content_type': ContentType.objects.get(model='facturaproveedor')},
-
+                # Pagos
+                {'name': 'Puede exportar retenciones de pagos a Proveedores', 'codename': 'view_report_retencion_pago',
+                 'content_type': ContentType.objects.get(model='pago')},
             ]
 
             for permission in permissions:

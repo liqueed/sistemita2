@@ -113,6 +113,41 @@ class FacturaProveedorExport(FacturaExport):
         return data
 
 
+class PagoExport():
+    """Clase para exportar pagos a proveedores.
+
+    Args:
+       queryset (django.queryset): queryset de pagos a proveedor.
+    """
+
+    def __init__(self, queryset):
+        """Inicialización de variables."""
+        self.queryset = queryset.order_by('fecha')
+        self.headers = [
+            'pago_nro', 'fecha', 'proveedor', 'retencion_ganancia', 'retencion_ingresos_brutos', 'retencion_iva',
+        ]
+
+    def get_data(self):
+        """Devuelve una lista de pagos a proveedores.
+
+        Returns:
+           list: Obtiene el queryset y genera un lista.
+        """
+        data = []
+
+        for item in self.queryset:
+            data.append([
+                item.pk, item.fecha.strftime('%d/%m/%Y'), item.proveedor.razon_social,
+                item.pago_facturas.all()[0].ganancias, item.pago_facturas.all()[0].ingresos_brutos,
+                item.pago_facturas.all()[0].iva
+            ])
+            for factura in item.pago_facturas.all()[1:]:
+                data.append([
+                    '', '', '', factura.ganancias, factura.ingresos_brutos, factura.iva
+                ])
+        return data
+
+
 def export_excel(request, queryset):
     """Devuelve un archivo en formato excel.
 
@@ -137,6 +172,9 @@ def export_excel(request, queryset):
     elif app == 'facturaproveedor':
         app_export = FacturaProveedorExport(queryset)
         display_dept = True
+    elif app == 'pago':
+        app_export = PagoExport(queryset)
+        display_dept = False
 
     # Encabezados
     for col_num, data in enumerate(app_export.headers):
