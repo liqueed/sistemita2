@@ -82,6 +82,7 @@
                 <th>Raz&oacute;n Social</th>
                 <th>CUIT</th>
                 <th>Total</th>
+                <th>Pagado</th>
                 {% if perms.accounting.change_pago or perms.accounting.delete_pago %}
                   <th></th>
                 {% endif %}
@@ -95,6 +96,9 @@
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.proveedor.razon_social }}</td>
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.proveedor.cuit }}</td>
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}><div class="float-right">$ {{ object.total }}</div></td>
+                  <td class="text-center" {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>
+                    {% if object.pagado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
+                  </td>
                   {% if perms.accounting.change_pago or perms.accounting.delete_pago %}
                     <td class="text-center">
                       {% if perms.accounting.change_pago %}
