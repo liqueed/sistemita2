@@ -16,11 +16,13 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
+from django_filters.views import FilterView
 
 # Django Rest Framework
 from rest_framework import mixins, permissions, viewsets
 
 # Accounting
+from accounting.filters import PagoFilterSet
 from accounting.models.pago import Pago
 from accounting.serializers.pagos import PagoSerializer
 
@@ -46,12 +48,14 @@ class PagoViewSet(mixins.CreateModelMixin,
     serializer_class = PagoSerializer
 
 
-class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
+class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que devuelve un listado de pagos."""
 
+    filterset_class = PagoFilterSet
     paginate_by = 10
     permission_required = 'accounting.list_pago'
     raise_exception = True
+    template_name = 'accounting/pago_list.html'
 
     def get(self, request, *args, **kwargs):
         """Genera reporte en formato excel."""

@@ -8,7 +8,9 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <h1 class="h3 mb-0 text-gray-800">Pagos a Proveedores</h1>
       {% if perms.accounting.view_report_retencion_pago %}
-        <a href="{% url 'accounting:pago-list' %}?tipo=retenciones&formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-file-excel fa-sm text-white-50"></i> Retenciones</a>
+      <a href="{% url 'accounting:pago-list' %}?tipo=retenciones&formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fas fa-file-excel fa-sm text-white-50"></i> Informe Retenciones
+      </a>
       {% endif %}
     </div>
     {% include 'components/messages.html' %}
@@ -65,7 +67,7 @@
       <div class="card-body">
         <div class="table-responsive">
           <div class="row float-right">
-            {% include 'components/search_form.html' %}
+            {% include 'components/filter_pago_form.html' %}
 
             {% if perms.accounting.add_pago %}
               <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
@@ -95,7 +97,9 @@
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.proveedor.razon_social }}</td>
                   <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>{{ object.proveedor.cuit }}</td>
-                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}><div class="float-right">$ {{ object.total }}</div></td>
+                  <td {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>
+                    <div class="float-right">$ {{ object.total }}</div>
+                  </td>
                   <td class="text-center" {% if perms.accounting.view_pago %}onclick="location.href='{% url 'accounting:pago-detail' object.pk %}';"{% endif %}>
                     {% if object.pagado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
                   </td>
