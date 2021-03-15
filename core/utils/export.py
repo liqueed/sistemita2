@@ -124,6 +124,54 @@ class PagoExport():
         """Inicialización de variables."""
         self.queryset = queryset.order_by('fecha')
         self.headers = [
+            'pago_nro', 'fecha', 'proveedor', 'total', 'pagado',
+        ]
+
+    def get_data(self):
+        """Devuelve una lista de pagos a proveedores.
+
+        Returns:
+           list: Obtiene el queryset y genera un lista.
+        """
+        data = []
+
+        for item in self.queryset:
+            pagado = 'Si' if item.pagado else 'No'
+            data.append([
+                item.pk, item.fecha.strftime('%d/%m/%Y'), item.proveedor.razon_social,
+                item.total, pagado
+            ])
+        return data
+
+    def get_debt_by_moneda(self, moneda):
+        """Devuelve un total con la suma de las facturas adeudadas por moneda.
+
+        Args:
+            moneda (str): Moneda de tipo '$' o 'U$D'.
+
+        Return:
+            str: Moneda y sumatoria del monto adeudado del total de facturas.
+        """
+        result = {'total__sum': None}
+        if moneda == '$':
+            result = self.queryset.filter(pagado=False).aggregate(
+                Sum('total')
+            )
+
+        return '{} {}'.format(moneda, result['total__sum'] or 0)
+
+
+class PagoRetencionExport():
+    """Clase para exportar retenciones de pagos a proveedores.
+
+    Args:
+       queryset (django.queryset): queryset de pagos a proveedor.
+    """
+
+    def __init__(self, queryset):
+        """Inicialización de variables."""
+        self.queryset = queryset.order_by('fecha')
+        self.headers = [
             'pago_nro', 'fecha', 'proveedor', 'retencion_ganancia', 'retencion_ingresos_brutos', 'retencion_iva',
         ]
 
@@ -172,9 +220,12 @@ def export_excel(request, queryset):
     elif app == 'facturaproveedor':
         app_export = FacturaProveedorExport(queryset)
         display_dept = True
+    elif app == 'pago' and request.GET.get('tipo') == 'retenciones':
+        app_export = PagoRetencionExport(queryset)
+        display_dept = False
     elif app == 'pago':
         app_export = PagoExport(queryset)
-        display_dept = False
+        display_dept = True
 
     # Encabezados
     for col_num, data in enumerate(app_export.headers):

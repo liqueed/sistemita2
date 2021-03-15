@@ -66,6 +66,8 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
             if 'accounting.view_report_retencion_pago' in self.request.user.get_all_permissions():
                 return export_excel(self.request, self.get_queryset())
             return error_403(self.request, MESSAGE_403)
+        if format_list == 'xls':
+            return export_excel(self.request, self.get_queryset())
 
         return super().get(request, *args, **kwargs)
 
