@@ -10,12 +10,12 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import F, Q, Sum
+from django.db.models import Count, F, Q, Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, TemplateView
 from django_filters.views import FilterView
 
 # Django Rest Framework
@@ -78,6 +78,9 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         current_week = date.today().isocalendar()[1]
 
         context['last_created'] = queryset.filter(creado__week=current_week).count()
+        context['debt_in_peso'] = queryset.filter(pagado=False).aggregate(
+            Sum('total'), Count('id')
+        )
 
         return context
 
