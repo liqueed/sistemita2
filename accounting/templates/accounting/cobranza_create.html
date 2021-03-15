@@ -260,6 +260,13 @@ $('#cobranza_factura_1 .selector-factura').select2({
         cache: true
     }
 }).on('change', function(){
+    let factura = $(this).select2('data')[0];
+    if (factura.tipo === 'M'){
+        let iva = factura.iva * factura.total / 100;
+        $('input[name=iva_1]').val(iva);
+    } else {
+        $('input[name=iva_1]').val('0.0');
+    }
     setTotal();
     $('.add-factura').removeClass('d-none');
 });
@@ -357,6 +364,13 @@ $('.add-factura').click(function(e){
             cache: true
         }
     }).on('change', function(){
+        let factura = $(this).select2('data')[0];
+        if (factura.tipo === 'M'){
+            let iva = factura.iva * factura.total / 100;
+            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+        } else {
+            $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
+        }
         setTotal();
     });
 });
@@ -494,7 +508,7 @@ function setTotal(){
 
 function displayInfoCliente(obj){
     if(obj !== ''){
-        var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-6">`;
+        var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
         data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
         data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
         data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
