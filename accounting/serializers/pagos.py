@@ -62,6 +62,7 @@ class PagoSerializer(serializers.ModelSerializer):
     fecha = serializers.DateField(required=True)
     proveedor = ProveedorSerializer()
     total = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
+    pagado = serializers.BooleanField(default=False)
     pago_facturas = PagoFacturaSerializer(many=True)
 
     class Meta:
@@ -69,7 +70,7 @@ class PagoSerializer(serializers.ModelSerializer):
 
         model = Pago
         fields = (
-            'id', 'fecha', 'proveedor', 'total',
+            'id', 'fecha', 'proveedor', 'total', 'pagado',
             'pago_facturas',
         )
         read_only_fields = ('id', 'proveedor')
@@ -90,7 +91,8 @@ class PagoSerializer(serializers.ModelSerializer):
             fecha = data['fecha']
             proveedor = self.context['proveedor']
             total = data['total']
-            pago = Pago.objects.create(fecha=fecha, proveedor=proveedor, total=total)
+            pagado = data['pagado']
+            pago = Pago.objects.create(fecha=fecha, proveedor=proveedor, total=total, pagado=pagado)
 
             # Factura pago
             facturas = data['pago_facturas']
@@ -123,6 +125,7 @@ class PagoSerializer(serializers.ModelSerializer):
         try:
             instance.fecha = data['fecha']
             instance.total = data['total']
+            instance.pagado = data['pagado']
             facturas = data['pago_facturas']
 
             # Recorro las facturas

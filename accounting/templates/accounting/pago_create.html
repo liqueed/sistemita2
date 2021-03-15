@@ -176,6 +176,21 @@
               </div>
               <!-- End Total -->
 
+              <!-- Pagado -->
+              <div class="row">
+                <div class="col-2">
+                  <div class="form-group">
+                    <div id="div_id_pagado" class="custom-control custom-checkbox">
+                      <input type="checkbox" name="pagado" class="checkbox input custom-control-input" id="id_pagado">
+                      <label for="id_pagado" class="custom-control-label">
+                        Pagado
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Pagado -->
+
             </fieldset>
 
             <div class="form-group">
@@ -377,6 +392,7 @@ $('#submit-id-submit').click(function(e){
     fecha = new Date(fecha[2], fecha[1] - 1, fecha[0]).toISOString().slice(0, 10);
 
     let total = $('input[name=total]').val();
+    let pagado = $('input[name=pagado]').is(":checked");
     let facturas = [];
 
     $('.wrapper-factura').each(function(){
@@ -408,7 +424,8 @@ $('#submit-id-submit').click(function(e){
     let formPagoData = {
         'fecha': fecha,
         'pago_facturas': facturas,
-        'total': parseInt(total)
+        'total': parseInt(total),
+        'pagado': pagado
     }
     formPagoData['proveedor'] = proveedor;
 
