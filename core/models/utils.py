@@ -55,6 +55,12 @@ class FacturaAbstract(TimeStampedModel, models.Model):
         """Retorna el total y su moneda."""
         return f'{self.get_moneda_display()} {self.total}'
 
+    def get_tipo(self):
+        """Retorna tipo de factura."""
+        tipo = self.tipo
+        tipos = dict(self.TIPOS_FACTURA)
+        return tipos.get(tipo)
+
     class Meta:
         """Configuraciones del modelo."""
 
