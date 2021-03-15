@@ -12,7 +12,7 @@ from crispy_forms.layout import Submit, Fieldset, Layout, HTML, Div, Reset
 from core.models.archivo import Archivo
 from core.models.entidad import Distrito, Localidad
 from core.models.proveedor import FacturaProveedor, Proveedor
-from core.utils.strings import MESSAGE_PERMISSION_ERROR
+from core.utils.strings import MESSAGE_PERMISSION_ERROR, MESSAGE_TOTAL_ZERO
 
 
 class ProveedorForm(forms.ModelForm):
@@ -237,6 +237,8 @@ class FacturaProveedorForm(forms.ModelForm):
             total_calculado = neto + (self.instance.iva / 100) * neto
             if total_calculado != float(total):
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+        if total == 0:
+            raise forms.ValidationError(MESSAGE_TOTAL_ZERO)
         return total
 
     def clean_archivos(self):
