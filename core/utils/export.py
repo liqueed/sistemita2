@@ -75,7 +75,7 @@ class FacturaClienteExport(FacturaExport):
             cobrado = 'Si' if item.cobrado else 'No'
             moneda_neto = '{} {}'.format(item.get_moneda_display(), str(item.neto))
             data.append([
-                item.fecha.strftime('%d/%m/%Y'), item.numero, item.tipo, item.cliente.razon_social,
+                item.fecha.strftime('%d/%m/%Y'), item.numero, item.get_tipo(), item.cliente.razon_social,
                 moneda_neto, item.iva, item.moneda_monto, cobrado
             ])
         return data
@@ -92,7 +92,10 @@ class FacturaProveedorExport(FacturaExport):
         """Inicialización de variables."""
         FacturaExport.__init__(self, queryset.order_by('fecha'))
         self.headers = [
-            'fecha', 'numero', 'tipo', 'proveedor', 'neto', 'iva', 'total', 'cobrado'
+            'fecha', 'numero', 'tipo', 'proveedor', 'neto', 'iva', 'total', 'pagado',
+            'factura_cliente_fecha', 'cliente', 'factura_cliente_nro', 'factura_cliente_tipo',
+            'factura_cliente_neto', 'factura_cliente_iva', 'factura_cliente_total',
+            'factura_cliente_cobrado'
         ]
 
     def get_data(self):
@@ -105,10 +108,13 @@ class FacturaProveedorExport(FacturaExport):
 
         for item in self.queryset:
             cobrado = 'Si' if item.cobrado else 'No'
-            moneda_neto = '{} {}'.format(item.get_moneda_display(), str(item.neto))
+            cobrado_cliente = 'Si' if item.factura.cobrado else 'No'
             data.append([
-                item.fecha.strftime('%d/%m/%Y'), item.numero, item.tipo, item.proveedor.razon_social,
-                moneda_neto, item.iva, item.moneda_monto, cobrado
+                item.fecha.strftime('%d/%m/%Y'), item.numero, item.get_tipo(), item.proveedor.razon_social,
+                item.moneda_monto, item.iva, item.moneda_monto, cobrado,
+                item.factura.fecha.strftime('%d/%m/%Y'), item.factura.cliente.razon_social, item.factura.numero,
+                item.factura.get_tipo(), item.factura.moneda_monto, item.factura.iva, item.factura.total,
+                cobrado_cliente
             ])
         return data
 
