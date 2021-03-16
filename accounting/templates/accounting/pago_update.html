@@ -287,6 +287,13 @@ $(document).ready(function() {
                     cache: true
                 }
             }).on('change', function(){
+                let factura = $(this).select2('data')[0];
+                if (factura.tipo === 'M'){
+                    let iva = factura.iva * factura.total / 100;
+                    $(`input[name=iva_${indexFactura}]`).val(iva);
+                } else {
+                    $(`input[name=iva_${indexFactura}]`).val('0.0');
+                }
                 setTotal();
             });
 
@@ -436,6 +443,13 @@ $('.add-factura').click(function(e){
             cache: true
         }
     }).on('change', function(){
+        let factura = $(this).select2('data')[0];
+        if (factura.tipo === 'M'){
+            let iva = factura.iva * factura.total / 100;
+            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+        } else {
+            $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
+        }
         setTotal();
     });
 });
