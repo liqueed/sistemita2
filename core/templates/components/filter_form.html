@@ -1,7 +1,16 @@
 <form class="form-inline" method="get">
   <div class="form-group mr-1 mb-2">
-    <input type="checkbox" class="form-check-input" name="cobrado" id="id_cobrado" {% if request.GET.cobrado %}checked{% endif %}>
-    <label class="form-check-label mr-2" for="exampleCheck1">Cobrado/Pagado</label>
+    <div class="dropdown mr-2">
+      <button class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Cobrado/Pagado
+      </button>
+      <div id="id_dropdown_cobrado" name="cobrado" class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton" style="">
+        <a class="dropdown-item" href="#">Si</a>
+        <a class="dropdown-item" href="#">No</a>
+        <a class="dropdown-item" href="#">Todos</a>
+      </div>
+      <input type="hidden" name="cobrado" id="id_cobrado">
+    </div>
     <input onfocus="this.select()" autofocus autocomplete="off" value="{{ request.GET.search }}"
            type="text" class="form-control form-control-sm" name="search" id="id_search"
            placeholder="Buscar"
@@ -16,20 +25,26 @@
 
 {% block extra_js %}
 <script>
-$('#id_cobrado').click(function(){
-    set_value()
-    $('form').submit();
-});
-$('#id_search').keypress(function(event){
-    var keycode = (event.keyCode ? event.keyCode : event.which);
-    if(keycode == '13'){
-        set_value()
-    }
-});
-function set_value(){
-    if ($('#id_cobrado').is(":checked")){
-        $('#id_cobrado').val('1');
-    }
-  }
+ $('#id_dropdown_cobrado a').click(function(){
+   let selected = $(this)[0].outerText;
+   set_value(selected);
+   $('form').submit();
+ });
+
+ $('#id_search').keypress(function(event){
+   var keycode = (event.keyCode ? event.keyCode : event.which);
+   if(keycode == '13'){
+     set_value()
+   }
+ });
+
+ function set_value(value){
+   if (value === 'Si'){
+     $('#id_cobrado').val('1');
+   }
+   if (value === 'No'){
+     $('#id_cobrado').val('0');
+   }
+ }
 </script>
 {% endblock %}

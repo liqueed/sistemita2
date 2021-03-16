@@ -15,6 +15,7 @@ class Pago(TimeStampedModel, models.Model):
     fecha = models.DateField(blank=False)
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    pagado = models.BooleanField(default=False)
 
     class Meta:
         """Configuraciones del modelo."""

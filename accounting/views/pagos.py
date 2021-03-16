@@ -10,18 +10,19 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.exceptions import PermissionDenied
-from django.db.models import F, Q, Sum
+from django.db.models import Count, F, Q, Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, TemplateView
+from django_filters.views import FilterView
 
 # Django Rest Framework
 from rest_framework import mixins, permissions, viewsets
 
 # Accounting
+from accounting.filters import PagoFilterSet
 from accounting.models.pago import Pago
 from accounting.serializers.pagos import PagoSerializer
 
@@ -47,12 +48,14 @@ class PagoViewSet(mixins.CreateModelMixin,
     serializer_class = PagoSerializer
 
 
-class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
+class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que devuelve un listado de pagos."""
 
+    filterset_class = PagoFilterSet
     paginate_by = 10
     permission_required = 'accounting.list_pago'
     raise_exception = True
+    template_name = 'accounting/pago_list.html'
 
     def get(self, request, *args, **kwargs):
         """Genera reporte en formato excel."""
@@ -62,7 +65,9 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         if format_list == 'xls' and type_list == 'retenciones':
             if 'accounting.view_report_retencion_pago' in self.request.user.get_all_permissions():
                 return export_excel(self.request, self.get_queryset())
-            raise PermissionDenied()
+            return error_403(self.request, MESSAGE_403)
+        if format_list == 'xls':
+            return export_excel(self.request, self.get_queryset())
 
         return super().get(request, *args, **kwargs)
 
@@ -73,6 +78,9 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         current_week = date.today().isocalendar()[1]
 
         context['last_created'] = queryset.filter(creado__week=current_week).count()
+        context['debt_in_peso'] = queryset.filter(pagado=False).aggregate(
+            Sum('total'), Count('id')
+        )
 
         return context
 

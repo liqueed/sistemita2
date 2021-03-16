@@ -50,7 +50,9 @@
             <dd class="col-sm-10"> ${{ pago_factura.iva }}</dd>
           {% endfor %}
           <dt class="col-sm-2 mt-3">TOTAL</dt>
-            <dd class="col-sm-10 mt-3"> ${{ object.total }}</dd>
+          <dd class="col-sm-10 mt-3"> ${{ object.total }}</dd>
+          <dt class="col-sm-2">Pagado</dt>
+          <dd class="col-sm-10">{% if object.pagado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}</dd>
           </dl>
           {% if perms.accounting.list_pago %}
             <a href="{% url 'accounting:pago-list' %}" class="btn btn-primary float-right">Volver</a>
