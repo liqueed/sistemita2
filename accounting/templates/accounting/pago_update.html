@@ -306,7 +306,7 @@ $(document).ready(function() {
                 }
             }).on('change', function(){
                 let factura = $(this).select2('data')[0];
-                let iva = (Math.round(factura.iva * factura.total) / 100).toFixed(2);
+                let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
                 switch (factura.tipo) {
                 case 'M':
                     $(`input[name=iva_${indexFactura}]`).val(iva);
@@ -472,7 +472,7 @@ $('.add-factura').click(function(e){
         }
     }).on('change', function(){
         let factura = $(this).select2('data')[0];
-        let iva = (Math.round(factura.iva * factura.total) / 100).toFixed(2);
+        let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
         switch (factura.tipo) {
         case 'M':
             $(`input[name=iva_${cloneIdFactura}]`).val(iva);
