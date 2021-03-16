@@ -262,7 +262,7 @@ $('#pago_factura_1 .selector-factura').select2({
 }).on('change', function(){
     let factura = $(this).select2('data')[0];
     if (factura.tipo === 'M'){
-        let iva = factura.iva * factura.total / 100;
+        let iva = (Math.round(factura.iva * factura.total) / 100).toFixed(2);
         $(`input[name=iva_1]`).val(iva);
     } else {
         $(`input[name=iva_1]`).val('0.0');
@@ -366,7 +366,7 @@ $('.add-factura').click(function(e){
     }).on('change', function(){
         let factura = $(this).select2('data')[0];
         if (factura.tipo === 'M'){
-            let iva = factura.iva * factura.total / 100;
+            let iva = (Math.round(factura.iva * factura.total) / 100).toFixed(2);
             $(`input[name=iva_${cloneIdFactura}]`).val(iva);
         } else {
             $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
