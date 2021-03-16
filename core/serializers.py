@@ -83,7 +83,7 @@ class FacturaSerializer(serializers.ModelSerializer):
         """Configuraciones del serializer."""
 
         model = Factura
-        fields = ['id', 'cliente', 'tipo', 'iva','cobrado', 'fecha', 'total', 'archivos']
+        fields = ['id', 'fecha', 'cliente', 'tipo', 'neto', 'iva', 'cobrado', 'total', 'archivos']
 
 
 class ProveedorSerializer(serializers.ModelSerializer):
@@ -118,7 +118,7 @@ class FacturaProveedorSerializer(serializers.ModelSerializer):
         """Configuraciones del serializer."""
 
         model = FacturaProveedor
-        fields = ['id', 'proveedor', 'tipo', 'iva', 'cobrado', 'fecha', 'total', 'archivos']
+        fields = ['id', 'fecha', 'proveedor', 'tipo', 'iva', 'neto', 'cobrado', 'total', 'archivos']
 
 
 class MedioPagoSerializer(serializers.ModelSerializer):

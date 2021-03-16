@@ -285,11 +285,21 @@ $(document).ready(function() {
                 }
             }).on('change', function(){
                 let factura = $(this).select2('data')[0];
-                if (factura.tipo === 'M'){
-                    let iva = (Math.round(factura.iva * factura.total) / 100).toFixed(2);
+                let iva = (Math.round(factura.iva * factura.total) / 100).toFixed(2);
+                switch (factura.tipo) {
+                case 'M':
                     $(`input[name=iva_${indexFactura}]`).val(iva);
-                } else {
+                    break;
+                case 'ARETEN':
+                    let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+                    iva = (Math.round(5 * iva) / 100).toFixed(2);
+                    $(`input[name=ganancias_${indexFactura}]`).val(ganancias);
+                    $(`input[name=iva_${indexFactura}]`).val(iva);
+                    break;
+                default:
+                    $(`input[name=ganancias_${indexFactura}]`).val('0.0');
                     $(`input[name=iva_${indexFactura}]`).val('0.0');
+                    break;
                 }
                 setTotal();
             });
@@ -441,11 +451,21 @@ $('.add-factura').click(function(e){
         }
     }).on('change', function(){
         let factura = $(this).select2('data')[0];
-        if (factura.tipo === 'M'){
-            let iva = (Math.round(factura.iva * factura.total) / 100).toFixed(2);
+        let iva = (Math.round(factura.iva * factura.total) / 100).toFixed(2);
+        switch (factura.tipo) {
+        case 'M':
             $(`input[name=iva_${cloneIdFactura}]`).val(iva);
-        } else {
+            break;
+        case 'ARETEN':
+            let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+            iva = (Math.round(5 * iva) / 100).toFixed(2);
+            $(`input[name=ganancias_${cloneIdFactura}]`).val(ganancias);
+            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+            break;
+        default:
+            $(`input[name=ganancias_${cloneIdFactura}]`).val('0.0');
             $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
+            break;
         }
         setTotal();
     });
