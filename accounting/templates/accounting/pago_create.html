@@ -275,6 +275,23 @@ $('#pago_factura_1 .selector-factura').select2({
         cache: true
     }
 }).on('change', function(){
+    let factura = $(this).select2('data')[0];
+    let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
+    switch (factura.tipo) {
+        case 'M':
+          $('input[name=iva_1]').val(iva);
+        break;
+        case 'ARETEN':
+          let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+          iva = (Math.round(5 * iva) / 100).toFixed(2);
+          $('input[name=iva_1]').val(iva);
+          $('input[name=ganancias_1]').val(ganancias);
+        break;
+        default:
+          $('input[name=ganancias_1]').val('0.0');
+          $('input[name=iva_1]').val('0.0');
+        break;
+    }
     setTotal();
     $('.add-factura').removeClass('d-none');
 });
@@ -372,6 +389,23 @@ $('.add-factura').click(function(e){
             cache: true
         }
     }).on('change', function(){
+        let factura = $(this).select2('data')[0];
+        let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
+        switch (factura.tipo) {
+          case 'M':
+            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+          break;
+        case 'ARETEN':
+            let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+            iva = (Math.round(5 * iva) / 100).toFixed(2);
+            $(`input[name=ganancias_${cloneIdFactura}]`).val(ganancias);
+            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+          break;
+          default:
+            $(`input[name=ganancias_${cloneIdFactura}]`).val('0.0');
+            $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
+          break;
+        }
         setTotal();
     });
 });
@@ -511,7 +545,7 @@ function setTotal(){
 
 function displayInfoProveedor(obj){
     if(obj !== ''){
-        var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-6">`;
+        var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
         data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
         data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
         data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;

@@ -24,3 +24,5 @@ MESSAGE_PERMISSION_ERROR = 'No tienes permisos para cambiar este campo.'
 _MESSAGE_SUCCESS_CREATED = 'La {} ha sido creada exitosamente.'
 _MESSAGE_SUCCESS_UPDATE = 'La {} ha sido modificada exitosamente.'
 _MESSAGE_SUCCESS_DELETE = 'La {} ha sido eliminada exitosamente.'
+
+MESSAGE_TOTAL_ZERO = 'El total no puede ser igual a 0.'
