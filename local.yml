@@ -16,7 +16,7 @@ services:
       - postgres
     volumes:
       - .:/app:z
-      - local_media:/app/temario/media
+      - local_media:/app/sistemita/media
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
