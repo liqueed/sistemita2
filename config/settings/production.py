@@ -71,7 +71,7 @@ LOGGING = {
             'backupCount': 5,
             'maxBytes': 1024*1024*100,  # 100MB
             'formatter': 'verbose',
-            'filename': ROOT_DIR + 'errors.log',
+            'filename': str(ROOT_DIR / "errors.log"),
         },
     },
     'loggers': {

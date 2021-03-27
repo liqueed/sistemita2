@@ -95,15 +95,19 @@ target/
 __pycache__/
 local_settings.py
 
-.env
 db.sqlite3
-restclient
+*.restclient
 
 ### LibreOffice
 *.~lock*
 
 ### Media
-sistemita/media/
+media/
 
 ## Static
 sistemita/static/
+
+.ipython/
+.env
+.envs/*
+!.envs/.local/

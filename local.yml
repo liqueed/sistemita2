@@ -28,7 +28,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: sistemita_production_postgres
+    image: sistemita_local_postgres
     container_name: sistemita_local_postgres
     volumes:
       - local_postgres_data:/var/lib/postgresql/data:Z
