@@ -1,5 +1,9 @@
 # Sistemita
 
+<p align="center">
+  <img src="sistemita/static/images/logo-top-dark.png" />
+</p>
+
 ## Stack de tecnologías
 
 - [Django 3.1.7](https://www.djangoproject.com/) Web Framework
