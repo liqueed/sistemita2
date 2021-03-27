@@ -282,7 +282,7 @@ $('#cobranza_factura_1 .selector-factura').select2({
 });
 
 // Metodos de pago
-$('.selector-metodo').click(function(){
+$('.selector-metodo').mousedown(function(){
     if ($(this).children().length == 1){
         displayMetodoPagoData();
     }
