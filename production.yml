@@ -4,6 +4,7 @@ volumes:
   production_postgres_data: {}
   production_postgres_data_backups: {}
   production_media: {}
+  production_traefik: {}
 
 services:
   django:
@@ -54,4 +55,19 @@ services:
       - ./compose/production/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - django
+    restart: unless-stopped
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    image: sistemita_production_traefik
+    container_name: sistemita_production_traefik
+    depends_on:
+      - django
+    volumes:
+      - production_traefik:/etc/traefik/acme:z
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
     restart: unless-stopped
