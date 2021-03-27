@@ -7,8 +7,9 @@ volumes:
 
 services:
   django:
-    build: .
-    dockerfile: ./compose/local/django/Dockerfile
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
     image: sistemita_local_django
     container_name: sistemita_local_django
     depends_on:
