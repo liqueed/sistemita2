@@ -48,13 +48,9 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         env:
           DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
-          DJANGO_DEBUG: ${{ secrets.DJANGO_DEBUG }}
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-          DJANGO_ADMIN_URL: ${{ secrets.DJANGO_ADMIN_URL }}
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
           DJANGO_SECURE_SSL_REDIRECT: ${{ secrets.DJANGO_SECURE_SSL_REDIRECT }}
-          DJANGO_SERVER_EMAIL: ${{ secrets.DJANGO_SERVER_EMAIL }}
-          DJANGO_ACCOUNT_ALLOW_REGISTRATION: ${{ secrets.DJANGO_ACCOUNT_ALLOW_REGISTRATION }}
           WEB_CONCURRENCY: ${{ secrets.WEB_CONCURRENCY }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}

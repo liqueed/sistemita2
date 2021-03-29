@@ -47,7 +47,6 @@ services:
   nginx:
     image: nginx:1.19-alpine
     container_name: sistemita_production_nginx
-    restart: always
     ports:
       - 8080:80
     volumes:
