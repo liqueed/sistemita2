@@ -11,6 +11,7 @@ on:
 
   push:
     branches: [ "master" ]
+    types: [closed]
 
 jobs:
 #   pytest:
@@ -33,19 +34,17 @@ jobs:
 
   deploy:
     runs-on: self-hosted
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - name: Checkout Code Repository
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: actions/checkout@v2
 
       - name: Create env files
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           mkdir -p .envs/.production
           touch .envs/.production/.django
           touch .envs/.production/.postgres
       - name: Set environments
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         env:
           DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
@@ -71,9 +70,7 @@ jobs:
           echo POSTGRES_USER=$POSTGRES_USER >> .envs/.production/.postgres
           echo POSTGRES_PASSWORD=$POSTGRES_PASSWORD >> .envs/.production/.postgres
       - name: Build the Stack
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run:  docker-compose -f production.yml build
 
       - name: Run the Stack
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run:  docker-compose -f production.yml up -d
