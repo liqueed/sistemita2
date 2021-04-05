@@ -1,0 +1,546 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Agregar cobranza a Cliente | Liqueed{% endblock %}
+{% block header %}
+    <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
+    <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
+{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">Cobranzas a Clientes</h1>
+      {% if perms.accounting.list_cobranza %}
+        <a href="{% url 'accounting:cobranza-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+          <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">
+            Agregar cobranza a Cliente
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+
+          <form id="cobranza-form">
+            <fieldset>
+              <legend>Datos</legend>
+
+              <!-- Fecha -->
+              <div class="row">
+                <div class="col-4">
+                  <div id="div_id_fecha" class="form-group">
+                    <label for="id_fecha" class=" requiredField">
+                      Fecha<span class="asteriskField">*</span>
+                    </label>
+                    <div>
+                      <input type="text" name="fecha" class="dateinput form-control" required="" id="id_fecha">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Fecha -->
+
+              <!-- Cliente -->
+              <div class="row">
+                <div class="col-5">
+                  <div class="form-group">
+                    <label class="requiredField">
+                      Cliente<span class="asteriskField">*</span>
+                    </label>
+                    <div class="">
+                      <select class="select form-control" id="cliente" name="cliente" required>
+                        <option value="">---------</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" id="info_cliente">
+              </div>
+              <!--End Cliente -->
+
+              <!-- Factura -->
+              <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
+                <div class="row">
+                  <div class="col-12">
+                    <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
+                      <span class="text-danger">&times;</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <!-- Factura Cliente -->
+                  <div class="col-12">
+                    <div class="form-group">
+                      <label class="requiredField">
+                        Factura<span class="asteriskField">*</span>
+                      </label>
+                      <div class="wrapper-selector-factura">
+                        <select class="form-control selector-factura" name="factura_1" disabled required>
+                          <option value="" selected="">---------</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Factura Cliente -->
+
+                  <!-- Metodo y Monto -->
+                  <div class="col-11 wrapper-pagos">
+                    <div class="row group-pagos">
+                      <!-- Metodo -->
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label class="requiredField">
+                            Metodo<span class="asteriskField">*</span>
+                          </label>
+                          <div>
+                            <select class="selector-metodo form-control" name="metodo_1_1" disabled required>
+                              <option value="">---------</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Metodo -->
+                      <!-- Monto -->
+                      <div class="col-6">
+                        <div class="form-group">
+                          <label class="requiredField">
+                            Monto<span class="asteriskField">*</span>
+                          </label>
+                          <div>
+                            <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End Monto -->
+                    </div>
+                  </div>
+                  <!-- End metodo y monto -->
+
+                  <!-- Agrega monto -->
+                  <div class="col-1 pl-0">
+                    <div class="form-group">
+                      <label></label>
+                      <div>
+                        <button class="add-pago btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Agrega monto -->
+
+                  <!-- Ganancias, ingresos e IVA -->
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
+                      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
+                      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
+                      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
+                    </div>
+                  </div>
+                  <!-- End Ganancias, ingresos e IVA -->
+
+                </div>
+              </div>
+              <!-- End Factura -->
+
+              <!-- Agregar factura -->
+              <div class="row">
+                <div class="offset-6 col-1">
+                  <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
+                </div>
+              </div>
+              <!-- End Agregar factura -->
+
+              <!-- Total -->
+              <div class="row wrapper-total d-none mt-2">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+                    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
+                  </div>
+                </div>
+              </div>
+              <!-- End Total -->
+
+            </fieldset>
+
+            <div class="form-group">
+              <div>
+                <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+                <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_js %}
+$('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+
+// Cliente
+let cliente; // global
+
+$('#cliente').select2({
+    placeholder: 'Selecciona un cliente',
+    ajax: {
+        url: '/api/cliente/',
+        processResults: function (response) {
+            var data = $.map(response, function (obj) {
+                obj.id = obj.id;
+                obj.text = `${obj.razon_social} - CUIT ${obj.cuit}`;
+                return obj;
+            });
+            return {
+                results: data
+            };
+        },
+        cache: true
+    }
+}).on('change', function(e) {
+    // Obtengo objeto Cliente
+    var obj = $(this).select2("data")[0];
+    cliente = {
+        "razon_social": obj.razon_social,
+        "cuit": obj.cuit,
+        "correo": obj.correo,
+        "telefono": obj.telefono
+    };
+
+    $('.wrapper-total').removeClass('d-none');
+    $('.selector-factura').prop('disabled', false);
+    $('.selector-metodo').prop('disabled', false);
+
+    displayInfoCliente(obj);
+
+    // Si el usuario cambia de cliente entonces remuevo las facturas creadas
+    // con facturas de otro cliente, excepto la primera, que únicamente seteo
+    // el selector de facturas
+    let firstSelector = $('.wrapper-factura:first .selector-factura');
+    firstSelector.val('').trigger('change');
+    $('.wrapper-factura').not(':first').remove();
+
+});
+
+// Factura inicial
+$('#cobranza_factura_1 .selector-factura').select2({
+    placeholder: 'Selecciona una factura',
+    ajax: {
+        beforeSend: function(jqXHR, settings) {
+            let idCliente = $('#cliente').find(":selected").val();
+            settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
+        },
+        url: '/api/factura/',
+        processResults: function (response) {
+            let data = $.map(response, function (obj) {
+                obj.id = obj.id;
+                obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
+                return obj;
+            });
+            return {
+                results: data
+            };
+        },
+        cache: true
+    }
+}).on('change', function(){
+    let factura = $(this).select2('data')[0];
+    let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
+    switch (factura.tipo) {
+        case 'M':
+          $('input[name=iva_1]').val(iva);
+        break;
+        case 'ARETEN':
+          let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+          iva = (Math.round(5 * iva) / 100).toFixed(2);
+          $('input[name=iva_1]').val(iva);
+          $('input[name=ganancias_1]').val(ganancias);
+        break;
+        default:
+          $('input[name=ganancias_1]').val('0.0');
+          $('input[name=iva_1]').val('0.0');
+        break;
+    }
+    setTotal();
+    $('.add-factura').removeClass('d-none');
+});
+
+// Metodos de pago
+$('.selector-metodo').mousedown(function(){
+    if ($(this).children().length == 1){
+        displayMetodoPagoData();
+    }
+}).on('change', function(e){
+    // Boton agregar metodos
+    let idFactura = $(this).closest('.wrapper-factura').attr('id');
+    $(`#${idFactura} .add-pago`).removeClass('d-none');
+});
+
+
+$(".add-pago").click(function(e){
+    e.preventDefault();
+
+    let idElementFactura = $(this).closest('.wrapper-factura').attr('id');
+    let idDataFactura = $(this).closest('.wrapper-factura').attr('data-id');
+    let countPagos = $(`#${idElementFactura} .group-pagos`).length;
+    let cloneIdPago = countPagos + 1; // Id del proximo elemento clonado
+    let clonePago = $(`#${idElementFactura} .group-pagos:first`).clone();
+
+    if (!validateForm()){return;}
+    clonePago.find('.selector-metodo').attr('name', `metodo_${idDataFactura}_${cloneIdPago}`);
+    clonePago.find('.input-monto').attr('name', `monto_${idDataFactura}_${cloneIdPago}`);
+    clonePago.find('.numberinput').val('0.0');
+    clonePago.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
+    $(`#${idElementFactura} .wrapper-pagos`).append(clonePago);
+});
+
+$('.wrapper-pagos').on('click', '.btn-metodo-remove', function(e){
+    e.preventDefault();
+    $(this).closest(".group-pagos").remove();
+})
+
+// Clona factura
+$('.add-factura').click(function(e){
+    e.preventDefault();
+
+    if (!validateForm()){return;}
+
+    let wrapperFactura = $('.wrapper-factura:first'); // clono primera factura
+    let countFacturas = $('.wrapper-factura').length;
+    let cloneIdFactura = countFacturas + 1; // Id del elemento clonado
+    let clone = wrapperFactura.clone(true); // clono con datos y eventos
+    let idFactura = 'cobranza_factura_' + cloneIdFactura; // establezco el id
+
+    clone.attr('id', idFactura); // agrego id
+    clone.attr('data-id', cloneIdFactura);
+
+    clone.find('input').each(function(){$(this).val('0.0')}); // remuevo valores
+    clone.find('.add-pago').addClass('d-none');
+    clone.find('.close').removeClass('d-none');
+
+    // Selector factura, destruye los eventos de select2
+    clone.find(`.wrapper-selector-factura`).children().remove();
+    let htmlselector = `<select name="factura" class="select form-control selector-factura" required>`;
+    htmlselector += `<option value="" selected="">---------</option></select>`;
+    clone.find('.wrapper-selector-factura').append(htmlselector);
+
+    clone.find('.wrapper-pagos').children().not(':first').remove(); // Remueve metodos clonados
+
+    // setea atributos
+    clone.find('.selector-factura').attr('name', `factura_${cloneIdFactura}`);
+    clone.find('.selector-metodo').attr('name', `metodo_${cloneIdFactura}_1`);
+    clone.find('.input-monto').attr('name', `monto_${cloneIdFactura}_1`);
+    clone.find('.input-ganancias').attr('name', `ganancias_${cloneIdFactura}`);
+    clone.find('.input-ingresos-brutos').attr('name', `ingresos_brutos_${cloneIdFactura}`);
+    clone.find('.input-iva').attr('name', `iva_${cloneIdFactura}`);
+
+    $('.wrapper-factura:last').after(clone); // clonar luego del último
+
+    // Vuelvo a construir selector
+    clone.find('.selector-factura').select2({
+        placeholder: 'Selecciona una factura',
+        ajax: {
+            beforeSend: function(jqXHR, settings) {
+                let idCliente = $('#cliente').find(":selected").val();
+                settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
+            },
+            url: '/api/factura/',
+            processResults: function (response) {
+                let data = $.map(response, function (obj) {
+                    obj.id = obj.id;
+                    obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
+                    return obj;
+                });
+                return {
+                    results: data
+                };
+            },
+            cache: true
+        }
+    }).on('change', function(){
+        let factura = $(this).select2('data')[0];
+        let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
+        switch (factura.tipo) {
+          case 'M':
+            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+          break;
+        case 'ARETEN':
+            let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+            iva = (Math.round(5 * iva) / 100).toFixed(2);
+            $(`input[name=ganancias_${cloneIdFactura}]`).val(ganancias);
+            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+          break;
+          default:
+            $(`input[name=ganancias_${cloneIdFactura}]`).val('0.0');
+            $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
+          break;
+        }
+        setTotal();
+    });
+});
+
+// Eliminar factura
+$('.close').click(function(){
+    $(this).closest('.wrapper-factura').remove();
+    setTotal();
+});
+
+// Guardar
+$('#submit-id-submit').click(function(e){
+    e.preventDefault();
+
+    if (!validateForm()){return;}
+
+    let fecha = $('input[name=fecha]').val().split("/");
+    fecha = new Date(fecha[2], fecha[1] - 1, fecha[0]).toISOString().slice(0, 10);
+
+    let total = $('input[name=total]').val();
+    let facturas = [];
+
+    $('.wrapper-factura').each(function(){
+        let factura = $(this).find('[name*="factura"]').val();
+        let pagos = [];
+        let ganancias = $(this).find('[name*="ganancias"]').val();
+        let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
+        let iva = $(this).find('[name*="iva"]').val();
+
+        // pagos
+        $(this).find('.group-pagos').each(function(e){
+            let metodo = $(this).find('[name*="metodo"]').val();
+            let monto = $(this).find('[name*="monto"]').val();
+            pagos.push({
+                'metodo': metodo,
+                'monto': monto
+            });
+        });
+
+        facturas.push({
+            'factura': parseInt(factura),
+            'cobranza_factura_pagos': pagos,
+            'ganancias': ganancias,
+            'ingresos_brutos': ingresos_brutos,
+            'iva': iva
+        });
+    });
+
+    let formCobranzaData = {
+        'fecha': fecha,
+        'cobranza_facturas': facturas,
+        'total': parseInt(total)
+    }
+    formCobranzaData['cliente'] = cliente;
+
+    $.ajax({
+        type        : 'POST',
+        url         : '/api/cobranza/',
+        data        : JSON.stringify(formCobranzaData),
+        dataType    : 'json',
+        contentType : 'application/json',
+        encode      : true,
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+        }
+    }).done(function(data) {
+        if ('{{ perms.accounting.change_cobranza }}' === 'True'){
+            window.location.href = '{% url 'accounting:cobranza-update' pk=0 %}?create=1'.replace('0', data.id);
+        } else {
+            if ('{{ perms.accounting.view_cobranza }}' === 'True'){
+                window.location.href = '{% url 'accounting:cobranza-detail' pk=0 %}?create=1'.replace('0', data.id);
+            } else {
+                if ('{{ perms.accounting.list_cobranza }}' === 'True'){
+                    window.location.href = '{% url 'accounting:cobranza-list' %}?create=1';
+                } else {
+                    window.location.href = '{% url 'core:home' %}?create=1&type=cobranza';
+                }
+            }
+        }
+    }).fail(function() {
+        alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
+    })
+});
+
+// funciones
+function validateForm(){
+    var validator = $('#cobranza-form').validate({
+        lang: 'es',
+    });
+
+    // Validaciones dinamicas
+    $('[name*="monto"]').each(function () {
+        $(this).rules('add', {
+            required: true,
+            notEqual: '0.0'
+        });
+    });
+
+    // Metodos
+    jQuery.validator.addMethod("notEqual", function(value, element, param) {
+        return this.optional(element) || value !== param;
+    }, "Este campo es obligatorio.");
+
+    return $("#cobranza-form").valid();
+}
+
+
+function displayMetodoPagoData(){
+    $.ajax({
+        url: '/api/mediopago/',
+        success: function (response) {
+            var data = $.map(response, function (obj) {
+                obj.id = obj.id;
+                obj.text = obj.nombre
+                return obj;
+            });
+            $.each(data, function(key, value) {
+                $('.selector-metodo').append($("<option></option>")
+                                             .attr("value", value['id'])
+                                             .text(value['nombre']));
+            });
+        }
+    });
+}
+
+
+function setTotal(){
+    let elementTotal = $('.input-total');
+    let totalFactura = 0;
+    $('.selector-factura').find(':selected').each(function(){
+        totalFactura += parseInt($(this).text().split('$')[1]);
+    });
+    elementTotal.val(totalFactura);
+}
+
+function displayInfoCliente(obj){
+    if(obj !== ''){
+        var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
+        data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
+        data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
+        data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
+        data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
+        data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
+        if (obj.localidad !== null){
+            data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
+            data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+        }
+        data += `</dl></div></div>`;
+        $('#info_cliente').html(data);
+    }
+}
+
+{% endblock %}

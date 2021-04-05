@@ -1,17 +1,79 @@
 name: CI
 
-on: [push]
+# Enable Buildkit and let compose use it to speed up image building
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+  push:
+    branches: [ "master" ]
 
 jobs:
-  build:
+#   pytest:
+#     runs-on: ubuntu-latest
+#     steps:
 
-    runs-on: ubuntu-latest
+#       - name: Checkout Code Repository
+#         uses: actions/checkout@v2
+#       - name: Build the Stack
+#         run:  docker-compose -f local.yml build
 
+#       - name: Run the Stack
+#         run:  docker-compose -f local.yml up -d
+
+#       - name: Run Django Tests
+#         run:  docker-compose -f local.yml run --rm django python manage.py test
+
+#       - name: Tear down the Stack
+#         run:  docker-compose -f local.yml down
+
+  deploy:
+    runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+      - name: Checkout Code Repository
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/checkout@v2
+
+      - name: Create env files
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          mkdir -p .envs/.production
+          touch .envs/.production/.django
+          touch .envs/.production/.postgres
+      - name: Set environments
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        env:
+          DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
+          DJANGO_SECURE_SSL_REDIRECT: ${{ secrets.DJANGO_SECURE_SSL_REDIRECT }}
+          WEB_CONCURRENCY: ${{ secrets.WEB_CONCURRENCY }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: |
+          echo DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE > .envs/.production/.django
+          echo DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY >> .envs/.production/.django
+          echo DJANGO_ALLOWED_HOSTS=$DJANGO_ALLOWED_HOSTS >> .envs/.production/.django
+          echo DJANGO_SECURE_SSL_REDIRECT=$DJANGO_SECURE_SSL_REDIRECT >> .envs/.production/.django
+          echo WEB_CONCURRENCY=$WEB_CONCURRENCY >> .envs/.production/.django
+          echo REDIS_URL=$REDIS_URL >> .envs/.production/.django
+          echo POSTGRES_HOST=$POSTGRES_HOST > .envs/.production/.postgres
+          echo POSTGRES_PORT=$POSTGRES_PORT >> .envs/.production/.postgres
+          echo POSTGRES_DB=$POSTGRES_DB >> .envs/.production/.postgres
+          echo POSTGRES_USER=$POSTGRES_USER >> .envs/.production/.postgres
+          echo POSTGRES_PASSWORD=$POSTGRES_PASSWORD >> .envs/.production/.postgres
+      - name: Build the Stack
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run:  docker-compose -f production.yml build
+
+      - name: Run the Stack
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run:  docker-compose -f production.yml up -d
