@@ -50,7 +50,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - production_media:/media
+      - production_media:/www
       - ./compose/production/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - django
