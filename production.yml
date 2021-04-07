@@ -20,8 +20,6 @@ services:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
     command: /start
-    ports:
-      - "8000:8000"
     volumes:
       - production_media:/app/sistemita/media
     restart: unless-stopped
@@ -45,13 +43,15 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: nginx:1.19-alpine
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    image: sistemita_production_nginx
     container_name: sistemita_production_nginx
     ports:
       - 8080:80
     volumes:
-      - production_media:/www
-      - ./compose/production/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - production_media:/www/media
     depends_on:
       - django
     restart: unless-stopped
