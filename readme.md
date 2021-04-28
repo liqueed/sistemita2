@@ -34,7 +34,7 @@
 
         $ docker-compose stop django
 
-        $ docker-compose run --rm --service-ports django python manage.py runserver
+        $ docker-compose run --rm --service-ports django
 
 ## Comando útiles
 
