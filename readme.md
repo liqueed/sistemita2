@@ -46,15 +46,9 @@ Para crear un usuario administrador ejecutrar el siguiente comando:
 
 ### Fixtures
 
-Para cargar datos iniciales correr los siguientes comandos:
+Para cargar datos iniciales correr el siguiente comando:
 
-    $ docker-compose run --rm django python manage.py loaddata fixtures/countries.json
-
-    $ docker-compose run --rm django python manage.py loaddata fixtures/states.json
-
-    $ docker-compose run --rm django python manage.py loaddata fixtures/districts.json
-
-    $ docker-compose run --rm django python manage.py loaddata fixtures/localities.json
+    $ docker-compose run --rm django python manage.py loaddata fixtures/*.json
 
 ### Permisos
 
