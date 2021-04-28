@@ -31,11 +31,14 @@ class FacturaAbstract(TimeStampedModel, models.Model):
         ('ARETEN', 'A SUJETA A RETENCIÓN'),
         ('B', 'B'),
         ('C', 'C'),
+        ('FCPYME', 'FC PYME'),
         ('M', 'M'),
         ('NCA', 'NC A'),
+        ('NCARETEN', 'NC A SUJETA A RETENCION'),
         ('NCB', 'NC B'),
-        ('FCPYME', 'FC PYME'),
+        ('NCC', 'NC C'),
         ('NCFCPYME', 'NC FCPYME'),
+        ('NCM', 'NC M'),
     )
 
     numero = models.CharField('Número', max_length=20, blank=True)
