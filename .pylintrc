@@ -1,11 +1,8 @@
-[MASTER]
-load-plugins=pylint_django, pylint_celery
-
 [FORMAT]
 max-line-length=120
 
 [MESSAGES CONTROL]
-disable=invalid-name
+disable=invalid-name,too-few-public-methods,no-member,no-self-use,abstract-method
 
 [DESIGN]
 max-parents=13
