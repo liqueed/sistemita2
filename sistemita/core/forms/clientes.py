@@ -21,6 +21,8 @@ class ClienteForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
 
         if 'data' in kwargs.keys():
             if 'provincia' in kwargs['data'].keys():
@@ -112,6 +114,9 @@ class FacturaForm(forms.ModelForm):
         """Inicialización de formulario."""
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
+
 
         # Permisos
         if not self.user.has_perm('core.change_nro_factura'):
@@ -271,6 +276,8 @@ class OrdenCompraForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(

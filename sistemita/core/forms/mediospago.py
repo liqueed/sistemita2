@@ -18,6 +18,8 @@ class MedioPagoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(

@@ -22,6 +22,8 @@ class GroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicializacion del Formulario."""
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
         self.fields['permissions'].widget.attrs['size'] = 10
         self.helper.layout = Layout(

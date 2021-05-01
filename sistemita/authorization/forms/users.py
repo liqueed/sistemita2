@@ -30,6 +30,8 @@ class UserCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicializacion del Formulario."""
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
         self.fields['is_superuser'].widget.attrs['checked'] = False
         self.fields['groups'].widget.attrs['size'] = 10
