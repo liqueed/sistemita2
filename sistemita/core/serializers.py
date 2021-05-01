@@ -4,11 +4,11 @@
 from rest_framework import serializers
 
 # Models
-from core.models.archivo import Archivo
-from core.models.cliente import Cliente, Factura
-from core.models.entidad import Provincia, Distrito, Localidad
-from core.models.mediopago import MedioPago
-from core.models.proveedor import Proveedor, FacturaProveedor
+from sistemita.core.models.archivo import Archivo
+from sistemita.core.models.cliente import Cliente, Factura
+from sistemita.core.models.entidad import Distrito, Localidad, Provincia
+from sistemita.core.models.mediopago import MedioPago
+from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
 
 
 class ProvinciaSerializer(serializers.ModelSerializer):

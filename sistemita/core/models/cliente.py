@@ -3,13 +3,13 @@
 # Django
 from django.db import models
 
-# Models
-from core.models.archivo import Archivo
-from core.models.entidad import Provincia, Distrito, Localidad
-from core.models.utils import TimeStampedModel, FacturaAbstract
-
 # Utils
-from core.constants import MONEDAS
+from sistemita.core.constants import MONEDAS
+
+# Models
+from sistemita.core.models.archivo import Archivo
+from sistemita.core.models.entidad import Distrito, Localidad, Provincia
+from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
 
 
 class Cliente(TimeStampedModel, models.Model):

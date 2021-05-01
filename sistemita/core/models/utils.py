@@ -4,7 +4,7 @@
 from django.db import models
 
 # Constantes
-from core.constants import MONEDAS
+from sistemita.core.constants import MONEDAS
 
 
 class TimeStampedModel(models.Model):

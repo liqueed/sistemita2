@@ -4,7 +4,8 @@
 from django.apps import AppConfig
 
 
-class CoreConfig(AppConfig):
+class CoreAppConfig(AppConfig):
     """Configuraciones del módulo."""
 
-    name = 'core'
+    name = 'sistemita.core'
+    verbose_name = 'core'

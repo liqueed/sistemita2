@@ -1,36 +1,59 @@
 """URLs Core."""
 
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework import routers
 
 # Views
-from core.views.archivos import ArchivoViewSet
-from core.views.clientes import (
-    ClienteViewSet, ClienteListView, ClienteCreateView, ClienteDetailView, ClienteUpdateView,
-    ClienteDeleteView
+from sistemita.core.views.archivos import ArchivoViewSet
+from sistemita.core.views.clientes import (
+    ClienteCreateView,
+    ClienteDeleteView,
+    ClienteDetailView,
+    ClienteListView,
+    ClienteUpdateView,
+    ClienteViewSet,
 )
-from core.views.distritos import DistritoViewSet
-from core.views.facturascliente import (
-    FacturaViewSet, FacturaListView, FacturaCreateView, FacturaDetailView, FacturaUpdateView,
-    FacturaDeleteView
+from sistemita.core.views.distritos import DistritoViewSet
+from sistemita.core.views.facturascliente import (
+    FacturaCreateView,
+    FacturaDeleteView,
+    FacturaDetailView,
+    FacturaListView,
+    FacturaUpdateView,
+    FacturaViewSet,
 )
-from core.views.facturasproveedor import (
-    FacturaProveedorViewSet, FacturaProveedorListView, FacturaProveedorCreateView,
-    FacturaProveedorDetailView, FacturaProveedorUpdateView, FacturaProveedorDeleteView
+from sistemita.core.views.facturasproveedor import (
+    FacturaProveedorCreateView,
+    FacturaProveedorDeleteView,
+    FacturaProveedorDetailView,
+    FacturaProveedorListView,
+    FacturaProveedorUpdateView,
+    FacturaProveedorViewSet,
 )
-from core.views.home import HomeView, error_403
-from core.views.localidades import LocalidadViewSet
-from core.views.mediopago import (
-    MedioPagoViewSet, MedioPagoListView, MedioPagoCreateView, MedioPagoDetailView,
-    MedioPagoUpdateView, MedioPagoDeleteView
+from sistemita.core.views.home import HomeView, error_403
+from sistemita.core.views.localidades import LocalidadViewSet
+from sistemita.core.views.mediopago import (
+    MedioPagoCreateView,
+    MedioPagoDeleteView,
+    MedioPagoDetailView,
+    MedioPagoListView,
+    MedioPagoUpdateView,
+    MedioPagoViewSet,
 )
-from core.views.proveedores import (
-    ProveedorViewSet, ProveedorListView, ProveedorCreateView, ProveedorDetailView,
-    ProveedorUpdateView, ProveedorDeleteView
+from sistemita.core.views.ordencompra import (
+    OrdenCompraCreateView,
+    OrdenCompraDeleteView,
+    OrdenCompraDetailView,
+    OrdenCompraListView,
+    OrdenCompraUpdateView,
 )
-from core.views.ordencompra import (
-    OrdenCompraListView, OrdenCompraCreateView, OrdenCompraDetailView, OrdenCompraUpdateView,
-    OrdenCompraDeleteView
+from sistemita.core.views.proveedores import (
+    ProveedorCreateView,
+    ProveedorDeleteView,
+    ProveedorDetailView,
+    ProveedorListView,
+    ProveedorUpdateView,
+    ProveedorViewSet,
 )
 
 router = routers.DefaultRouter()

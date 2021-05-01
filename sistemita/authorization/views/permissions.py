@@ -3,24 +3,21 @@
 # Django
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import Permission
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
 # Forms
-from authorization.forms.permissions import PermissionForm
-
-# Models
-from django.contrib.auth.models import Permission
-
-# Views
-from core.views.home import error_403
-
-# Utils
-from core.utils.strings import (
-    MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_UPDATE, MESSAGE_SUCCESS_DELETE
+from sistemita.authorization.forms.permissions import PermissionForm
+from sistemita.core.utils.strings import (
+    MESSAGE_403,
+    MESSAGE_SUCCESS_CREATED,
+    MESSAGE_SUCCESS_DELETE,
+    MESSAGE_SUCCESS_UPDATE,
 )
+from sistemita.core.views.home import error_403
 
 
 class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
@@ -53,6 +50,7 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
+        return super().handle_no_permission()
 
 
 class PermissionCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -68,17 +66,17 @@ class PermissionCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateV
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('auth.change_permission'):
             return reverse('authorization:permission-update', args=(self.object.id,))
-        elif self.request.user.has_perm('auth.view_permission'):
+        if self.request.user.has_perm('auth.view_permission'):
             return reverse('authorization:permission-detail', args=(self.object.id,))
-        elif self.request.user.has_perm('auth.list_permission'):
+        if self.request.user.has_perm('auth.list_permission'):
             return reverse('authorization:permission-list')
-        else:
-            return reverse('core:home')
+        return reverse('core:home')
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
+        return super().handle_no_permission()
 
 
 class PermissionDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -93,6 +91,7 @@ class PermissionDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailV
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
+        return super().handle_no_permission()
 
 
 class PermisoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -113,6 +112,7 @@ class PermisoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
+        return super().handle_no_permission()
 
 
 class PermissionDeleteView(PermissionRequiredMixin, DeleteView):
@@ -128,9 +128,10 @@ class PermissionDeleteView(PermissionRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)
-        return super(PermissionDeleteView, self).delete(request, *args, **kwargs)
+        return super().delete(request, *args, **kwargs)
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
+        return super().handle_no_permission()

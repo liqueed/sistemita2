@@ -4,9 +4,9 @@
 from django.db import models
 
 # Models
-from core.models.cliente import Cliente, Factura
-from core.models.mediopago import MedioPago
-from core.models.utils import TimeStampedModel
+from sistemita.core.models.cliente import Cliente, Factura
+from sistemita.core.models.mediopago import MedioPago
+from sistemita.core.models.utils import TimeStampedModel
 
 
 class Cobranza(TimeStampedModel, models.Model):

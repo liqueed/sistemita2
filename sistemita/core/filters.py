@@ -4,8 +4,8 @@
 from django_filters.rest_framework import BooleanFilter, FilterSet
 
 # Models
-from core.models.cliente import Factura
-from core.models.proveedor import FacturaProveedor
+from sistemita.core.models.cliente import Factura
+from sistemita.core.models.proveedor import FacturaProveedor
 
 
 class FacturaFilterSet(FilterSet):

@@ -7,14 +7,16 @@ import io
 # Datetime
 from datetime import datetime
 
+# writers
+import xlsxwriter
+
 # Django
 from django.db.models import Sum
 from django.http import HttpResponse
 
 # Utils
-from core.constants import MONEDAS
-from core.models.mediopago import MedioPago
-import xlsxwriter
+from sistemita.core.constants import MONEDAS
+from sistemita.core.models.mediopago import MedioPago
 
 
 class FacturaExport:
@@ -284,7 +286,7 @@ def export_excel(request, queryset):
     return response
 
 
-def export_csv(request, queryset):
+def export_csv(queryset):
     """Devuelve un archivo en formato CSV."""
     app = queryset.model.__name__.lower()
     response = HttpResponse(content_type='text/csv')

@@ -12,15 +12,21 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
+
 # Django REST Framework
 from rest_framework import mixins, permissions, viewsets
 
-from core.forms.proveedores import ProveedorForm
-# Models
-from core.models.proveedor import Proveedor
-from core.serializers import ProveedorSerializer
-from core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_DELETE, MESSAGE_SUCCESS_UPDATE
-from core.views.home import error_403
+# Sistemita
+from sistemita.core.forms.proveedores import ProveedorForm
+from sistemita.core.models.proveedor import Proveedor
+from sistemita.core.serializers import ProveedorSerializer
+from sistemita.core.utils.strings import (
+    MESSAGE_403,
+    MESSAGE_SUCCESS_CREATED,
+    MESSAGE_SUCCESS_DELETE,
+    MESSAGE_SUCCESS_UPDATE,
+)
+from sistemita.core.views.home import error_403
 
 
 class ProveedorViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):

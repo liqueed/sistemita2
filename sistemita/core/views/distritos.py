@@ -1,14 +1,11 @@
 """Vistas del modelo Distrito."""
 
 # Django REST framework
-from rest_framework import permissions
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 
-# Models
-from core.models.entidad import Distrito
-
-# Serializers
-from core.serializers import DistritoSerializer
+# Sistemita
+from sistemita.core.models.entidad import Distrito
+from sistemita.core.serializers import DistritoSerializer
 
 
 class DistritoViewSet(viewsets.ModelViewSet):

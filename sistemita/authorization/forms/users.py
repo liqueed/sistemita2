@@ -1,25 +1,27 @@
 """Formularios del módulo Permission."""
 
 # Django
+# Forms
+from crispy_forms.bootstrap import FormActions
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
 from django import forms
+
+# Models
+from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.forms import SetPasswordForm
-from django.contrib.auth import password_validation
+from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-# Models
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
-
-# Forms
-from crispy_forms.bootstrap import FormActions
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
-
 # Utils
-from core.utils.strings import HELP_TEXT_MULTIPLE_CHOICE, HELP_TEXT_PASSWORD_CONFIRMATION, HELP_TEXT_USERNAME
+from sistemita.core.utils.strings import (
+    HELP_TEXT_MULTIPLE_CHOICE,
+    HELP_TEXT_PASSWORD_CONFIRMATION,
+    HELP_TEXT_USERNAME,
+)
 
 User = get_user_model()
 

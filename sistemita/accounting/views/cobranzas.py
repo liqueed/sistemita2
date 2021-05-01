@@ -17,13 +17,13 @@ from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from rest_framework import mixins, permissions, viewsets
 
 # Accounting
-from accounting.models.cobranza import Cobranza
-from accounting.serializers.cobranzas import CobranzaSerializer
+from sistemita.accounting.models.cobranza import Cobranza
+from sistemita.accounting.serializers.cobranzas import CobranzaSerializer
 
 # Core
-from core.models.cliente import Factura
-from core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
-from core.views.home import error_403
+from sistemita.core.models.cliente import Factura
+from sistemita.core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
+from sistemita.core.views.home import error_403
 
 
 class CobranzaViewSet(mixins.CreateModelMixin,

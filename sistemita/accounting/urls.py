@@ -7,13 +7,22 @@ from django.urls import include, path
 from rest_framework import routers
 
 # Views
-from accounting.views.cobranzas import (
-    CobranzaViewSet, CobranzaListView, CobranzaCreateTemplateView,
-    CobranzaDetailView, CobranzaUpdateTemplateView, CobranzaDeleteView
+from sistemita.accounting.views.cobranzas import (
+    CobranzaCreateTemplateView,
+    CobranzaDeleteView,
+    CobranzaDetailView,
+    CobranzaListView,
+    CobranzaUpdateTemplateView,
+    CobranzaViewSet,
 )
-from accounting.views.pagos import (
-    PagoViewSet, PagoListView, PagoCreateTemplateView,
-    PagoDetailView, PagoUpdateTemplateView, PagoDeleteView, PagoGeratePDFDetailView
+from sistemita.accounting.views.pagos import (
+    PagoCreateTemplateView,
+    PagoDeleteView,
+    PagoDetailView,
+    PagoGeratePDFDetailView,
+    PagoListView,
+    PagoUpdateTemplateView,
+    PagoViewSet,
 )
 
 router = routers.DefaultRouter()

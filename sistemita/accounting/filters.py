@@ -4,7 +4,7 @@
 from django_filters.rest_framework import BooleanFilter, DateFilter, FilterSet
 
 # Models
-from accounting.models.pago import Pago
+from sistemita.accounting.models.pago import Pago
 
 
 class PagoFilterSet(FilterSet):

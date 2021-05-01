@@ -12,15 +12,21 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
+
 # Django REST Framework
 from rest_framework import mixins, permissions, viewsets
 
-# Core
-from core.forms.clientes import ClienteForm
-from core.models.cliente import Cliente
-from core.serializers import ClienteSerializer
-from core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_DELETE, MESSAGE_SUCCESS_UPDATE
-from core.views.home import error_403
+# Sistemita
+from sistemita.core.forms.clientes import ClienteForm
+from sistemita.core.models.cliente import Cliente
+from sistemita.core.serializers import ClienteSerializer
+from sistemita.core.utils.strings import (
+    MESSAGE_403,
+    MESSAGE_SUCCESS_CREATED,
+    MESSAGE_SUCCESS_DELETE,
+    MESSAGE_SUCCESS_UPDATE,
+)
+from sistemita.core.views.home import error_403
 
 
 class ClienteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

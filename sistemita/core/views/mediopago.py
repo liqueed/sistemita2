@@ -15,12 +15,17 @@ from django.views.generic.edit import CreateView, UpdateView
 # Django REST Framework
 from rest_framework import mixins, permissions, viewsets
 
-# Forms
-from core.forms.mediospago import MedioPagoForm
-from core.models.mediopago import MedioPago
-from core.serializers import MedioPagoSerializer
-from core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_CREATED, MESSAGE_SUCCESS_DELETE, MESSAGE_SUCCESS_UPDATE
-from core.views.home import error_403
+# Sistemita
+from sistemita.core.forms.mediospago import MedioPagoForm
+from sistemita.core.models.mediopago import MedioPago
+from sistemita.core.serializers import MedioPagoSerializer
+from sistemita.core.utils.strings import (
+    MESSAGE_403,
+    MESSAGE_SUCCESS_CREATED,
+    MESSAGE_SUCCESS_DELETE,
+    MESSAGE_SUCCESS_UPDATE,
+)
+from sistemita.core.views.home import error_403
 
 
 class MedioPagoViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

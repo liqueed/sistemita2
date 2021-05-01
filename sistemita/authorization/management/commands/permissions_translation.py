@@ -1,10 +1,8 @@
 """Comando para traducir los nombres de los permisos que vienen por defecto en Django."""
 
 # Django
-from django.core.management.base import BaseCommand
-
-# Models
 from django.contrib.auth.models import Permission
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -12,8 +10,9 @@ class Command(BaseCommand):
 
     help = 'Traduce  los nombres de los permisos'
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args, **kwargs):  # pylint: disable=unused-argument
         """Controlador del comandos."""
+
         permissions = Permission.objects.filter(
             content_type__app_label__in=['accounting', 'auth', 'authorization', 'core']
         )
@@ -60,5 +59,5 @@ class Command(BaseCommand):
             else:
                 name = '{} {}es'.format(translation, app_name.title())
             return name
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             return False

@@ -3,14 +3,14 @@
 # Django REST Framework
 from rest_framework import serializers
 
-# Serialize
-from core.serializers import ClienteSerializer
-
-# Models
-from core.models.cliente import Cliente, Factura
-from accounting.models.cobranza import (
-    Cobranza, CobranzaFactura, CobranzaFacturaPago
+# Sistemita
+from sistemita.accounting.models.cobranza import (
+    Cobranza,
+    CobranzaFactura,
+    CobranzaFacturaPago,
 )
+from sistemita.core.models.cliente import Cliente, Factura
+from sistemita.core.serializers import ClienteSerializer
 
 
 class CobranzaFacturaPagoSerializer(serializers.ModelSerializer):
@@ -79,21 +79,21 @@ class CobranzaSerializer(serializers.ModelSerializer):
         try:
             cliente = Cliente.objects.get(cuit=data['cuit'])
             self.context['cliente'] = cliente
-        except Cliente.DoesNotExist:
-            raise serializers.ValidationError('Client does not exist.')
+        except Cliente.DoesNotExist as not_exist:
+            raise serializers.ValidationError('Client does not exist.') from not_exist
         return data
 
-    def create(self, data):
+    def create(self, validated_data):
         """Genera una cobranza con factura/s y su/s correspondiente/s pago/s."""
         try:
             # Factura
             cliente = self.context['cliente']
-            fecha = data['fecha']
-            total = data['total']
+            fecha = validated_data['fecha']
+            total = validated_data['total']
             cobranza = Cobranza.objects.create(fecha=fecha, cliente=cliente, total=total)
 
             # Factura cobranza
-            facturas = data['cobranza_facturas']
+            facturas = validated_data['cobranza_facturas']
             for factura in facturas:
                 # La factura pasa a estar cobrada
                 factura_entry = factura['factura']
@@ -118,12 +118,12 @@ class CobranzaSerializer(serializers.ModelSerializer):
         except Exception as error:
             raise serializers.ValidationError(error)
 
-    def update(self, instance, data):
+    def update(self, instance, validated_data):
         """Actualiza la intancia."""
         try:
-            instance.fecha = data['fecha']
-            instance.total = data['total']
-            facturas = data['cobranza_facturas']
+            instance.fecha = validated_data['fecha']
+            instance.total = validated_data['total']
+            facturas = validated_data['cobranza_facturas']
 
             # Recorro las facturas
             for factura in facturas:

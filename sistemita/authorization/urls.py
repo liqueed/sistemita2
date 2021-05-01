@@ -4,16 +4,27 @@
 from django.urls import path
 
 # Views
-from authorization.views.groups import (
-    GroupListView, GroupCreateView, GroupDetailtView, GroupUpdateView, GroupDeleteView
+from sistemita.authorization.views.groups import (
+    GroupCreateView,
+    GroupDeleteView,
+    GroupDetailtView,
+    GroupListView,
+    GroupUpdateView,
 )
-from authorization.views.permissions import (
-    PermissionCreateView, PermissionDeleteView, PermissionDetailView,
-    PermissionListView, PermisoUpdateView
+from sistemita.authorization.views.permissions import (
+    PermisoUpdateView,
+    PermissionCreateView,
+    PermissionDeleteView,
+    PermissionDetailView,
+    PermissionListView,
 )
-from authorization.views.users import (
-    UserListView, UserCreateFormView, UserDetailView, UserUpdateView, PasswordChangeFormView,
-    UserDeleteView
+from sistemita.authorization.views.users import (
+    PasswordChangeFormView,
+    UserCreateFormView,
+    UserDeleteView,
+    UserDetailView,
+    UserListView,
+    UserUpdateView,
 )
 
 urlpatterns = [
