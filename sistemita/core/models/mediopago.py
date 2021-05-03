@@ -4,7 +4,7 @@
 from django.db import models
 
 # Models
-from core.models.utils import TimeStampedModel
+from sistemita.core.models.utils import TimeStampedModel
 
 
 class MedioPago(TimeStampedModel, models.Model):

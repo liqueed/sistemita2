@@ -1,11 +1,9 @@
 """Comando para agregar múltiples permisos."""
 
 # Django
-from django.core.management.base import BaseCommand
-
-# Models
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -13,7 +11,7 @@ class Command(BaseCommand):
 
     help = 'Agrega permisos'
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args, **kwargs):  # pylint: disable=unused-argument
         """Controlador del comandos."""
 
         counter = 0

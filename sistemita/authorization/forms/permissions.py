@@ -1,15 +1,15 @@
 """Formulario del modelo Permission."""
 
-# Django
-from django import forms
-
 # Forms
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Fieldset, Layout, Div, Reset
+from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
+
+# Django
+from django import forms
 
 # Models
-from authorization.models import ContentType, Permission
+from sistemita.authorization.models import ContentType, Permission
 
 
 class PermissionForm(forms.ModelForm):
@@ -18,6 +18,8 @@ class PermissionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicializacion del Formulario."""
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(

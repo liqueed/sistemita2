@@ -18,14 +18,19 @@ from django_filters.views import FilterView
 # Django REST Framework
 from rest_framework import mixins, permissions, viewsets
 
-# Core
-from core.filters import FacturaProveedorFilterSet
-from core.forms.proveedores import FacturaProveedorForm
-from core.models.proveedor import FacturaProveedor
-from core.serializers import FacturaProveedorSerializer
-from core.utils.strings import _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_DELETE, _MESSAGE_SUCCESS_UPDATE, MESSAGE_403
-from core.utils.export import export_excel
-from core.views.home import error_403
+# Sistemita
+from sistemita.core.filters import FacturaProveedorFilterSet
+from sistemita.core.forms.proveedores import FacturaProveedorForm
+from sistemita.core.models.proveedor import FacturaProveedor
+from sistemita.core.serializers import FacturaProveedorSerializer
+from sistemita.core.utils.export import export_excel
+from sistemita.core.utils.strings import (
+    _MESSAGE_SUCCESS_CREATED,
+    _MESSAGE_SUCCESS_DELETE,
+    _MESSAGE_SUCCESS_UPDATE,
+    MESSAGE_403,
+)
+from sistemita.core.views.home import error_403
 
 
 class FacturaProveedorViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

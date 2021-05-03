@@ -1,14 +1,11 @@
 """Vistas del modelo Localidad."""
 
 # Django REST framework
-from rest_framework import permissions
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 
-# Modelos
-from core.models.entidad import Localidad
-
-# Serializers
-from core.serializers import LocalidadSerializer
+# Sistemita
+from sistemita.core.models.entidad import Localidad
+from sistemita.core.serializers import LocalidadSerializer
 
 
 class LocalidadViewSet(viewsets.ModelViewSet):

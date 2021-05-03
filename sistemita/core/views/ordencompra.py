@@ -13,11 +13,16 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Core
-from core.forms.clientes import OrdenCompraForm
-from core.models.cliente import OrdenCompra
-from core.utils.strings import _MESSAGE_SUCCESS_CREATED, _MESSAGE_SUCCESS_DELETE, _MESSAGE_SUCCESS_UPDATE, MESSAGE_403
-from core.views.home import error_403
+# Sistemita
+from sistemita.core.forms.clientes import OrdenCompraForm
+from sistemita.core.models.cliente import OrdenCompra
+from sistemita.core.utils.strings import (
+    _MESSAGE_SUCCESS_CREATED,
+    _MESSAGE_SUCCESS_DELETE,
+    _MESSAGE_SUCCESS_UPDATE,
+    MESSAGE_403,
+)
+from sistemita.core.views.home import error_403
 
 
 class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):

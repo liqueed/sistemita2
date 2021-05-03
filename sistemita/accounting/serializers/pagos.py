@@ -3,14 +3,13 @@
 # Django REST Framework
 from rest_framework import serializers
 
-# Serialize
-from core.serializers import ProveedorSerializer
+from sistemita.accounting.models.pago import Pago, PagoFactura, PagoFacturaPago
 
 # Models
-from core.models.proveedor import Proveedor, FacturaProveedor
-from accounting.models.pago import (
-    Pago, PagoFactura, PagoFacturaPago
-)
+from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
+
+# Serializers
+from sistemita.core.serializers import ProveedorSerializer
 
 
 class PagoFacturaPagoSerializer(serializers.ModelSerializer):
@@ -80,22 +79,22 @@ class PagoSerializer(serializers.ModelSerializer):
         try:
             proveedor = Proveedor.objects.get(cuit=data['cuit'])
             self.context['proveedor'] = proveedor
-        except Proveedor.DoesNotExist:
-            raise serializers.ValidationError('Proveedor does not exist.')
+        except Proveedor.DoesNotExist as not_exist:
+            raise serializers.ValidationError('Proveedor does not exist.') from not_exist
         return data
 
-    def create(self, data):
+    def create(self, validated_data):
         """Genera un pago con factura/s y su/s correspondiente/s pago/s."""
         try:
             # Factura
-            fecha = data['fecha']
+            fecha = validated_data['fecha']
             proveedor = self.context['proveedor']
-            total = data['total']
-            pagado = data['pagado']
+            total = validated_data['total']
+            pagado = validated_data['pagado']
             pago = Pago.objects.create(fecha=fecha, proveedor=proveedor, total=total, pagado=pagado)
 
             # Factura pago
-            facturas = data['pago_facturas']
+            facturas = validated_data['pago_facturas']
             for factura in facturas:
                 # La factura pasa a estar cobrada
                 factura_entry = factura['factura']
@@ -120,13 +119,13 @@ class PagoSerializer(serializers.ModelSerializer):
         except Exception as error:
             raise serializers.ValidationError(error)
 
-    def update(self, instance, data):
+    def update(self, instance, validated_data):
         """Actualiza la instancia."""
         try:
-            instance.fecha = data['fecha']
-            instance.total = data['total']
-            instance.pagado = data['pagado']
-            facturas = data['pago_facturas']
+            instance.fecha = validated_data['fecha']
+            instance.total = validated_data['total']
+            instance.pagado = validated_data['pagado']
+            facturas = validated_data['pago_facturas']
 
             # Recorro las facturas
             for factura in facturas:

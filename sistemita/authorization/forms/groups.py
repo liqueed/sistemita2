@@ -1,19 +1,19 @@
 """Formularios del modelo Group."""
 
+# Forms
+from crispy_forms.bootstrap import FormActions
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
+
 # Django
 from django import forms
 from django.contrib.auth.models import Group
 
-# Forms
-from crispy_forms.bootstrap import FormActions
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Fieldset, Layout, Div, Reset
-
 # Models
-from authorization.models import Permission
+from sistemita.authorization.models import Permission
 
-# Core
-from core.utils.strings import HELP_TEXT_MULTIPLE_CHOICE
+# Utils
+from sistemita.core.utils.strings import HELP_TEXT_MULTIPLE_CHOICE
 
 
 class GroupForm(forms.ModelForm):
@@ -22,6 +22,8 @@ class GroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicializacion del Formulario."""
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
         self.fields['permissions'].widget.attrs['size'] = 10
         self.helper.layout = Layout(

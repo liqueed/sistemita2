@@ -1,10 +1,11 @@
-"""Configuraciones del módulo Authorization."""
+"""Configuraciones del módulo Autorización."""
 
 # Django
 from django.apps import AppConfig
 
 
-class AuthorizationConfig(AppConfig):
+class AuthorizationAppConfig(AppConfig):
     """Configuraciones principales del módulo."""
 
-    name = 'authorization'
+    name = 'sistemita.authorization'
+    verbose_name = 'autorización de usuarios'

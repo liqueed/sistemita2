@@ -4,12 +4,10 @@
 from django.db import models
 
 # Models
-from core.models.entidad import Provincia, Distrito, Localidad
-from core.models.archivo import Archivo
-from core.models.cliente import Factura
-
-# Utils
-from core.models.utils import TimeStampedModel, FacturaAbstract
+from sistemita.core.models.archivo import Archivo
+from sistemita.core.models.cliente import Factura
+from sistemita.core.models.entidad import Distrito, Localidad, Provincia
+from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
 
 
 class Proveedor(TimeStampedModel, models.Model):

@@ -1,10 +1,10 @@
 """Commontags registers."""
 
-# Django
-from django import template
-
 # Utilities
 import os
+
+# Django
+from django import template
 
 register = template.Library()
 

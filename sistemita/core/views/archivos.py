@@ -3,10 +3,9 @@
 # Django REST framework
 from rest_framework import mixins, permissions, viewsets
 
-# Models
-from core.models.archivo import Archivo
-# Serializers
-from core.serializers import ArchivoSerializer
+# Sistemita
+from sistemita.core.models.archivo import Archivo
+from sistemita.core.serializers import ArchivoSerializer
 
 
 class ArchivoViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):

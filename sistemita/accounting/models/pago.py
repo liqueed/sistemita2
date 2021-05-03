@@ -4,9 +4,9 @@
 from django.db import models
 
 # Models
-from core.models.proveedor import Proveedor, FacturaProveedor
-from core.models.mediopago import MedioPago
-from core.models.utils import TimeStampedModel
+from sistemita.core.models.mediopago import MedioPago
+from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
+from sistemita.core.models.utils import TimeStampedModel
 
 
 class Pago(TimeStampedModel, models.Model):

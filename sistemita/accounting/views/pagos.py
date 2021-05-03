@@ -21,19 +21,19 @@ from django_filters.views import FilterView
 # Django Rest Framework
 from rest_framework import mixins, permissions, viewsets
 
-# Accounting
-from accounting.filters import PagoFilterSet
-from accounting.models.pago import Pago
-from accounting.serializers.pagos import PagoSerializer
-
-# Core
-from core.models.proveedor import FacturaProveedor
-from core.utils.export import export_excel
-from core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
-from core.views.home import error_403
-
 # Utils
 from weasyprint import HTML
+
+# Accounting
+from sistemita.accounting.filters import PagoFilterSet
+from sistemita.accounting.models.pago import Pago
+from sistemita.accounting.serializers.pagos import PagoSerializer
+
+# Core
+from sistemita.core.models.proveedor import FacturaProveedor
+from sistemita.core.utils.export import export_excel
+from sistemita.core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
+from sistemita.core.views.home import error_403
 
 
 class PagoViewSet(mixins.CreateModelMixin,
@@ -191,16 +191,15 @@ class PagoGeratePDFDetailView(PermissionRequiredMixin, DetailView):
     raise_exception = True
     template_name = 'accounting/pago_pdf.html'
 
-    def get_context_data(self, **kwargs):
-        """Obtiene datos para incluir en los reportes."""
-        # TODO: Quitar, solo de prueba
-        context = super().get_context_data(**kwargs)
-        pago = context['object']
-        context['subtotal_comprobantes'] = self.get_queryset().filter(pk=pago.pk).aggregate(Sum('total'))
-        context['subtotal_retenciones'] = self.get_queryset().filter(pk=pago.pk).annotate(
-            sub=Sum(F('pago_facturas__ganancias') + F('pago_facturas__iva') + F('pago_facturas__ingresos_brutos')))
+    # def get_context_data(self, **kwargs):
+    #     """Obtiene datos para incluir en los reportes."""
+    #     context = super().get_context_data(**kwargs)
+    #     pago = context['object']
+    #     context['subtotal_comprobantes'] = self.get_queryset().filter(pk=pago.pk).aggregate(Sum('total'))
+    #     context['subtotal_retenciones'] = self.get_queryset().filter(pk=pago.pk).annotate(
+    #         sub=Sum(F('pago_facturas__ganancias') + F('pago_facturas__iva') + F('pago_facturas__ingresos_brutos')))
 
-        return context
+    #     return context
 
     def get(self, request, *args, **kwargs):
         """Devuelve un comprobante de pago en formato PDF."""

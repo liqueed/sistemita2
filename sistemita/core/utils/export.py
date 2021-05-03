@@ -7,13 +7,16 @@ import io
 # Datetime
 from datetime import datetime
 
+# writers
+import xlsxwriter
+
 # Django
 from django.db.models import Sum
 from django.http import HttpResponse
 
 # Utils
-from core.constants import MONEDAS
-import xlsxwriter
+from sistemita.core.constants import MONEDAS
+from sistemita.core.models.mediopago import MedioPago
 
 
 class FacturaExport:
@@ -130,7 +133,10 @@ class PagoExport():
         """Inicialización de variables."""
         self.queryset = queryset.order_by('fecha')
         self.headers = [
-            'pago_nro', 'fecha', 'proveedor', 'total', 'pagado',
+            'id', 'fecha', 'proveedor', 'proveedor_cbu',
+            'nro_factura', 'neto_factura', 'iva_factura', 'total_factura',
+            'ganancias', 'ingresos_brutos', 'iva', 'total_a_pagar_por_banco',
+            'total_pago', 'pagado',
         ]
 
     def get_data(self):
@@ -141,12 +147,29 @@ class PagoExport():
         """
         data = []
 
+        banco = MedioPago.objects.filter(nombre__icontains='banco').first()
+
         for item in self.queryset:
             pagado = 'Si' if item.pagado else 'No'
+            banco_pk = banco.pk if banco else None
+
             data.append([
-                item.pk, item.fecha.strftime('%d/%m/%Y'), item.proveedor.razon_social,
-                item.total, pagado
+                item.pk, item.fecha.strftime('%d/%m/%Y'), item.proveedor.razon_social, item.proveedor.cbu,
+                item.pago_facturas.all()[0].factura.numero, item.pago_facturas.all()[0].factura.neto,
+                item.pago_facturas.all()[0].factura.iva, item.pago_facturas.all()[0].factura.total,
+                item.pago_facturas.all()[0].ganancias, item.pago_facturas.all()[0].ingresos_brutos,
+                item.pago_facturas.all()[0].iva,
+                item.pago_facturas.all().filter(
+                    pago_factura_pagos__metodo_id=banco_pk
+                ).aggregate(banco=Sum('pago_factura_pagos__monto')).get('banco'),
+                item.total, pagado,
             ])
+            for f in item.pago_facturas.all()[1:]:
+                data.append([
+                    '', '', '', '', f.factura.numero, f.factura.neto, f.factura.iva, f.factura.total,
+                    f.ganancias, f.ingresos_brutos, f.iva,
+                ])
+
         return data
 
     def get_debt_by_moneda(self, moneda):
@@ -263,7 +286,7 @@ def export_excel(request, queryset):
     return response
 
 
-def export_csv(request, queryset):
+def export_csv(queryset):
     """Devuelve un archivo en formato CSV."""
     app = queryset.model.__name__.lower()
     response = HttpResponse(content_type='text/csv')

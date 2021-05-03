@@ -1,15 +1,15 @@
 """Formulario de medio de pago."""
 
-# Django
-from django import forms
-
 # Crispy
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Fieldset, Layout, Div, Reset
+from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
+
+# Django
+from django import forms
 
 # Models
-from core.models.mediopago import MedioPago
+from sistemita.core.models.mediopago import MedioPago
 
 
 class MedioPagoForm(forms.ModelForm):
@@ -18,6 +18,8 @@ class MedioPagoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
