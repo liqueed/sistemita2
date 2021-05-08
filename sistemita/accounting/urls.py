@@ -19,6 +19,7 @@ from sistemita.accounting.views.pagos import (
     PagoCreateTemplateView,
     PagoDeleteView,
     PagoDetailView,
+    PagoFacturaRetencionGeratePDFDetailView,
     PagoGeratePDFDetailView,
     PagoListView,
     PagoUpdateTemplateView,
@@ -47,4 +48,9 @@ urlpatterns = [
     path('pago/<int:pk>/editar/', PagoUpdateTemplateView.as_view(), name='pago-update'),
     path('pago/<int:pk>/eliminar/', PagoDeleteView.as_view(), name='pago-delete'),
     path('pago/<int:pk>/comprobante/', PagoGeratePDFDetailView.as_view(), name='pago-generate-pdf'),
+    path(
+        'pago/<int:pk>/comprobante-retencion/',
+        PagoFacturaRetencionGeratePDFDetailView.as_view(),
+        name='pago-factura-retencion-pdf'
+    ),
 ]

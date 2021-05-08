@@ -41,6 +41,11 @@ class Proveedor(TimeStampedModel, models.Model):
         """Devuelve una representación legible del modelo."""
         return f'{self.razon_social} - {self.cuit}'
 
+    @property
+    def calle_numero(self):
+        "Retorna la direccion completa."
+        return '{} Nro: {} '.format(self.calle, self.numero)
+
 
 class FacturaProveedor(FacturaAbstract):
     """Modelo de factura de proveedor."""
