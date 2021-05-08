@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags commontags %}
-{% block title %}Detalle Pago #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }} | Liqueed{% endblock %}
+{% block title %}Detalle Pago Nro. {{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }} | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
@@ -21,7 +21,7 @@
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Detalle Pago #{{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Detalle Pago Nro. {{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -41,7 +41,7 @@
             <dt class="col-sm-2">Pagos</dt>
             <dd class="col-sm-10"></dd>
             {% for pago in pago_factura.pago_factura_pagos.all %}
-            <dt class="col-sm-2">#{{ forloop.counter }}</dt>
+            <dt class="col-sm-2">Nro. {{ forloop.counter }}</dt>
             <dd class="col-sm-10">
               <strong>Metodo:</strong> {{ pago.metodo }} -
               <strong>Pago:</strong> {{ pago_factura.factura.get_moneda_display }} {{ pago.monto }}
