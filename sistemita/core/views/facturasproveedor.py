@@ -11,7 +11,7 @@ from django.db.models import Count, Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DeleteView, DetailView
+from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
@@ -193,3 +193,29 @@ class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
         return redirect('login')
+
+
+class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
+    """Vista del reporte de ventas."""
+
+    queryset = FacturaProveedor.objects.all().order_by('-fecha')
+    paginate_by = 10
+    permission_required = 'core.view_report_sales_facturaproveedor'
+    raise_exception = True
+    template_name = 'core/facturaproveedor_report_list.html'
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return super().handle_no_permission()
+
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
+
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
+
+        return context
