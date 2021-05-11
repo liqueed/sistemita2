@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Editar Cobranza #{{ pk }} | Liqueed{% endblock %}
+{% block title %}Editar Cobranza Nro. {{ pk }} | Liqueed{% endblock %}
 {% block header %}
   <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
   <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
@@ -27,7 +27,7 @@
     <div class="card shadow mb-4">
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">
-          Editar cobranza a Cliente #{{ pk }}
+          Editar cobranza a Cliente Nro. {{ pk }}
         </h6>
       </div>
       <div class="card-body">

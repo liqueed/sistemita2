@@ -1,0 +1,194 @@
+{% load static %}
+<html>
+  <head>
+    <title>Comprobante de Pago</title>
+    <style>
+     body{
+       font: 10pt sans-serif;
+     }
+     ul {
+       list-style-type: none;
+       padding: 0;
+       margin: 0;
+     }
+     table {
+       border: none;
+       /* border: 1px solid; */
+       width:100%;
+       border-collapse: collapse;
+     }
+     td, th {
+      border: none;
+       /* border: 1px solid; */
+     }
+     @page {
+       size: A4;
+       margin: 2.5cm;
+       @top-right{
+         font: 8pt sans-serif;
+         content: "Página " counter(page) " de " counter(pages);
+       }
+     }
+     .border {
+       border-top: 1px solid;
+     }
+     .border-bottom {
+       border-bottom: 1px solid;
+     }
+     .neto {
+       padding-top: 30px;
+       padding-bottom: 120px;
+     }
+     .pb-10 {
+       padding-bottom: 10px;
+     }
+     .pb-20 {
+       padding-bottom: 20px;
+     }
+     .pb-30 {
+       padding-bottom: 30px;
+     }
+     .pt-30 {
+       padding-top: 30px;
+     }
+     .text-center{
+       text-align: center;
+     }
+     .vertical-top{
+       vertical-align: top;
+     }
+    </style>
+  </head>
+  <body>
+    <table cell>
+      <thead>
+        <tr>
+          <td class="text-center pb-10" colspan="2">
+            <strong>Sistema de Control de Retenciones</strong>
+          </td>
+        </tr>
+        <tr>
+          <td class="pb-30 text-center" width="50%">
+            <img width='134px' height='50px' src="{% static 'images/logo-top-dark.png' %}" />
+          </td>
+          <td class="pb-30 vertical-top" width="50%">
+            <ul>
+              <li>Fecha: {% now 'd.m.Y' %}</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="border-bottom pt-30" colspan="2">
+            <strong>A. - Datos del Agente de Retención</strong>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <strong>Apellido y Nombre o Denominación:</strong> LIQUEED S.A
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <ul>
+              <li><strong>C.U.I.T. N°:</strong> 30-71528100-3</li>
+              <li><strong>Domicilio</strong> </li>
+              <li><strong>Calle:</strong> Ravignani Nro: 2330 </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <ul>
+              <li><strong>Localidad:</strong> CABA </li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>
+                <strong>Provincia</strong> Capital Federal
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="border-bottom pt-30" colspan="2"><strong>B. - Datos del Sujeto Retenido</strong></td>
+        </tr>
+        <tr>
+          <td class="pb-30" colspan="2">
+            <ul>
+              <li><strong>Apellido y Nombre o Denominación:</strong> {{ object.factura.proveedor.razon_social }}</li>
+              <li><strong>C.U.I.T. N°:</strong> {{ object.factura.proveedor.cuit }}</li>
+              <li><strong>Domicilio</strong> {{ object.factura.proveedor.calle_numero }}</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="border-bottom" colspan="2"><strong>C. - Datos de la Retención Practicada</strong></td>
+        </tr>
+        <tr>
+          <td class="pb-30" colspan="2">
+            <table cell>
+              <tbody>
+                <tr>
+                  <td colspan="3"><strong>Impuesto: </strong></td>
+                  <td>
+                    {% if retencion_type == 'ganancia' %}
+                      Impto. a las Ganancias
+                    {% elif retencion_type == 'ingresos' %}
+                      Impto. sobre los ingresos brutos
+                    {% else %}
+                      IVA
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3"><strong>Régimen: </strong></td>
+                  <td>Locaciones de Obra y/o Servicios no ejecutados enrelación de dependencia</td>
+                </tr>
+                <tr>
+                  <td colspan="3"><strong>Comprobante que origina la Retención: </strong></td>
+                  <td>Nro. {{ object.factura.numero|default:"-" }}</td>
+                </tr>
+                <tr>
+                  <td colspan="3"><strong>Monto del Comprobante que origina la Retención: </strong></td>
+                  <td>{{ object.factura.moneda_monto }}</td>
+                </tr>
+                <tr>
+                  <td colspan="3"><strong>Monto de la Retención: </strong></td>
+                  <td> {{ object.factura.get_moneda_display }}
+                    {% if retencion_type == 'ganancia' %}
+                      {{ object.ganancias }}
+                    {% elif retencion_type == 'ingresos' %}
+                      {{ object.ingresos_brutos }}
+                    {% else %}
+                      {{ object.iva }}
+                    {% endif %}
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="neto"><strong>Firma del Agente de Retención</strong></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <table>
+              <tr>
+                <td class="border" style="width: 40%;">ACLARACIÓN</td>
+                <td></td>
+                <td class="border" style="width: 40%;">CARGO</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

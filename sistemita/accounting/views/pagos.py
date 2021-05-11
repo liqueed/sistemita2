@@ -26,7 +26,7 @@ from weasyprint import HTML
 
 # Accounting
 from sistemita.accounting.filters import PagoFilterSet
-from sistemita.accounting.models.pago import Pago
+from sistemita.accounting.models.pago import Pago, PagoFactura
 from sistemita.accounting.serializers.pagos import PagoSerializer
 
 # Core
@@ -184,22 +184,12 @@ class PagoDeleteView(PermissionRequiredMixin, DeleteView):
 
 
 class PagoGeratePDFDetailView(PermissionRequiredMixin, DetailView):
-    """Vista que muestra los detalles de un pago."""
+    """Vista que genera un pdf con el detalle un pago."""
 
     model = Pago
     permission_required = 'accounting.view_pago'
     raise_exception = True
     template_name = 'accounting/pago_pdf.html'
-
-    # def get_context_data(self, **kwargs):
-    #     """Obtiene datos para incluir en los reportes."""
-    #     context = super().get_context_data(**kwargs)
-    #     pago = context['object']
-    #     context['subtotal_comprobantes'] = self.get_queryset().filter(pk=pago.pk).aggregate(Sum('total'))
-    #     context['subtotal_retenciones'] = self.get_queryset().filter(pk=pago.pk).annotate(
-    #         sub=Sum(F('pago_facturas__ganancias') + F('pago_facturas__iva') + F('pago_facturas__ingresos_brutos')))
-
-    #     return context
 
     def get(self, request, *args, **kwargs):
         """Devuelve un comprobante de pago en formato PDF."""
@@ -224,7 +214,7 @@ class PagoGeratePDFDetailView(PermissionRequiredMixin, DetailView):
 
         # Creating http response
         response = HttpResponse(content_type='application/pdf;')
-        response['Content-Disposition'] = 'inline; filename=comprobante_de_pago_{}.pdf'.format(pago.pk)
+        response['Content-Disposition'] = 'inline; filename=COMPROBANTE DE PAGO NRO {}.pdf'.format(pago.pk)
         response['Content-Transfer-Encoding'] = 'binary'
         with tempfile.NamedTemporaryFile(delete=True) as output:
             output.write(result)
@@ -239,3 +229,40 @@ class PagoGeratePDFDetailView(PermissionRequiredMixin, DetailView):
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
         return redirect('login')
+
+
+class PagoFacturaRetencionGeratePDFDetailView(PermissionRequiredMixin, DetailView):
+    """Vista que genera un pdf con el detalle de la retenciones por cada factura de un pago."""
+
+    model = PagoFactura
+    permission_required = 'accounting.view_pago'
+    raise_exception = True
+    template_name = 'accounting/pago_retencion_pdf.html'
+
+    def get(self, request, *args, **kwargs):
+        """Devuelve un comprobante de retención por cada factura de pago en formato PDF."""
+
+        pago_factura = self.get_object()
+        factura_numero = pago_factura.factura.numero or 'SN'
+        retencion_type = request.GET.get('type', None)
+
+        # Rendered
+        html_string = render_to_string('accounting/pago_retencion_pdf.html', {
+            'object': pago_factura,
+            'retencion_type': retencion_type,
+        })
+        html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
+        result = html.write_pdf(presentational_hints=True)
+
+        # Creating http response
+        file_name = 'COMPROBANTE DE RETENCION {} DE FACTURA NRO {}.pdf'.format(retencion_type.upper(), factura_numero)
+        response = HttpResponse(content_type='application/pdf;')
+        response['Content-Disposition'] = 'inline; filename={}'.format(file_name)
+        response['Content-Transfer-Encoding'] = 'binary'
+        with tempfile.NamedTemporaryFile(delete=True) as output:
+            output.write(result)
+            output.flush()
+            output = open(output.name, 'rb')
+            response.write(output.read())
+
+        return response
