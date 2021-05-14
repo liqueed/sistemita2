@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if object.pk %}Editar Medio de pago #{{ object.pk }}{% else %}Agregar Medio de Pago{% endif %} | Liqueed
+    {% if object.pk %}Editar Medio de pago Nro. {{ object.pk }}{% else %}Agregar Medio de Pago{% endif %} | Liqueed
 {% endblock %}
 {% block content %}
   <div class="container-fluid">
@@ -21,7 +21,7 @@
           {% if not object.pk %}
             Agregar Medio de pago
           {% else %}
-            Editar Medio de pago #{{ mediopago.pk }}
+            Editar Medio de pago Nro. {{ mediopago.pk }}
           {% endif %}
         </h6>
       </div>
