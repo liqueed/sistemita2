@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Reporte de ventas | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Reporte de ventas</h1>
+    </div>
+
+    <!-- Cards -->
+    <div class="row">
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+          <div class="card-body" role="button">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nuevas (semanal)</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_created }}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- End of Cards -->
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de facturas</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>Factura venta (cliente)</th>
+                <th>Factura compra (proveedor)</th>
+                <th>Monto venta</th>
+                <th>Monto compra</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in object_list %}
+                <tr>
+                  <td>
+                    {{ object.factura.fecha }} - {{ object.factura.cliente.razon_social }} - Nro. Factura {{ object.factura.numero }}
+                  </td>
+                  <td>
+                    {{ object.fecha }} - {{ object.proveedor.razon_social }} - Nro. Factura {{ object.numero }}
+                  </td>
+                  <td>
+                    {{ object.factura.moneda_monto }}
+                  </td>
+                  <td>
+                    {{ object.moneda_monto }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan=7>Sin resultados</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% include 'components/pagination.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

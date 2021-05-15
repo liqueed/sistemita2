@@ -32,13 +32,13 @@
     <li class="nav-item{% if 'cliente' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_cliente %}
         <a class="nav-link" href="{% url 'core:cliente-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-user-friends"></i>
           <span>Clientes</span>
         </a>
       {% endif %}
       {% if not perms.core.list_cliente and perms.core.add_cliente %}
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClientes" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-user-friends"></i>
           <span>Clientes</span>
         </a>
         <div id="collapseClientes" class="collapse">
@@ -56,13 +56,13 @@
     <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_factura %}
         <a class="nav-link" href="{% url 'core:factura-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-sticky-note"></i>
           <span>Facturaci&oacute;n</span>
         </a>
       {% endif %}
       {% if not perms.core.list_factura and perms.core.add_factura %}
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturas" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-sticky-note"></i>
           <span>Facturaci&oacute;n</span>
         </a>
         <div id="collapseFacturas" class="collapse">
@@ -141,13 +141,13 @@
     <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_proveedor %}
         <a class="nav-link" href="{% url 'core:proveedor-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-user-friends"></i>
           <span>Proveedores</span>
         </a>
       {% endif %}
       {% if not perms.core.list_proveedor and perms.core.add_proveedor %}
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProveedor" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-user-friends"></i>
           <span>Proveedores</span>
         </a>
         <div id="collapseProveedor" class="collapse">
@@ -163,16 +163,16 @@
 
   <!-- Factura Proveedores -->
   {% if perms.core.list_facturaproveedor or perms.core.add_facturaproveedor %}
-    <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name and not 'report' in  request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_facturaproveedor %}
         <a class="nav-link" href="{% url 'core:facturaproveedor-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-sticky-note"></i>
           <span>Facturaci&oacute;n</span>
         </a>
       {% endif %}
       {% if not perms.core.list_facturaproveedor and perms.core.add_facturaproveedor %}
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturaProveedor" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-sticky-note"></i>
           <span>Facturaci&oacute;n</span>
         </a>
         <div id="collapseFacturaProveedor" class="collapse">
@@ -207,7 +207,18 @@
       {% endif %}
     </li>
   {% endif %}
-  <!-- Pagos -->
+  <!-- End Pagos -->
+
+  <!-- Reporte ventas -->
+  {% if perms.view_report_sales_facturaproveedor %}
+    <li class="nav-item{% if 'facturaproveedor-report' == request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'core:facturaproveedor-report' %}">
+        <i class="fas fa-fw fa-chart-area"></i>
+        <span>Reporte ventas</span>
+      </a>
+    </li>
+  {% endif %}
+  <!-- End Reporte ventas -->
 
   <!-- End Sección Proveedores -->
 
@@ -224,13 +235,13 @@
     <li class="nav-item{% if 'mediopago' in request.resolver_match.url_name  %} active{% endif %}">
       {% if perms.core.list_mediopago %}
         <a class="nav-link" href="{% url 'core:mediopago-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-wallet"></i>
           <span>Medios de pago</span>
         </a>
       {% endif %}
       {% if not perms.core.list_mediopago and perms.core.add_mediopago %}
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMedioPago" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-wallet"></i>
           <span>Medio de pago</span>
         </a>
         <div id="collapseMedioPago" class="collapse">
@@ -259,13 +270,13 @@
     <li class="nav-item{% if 'user' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.authorization.list_user %}
         <a class="nav-link" href="{% url 'authorization:user-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-users"></i>
           <span>Usuarios</span>
         </a>
       {% endif %}
       {% if not perms.authorization.list_user and perms.authorization.add_user %}
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-users"></i>
           <span>Usuarios</span>
         </a>
         <div id="collapseUser" class="collapse">
@@ -283,13 +294,13 @@
     <li class="nav-item{% if 'group' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.auth.list_group %}
         <a class="nav-link" href="{% url 'authorization:group-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-users"></i>
           <span>Grupos</span>
         </a>
       {% endif %}
       {% if not perms.auth.list_group and perms.auth.add_group %}
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGroup" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-users"></i>
           <span>Grupos</span>
         </a>
         <div id="collapseGroup" class="collapse">
@@ -307,7 +318,7 @@
     <li class="nav-item{% if 'permission' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.auth.list_permission %}
         <a class="nav-link" href="{% url 'authorization:permission-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
+          <i class="fas fa-key"></i>
           <span>Permisos</span>
         </a>
       {% endif %}

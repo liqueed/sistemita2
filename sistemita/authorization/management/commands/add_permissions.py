@@ -47,6 +47,8 @@ class Command(BaseCommand):
                  'content_type': ContentType.objects.get(model='factura')},
                 {'name': 'Puede ver reportes de Facturas A Proveedores', 'codename': 'view_reports_facturaproveedor',
                  'content_type': ContentType.objects.get(model='facturaproveedor')},
+                {'name': 'Puede ver reporte de ventas', 'codename': 'view_report_sales_facturaproveedor',
+                 'content_type': ContentType.objects.get(model='facturaproveedor')},
                 # Facturas a clientes
                 {'name': 'Puede editar número de Facturas A Clientes', 'codename': 'change_nro_factura',
                  'content_type': ContentType.objects.get(model='factura')},
