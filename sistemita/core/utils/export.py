@@ -45,9 +45,7 @@ class FacturaExport:
             str: Moneda y sumatoria del monto adeudado del total de facturas.
         """
         moneda_type = 'P' if moneda == '$' else 'D'
-        result = self.queryset.filter(cobrado=False, moneda=moneda_type).aggregate(
-            Sum('total')
-        )
+        result = self.queryset.filter(cobrado=False, moneda=moneda_type).aggregate(Sum('total'))
 
         return '{} {}'.format(moneda, result['total__sum'] or 0)
 
@@ -62,9 +60,7 @@ class FacturaClienteExport(FacturaExport):
     def __init__(self, queryset):
         """Inicialización de variables."""
         FacturaExport.__init__(self, queryset.order_by('fecha'))
-        self.headers = [
-            'fecha', 'numero', 'tipo', 'cliente', 'neto', 'iva', 'total', 'cobrado'
-        ]
+        self.headers = ['fecha', 'numero', 'tipo', 'cliente', 'neto', 'iva', 'total', 'cobrado']
 
     def get_data(self):
         """Devuelve una lista de facturas de clientes.
@@ -77,10 +73,18 @@ class FacturaClienteExport(FacturaExport):
         for item in self.queryset:
             cobrado = 'Si' if item.cobrado else 'No'
             moneda_neto = '{} {}'.format(item.get_moneda_display(), str(item.neto))
-            data.append([
-                item.fecha.strftime('%d/%m/%Y'), item.numero, item.get_tipo(), item.cliente.razon_social,
-                moneda_neto, item.iva, item.moneda_monto, cobrado
-            ])
+            data.append(
+                [
+                    item.fecha.strftime('%d/%m/%Y'),
+                    item.numero,
+                    item.get_tipo(),
+                    item.cliente.razon_social,
+                    moneda_neto,
+                    item.iva,
+                    item.moneda_monto,
+                    cobrado,
+                ]
+            )
         return data
 
 
@@ -95,10 +99,22 @@ class FacturaProveedorExport(FacturaExport):
         """Inicialización de variables."""
         FacturaExport.__init__(self, queryset.order_by('fecha'))
         self.headers = [
-            'fecha', 'numero', 'tipo', 'proveedor', 'neto', 'iva', 'total', 'pagado',
-            'factura_cliente_fecha', 'cliente', 'factura_cliente_nro', 'factura_cliente_tipo',
-            'factura_cliente_neto', 'factura_cliente_iva', 'factura_cliente_total',
-            'factura_cliente_cobrado'
+            'fecha',
+            'numero',
+            'tipo',
+            'proveedor',
+            'neto',
+            'iva',
+            'total',
+            'pagado',
+            'factura_cliente_fecha',
+            'cliente',
+            'factura_cliente_nro',
+            'factura_cliente_tipo',
+            'factura_cliente_neto',
+            'factura_cliente_iva',
+            'factura_cliente_total',
+            'factura_cliente_cobrado',
         ]
 
     def get_data(self):
@@ -112,17 +128,30 @@ class FacturaProveedorExport(FacturaExport):
         for item in self.queryset:
             cobrado = 'Si' if item.cobrado else 'No'
             cobrado_cliente = 'Si' if item.factura.cobrado else 'No'
-            data.append([
-                item.fecha.strftime('%d/%m/%Y'), item.numero, item.get_tipo(), item.proveedor.razon_social,
-                item.moneda_monto, item.iva, item.moneda_monto, cobrado,
-                item.factura.fecha.strftime('%d/%m/%Y'), item.factura.cliente.razon_social, item.factura.numero,
-                item.factura.get_tipo(), item.factura.moneda_monto, item.factura.iva, item.factura.total,
-                cobrado_cliente
-            ])
+            data.append(
+                [
+                    item.fecha.strftime('%d/%m/%Y'),
+                    item.numero,
+                    item.get_tipo(),
+                    item.proveedor.razon_social,
+                    item.moneda_monto,
+                    item.iva,
+                    item.moneda_monto,
+                    cobrado,
+                    item.factura.fecha.strftime('%d/%m/%Y'),
+                    item.factura.cliente.razon_social,
+                    item.factura.numero,
+                    item.factura.get_tipo(),
+                    item.factura.moneda_monto,
+                    item.factura.iva,
+                    item.factura.total,
+                    cobrado_cliente,
+                ]
+            )
         return data
 
 
-class PagoExport():
+class PagoExport:
     """Clase para exportar pagos a proveedores.
 
     Args:
@@ -133,10 +162,20 @@ class PagoExport():
         """Inicialización de variables."""
         self.queryset = queryset.order_by('fecha')
         self.headers = [
-            'id', 'fecha', 'proveedor', 'proveedor_cbu',
-            'nro_factura', 'neto_factura', 'iva_factura', 'total_factura',
-            'ganancias', 'ingresos_brutos', 'iva', 'total_a_pagar_por_banco',
-            'total_pago', 'pagado',
+            'id',
+            'fecha',
+            'proveedor',
+            'proveedor_cbu',
+            'nro_factura',
+            'neto_factura',
+            'iva_factura',
+            'total_factura',
+            'ganancias',
+            'ingresos_brutos',
+            'iva',
+            'total_a_pagar_por_banco',
+            'total_pago',
+            'pagado',
         ]
 
     def get_data(self):
@@ -153,22 +192,43 @@ class PagoExport():
             pagado = 'Si' if item.pagado else 'No'
             banco_pk = banco.pk if banco else None
 
-            data.append([
-                item.pk, item.fecha.strftime('%d/%m/%Y'), item.proveedor.razon_social, item.proveedor.cbu,
-                item.pago_facturas.all()[0].factura.numero, item.pago_facturas.all()[0].factura.neto,
-                item.pago_facturas.all()[0].factura.iva, item.pago_facturas.all()[0].factura.total,
-                item.pago_facturas.all()[0].ganancias, item.pago_facturas.all()[0].ingresos_brutos,
-                item.pago_facturas.all()[0].iva,
-                item.pago_facturas.all().filter(
-                    pago_factura_pagos__metodo_id=banco_pk
-                ).aggregate(banco=Sum('pago_factura_pagos__monto')).get('banco'),
-                item.total, pagado,
-            ])
+            data.append(
+                [
+                    item.pk,
+                    item.fecha.strftime('%d/%m/%Y'),
+                    item.proveedor.razon_social,
+                    item.proveedor.cbu,
+                    item.pago_facturas.all()[0].factura.numero,
+                    item.pago_facturas.all()[0].factura.neto,
+                    item.pago_facturas.all()[0].factura.iva,
+                    item.pago_facturas.all()[0].factura.total,
+                    item.pago_facturas.all()[0].ganancias,
+                    item.pago_facturas.all()[0].ingresos_brutos,
+                    item.pago_facturas.all()[0].iva,
+                    item.pago_facturas.all()
+                    .filter(pago_factura_pagos__metodo_id=banco_pk)
+                    .aggregate(banco=Sum('pago_factura_pagos__monto'))
+                    .get('banco'),
+                    item.total,
+                    pagado,
+                ]
+            )
             for f in item.pago_facturas.all()[1:]:
-                data.append([
-                    '', '', '', '', f.factura.numero, f.factura.neto, f.factura.iva, f.factura.total,
-                    f.ganancias, f.ingresos_brutos, f.iva,
-                ])
+                data.append(
+                    [
+                        '',
+                        '',
+                        '',
+                        '',
+                        f.factura.numero,
+                        f.factura.neto,
+                        f.factura.iva,
+                        f.factura.total,
+                        f.ganancias,
+                        f.ingresos_brutos,
+                        f.iva,
+                    ]
+                )
 
         return data
 
@@ -183,14 +243,12 @@ class PagoExport():
         """
         result = {'total__sum': None}
         if moneda == '$':
-            result = self.queryset.filter(pagado=False).aggregate(
-                Sum('total')
-            )
+            result = self.queryset.filter(pagado=False).aggregate(Sum('total'))
 
         return '{} {}'.format(moneda, result['total__sum'] or 0)
 
 
-class PagoRetencionExport():
+class PagoRetencionExport:
     """Clase para exportar retenciones de pagos a proveedores.
 
     Args:
@@ -201,7 +259,12 @@ class PagoRetencionExport():
         """Inicialización de variables."""
         self.queryset = queryset.order_by('fecha')
         self.headers = [
-            'pago_nro', 'fecha', 'proveedor', 'retencion_ganancia', 'retencion_ingresos_brutos', 'retencion_iva',
+            'pago_nro',
+            'fecha',
+            'proveedor',
+            'retencion_ganancia',
+            'retencion_ingresos_brutos',
+            'retencion_iva',
         ]
 
     def get_data(self):
@@ -213,15 +276,56 @@ class PagoRetencionExport():
         data = []
 
         for item in self.queryset:
-            data.append([
-                item.pk, item.fecha.strftime('%d/%m/%Y'), item.proveedor.razon_social,
-                item.pago_facturas.all()[0].ganancias, item.pago_facturas.all()[0].ingresos_brutos,
-                item.pago_facturas.all()[0].iva
-            ])
+            data.append(
+                [
+                    item.pk,
+                    item.fecha.strftime('%d/%m/%Y'),
+                    item.proveedor.razon_social,
+                    item.pago_facturas.all()[0].ganancias,
+                    item.pago_facturas.all()[0].ingresos_brutos,
+                    item.pago_facturas.all()[0].iva,
+                ]
+            )
             for factura in item.pago_facturas.all()[1:]:
-                data.append([
-                    '', '', '', factura.ganancias, factura.ingresos_brutos, factura.iva
-                ])
+                data.append(['', '', '', factura.ganancias, factura.ingresos_brutos, factura.iva])
+        return data
+
+
+class ReporteVentaExport:
+    """Clase para exportar reporte de ventas.
+
+    Args:
+       queryset (django.queryset): queryset de facturas.
+    """
+
+    def __init__(self, queryset):
+        """Inicialización de variables."""
+        self.queryset = queryset
+        self.headers = ['factura_venta', 'factura_compra', 'monto_venta', 'monto_compra']
+
+    def get_data(self):
+        """Devuelve una lista facturas y sus facturas de proveedores asociadas.
+
+        Returns:
+           list: Obtiene el queryset y genera un lista.
+        """
+        data = []
+
+        for item in self.queryset:
+            row = []
+            factura_venta = '{} - {}'.format(item.fecha, item.cliente.razon_social)
+            row.append(factura_venta)
+            for idx, factura_proveedor in enumerate(item.facturas_proveedor.all()):
+                factura_compra = '{} - {}'.format(factura_proveedor.fecha, factura_proveedor.proveedor.razon_social)
+                if idx == 0:
+                    row.append(factura_compra)
+                    row.append(item.moneda_monto)
+                    row.append(factura_proveedor.moneda_monto)
+                else:
+                    data.append(['', factura_compra, '', factura_proveedor.moneda_monto])
+
+            data.append(row)
+
         return data
 
 
@@ -243,7 +347,10 @@ def export_excel(request, queryset):
 
     app = queryset.model.__name__.lower()
 
-    if app == 'factura':
+    if 'reporte-venta' in request.path:
+        app_export = ReporteVentaExport(queryset)
+        display_dept = False
+    elif app == 'factura':
         app_export = FacturaClienteExport(queryset)
         display_dept = True
     elif app == 'facturaproveedor':
@@ -275,13 +382,8 @@ def export_excel(request, queryset):
     workbook.close()
     output.seek(0)
 
-    response = HttpResponse(
-        output,
-        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
-    response['Content-Disposition'] = 'attachment; filename={}_{}.xlsx'.format(
-        app, datetime.now().strftime('%d%m%Y')
-    )
+    response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename={}_{}.xlsx'.format(app, datetime.now().strftime('%d%m%Y'))
 
     return response
 

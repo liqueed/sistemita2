@@ -208,6 +208,14 @@ class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
             return error_403(self.request, MESSAGE_403)
         return super().handle_no_permission()
 
+    def get(self, request, *args, **kwargs):
+        """Genera reporte en formato excel."""
+        format_list = request.GET.get('formato', False)
+        if format_list == 'xls':
+            return export_excel(self.request, self.get_queryset())
+
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
