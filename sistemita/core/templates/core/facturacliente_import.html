@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Importar factura de clientes{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Importación de facturas a clientes</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+	<form>
+	  <div class="input-group">
+	    <div class="custom-file">
+	      <input type="file" class="custom-file-input" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
+	      <label class="custom-file-label" >Seleccionar archivo</label>
+	    </div>
+	  </div>
+	  <div class="input-group mt-2">
+	    <button type="submit" class="btn btn-primary btn-sm">Validar datos</button>
+	  </div>
+	</form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

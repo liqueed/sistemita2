@@ -13,19 +13,15 @@ from django.db.models import Count, Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DeleteView, DetailView
+from django.views.generic import DeleteView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
-
-# Django REST Framework
-from rest_framework import mixins, permissions, viewsets
 
 # Sistemita
 from sistemita.accounting.models.cobranza import Cobranza, CobranzaFactura
 from sistemita.core.filters import FacturaFilterSet
 from sistemita.core.forms.clientes import FacturaForm
 from sistemita.core.models.cliente import Factura
-from sistemita.core.serializers import FacturaSerializer
 from sistemita.core.utils.export import export_excel
 from sistemita.core.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
@@ -34,15 +30,6 @@ from sistemita.core.utils.strings import (
     MESSAGE_403,
 )
 from sistemita.core.views.home import error_403
-
-
-class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    """Factura view set."""
-
-    filter_fields = ('cliente', 'cobrado')
-    queryset = Factura.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = FacturaSerializer
 
 
 class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -69,12 +56,8 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(
-            Sum('total'), Count('id')
-        )
-        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(
-            Sum('total'), Count('id')
-        )
+        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(Sum('total'), Count('id'))
+        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(Sum('total'), Count('id'))
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
@@ -88,9 +71,9 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(cliente__razon_social__icontains=search) |
-                Q(cliente__correo__icontains=search) |
-                Q(cliente__cuit__icontains=search)
+                Q(cliente__razon_social__icontains=search)
+                | Q(cliente__correo__icontains=search)
+                | Q(cliente__cuit__icontains=search)
             )
 
         return queryset
@@ -212,3 +195,18 @@ class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
         return redirect('login')
+
+
+class FacturaImportTemplateView(PermissionRequiredMixin, TemplateView):
+    """Template para importar facturas."""
+
+    model = Factura
+    permission_required = 'core.add_factura'
+    raise_exception = True
+    template_name = 'core/facturacliente_import.html'
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return super().handle_no_permission()
