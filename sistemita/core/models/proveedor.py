@@ -52,7 +52,7 @@ class FacturaProveedor(FacturaAbstract):
 
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
-    factura = models.ForeignKey(Factura, blank=False, on_delete=models.CASCADE)
+    factura = models.ForeignKey(Factura, blank=False, on_delete=models.CASCADE, related_name='facturas_proveedor')
 
     @property
     def moneda_monto(self):

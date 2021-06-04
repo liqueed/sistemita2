@@ -41,7 +41,7 @@ class FacturaAbstract(TimeStampedModel, models.Model):
         ('NCM', 'NC M'),
     )
 
-    numero = models.CharField('Número', max_length=20, blank=True)
+    numero = models.CharField('Número', max_length=20, blank=False, unique=True)
     fecha = models.DateField(blank=False)
     detalle = models.TextField(blank=True)
     tipo = models.CharField(blank=False, max_length=8, choices=TIPOS_FACTURA, default='A')

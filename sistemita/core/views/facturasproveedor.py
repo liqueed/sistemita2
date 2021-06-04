@@ -21,6 +21,7 @@ from rest_framework import mixins, permissions, viewsets
 # Sistemita
 from sistemita.core.filters import FacturaProveedorFilterSet
 from sistemita.core.forms.proveedores import FacturaProveedorForm
+from sistemita.core.models.cliente import Factura
 from sistemita.core.models.proveedor import FacturaProveedor
 from sistemita.core.serializers import FacturaProveedorSerializer
 from sistemita.core.utils.export import export_excel
@@ -66,12 +67,8 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(
-            Sum('total'), Count('id')
-        )
-        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(
-            Sum('total'), Count('id')
-        )
+        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(Sum('total'), Count('id'))
+        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(Sum('total'), Count('id'))
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
@@ -86,8 +83,9 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(proveedor__razon_social__icontains=search) | Q(proveedor__correo__icontains=search) |
-                Q(proveedor__cuit__icontains=search)
+                Q(proveedor__razon_social__icontains=search)
+                | Q(proveedor__correo__icontains=search)
+                | Q(proveedor__cuit__icontains=search)
             )
 
         return queryset
@@ -192,13 +190,13 @@ class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
-        return redirect('login')
+        return super().handle_no_permission()
 
 
 class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
     """Vista del reporte de ventas."""
 
-    queryset = FacturaProveedor.objects.all().order_by('-fecha')
+    queryset = Factura.objects.all().order_by('-fecha').filter(facturas_proveedor__isnull=False).distinct()
     paginate_by = 10
     permission_required = 'core.view_report_sales_facturaproveedor'
     raise_exception = True
@@ -210,10 +208,18 @@ class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
             return error_403(self.request, MESSAGE_403)
         return super().handle_no_permission()
 
+    def get(self, request, *args, **kwargs):
+        """Genera reporte en formato excel."""
+        format_list = request.GET.get('formato', False)
+        if format_list == 'xls':
+            return export_excel(self.request, self.get_queryset())
+
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
-        queryset = self.get_queryset()
+        queryset = FacturaProveedor.objects.all()
         current_week = date.today().isocalendar()[1]
 
         context['last_created'] = queryset.filter(creado__week=current_week).count()
