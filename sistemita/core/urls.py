@@ -4,7 +4,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 # API
-from sistemita.api.clientes import FacturaViewSet
+from sistemita.api.clientes.views import FacturaViewSet
 
 # Views
 from sistemita.core.views.archivos import ArchivoViewSet

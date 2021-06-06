@@ -22,6 +22,7 @@ from sistemita.accounting.models.cobranza import Cobranza, CobranzaFactura
 from sistemita.core.filters import FacturaFilterSet
 from sistemita.core.forms.clientes import FacturaForm
 from sistemita.core.models.cliente import Factura
+from sistemita.core.constants import TIPOS_FACTURA_IMPORT
 from sistemita.core.utils.export import export_excel
 from sistemita.core.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
@@ -194,7 +195,7 @@ class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
-        return redirect('login')
+        return super().handle_no_permission()
 
 
 class FacturaImportTemplateView(PermissionRequiredMixin, TemplateView):
@@ -204,6 +205,22 @@ class FacturaImportTemplateView(PermissionRequiredMixin, TemplateView):
     permission_required = 'core.add_factura'
     raise_exception = True
     template_name = 'core/facturacliente_import.html'
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Return a response, using the `response_class` for this view, with a
+        template rendered with the given context.
+        Pass response_kwargs to the constructor of the response class.
+        """
+        context['tipo_facturas'] = list(f[0] for f in TIPOS_FACTURA_IMPORT)
+        response_kwargs.setdefault('content_type', self.content_type)
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

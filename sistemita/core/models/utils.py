@@ -4,7 +4,7 @@
 from django.db import models
 
 # Constantes
-from sistemita.core.constants import MONEDAS
+from sistemita.core.constants import MONEDAS, TIPOS_FACTURA
 
 
 class TimeStampedModel(models.Model):
@@ -25,21 +25,6 @@ class TimeStampedModel(models.Model):
 
 class FacturaAbstract(TimeStampedModel, models.Model):
     """Clase abstracta de facturas."""
-
-    TIPOS_FACTURA = (
-        ('A', 'A'),
-        ('ARETEN', 'A SUJETA A RETENCIÓN'),
-        ('B', 'B'),
-        ('C', 'C'),
-        ('FCPYME', 'FC PYME'),
-        ('M', 'M'),
-        ('NCA', 'NC A'),
-        ('NCARETEN', 'NC A SUJETA A RETENCION'),
-        ('NCB', 'NC B'),
-        ('NCC', 'NC C'),
-        ('NCFCPYME', 'NC FCPYME'),
-        ('NCM', 'NC M'),
-    )
 
     numero = models.CharField('Número', max_length=20, blank=False, unique=True)
     fecha = models.DateField(blank=False)

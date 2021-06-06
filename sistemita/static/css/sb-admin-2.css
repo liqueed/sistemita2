@@ -11004,3 +11004,8 @@ body.sidebar-toggled footer.sticky-footer {
   line-height: .5;
   border-radius: .2rem;
 }
+
+.table-condensed{
+  font-size: 12px;
+  color: black;
+}

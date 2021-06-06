@@ -8,6 +8,7 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <h1 class="h3 mb-0 text-gray-800">Importación de facturas a clientes</h1>
     </div>
+
     <div class="row">
       <div class="col-6">
 	<form>
@@ -23,59 +24,44 @@
 	</form>
       </div>
     </div>
-    <div class="valid-formats alert alert-warning mt-2" role="alert">
-      <h4 class="alert-heading">Formatos válidos</h4>
-      <hr>
-      <p class="mb-1"><strong>Fecha:</strong> Fecha con formato válido: d/m/aaaa</p>
-      <p class="mb-1"><strong>Punto de Venta:</strong> Solo números. Máximo 5 caracteres.</p>
-      <p class="mb-1"><strong>Número desde:</strong> Solo números. Máximo 8 caracteres.</p>
-      <p class="mb-1"><strong>Tipo:</strong> Tipos de factura válidos<ul>{% for factura in tipo_facturas %}<li>{{ factura }}</li>{% endfor %}</ul></p>
-      <p class="mb-1"><strong>Tipo Doc. Receptor:</strong> Tipos de documento válidos CUIT</p>
-      <p class="mb-1"><strong>Nro. Doc. Receptor:</strong> Formato CUIT</p>
-      <p class="mb-1"><strong>Moneda:</strong> Tipos de monedas válidas $ y U$D</p>
-      <p class="mb-1"><strong>Imp. Neto Gravado:</strong> Solo números</p>
-      <p class="mb-1"><strong>Imp. Total:</strong> Solo números</p>
-    </div>
     <div class="row mt-3">
       <div class="col-12">
-	<table class="table table-bordered table-condensed table-done d-none">
-	  <thead>
-	    <tr>
-	      <th scope="col">Fecha</th>
-	      <th scope="col">Número</th>
-	      <th scope="col">Tipo</th>
-	      <th scope="col">CUIT</th>
-	      <th scope="col">Receptor</th>
-	      <th scope="col">Moneda</th>
-	      <th scope="col">Neto</th>
-	      <th scope="col">Total</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	  </tbody>
-	</table>
-	<table class="table table-bordered table-condensed table-error d-none">
-	  <thead>
-	    <tr>
-	      <th scope="col">Fecha</th>
-	      <th scope="col">Punto de Venta</th>
-	      <th scope="col">Número desde</th>
-	      <th scope="col">Tipo</th>
-	      <th scope="col">Tipo doc</th>
-	      <th scope="col">CUIT</th>
-	      <th scope="col">Receptor</th>
-	      <th scope="col">Moneda</th>
-	      <th scope="col">Neto</th>
-	      <th scope="col">Total</th>
-	      <th scope="col">Errores</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	  </tbody>
-	</table>
-	<div class="errors-result alert alert-danger d-none" role="alert">
-	  Reporte este error al administrador del sistema.
-	</div>
+      <table class="table table-bordered table-condensed table-done d-none">
+	<thead>
+	  <tr>
+	    <th scope="col">Fecha</th>
+	    <th scope="col">Número</th>
+	    <th scope="col">Tipo</th>
+	    <th scope="col">CUIT</th>
+	    <th scope="col">Receptor</th>
+	    <th scope="col">Moneda</th>
+	    <th scope="col">Neto</th>
+	    <th scope="col">Total</th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+      <table class="table table-bordered table-condensed table-error d-none">
+	<head>
+	  <tr>
+	    <th scope="col">Fecha</th>
+	    <th scope="col">Punto de Venta</th>
+	    <th scope="col">Número desde</th>
+	    <th scope="col">Tipo</th>
+	    <th scope="col">Tipo doc</th>
+	    <th scope="col">CUIT</th>
+	    <th scope="col">Receptor</th>
+	    <th scope="col">Moneda</th>
+	    <th scope="col">Neto</th>
+	    <th scope="col">Total</th>
+	    <th scope="col">Errores</th>
+	  </tr>
+	</head>
+	<body>
+	</body>
+      </table>
+
       </div>
     </div>
   </div>
@@ -102,9 +88,6 @@ var fields = {
 
 $("#btn-submit").click(function(e) {
     e.preventDefault();
-    $('.valid-formats').addClass('d-none');
-    $('#btn-submit').addClass('d-none');
-
     var data = new FormData();
     var files = $('input[type=file]')[0].files[0];
     data.append('file', files);
@@ -122,11 +105,9 @@ $("#btn-submit").click(function(e) {
     }).done(function(data) {
 	if (data.errors.length === 0){
 	    $('.table-done').removeClass('d-none');
-	    $('.table-error').addClass('d-none');
-	    $('.table-done tbody tr').remove();
-	    $.each(data.result, function(index, value) {
-		var nuevo = `<span class="badge badge-success">nuevo</span>`;
-		$('.table-done tbody').append(
+	    $.each(data.data, function(index, value) {
+		var nuevo = ``;
+		$('.table tr:last').after(
 		    `<tr>
 		     <td>${value.fecha}</td>
 		     <td>${value.numero}</td>
@@ -148,15 +129,14 @@ $("#btn-submit").click(function(e) {
 		})
 	    });
 	    $('.table-error').removeClass('d-none');
-	    $('.table-done').addClass('d-none');
-	    $('.table-error tbody tr').remove();
+	    // $(".table-error tbody tr").remove();
 	    $.each(data.errors, function(index, value) {
 		var dataContent = [];
-		var errorsLength = Object.keys(value.errors).length;0;
 		$.each(value.errors, function(idx, error) {
-		    dataContent.push(`<p class='text-dark p-0 m-0'><strong>${fields[idx]}: </strong> ${error[0]}</p>`);
+		    dataContent.push(`<p class='text-dark'><strong>${fields[idx]}: </strong> ${error[0]}</p>`);
 		});
-		$('.table-error tbody').append(
+
+		$('.table-error body tr:last').after(
 		    `<tr>
 		     <td>${value.fecha}</td>
 		     <td>${value.punto_de_venta}</td>
@@ -169,19 +149,15 @@ $("#btn-submit").click(function(e) {
 		     <td>${value.imp_neto_gravado}</td>
 		     <td>${value.imp_total}</td>
 		     <td>
-			<span type="button" class="badge badge-danger error-popover" data-toggle="popover" title="" data-content="${dataContent.join('')}">
-			  ${errorsLength}
-			</span>
+			<span type="button" class="badge badge-danger error-popover" data-toggle="popover" title="" data-content="${dataContent}">1</span>
 		     </td>
 		     </tr>`
 		);
 	    });
 
 	}
-    }).fail(function(xhr, status, error) {
-	$('.valid-formats').addClass('d-none');
-	$('.errors-result').removeClass('d-none');
-	$('.errors-result').append(`<p class='m-0'>${error}</p>`);
+    }).fail(function(error) {
+	console.log(error);
     });
 });
 {% endblock %}
