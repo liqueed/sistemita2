@@ -1,97 +1,97 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-    <head profile="http://www.w3.org/2005/10/profile">
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="">
+  <head profile="http://www.w3.org/2005/10/profile">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-        <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
 
-        <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-        <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
-        <link id="bsdp-css" href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
-        <link rel="icon"
-            type="image/png"
-            href="{% static 'images/favicon.ico' %}">
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="{% static 'css/sb-admin-2.css' %}" rel="stylesheet">
+    <link id="bsdp-css" href="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <link rel="icon"
+	  type="image/png"
+	  href="{% static 'images/favicon.ico' %}">
 
-        <!-- Bootstrap core JavaScript-->
-        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-        <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+	  <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-        <!-- Core plugin JavaScript-->
-        <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
 
-        <!-- Custom scripts for all pages-->
-        <script src="{% static 'js/sb-admin-2.js' %}"></script>
-        <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
-        <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.es.min.js" charset="UTF-8"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'js/sb-admin-2.js' %}"></script>
+    <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-datepicker@1.9.0/dist/locales/bootstrap-datepicker.es.min.js" charset="UTF-8"></script>
 
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-        {% block header %}{% endblock %}
-    </head>
-    <body id="page-top">
-        <!-- Page Wrapper -->
-        <div id="wrapper">
-            {% include 'core/sidebar.html' %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    {% block header %}{% endblock %}
+  </head>
+  <body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      {% include 'core/sidebar.html' %}
 
-            <div id="content-wrapper" class="d-flex flex-column">
-                <div id="content">
-                    {% include 'core/navbar.html' %}
+      <div id="content-wrapper" class="d-flex flex-column">
+	<div id="content">
+	  {% include 'core/navbar.html' %}
 
-                    {% block content %}{% endblock %}
-                </div>
+	  {% block content %}{% endblock %}
+	</div>
 
-                <footer class="sticky-footer bg-white">
-                  <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                      <span>Liqueed 2020</span>
-                    </div>
-                  </div>
-                </footer>
-                <!-- End of Footer -->
-            </div>
-        </div>
+	<footer class="sticky-footer bg-white">
+	  <div class="container my-auto">
+	    <div class="copyright text-center my-auto">
+	      <span>Liqueed {% now "Y" %}</span>
+	    </div>
+	  </div>
+	</footer>
+	<!-- End of Footer -->
+      </div>
+    </div>
 
-        <script>
-            {% block extra_js %}{% endblock %}
+    <script>
+      {% block extra_js %}{% endblock %}
 
-            $('#id_provincia').change(function(){
-                var provincia = $('#id_provincia').val();
-                var select_distrito = $('#id_distrito');
-                var select_localidad = $('#id_localidad');
+      $('#id_provincia').change(function(){
+      var provincia = $('#id_provincia').val();
+      var select_distrito = $('#id_distrito');
+      var select_localidad = $('#id_localidad');
 
-                // Limpio ditrito y localidad
-                select_distrito.children().remove().end();
-                select_distrito.append($("<option />").text('----'));
-                select_localidad.children().remove().end();
-                select_localidad.append($("<option />").text('----'));
+      // Limpio ditrito y localidad
+      select_distrito.children().remove().end();
+      select_distrito.append($("<option />").text('----'));
+      select_localidad.children().remove().end();
+      select_localidad.append($("<option />").text('----'));
 
-                // Actualizo
-                $.getJSON("{% url 'core:distrito-list' %}?provincia=" + provincia, function(distritos) {
-                    $.each(distritos, function(index, distrito) {
-                        select_distrito.append($("<option />").val(distrito.id).text(distrito.nombre));
-                    });
-                });
-            });
+      // Actualizo
+      $.getJSON("{% url 'core:distrito-list' %}?provincia=" + provincia, function(distritos) {
+      $.each(distritos, function(index, distrito) {
+      select_distrito.append($("<option />").val(distrito.id).text(distrito.nombre));
+      });
+      });
+      });
 
-            $('#id_distrito').change(function(){
-                var distrito = $('#id_distrito').val();
-                var select_localidad = $('#id_localidad');
-                select_localidad.children().remove().end();
-                select_localidad.append($("<option />").text('----'));
-                $.getJSON("{% url 'core:localidad-list' %}?distrito=" + distrito, function(localidades) {
-                    $.each(localidades, function(index, localidad) {
-                        select_localidad.append($("<option />").val(localidad.id).text(localidad.nombre));
-                    });
-                });
-            });
-        </script>
+      $('#id_distrito').change(function(){
+      var distrito = $('#id_distrito').val();
+      var select_localidad = $('#id_localidad');
+      select_localidad.children().remove().end();
+      select_localidad.append($("<option />").text('----'));
+      $.getJSON("{% url 'core:localidad-list' %}?distrito=" + distrito, function(localidades) {
+      $.each(localidades, function(index, localidad) {
+      select_localidad.append($("<option />").val(localidad.id).text(localidad.nombre));
+      });
+      });
+      });
+    </script>
 
-    </body>
+  </body>
 
 </html>
