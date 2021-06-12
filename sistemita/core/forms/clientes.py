@@ -24,6 +24,9 @@ from sistemita.core.utils.strings import (
 class ClienteForm(forms.ModelForm):
     """Formulario de cliente."""
 
+    correo = forms.CharField(required=True)
+    telefono = forms.CharField(required=True)
+
     def clean_cuit(self):
         """Verifica el cuit."""
         cuit = self.cleaned_data['cuit']
