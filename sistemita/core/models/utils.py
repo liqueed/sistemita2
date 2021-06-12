@@ -46,7 +46,7 @@ class FacturaAbstract(TimeStampedModel, models.Model):
     def get_tipo(self):
         """Retorna tipo de factura."""
         tipo = self.tipo
-        tipos = dict(self.TIPOS_FACTURA)
+        tipos = dict(TIPOS_FACTURA)
         return tipos.get(tipo)
 
     class Meta:

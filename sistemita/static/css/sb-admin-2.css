@@ -11005,7 +11005,11 @@ body.sidebar-toggled footer.sticky-footer {
   border-radius: .2rem;
 }
 
-.table-condensed{
+.table-condensed {
   font-size: 12px;
   color: black;
+}
+
+.table-done td {
+  background-color:rgba(0,255,0,0.1);
 }

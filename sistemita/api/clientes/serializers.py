@@ -11,20 +11,22 @@ from rest_framework import serializers
 from sistemita.core.constants import (
     MONEDAS,
     TIPOS_DOC_IMPORT,
+    TIPOS_FACTURA,
     TIPOS_FACTURA_IMPORT,
 )
-from sistemita.core.models.cliente import Cliente
+from sistemita.core.models.cliente import Cliente, Factura
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_MONEDA_INVALID,
+    MESSAGE_NUMERO_EXISTS,
     MESSAGE_TIPO_DOC_IMPORT_INVALID,
     MESSAGE_TIPO_FACTURA_INVALID,
 )
 from sistemita.core.utils.validators import validate_is_number
 
 
-class FacturaImportSerializer(serializers.Serializer):
-    """Serializador para facturas a importar."""
+class FacturaBeforeImportSerializer(serializers.Serializer):
+    """Serializador para validar facturas a importar."""
 
     fecha = serializers.DateTimeField(input_formats=['%d/%m/%Y', '%Y-%m-%dT%H:%M:%S'])
 
@@ -70,6 +72,13 @@ class FacturaImportSerializer(serializers.Serializer):
             raise serializers.ValidationError(MESSAGE_MONEDA_INVALID)
         return attr
 
+    def validate(self, attrs):
+        """Valida que el numero de factura no exita exista."""
+        numero = attrs.get('punto_de_venta').zfill(5) + attrs.get('numero_desde').zfill(8)
+        if Factura.objects.filter(numero=numero).exists():
+            raise serializers.ValidationError({'numero_desde': MESSAGE_NUMERO_EXISTS.format(numero)})
+        return attrs
+
     def to_representation(self, instance):
         """Modifica representación de los campos."""
 
@@ -85,3 +94,50 @@ class FacturaImportSerializer(serializers.Serializer):
         rep.pop('punto_de_venta')
         rep.pop('numero_desde')
         return rep
+
+
+class FacturaImportSerializer(serializers.Serializer):
+    """Serializador para validar facturas a importar."""
+
+    fecha = serializers.DateTimeField(input_formats=['%d-%m-%Y'])
+    numero = serializers.CharField()
+    tipo = serializers.CharField()
+
+    tipo_doc_receptor = serializers.CharField()
+    nro_doc_receptor = serializers.CharField()
+    denominacion_receptor = serializers.CharField()
+
+    moneda = serializers.CharField()
+    imp_neto_gravado = serializers.DecimalField(decimal_places=2, max_digits=12)
+    imp_total = serializers.DecimalField(decimal_places=2, max_digits=12)
+
+    def validate_tipo(self, attr):
+        """Validación de tipo de factura."""
+        index = list(x[1] for x in TIPOS_FACTURA).index(attr)
+        return TIPOS_FACTURA[index][0]
+
+    def validate_moneda(self, attr):
+        """Validación de tipo de factura."""
+        index = list(x[1] for x in MONEDAS).index(attr)
+        return MONEDAS[index][0]
+
+    def create(self, validated_data):
+        """
+        Crea una factura asociandola a un cliente.
+        Si el cliente no existe es creado.
+        """
+        cuit = validated_data.get('nro_doc_receptor')
+        razon_social = validated_data.get('denominacion_receptor')
+        cliente, _ = Cliente.objects.get_or_create(cuit=cuit, razon_social=razon_social)
+
+        factura = Factura.objects.create(
+            cliente=cliente,
+            numero=validated_data.get('numero'),
+            fecha=validated_data.get('fecha'),
+            tipo=validated_data.get('tipo'),
+            moneda=validated_data.get('moneda'),
+            neto=validated_data.get('imp_neto_gravado'),
+            total=validated_data.get('imp_total'),
+        )
+
+        return factura

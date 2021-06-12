@@ -9,7 +9,10 @@ from rest_framework.response import Response
 from unidecode import unidecode
 
 # Sistemita
-from sistemita.api.clientes.serializers import FacturaImportSerializer
+from sistemita.api.clientes.serializers import (
+    FacturaBeforeImportSerializer,
+    FacturaImportSerializer,
+)
 from sistemita.core.models.cliente import Factura
 from sistemita.core.serializers import FacturaSerializer
 
@@ -20,7 +23,14 @@ class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
     filter_fields = ('cliente', 'cobrado')
     queryset = Factura.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = FacturaSerializer
+
+    def get_serializer_class(self):
+        """Devuelve un serializador en base a una acción."""
+        action_mappings = {
+            'validate_import': FacturaBeforeImportSerializer,
+            'list_import': FacturaImportSerializer,
+        }
+        return action_mappings.get(self.action, FacturaSerializer)
 
     @action(detail=False, methods=['post'], url_path='validar-importacion')
     def validate_import(self, request):
@@ -36,9 +46,10 @@ class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
             df = pd.read_excel(file)
             df.columns = map(lambda header: unidecode(header.replace(" ", "_").replace(".", "").lower()), df.columns)
             data = df.to_dict(orient='records')
+            serializer_class = self.get_serializer_class()
 
             for row in data:
-                serializer = FacturaImportSerializer(data=row)
+                serializer = serializer_class(data=row)
                 if not serializer.is_valid():
                     errors.append(
                         {
@@ -64,3 +75,13 @@ class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
 
         data = {'result': result, 'errors': errors}
         return Response(data, status=result_status)
+
+    @action(detail=False, methods=['post'], url_path='importar-lista')
+    def list_import(self, request):
+        """Importación de listado facturas de clientes."""
+        facturas = request.data.get('facturas', None)
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(data=facturas, many=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({}, status=status.HTTP_201_CREATED)
