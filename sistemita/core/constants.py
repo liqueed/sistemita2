@@ -1,7 +1,7 @@
 """Módulo de Constantes."""
 
 # No modificar el orden
-MONEDAS = (('P', '$'), ('D', 'U$D'))
+MONEDAS = (('P', '$'), ('D', 'USD'))
 
 
 TIPOS_FACTURA = (
