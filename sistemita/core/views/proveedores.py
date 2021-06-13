@@ -13,13 +13,9 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Django REST Framework
-from rest_framework import mixins, permissions, viewsets
-
 # Sistemita
 from sistemita.core.forms.proveedores import ProveedorForm
 from sistemita.core.models.proveedor import Proveedor
-from sistemita.core.serializers import ProveedorSerializer
 from sistemita.core.utils.strings import (
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
@@ -27,14 +23,6 @@ from sistemita.core.utils.strings import (
     MESSAGE_SUCCESS_UPDATE,
 )
 from sistemita.core.views.home import error_403
-
-
-class ProveedorViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
-    """Proveedor view set."""
-
-    queryset = Proveedor.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = ProveedorSerializer
 
 
 class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):

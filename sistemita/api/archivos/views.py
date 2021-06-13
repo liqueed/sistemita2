@@ -4,8 +4,8 @@
 from rest_framework import mixins, permissions, viewsets
 
 # Sistemita
+from sistemita.api.archivos.serializers import ArchivoSerializer
 from sistemita.core.models.archivo import Archivo
-from sistemita.core.serializers import ArchivoSerializer
 
 
 class ArchivoViewSet(mixins.DestroyModelMixin, viewsets.GenericViewSet):

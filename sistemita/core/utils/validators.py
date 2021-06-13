@@ -1,6 +1,7 @@
 """Módulo de validaciones."""
 
 from django.core.exceptions import ValidationError
+
 from sistemita.core.utils.strings import MESSAGE_ONLY_NUMBERS
 
 

@@ -3,13 +3,10 @@
 # Django REST Framework
 from rest_framework import serializers
 
+# Sistemita
 from sistemita.accounting.models.pago import Pago, PagoFactura, PagoFacturaPago
-
-# Models
+from sistemita.api.proveedores.serializers import ProveedorSerializer
 from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
-
-# Serializers
-from sistemita.core.serializers import ProveedorSerializer
 
 
 class PagoFacturaPagoSerializer(serializers.ModelSerializer):
@@ -47,11 +44,7 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
         """Clase meta."""
 
         model = PagoFactura
-        fields = (
-            'id', 'data',
-            'factura', 'ganancias', 'ingresos_brutos', 'iva',
-            'pago_factura_pagos'
-        )
+        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'pago_factura_pagos')
         read_only_fields = ('id',)
 
 
@@ -69,7 +62,11 @@ class PagoSerializer(serializers.ModelSerializer):
 
         model = Pago
         fields = (
-            'id', 'fecha', 'proveedor', 'total', 'pagado',
+            'id',
+            'fecha',
+            'proveedor',
+            'total',
+            'pagado',
             'pago_facturas',
         )
         read_only_fields = ('id', 'proveedor')
@@ -105,16 +102,12 @@ class PagoSerializer(serializers.ModelSerializer):
                     factura=factura_entry,
                     ganancias=factura['ganancias'],
                     ingresos_brutos=factura['ingresos_brutos'],
-                    iva=factura['iva']
+                    iva=factura['iva'],
                 )
                 # Pagos
                 pagos = factura['pago_factura_pagos']
                 for row in pagos:
-                    PagoFacturaPago.objects.create(
-                        pago_factura=pago_factura,
-                        metodo=row['metodo'],
-                        monto=row['monto']
-                    )
+                    PagoFacturaPago.objects.create(pago_factura=pago_factura, metodo=row['metodo'], monto=row['monto'])
             return pago
         except Exception as error:
             raise serializers.ValidationError(error)
@@ -141,7 +134,7 @@ class PagoSerializer(serializers.ModelSerializer):
                         factura=factura['factura'],
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
-                        iva=factura['iva']
+                        iva=factura['iva'],
                     )
 
                     # pagos
@@ -149,9 +142,7 @@ class PagoSerializer(serializers.ModelSerializer):
                     for row in pagos:
                         # Todos los pagos son nuevos al ser nueva la factura
                         PagoFacturaPago.objects.create(
-                            pago_factura=pago_factura,
-                            metodo=row['metodo'],
-                            monto=row['monto']
+                            pago_factura=pago_factura, metodo=row['metodo'], monto=row['monto']
                         )
                 elif factura['data']['action'] == 'update':
                     # Actualizo factura del pago
@@ -162,9 +153,7 @@ class PagoSerializer(serializers.ModelSerializer):
                     factura_entry = factura['factura']
                     if pago_factura.factura.id != factura_entry.id:
                         # Si la factura es diferente, la anterior pasa a estar no cobrada
-                        FacturaProveedor.objects.filter(pk=pago_factura.factura.id).update(
-                            cobrado=False
-                        )
+                        FacturaProveedor.objects.filter(pk=pago_factura.factura.id).update(cobrado=False)
 
                     # La factura actual del proveedor pasa a estar cobrada
                     FacturaProveedor.objects.filter(pk=factura_entry.id).update(cobrado=True)
@@ -173,7 +162,7 @@ class PagoSerializer(serializers.ModelSerializer):
                         factura=factura_entry,
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
-                        iva=factura['iva']
+                        iva=factura['iva'],
                     )
 
                     # Pagos
@@ -182,15 +171,12 @@ class PagoSerializer(serializers.ModelSerializer):
                         if row['data']['action'] == 'update':
                             # Actualiza pago
                             PagoFacturaPago.objects.filter(pk=row['data']['id']).update(
-                                metodo=row['metodo'],
-                                monto=row['monto']
+                                metodo=row['metodo'], monto=row['monto']
                             )
                         elif row['data']['action'] == 'add':
                             # Agrega Pago
                             PagoFacturaPago.objects.create(
-                                pago_factura=pago_factura,
-                                metodo=row['metodo'],
-                                monto=row['monto']
+                                pago_factura=pago_factura, metodo=row['metodo'], monto=row['monto']
                             )
                         elif row['data']['action'] == 'delete':
                             # Elimina Pago

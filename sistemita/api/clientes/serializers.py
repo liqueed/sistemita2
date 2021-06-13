@@ -8,6 +8,12 @@ from re import match
 from rest_framework import serializers
 
 # Sistemita
+from sistemita.api.archivos.serializers import ArchivoSerializer
+from sistemita.api.entidades.serializers import (
+    DistritoSerializer,
+    LocalidadSerializer,
+    ProvinciaSerializer,
+)
 from sistemita.core.constants import (
     MONEDAS,
     TIPOS_DOC_IMPORT,
@@ -23,6 +29,52 @@ from sistemita.core.utils.strings import (
     MESSAGE_TIPO_FACTURA_INVALID,
 )
 from sistemita.core.utils.validators import validate_is_number
+
+
+class ClienteSerializer(serializers.ModelSerializer):
+    """Serializer de Cliente."""
+
+    provincia = ProvinciaSerializer(read_only=True)
+    distrito = DistritoSerializer(read_only=True)
+    localidad = LocalidadSerializer(read_only=True)
+
+    class Meta:
+        """Configuraciones del serializer."""
+
+        model = Cliente
+        fields = [
+            'id',
+            'razon_social',
+            'cuit',
+            'correo',
+            'telefono',
+            'calle',
+            'numero',
+            'piso',
+            'dpto',
+            'provincia',
+            'distrito',
+            'localidad',
+            'tipo_envio_factura',
+            'link_envio_factura',
+            'correo_envio_factura',
+        ]
+        extra_kwargs = {
+            'cuit': {'validators': []},
+        }
+
+
+class FacturaSerializer(serializers.ModelSerializer):
+    """Serializer de Factura."""
+
+    archivos = ArchivoSerializer(many=True, read_only=True)
+    cliente = ClienteSerializer(read_only=True)
+
+    class Meta:
+        """Configuraciones del serializer."""
+
+        model = Factura
+        fields = ['id', 'fecha', 'cliente', 'tipo', 'neto', 'iva', 'cobrado', 'total', 'archivos']
 
 
 class FacturaBeforeImportSerializer(serializers.Serializer):

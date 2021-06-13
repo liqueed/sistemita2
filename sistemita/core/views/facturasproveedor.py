@@ -15,15 +15,11 @@ from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
-# Django REST Framework
-from rest_framework import mixins, permissions, viewsets
-
 # Sistemita
 from sistemita.core.filters import FacturaProveedorFilterSet
 from sistemita.core.forms.proveedores import FacturaProveedorForm
 from sistemita.core.models.cliente import Factura
 from sistemita.core.models.proveedor import FacturaProveedor
-from sistemita.core.serializers import FacturaProveedorSerializer
 from sistemita.core.utils.export import export_excel
 from sistemita.core.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
@@ -32,15 +28,6 @@ from sistemita.core.utils.strings import (
     MESSAGE_403,
 )
 from sistemita.core.views.home import error_403
-
-
-class FacturaProveedorViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    """Factura de proveedores view set."""
-
-    filter_fields = ('proveedor', 'cobrado')
-    queryset = FacturaProveedor.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = FacturaProveedorSerializer
 
 
 class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):

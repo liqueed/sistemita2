@@ -9,8 +9,8 @@ from sistemita.accounting.models.cobranza import (
     CobranzaFactura,
     CobranzaFacturaPago,
 )
+from sistemita.api.clientes.serializers import ClienteSerializer
 from sistemita.core.models.cliente import Cliente, Factura
-from sistemita.core.serializers import ClienteSerializer
 
 
 class CobranzaFacturaPagoSerializer(serializers.ModelSerializer):
@@ -48,11 +48,7 @@ class CobranzaFacturaSerializer(serializers.ModelSerializer):
         """Clase meta."""
 
         model = CobranzaFactura
-        fields = (
-            'id', 'data',
-            'factura', 'ganancias', 'ingresos_brutos', 'iva',
-            'cobranza_factura_pagos'
-        )
+        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'cobranza_factura_pagos')
         read_only_fields = ('id',)
 
 
@@ -69,7 +65,10 @@ class CobranzaSerializer(serializers.ModelSerializer):
 
         model = Cobranza
         fields = (
-            'id', 'fecha', 'cliente', 'total',
+            'id',
+            'fecha',
+            'cliente',
+            'total',
             'cobranza_facturas',
         )
         read_only_fields = ('id', 'cliente')
@@ -104,15 +103,13 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     factura=factura_entry,
                     ganancias=factura['ganancias'],
                     ingresos_brutos=factura['ingresos_brutos'],
-                    iva=factura['iva']
+                    iva=factura['iva'],
                 )
                 # Pagos
                 pagos = factura['cobranza_factura_pagos']
                 for pago in pagos:
                     CobranzaFacturaPago.objects.create(
-                        cobranza_factura=cobranza_factura,
-                        metodo=pago['metodo'],
-                        monto=pago['monto']
+                        cobranza_factura=cobranza_factura, metodo=pago['metodo'], monto=pago['monto']
                     )
             return cobranza
         except Exception as error:
@@ -138,7 +135,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                         factura=factura['factura'],
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
-                        iva=factura['iva']
+                        iva=factura['iva'],
                     )
 
                     # pagos
@@ -146,9 +143,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     for pago in pagos:
                         # Todos los pagos son nuevos al ser nueva la factura
                         CobranzaFacturaPago.objects.create(
-                            cobranza_factura=cobranza_factura,
-                            metodo=pago['metodo'],
-                            monto=pago['monto']
+                            cobranza_factura=cobranza_factura, metodo=pago['metodo'], monto=pago['monto']
                         )
                 elif factura['data']['action'] == 'update':
                     # Actualizo factura de la cobranza
@@ -159,9 +154,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     factura_entry = factura['factura']
                     if cobranza_factura.factura.id != factura_entry.id:
                         # Si la factura es diferente, la anterior pasa a estar no cobrada
-                        Factura.objects.filter(pk=cobranza_factura.factura.id).update(
-                            cobrado=False
-                        )
+                        Factura.objects.filter(pk=cobranza_factura.factura.id).update(cobrado=False)
 
                     # La factura actual del cliente pasa a estar cobrada
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
@@ -170,7 +163,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                         factura=factura_entry,
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
-                        iva=factura['iva']
+                        iva=factura['iva'],
                     )
 
                     # Pagos
@@ -179,15 +172,12 @@ class CobranzaSerializer(serializers.ModelSerializer):
                         if pago['data']['action'] == 'update':
                             # Actualiza pago
                             CobranzaFacturaPago.objects.filter(pk=pago['data']['id']).update(
-                                metodo=pago['metodo'],
-                                monto=pago['monto']
+                                metodo=pago['metodo'], monto=pago['monto']
                             )
                         elif pago['data']['action'] == 'add':
                             # Agrega Pago
                             CobranzaFacturaPago.objects.create(
-                                cobranza_factura=cobranza_factura,
-                                metodo=pago['metodo'],
-                                monto=pago['monto']
+                                cobranza_factura=cobranza_factura, metodo=pago['metodo'], monto=pago['monto']
                             )
                         elif pago['data']['action'] == 'delete':
                             # Elimina Pago

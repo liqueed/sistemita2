@@ -13,29 +13,11 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 
-# Django Rest Framework
-from rest_framework import mixins, permissions, viewsets
-
-# Accounting
+# Sistemita
 from sistemita.accounting.models.cobranza import Cobranza
-from sistemita.accounting.serializers.cobranzas import CobranzaSerializer
-
-# Core
 from sistemita.core.models.cliente import Factura
 from sistemita.core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 from sistemita.core.views.home import error_403
-
-
-class CobranzaViewSet(mixins.CreateModelMixin,
-                      mixins.RetrieveModelMixin,
-                      mixins.UpdateModelMixin,
-                      mixins.ListModelMixin,
-                      viewsets.GenericViewSet):
-    """Cobranza view set."""
-
-    queryset = Cobranza.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = CobranzaSerializer
 
 
 class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
@@ -62,8 +44,9 @@ class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(cliente__razon_social__icontains=search) | Q(cliente__correo__icontains=search) |
-                Q(cliente__cuit__icontains=search)
+                Q(cliente__razon_social__icontains=search)
+                | Q(cliente__correo__icontains=search)
+                | Q(cliente__cuit__icontains=search)
             )
 
         return queryset
@@ -139,9 +122,7 @@ class CobranzaDeleteView(PermissionRequiredMixin, DeleteView):
         # Las facturas asociadas pasan estar no cobradas
         cobranza_facturas = cobranza.cobranza_facturas.all()
         for c_factura in cobranza_facturas:
-            Factura.objects.filter(pk=c_factura.factura.id).update(
-                cobrado=False
-            )
+            Factura.objects.filter(pk=c_factura.factura.id).update(cobrado=False)
 
         success_url = self.get_success_url()
         cobranza.delete()

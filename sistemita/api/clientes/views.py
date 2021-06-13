@@ -1,4 +1,4 @@
-"""View set Factura."""
+"""Viewset clientes."""
 
 import pandas as pd
 
@@ -10,11 +10,20 @@ from unidecode import unidecode
 
 # Sistemita
 from sistemita.api.clientes.serializers import (
+    ClienteSerializer,
     FacturaBeforeImportSerializer,
     FacturaImportSerializer,
+    FacturaSerializer,
 )
-from sistemita.core.models.cliente import Factura
-from sistemita.core.serializers import FacturaSerializer
+from sistemita.core.models.cliente import Cliente, Factura
+
+
+class ClienteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """Cliente View set."""
+
+    queryset = Cliente.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ClienteSerializer
 
 
 class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):

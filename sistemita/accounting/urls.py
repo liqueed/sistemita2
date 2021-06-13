@@ -1,10 +1,7 @@
 """Accounting URLs."""
 
 # Django
-from django.urls import include, path
-
-# Django Rest Framework
-from rest_framework import routers
+from django.urls import path
 
 # Views
 from sistemita.accounting.views.cobranzas import (
@@ -13,7 +10,6 @@ from sistemita.accounting.views.cobranzas import (
     CobranzaDetailView,
     CobranzaListView,
     CobranzaUpdateTemplateView,
-    CobranzaViewSet,
 )
 from sistemita.accounting.views.pagos import (
     PagoCreateTemplateView,
@@ -23,24 +19,15 @@ from sistemita.accounting.views.pagos import (
     PagoGeratePDFDetailView,
     PagoListView,
     PagoUpdateTemplateView,
-    PagoViewSet,
 )
 
-router = routers.DefaultRouter()
-router.register(r'cobranza', CobranzaViewSet)
-router.register(r'pago', PagoViewSet)
-
 urlpatterns = [
-    # API
-    path(r'api/', include(router.urls)),
-
     # Cobranza cliente
     path('cobranza/', CobranzaListView.as_view(), name='cobranza-list'),
     path('cobranza/agregar', CobranzaCreateTemplateView.as_view(), name='cobranza-create'),
     path('cobranza/<int:pk>/', CobranzaDetailView.as_view(), name='cobranza-detail'),
     path('cobranza/<int:pk>/editar/', CobranzaUpdateTemplateView.as_view(), name='cobranza-update'),
     path('cobranza/<int:pk>/eliminar/', CobranzaDeleteView.as_view(), name='cobranza-delete'),
-
     # Pago a proveedor
     path('pago/', PagoListView.as_view(), name='pago-list'),
     path('pago/agregar', PagoCreateTemplateView.as_view(), name='pago-create'),
@@ -51,6 +38,6 @@ urlpatterns = [
     path(
         'pago/<int:pk>/comprobante-retencion/',
         PagoFacturaRetencionGeratePDFDetailView.as_view(),
-        name='pago-factura-retencion-pdf'
+        name='pago-factura-retencion-pdf',
     ),
 ]

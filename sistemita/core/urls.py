@@ -1,22 +1,16 @@
 """URLs Core."""
 
-from django.urls import include, path
-from rest_framework import routers
-
-# API
-from sistemita.api.clientes.views import FacturaViewSet
+# Django
+from django.urls import path
 
 # Views
-from sistemita.core.views.archivos import ArchivoViewSet
 from sistemita.core.views.clientes import (
     ClienteCreateView,
     ClienteDeleteView,
     ClienteDetailView,
     ClienteListView,
     ClienteUpdateView,
-    ClienteViewSet,
 )
-from sistemita.core.views.distritos import DistritoViewSet
 from sistemita.core.views.facturascliente import (
     FacturaCreateView,
     FacturaDeleteView,
@@ -32,17 +26,14 @@ from sistemita.core.views.facturasproveedor import (
     FacturaProveedorListView,
     FacturaProveedorReportListView,
     FacturaProveedorUpdateView,
-    FacturaProveedorViewSet,
 )
 from sistemita.core.views.home import HomeView, error_403
-from sistemita.core.views.localidades import LocalidadViewSet
 from sistemita.core.views.mediopago import (
     MedioPagoCreateView,
     MedioPagoDeleteView,
     MedioPagoDetailView,
     MedioPagoListView,
     MedioPagoUpdateView,
-    MedioPagoViewSet,
 )
 from sistemita.core.views.ordencompra import (
     OrdenCompraCreateView,
@@ -57,26 +48,13 @@ from sistemita.core.views.proveedores import (
     ProveedorDetailView,
     ProveedorListView,
     ProveedorUpdateView,
-    ProveedorViewSet,
 )
-
-router = routers.DefaultRouter()
-router.register(r'archivo', ArchivoViewSet)
-router.register(r'cliente', ClienteViewSet)
-router.register(r'distrito', DistritoViewSet)
-router.register(r'factura', FacturaViewSet)
-router.register(r'factura-proveedor', FacturaProveedorViewSet)
-router.register(r'localidad', LocalidadViewSet)
-router.register(r'proveedor', ProveedorViewSet)
-router.register(r'mediopago', MedioPagoViewSet)
 
 handler400 = error_403
 
 urlpatterns = [
     # Home
     path('', HomeView.as_view(), name='home'),
-    # API
-    path(r'api/', include(router.urls)),
     # Cliente
     path('cliente/', ClienteListView.as_view(), name='cliente-list'),
     path('cliente/agregar/', ClienteCreateView.as_view(), name='cliente-create'),
