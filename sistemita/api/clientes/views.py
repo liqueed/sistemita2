@@ -54,6 +54,7 @@ class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
 
         try:
             df = pd.read_excel(file)
+            df = df.fillna('')
             df.columns = map(lambda header: unidecode(header.replace(" ", "_").replace(".", "").lower()), df.columns)
             data = df.to_dict(orient='records')
             serializer_class = self.get_serializer_class()
