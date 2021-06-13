@@ -129,10 +129,11 @@ class FacturaBeforeImportSerializer(serializers.Serializer):
         return attr or 0.0
 
     def validate(self, attrs):
-        """Valida que el numero de factura no exita exista."""
+        """Valida que el numero de factura no exita exista para el mismo receptor."""
         numero = attrs.get('punto_de_venta').zfill(5) + attrs.get('numero_desde').zfill(8)
-        if Factura.objects.filter(numero=numero).exists():
-            raise serializers.ValidationError({'numero_desde': MESSAGE_NUMERO_EXISTS.format(numero)})
+        cliente = self.context.get('cliente', None)
+        if Factura.objects.filter(numero=numero, cliente=cliente).exists():
+            raise serializers.ValidationError({'numero_desde': MESSAGE_NUMERO_EXISTS.format(numero, 'receptor')})
         return attrs
 
     def to_representation(self, instance):

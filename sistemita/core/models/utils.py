@@ -13,8 +13,8 @@ class TimeStampedModel(models.Model):
     Agrega al modelo los atributos para obtener cuando fue creado y modificado el objecto.
     """
 
-    creado = models.DateTimeField('Creado', editable=False, blank=True, auto_now_add=True)
-    modificado = models.DateTimeField('Modificado', editable=False, blank=True, auto_now=True)
+    creado = models.DateTimeField('creado', editable=False, blank=True, auto_now_add=True)
+    modificado = models.DateTimeField('modificado', editable=False, blank=True, auto_now=True)
 
     class Meta:
         """Configuraciones del modelo."""
@@ -26,7 +26,7 @@ class TimeStampedModel(models.Model):
 class FacturaAbstract(TimeStampedModel, models.Model):
     """Clase abstracta de facturas."""
 
-    numero = models.CharField('Número', max_length=20, blank=False, unique=True)
+    numero = models.CharField('número', max_length=20, blank=False)
     fecha = models.DateField(blank=False)
     detalle = models.TextField(blank=True)
     tipo = models.CharField(blank=False, max_length=8, choices=TIPOS_FACTURA, default='A')
