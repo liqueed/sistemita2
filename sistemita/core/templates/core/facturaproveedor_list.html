@@ -128,7 +128,9 @@
 	    <tbody>
 	      {% for object in object_list %}
 		<tr>
-		  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.numero|default:"-" }}</td>
+		  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>
+		    {{ object.numero|default:"-" }}
+		  </td>
 		  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
 		  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.proveedor.razon_social }}</td>
 		  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.proveedor.cuit }}</td>
