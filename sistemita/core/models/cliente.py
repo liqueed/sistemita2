@@ -18,7 +18,7 @@ class Cliente(TimeStampedModel, models.Model):
     FORMAS_ENVIO = (('C', 'Correo'), ('U', 'Link'))
     razon_social = models.CharField('Razón Social', blank=False, max_length=128)
     cuit = models.CharField('CUIT', blank=False, max_length=11, unique=True)
-    correo = models.EmailField(blank=True)
+    correo = models.EmailField(blank=True, null=True, unique=True)
     telefono = models.CharField('Teléfono', max_length=14, blank=True)
 
     calle = models.CharField('Calle', max_length=35, blank=True)

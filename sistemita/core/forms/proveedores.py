@@ -12,6 +12,7 @@ from django import forms
 
 # Models
 from sistemita.core.models.archivo import Archivo
+from sistemita.core.models.cliente import Factura
 from sistemita.core.models.entidad import Distrito, Localidad
 from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
 
@@ -25,6 +26,9 @@ from sistemita.core.utils.strings import (
 
 class ProveedorForm(forms.ModelForm):
     """Formulario de proveedor."""
+
+    correo = forms.CharField(required=True)
+    telefono = forms.CharField(required=True)
 
     def clean_cuit(self):
         """Verifica el cuit."""
@@ -110,6 +114,8 @@ class ProveedorForm(forms.ModelForm):
 
 class FacturaProveedorForm(forms.ModelForm):
     """Formulario de factura de proveedor."""
+
+    factura = forms.ModelChoiceField(queryset=Factura.objects.all())
 
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""

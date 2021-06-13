@@ -23,6 +23,7 @@ from sistemita.core.views.facturasproveedor import (
     FacturaProveedorCreateView,
     FacturaProveedorDeleteView,
     FacturaProveedorDetailView,
+    FacturaProveedorImportTemplateView,
     FacturaProveedorListView,
     FacturaProveedorReportListView,
     FacturaProveedorUpdateView,
@@ -83,6 +84,7 @@ urlpatterns = [
     path('factura-proveedor/<int:pk>/', FacturaProveedorDetailView.as_view(), name='facturaproveedor-detail'),
     path('factura-proveedor/<int:pk>/editar/', FacturaProveedorUpdateView.as_view(), name='facturaproveedor-update'),
     path('factura-proveedor/<int:pk>/eliminar/', FacturaProveedorDeleteView.as_view(), name='facturaproveedor-delete'),
+    path('factura-proveedor/importar/', FacturaProveedorImportTemplateView.as_view(), name='facturaproveedor-import'),
     path('factura-proveedor/reporte-ventas/', FacturaProveedorReportListView.as_view(), name='facturaproveedor-report'),
     # Medio de pago
     path('mediopago/', MedioPagoListView.as_view(), name='mediopago-list'),

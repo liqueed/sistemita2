@@ -11,11 +11,12 @@ from django.db.models import Count, Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
 # Sistemita
+from sistemita.core.constants import TIPOS_FACTURA_IMPORT
 from sistemita.core.filters import FacturaProveedorFilterSet
 from sistemita.core.forms.proveedores import FacturaProveedorForm
 from sistemita.core.models.cliente import Factura
@@ -212,3 +213,34 @@ class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
+
+
+class FacturaProveedorImportTemplateView(PermissionRequiredMixin, TemplateView):
+    """Template para importar facturas."""
+
+    model = FacturaProveedor
+    permission_required = 'core.add_facturaproveedor'
+    raise_exception = True
+    template_name = 'core/facturaproveedor_import.html'
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Return a response, using the `response_class` for this view, with a
+        template rendered with the given context.
+        Pass response_kwargs to the constructor of the response class.
+        """
+        context['tipo_facturas'] = list(f[0] for f in TIPOS_FACTURA_IMPORT)
+        response_kwargs.setdefault('content_type', self.content_type)
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return super().handle_no_permission()

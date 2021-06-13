@@ -13,11 +13,11 @@ from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
 class Proveedor(TimeStampedModel, models.Model):
     """Modelo proveedor."""
 
-    razon_social = models.CharField('Razón Social', blank=False, null=False, max_length=128)
-    cuit = models.CharField('CUIT', blank=False, null=False, max_length=11, unique=True)
+    razon_social = models.CharField('Razón Social', blank=False, max_length=128)
+    cuit = models.CharField('CUIT', blank=False, max_length=11, unique=True)
 
-    correo = models.EmailField(blank=False)
-    telefono = models.CharField('Teléfono', max_length=14)
+    correo = models.EmailField(blank=True, null=True, unique=True)
+    telefono = models.CharField('Teléfono', max_length=14, blank=True)
 
     calle = models.CharField('Calle', max_length=35, blank=True)
     numero = models.CharField('Número', max_length=12, blank=True)
@@ -28,7 +28,7 @@ class Proveedor(TimeStampedModel, models.Model):
     distrito = models.ForeignKey(Distrito, null=True, blank=True, verbose_name='Distrito', on_delete=models.SET_NULL)
     localidad = models.ForeignKey(Localidad, null=True, blank=True, verbose_name='Localidad', on_delete=models.SET_NULL)
 
-    cbu = models.CharField(max_length=22, blank=True, null=True, verbose_name='CBU')
+    cbu = models.CharField(max_length=22, blank=True, verbose_name='CBU')
 
     class Meta:
         """Configuraciones del modelo."""
@@ -52,7 +52,9 @@ class FacturaProveedor(FacturaAbstract):
 
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
-    factura = models.ForeignKey(Factura, blank=False, on_delete=models.CASCADE, related_name='facturas_proveedor')
+    factura = models.ForeignKey(
+        Factura, blank=True, null=True, on_delete=models.CASCADE, related_name='facturas_proveedor'
+    )
 
     @property
     def moneda_monto(self):
