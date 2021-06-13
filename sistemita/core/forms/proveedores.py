@@ -116,6 +116,7 @@ class FacturaProveedorForm(forms.ModelForm):
     """Formulario de factura de proveedor."""
 
     factura = forms.ModelChoiceField(queryset=Factura.objects.all())
+    neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
 
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""

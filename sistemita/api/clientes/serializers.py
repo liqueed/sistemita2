@@ -93,7 +93,7 @@ class FacturaBeforeImportSerializer(serializers.Serializer):
     exists_receptor = serializers.BooleanField(read_only=True, default=False)
 
     moneda = serializers.CharField()
-    imp_neto_gravado = serializers.DecimalField(decimal_places=2, max_digits=12)
+    imp_neto_gravado = serializers.DecimalField(required=False, decimal_places=2, max_digits=12, allow_null=True)
     imp_total = serializers.DecimalField(decimal_places=2, max_digits=12)
 
     def validate_tipo(self, attr):
@@ -123,6 +123,10 @@ class FacturaBeforeImportSerializer(serializers.Serializer):
         if attr not in type_monedas:
             raise serializers.ValidationError(MESSAGE_MONEDA_INVALID)
         return attr
+
+    def validate_imp_neto_gravado(self, attr):
+        """Valida el valor neto."""
+        return attr or 0.0
 
     def validate(self, attrs):
         """Valida que el numero de factura no exita exista."""
@@ -160,7 +164,7 @@ class FacturaImportSerializer(serializers.Serializer):
     denominacion_receptor = serializers.CharField()
 
     moneda = serializers.CharField()
-    imp_neto_gravado = serializers.DecimalField(decimal_places=2, max_digits=12)
+    imp_neto_gravado = serializers.DecimalField(required=False, decimal_places=2, max_digits=12)
     imp_total = serializers.DecimalField(decimal_places=2, max_digits=12)
 
     def validate_tipo(self, attr):

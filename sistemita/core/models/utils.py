@@ -32,7 +32,7 @@ class FacturaAbstract(TimeStampedModel, models.Model):
     tipo = models.CharField(blank=False, max_length=8, choices=TIPOS_FACTURA, default='A')
 
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
-    neto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    neto = models.DecimalField(blank=True, decimal_places=2, max_digits=12, default=0.0)
     iva = models.PositiveSmallIntegerField(blank=False, default=21)
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 

@@ -119,6 +119,8 @@ class ClienteForm(forms.ModelForm):
 class FacturaForm(forms.ModelForm):
     """Formuarlio de Facturación a cliente."""
 
+    neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
+
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""
         self.user = kwargs.pop('user')

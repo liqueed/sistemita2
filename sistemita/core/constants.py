@@ -29,7 +29,7 @@ TIPOS_FACTURA_IMPORT = (
     ('15 - Recibo C', 'Recibo C'),
     ('19 - Factura de Exportación E', 'E'),
     ('201 - Factura de Crédito Electrónica MyPyMEs (FCE) A', 'FC PYME'),
-    ('51 - Facturas M', 'M'),
+    ('51 - Factura M', 'M'),
     ('3 - Nota de Crédito A', 'NC A'),
     ('12 - Nota de Crédito B', 'NC B'),
     ('13 - Nota de Crédito C', 'NC C'),
