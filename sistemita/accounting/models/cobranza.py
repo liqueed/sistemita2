@@ -52,7 +52,7 @@ class CobranzaFacturaPago(models.Model):
     Cada factura asociada a una cobranza, puede tener uno o muchos métodos de pago.
     """
 
-    metodo = models.ForeignKey(MedioPago, blank=False, on_delete=models.CASCADE)
+    metodo = models.ForeignKey(MedioPago, blank=False, null=True, on_delete=models.SET_NULL)
     cobranza_factura = models.ForeignKey(CobranzaFactura, blank=False, on_delete=models.CASCADE,
                                          related_name='cobranza_factura_pagos')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
