@@ -65,7 +65,6 @@
 	  <table class="table table-bordered table-hover" width="100%" cellspacing="0">
 	    <thead>
 	      <tr>
-		<th>ID</th>
 		<th>Raz&oacute;n Social</th>
 		<th>CUIT</th>
 		<th>Correo</th>
@@ -77,19 +76,27 @@
 	    <tbody>
 	      {% for object in object_list %}
 		<tr>
-		  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.pk }}</td>
-		  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.razon_social }}</td>
-		  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.cuit }}</td>
-		  <td {% if perms.core.view_cliente %}onclick="location.href='{% url 'core:cliente-detail' object.pk %}';"{% endif %}>{{ object.correo|default:"" }}</td>
-		  {% if perms.core.change_cliente or perms.core.delete_cliente %}
+		  <td>
+		    <a {% if perms.core.view_cliente %}href="{% url 'core:cliente-detail' object.pk %}{% endif %}">
+		      {{ object.razon_social }}
+		    </a>
+		  </td>
+		  <td>{{ object.cuit }}</td>
+		  <td>{{ object.correo|default:"" }}</td>
+		  {% if perms.core.view_cliente or perms.core.change_cliente or perms.core.delete_cliente %}
 		    <td class="text-center">
+		      {% if perms.core.view_cliente %}
+			<a class="mr-1 text-decoration-none" href="{% url 'core:cliente-detail' object.pk %}">
+			  <i class="far fa-eye"></i>
+			</a>
+		      {% endif %}
 		      {% if perms.core.change_cliente %}
-			<a href="{% url 'core:cliente-update' object.pk %}">
+			<a class="mr-1 text-decoration-none" href="{% url 'core:cliente-update' object.pk %}">
 			  <i class="fas fa-wrench"></i>
 			</a>
 		      {% endif %}
 		      {% if perms.core.delete_cliente %}
-			<a href="{% url 'core:cliente-delete' object.pk %}">
+			<a class="text-decoration-none" href="{% url 'core:cliente-delete' object.pk %}">
 			  <i class="fas fa-trash "></i>
 			</a>
 		      {% endif %}

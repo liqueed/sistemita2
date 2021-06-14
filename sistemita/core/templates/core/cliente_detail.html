@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Detalle Cliente #{{ object.pk }} | Liqueed{% endblock %}
+{% block title %}Detalle Cliente {{ object.razon_social }} | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
@@ -15,7 +15,7 @@
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-	<h6 class="m-0 font-weight-bold text-primary">Detalle del Cliente #{{ object.pk }}</h6>
+	<h6 class="m-0 font-weight-bold text-primary">Detalle del Cliente {{ object.razon_social }}</h6>
       </div>
       <div class="card-body">
 	<div class="table-responsive">
