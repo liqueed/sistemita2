@@ -74,6 +74,7 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
                 Q(proveedor__razon_social__icontains=search)
                 | Q(proveedor__correo__icontains=search)
                 | Q(proveedor__cuit__icontains=search)
+                | Q(numero=search)
             )
 
         return queryset
