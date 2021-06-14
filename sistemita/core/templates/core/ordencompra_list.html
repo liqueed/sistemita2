@@ -57,7 +57,7 @@
 	<div class="table-responsive">
 
 	  <div class="row float-right">
-	    {% include 'components/search_form.html' %}
+	    {% include 'components/filter_search_form.html' %}
 	    {% if perms.core.add_ordencompra %}
 	      <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
 		<a class="btn btn-primary" role="button" href="{% url 'core:ordencompra-create' %}">Agregar</a>

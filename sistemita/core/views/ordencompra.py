@@ -10,10 +10,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView
+from django.views.generic import DeleteView, DetailView
 from django.views.generic.edit import CreateView, UpdateView
+from django_filters.views import FilterView
 
 # Sistemita
+from sistemita.core.filters import OrdenCompraFilterSet
 from sistemita.core.forms.clientes import OrdenCompraForm
 from sistemita.core.models.cliente import OrdenCompra
 from sistemita.core.utils.strings import (
@@ -25,12 +27,14 @@ from sistemita.core.utils.strings import (
 from sistemita.core.views.home import error_403
 
 
-class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
+class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que retorna un listado de órdenes de compras."""
 
+    filterset_class = OrdenCompraFilterSet
     paginate_by = 10
     permission_required = 'core.list_ordencompra'
     raise_exception = True
+    template_name = 'core/ordencompra_list.html'
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
