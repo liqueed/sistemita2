@@ -57,12 +57,15 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
 
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = User.objects.order_by('id')
+        queryset = User.objects.order_by('username')
 
         search = self.request.GET.get('search', None)
         if search:
             queryset = queryset.filter(
-                Q(username__search=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search)
+                Q(username__search=search)
+                | Q(first_name__icontains=search)
+                | Q(last_name__icontains=search)
+                | Q(username__icontains=search)
             )
 
         return queryset
