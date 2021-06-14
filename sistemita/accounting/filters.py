@@ -1,4 +1,4 @@
-"""Filters del módulo Factura."""
+"""Filters del módulo cuentas."""
 
 # Django Filter
 from django_filters.rest_framework import BooleanFilter, DateFilter, FilterSet

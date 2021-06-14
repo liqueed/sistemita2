@@ -1,25 +1,48 @@
 <form class="form-inline" method="get">
   <div class="form-group mr-1 mb-2">
+
+    <!-- Cobrado/Pagado -->
     <div class="dropdown mr-2">
       <button class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Cobrado/Pagado
+	Cobrado/Pagado
       </button>
       <div id="id_dropdown_cobrado" name="cobrado" class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton" style="">
-        <a class="dropdown-item" href="#">Si</a>
-        <a class="dropdown-item" href="#">No</a>
-        <a class="dropdown-item" href="#">Todos</a>
+	<a class="dropdown-item" href="#">Si</a>
+	<a class="dropdown-item" href="#">No</a>
+	<a class="dropdown-item" href="#">Todos</a>
       </div>
       <input type="hidden" name="cobrado" id="id_cobrado">
     </div>
+    <!-- End Cobrado/Pagado -->
+
+    <!-- Inputs desde hasta -->
+    <input autocomplete="off" value="{{ request.GET.desde }}"
+	   type="text" class="form-control form-control-sm" name="desde" id="id_desde"
+	   placeholder="Desde"
+    />
+    <input autocomplete="off" value="{{ request.GET.hasta }}"
+	   type="text" class="form-control form-control-sm" name="hasta" id="id_hasta"
+	   placeholder="Hasta"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-primary btn-sm mr-2" type="submit">
+	<i class="fas fa-filter"></i>
+      </button>
+    </div>
+    <!-- End Inputs desde hasta -->
+
+    <!-- Input buscar -->
     <input onfocus="this.select()" autofocus autocomplete="off" value="{{ request.GET.search }}"
-           type="text" class="form-control form-control-sm" name="search" id="id_search"
-           placeholder="Buscar"
+	   type="text" class="form-control form-control-sm" name="search" id="id_search"
+	   placeholder="Buscar"
     />
     <div class="input-group-append">
       <button class="btn btn-primary btn-sm" type="submit">
-        <i class="fas fa-search fa-sm"></i>
+	<i class="fas fa-search fa-sm"></i>
       </button>
     </div>
+    <!-- End Input buscar -->
+
   </div>
 </form>
 
@@ -30,6 +53,9 @@
    set_value(selected);
    $('form').submit();
  });
+
+ $('#id_desde').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+ $('#id_hasta').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
 
  $('#id_search').keypress(function(event){
    var keycode = (event.keyCode ? event.keyCode : event.which);
