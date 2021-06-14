@@ -11,21 +11,25 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView, TemplateView
+from django.views.generic import DeleteView, DetailView, TemplateView
+from django_filters.views import FilterView
 
 # Sistemita
+from sistemita.accounting.filters import CobranzaFilterSet
 from sistemita.accounting.models.cobranza import Cobranza
 from sistemita.core.models.cliente import Factura
 from sistemita.core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 from sistemita.core.views.home import error_403
 
 
-class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
+class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que devuelve un listado de cobranzas."""
 
+    filterset_class = CobranzaFilterSet
     paginate_by = 10
     permission_required = 'accounting.list_cobranza'
     raise_exception = True
+    template_name = 'accounting/cobranza_list.html'
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""

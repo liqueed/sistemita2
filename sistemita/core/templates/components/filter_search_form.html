@@ -1,0 +1,38 @@
+<form class="form-inline" method="get">
+  <div class="form-group mr-1 mb-2">
+    <input autocomplete="off" value="{{ request.GET.desde }}"
+	   type="text" class="form-control form-control-sm" name="desde" id="id_desde"
+	   placeholder="Desde"
+    />
+    <input autocomplete="off" value="{{ request.GET.hasta }}"
+	   type="text" class="form-control form-control-sm" name="hasta" id="id_hasta"
+	   placeholder="Hasta"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-primary btn-sm mr-2" type="submit">
+	<i class="fas fa-filter"></i>
+      </button>
+    </div>
+
+    <input onfocus="this.select()" autofocus autocomplete="off" value="{{ request.GET.search }}"
+	   type="text" class="form-control form-control-sm" name="search" id="id_search"
+	   placeholder="Buscar"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-primary btn-sm" type="submit">
+	<i class="fas fa-search fa-sm"></i>
+      </button>
+    </div>
+  </div>
+</form>
+
+{% block extra_js %}
+<script>
+$('#id_desde').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+$('#id_hasta').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+
+$('#id_search').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+});
+</script>
+{% endblock %}
