@@ -75,6 +75,7 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
                 Q(cliente__razon_social__icontains=search)
                 | Q(cliente__correo__icontains=search)
                 | Q(cliente__cuit__icontains=search)
+                | Q(numero__icontains=search)
             )
 
         return queryset
