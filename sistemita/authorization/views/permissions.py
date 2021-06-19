@@ -23,7 +23,6 @@ from sistemita.core.views.home import error_403
 class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista de que devuelve un listado de permisos."""
 
-    paginate_by = 10
     permission_required = 'auth.list_permission'
     raise_exception = True
     template_name = 'authorization/permission_list.html'
@@ -31,20 +30,30 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
         queryset = Permission.objects.filter(
-             content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
-             content_type__model__in=[
-                 'archivo',
-                 'cliente', 'factura', 'ordencompra', 'cobranza',
-                 'proveedor', 'facturaproveedor', 'pago',
-                 'mediopago',
-                 'permission', 'user', 'group'
-             ]
+            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
+            content_type__model__in=[
+                'archivo',
+                'cliente',
+                'factura',
+                'ordencompra',
+                'cobranza',
+                'proveedor',
+                'facturaproveedor',
+                'pago',
+                'mediopago',
+                'permission',
+                'user',
+                'group',
+            ],
         ).order_by('content_type__model', 'name')
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(name__icontains=search)
-
         return queryset
+
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        context['count'] = queryset.count()
+        return context
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos."""

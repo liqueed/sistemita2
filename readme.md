@@ -11,30 +11,29 @@
 - [Docker Compose](https://docs.docker.com/compose/) Orquestador de aplicaciones docker
 - [PostgreSQL 12.3](https://www.postgresql.org/) Relational Database
 - [Bootstrap 4.5](https://getbootstrap.com/) Frontend
-- [Nginx](https://gitlab.com/mcardozo/aic/-/blob/master/Web%20Server) Servidor
-  de archivos estáticos
+- [Nginx](https://www.nginx.com/) Servidor de archivos estáticos
 
 ## Entorno de desarrollo
 
 - Clonar repositorio:
 
-        $ git clone git@github.com:acyment/sistemita2.git
+		$ git clone git@github.com:acyment/sistemita2.git
 
 - Construir imágenes:
 
-        $ export COMPOSE_FILE=local.yml
+		$ export COMPOSE_FILE=local.yml
 
-        $ docker-compose build
+		$ docker-compose build
 
 - Levantar servicios:
 
-        $ docker-compose up
+		$ docker-compose up
 
 - Interacción con Django:
 
-        $ docker-compose stop django
+		$ docker-compose stop django
 
-        $ docker-compose run --rm --service-ports django
+		$ docker-compose run --rm --service-ports django
 
 ## Comando útiles
 
@@ -42,23 +41,23 @@
 
 Para crear un usuario administrador ejecutrar el siguiente comando:
 
-    $ docker-compose run --r django python manage.py createsuperuser
+	$ docker-compose run --r django python manage.py createsuperuser
 
 ### Fixtures
 
 Para cargar datos iniciales correr el siguiente comando:
 
-    $ docker-compose run --rm django python manage.py loaddata fixtures/*.json
+	$ docker-compose run --rm django python manage.py loaddata fixtures/*.json
 
 ### Permisos
 
 Para traducir los permisos correr los comando:
 
-    $ docker-compose run --rm django python manage.py permissions_translation
+	$ docker-compose run --rm django python manage.py permissions_translation
 
 Para agregar los permisos:
 
-    $ docker-compose run --rm django python manage.py add_permissions
+	$ docker-compose run --rm django python manage.py add_permissions
 
 ## Documentacion anterior
 

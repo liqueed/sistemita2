@@ -7,7 +7,6 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView
@@ -30,11 +29,12 @@ from sistemita.core.views.home import error_403
 class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que retorna un listado de órdenes de compras."""
 
+    model = OrdenCompra
     filterset_class = OrdenCompraFilterSet
-    paginate_by = 10
     permission_required = 'core.list_ordencompra'
     raise_exception = True
     template_name = 'core/ordencompra_list.html'
+    ordering = ['-creado']
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
@@ -42,23 +42,10 @@ class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, FilterVi
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
+        context['count'] = queryset.count()
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
-
-    def get_queryset(self):
-        """Sobreescribe queryset.
-
-        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
-        """
-        queryset = OrdenCompra.objects.order_by('-creado')
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(
-                Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
-            )
-
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

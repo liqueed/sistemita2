@@ -7,7 +7,6 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -25,11 +24,12 @@ from sistemita.core.views.home import error_403
 class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que devuelve un listado de cobranzas."""
 
+    model = Cobranza
     filterset_class = CobranzaFilterSet
-    paginate_by = 10
     permission_required = 'accounting.list_cobranza'
     raise_exception = True
     template_name = 'accounting/cobranza_list.html'
+    ordering = ['-creado']
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
@@ -37,23 +37,10 @@ class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView)
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
+        context['count'] = queryset.count()
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
-
-    def get_queryset(self):
-        """Devuelve los resultados de la búsqueda realizada por el usuario."""
-        queryset = Cobranza.objects.order_by('-fecha')
-
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(
-                Q(cliente__razon_social__icontains=search)
-                | Q(cliente__correo__icontains=search)
-                | Q(cliente__cuit__icontains=search)
-            )
-
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

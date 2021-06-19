@@ -27,9 +27,10 @@ from sistemita.core.views.home import error_403
 class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que retorna un listado con los medios de pagos."""
 
-    paginate_by = 10
+    model = MedioPago
     permission_required = 'core.list_mediopago'
     raise_exception = True
+    ordering = ['nombre']
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
@@ -37,20 +38,10 @@ class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
+        context['count'] = queryset.count()
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
-
-    def get_queryset(self):
-        """Sobreescribe queryset.
-
-        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
-        """
-        queryset = MedioPago.objects.order_by('id')
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(nombre__icontains=search)
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

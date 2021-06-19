@@ -9,7 +9,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Count, Q, Sum
+from django.db.models import Count, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -36,11 +36,12 @@ from sistemita.core.views.home import error_403
 class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que muestra un listado de facturas."""
 
+    model = Factura
     filterset_class = FacturaFilterSet
-    paginate_by = 10
     permission_required = 'core.list_factura'
     raise_exception = True
     template_name = 'core/facturacliente_list.html'
+    ordering = ['-creado']
 
     def get(self, request, *args, **kwargs):
         """Genera reporte en formato excel."""
@@ -62,23 +63,6 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
-
-    def get_queryset(self):
-        """Sobreescribe queryset.
-
-        Devuelve un conjunto de resultados si el usuario realiza una búsqueda.
-        """
-        queryset = Factura.objects.order_by('-fecha')
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(
-                Q(cliente__razon_social__icontains=search)
-                | Q(cliente__correo__icontains=search)
-                | Q(cliente__cuit__icontains=search)
-                | Q(numero__icontains=search)
-            )
-
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

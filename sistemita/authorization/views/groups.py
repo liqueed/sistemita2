@@ -26,26 +26,24 @@ from sistemita.core.views.home import error_403
 class GroupListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Listado de Grupos."""
 
-    paginate_by = 10
+    model = Group
     permission_required = 'auth.list_group'
     raise_exception = True
     template_name = 'authorization/group_list.html'
-
-    def get_queryset(self):
-        """Devuelve los resultados de la búsqueda realizada por el usuario."""
-        queryset = Group.objects.order_by('id')
-
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(name__icontains=search)
-
-        return queryset
+    ordering = ['name']
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
         return redirect('login')
+
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        context['count'] = queryset.count()
+        return context
 
 
 class GroupCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
