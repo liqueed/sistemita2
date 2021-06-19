@@ -15,6 +15,13 @@
 	    <i class="fas fa-filter"></i>
 	  </button>
 	</div>
+
+	<div class="input-group-append">
+	  <button class="clean btn btn-primary btn-sm" type="submit">
+	    <i class="fas fa-times-circle"></i>
+	  </button>
+	</div>
+
       </div>
     </form>
   </div>
@@ -23,5 +30,9 @@
 <script>
 $('#id_desde').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
 $('#id_hasta').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+$('.clean').click(function(){
+    $('#id_desde').val('');
+    $('#id_hasta').val('');
+});
 </script>
 {% endblock %}
