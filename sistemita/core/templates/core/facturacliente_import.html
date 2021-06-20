@@ -258,7 +258,9 @@ $("#btn-import").click(function(e) {
 	$('#btn-import').addClass('d-none');
 	$('.table-before-import').addClass('d-none');
 	$('.loading').addClass('d-none');
-	e.target.parentNode.querySelector('.custom-file-label').textContent = 'Seleccionar archivo';
+	$('.custom-file-input').val('');
+	$('.custom-file-label').empty();
+	$('.custom-file-label').text('Seleccionar archivo');
     });
 });
 {% endblock %}
