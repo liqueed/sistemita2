@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Permission
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
@@ -23,6 +25,7 @@ from sistemita.core.views.home import error_403
 class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista de que devuelve un listado de permisos."""
 
+    paginate_by = 10
     permission_required = 'auth.list_permission'
     raise_exception = True
     template_name = 'authorization/permission_list.html'
@@ -46,20 +49,23 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
                 'group',
             ],
         ).order_by('content_type__model', 'name')
-        return queryset
 
-    def get_context_data(self, **kwargs):
-        """Obtiene datos para incluir en los reportes."""
-        context = super().get_context_data(**kwargs)
-        queryset = self.get_queryset()
-        context['count'] = queryset.count()
-        return context
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(name__icontains=search)
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
-        return super().handle_no_permission()
+        return redirect('login')
 
 
 class PermissionCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
@@ -85,7 +91,7 @@ class PermissionCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateV
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
-        return super().handle_no_permission()
+        return redirect('login')
 
 
 class PermissionDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
@@ -100,7 +106,7 @@ class PermissionDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailV
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
-        return super().handle_no_permission()
+        return redirect('login')
 
 
 class PermisoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -121,7 +127,7 @@ class PermisoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
-        return super().handle_no_permission()
+        return redirect('login')
 
 
 class PermissionDeleteView(PermissionRequiredMixin, DeleteView):
@@ -143,4 +149,4 @@ class PermissionDeleteView(PermissionRequiredMixin, DeleteView):
         """Redirige a la página de error 403 si no tiene los permisos."""
         if self.raise_exception:
             return error_403(self.request, MESSAGE_403)
-        return super().handle_no_permission()
+        return redirect('login')

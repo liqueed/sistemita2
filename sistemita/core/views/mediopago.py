@@ -7,6 +7,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
@@ -27,10 +28,26 @@ from sistemita.core.views.home import error_403
 class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que retorna un listado con los medios de pagos."""
 
-    model = MedioPago
+    paginate_by = 10
     permission_required = 'core.list_mediopago'
     raise_exception = True
-    ordering = ['nombre']
+
+    def get_queryset(self):
+        """
+        Sobreescribe queryset.
+        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        """
+        queryset = MedioPago.objects.order_by('nombre')
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(nombre__icontains=search)
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
@@ -38,7 +55,6 @@ class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['count'] = queryset.count()
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context

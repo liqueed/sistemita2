@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}Reporte de ventas | Liqueed{% endblock %}
-{% block header %}
-    <link href="{% static 'css/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
-{% endblock %}
 {% block content %}
   <div class="container-fluid">
 
@@ -63,18 +60,9 @@
 	      {% endfor %}
 	    </tbody>
 	  </table>
+	  {% include 'components/pagination.html' %}
 	</div>
       </div>
     </div>
   </div>
-<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
-{% endblock %}
-{% block extra_js %}
-    $('.table').DataTable({
-	language: {
-	    url: '{% static "js/dataTables.spanish.json" %}'
-	},
-	aaSorting: [],
-    });
 {% endblock %}

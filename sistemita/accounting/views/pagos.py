@@ -10,7 +10,8 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Count, F, Sum
+from django.core.exceptions import FieldError
+from django.db.models import Count, F, Q, Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
@@ -35,12 +36,30 @@ from sistemita.core.views.home import error_403
 class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que devuelve un listado de pagos."""
 
-    model = Pago
     filterset_class = PagoFilterSet
+    paginate_by = 10
     permission_required = 'accounting.list_pago'
     raise_exception = True
     template_name = 'accounting/pago_list.html'
-    ordering = ['-creado']
+
+    def get_queryset(self):
+        """Devuelve los resultados de la búsqueda realizada por el usuario."""
+        queryset = Pago.objects.order_by('-creado')
+
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(
+                    Q(cliente__razon_social__icontains=search)
+                    | Q(cliente__correo__icontains=search)
+                    | Q(cliente__cuit__icontains=search)
+                )
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def get(self, request, *args, **kwargs):
         """Genera reporte en formato excel."""
@@ -62,7 +81,6 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['count'] = queryset.count()
         context['last_created'] = queryset.filter(creado__week=current_week).count()
         context['debt_in_peso'] = queryset.filter(pagado=False).aggregate(Sum('total'), Count('id'))
 

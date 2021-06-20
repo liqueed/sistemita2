@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, FormView, ListView
@@ -36,11 +38,27 @@ User = get_user_model()
 class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que retorna un listado de usuarios."""
 
-    model = User
+    paginate_by = 10
     permission_required = 'authorization.list_user'
     raise_exception = True
     template_name = 'authorization/user_list.html'
-    ordering = ['-date_joined']
+
+    def get_queryset(self):
+        """Devuelve los resultados de la búsqueda realizada por el usuario."""
+        queryset = User.objects.order_by('username')
+
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(
+                    Q(username__search=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search)
+                )
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
@@ -48,7 +66,6 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['count'] = queryset.count()
         context['last_created'] = queryset.filter(date_joined__week=current_week).count()
 
         return context

@@ -7,6 +7,8 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
@@ -27,11 +29,27 @@ from sistemita.core.views.home import error_403
 class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista para listar todos los clientes."""
 
-    model = Cliente
+    paginate_by = 10
     permission_required = 'core.list_cliente'
     raise_exception = True
     template_name = 'core/cliente_list.html'
-    ordering = ['razon_social']
+
+    def get_queryset(self):
+        """
+        Sobreescribe queryset.
+        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        """
+        queryset = Cliente.objects.order_by('razon_social')
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(Q(razon_social__icontains=search) | Q(cuit__icontains=search))
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
@@ -39,7 +57,6 @@ class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['count'] = queryset.count()
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
