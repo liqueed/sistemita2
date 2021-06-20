@@ -321,11 +321,9 @@ class ReporteVentaExport:
                     row.append(factura_compra)
                     row.append(item.moneda_monto)
                     row.append(factura_proveedor.moneda_monto)
+                    data.append(row)
                 else:
                     data.append(['', factura_compra, '', factura_proveedor.moneda_monto])
-
-            data.append(row)
-
         return data
 
 

@@ -169,7 +169,6 @@ class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
     """Vista del reporte de ventas."""
 
     queryset = Factura.objects.all().order_by('-fecha').filter(facturas_proveedor__isnull=False).distinct()
-    paginate_by = 10
     permission_required = 'core.view_report_sales_facturaproveedor'
     raise_exception = True
     template_name = 'core/facturaproveedor_report_list.html'
