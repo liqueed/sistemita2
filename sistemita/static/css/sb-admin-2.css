@@ -213,6 +213,7 @@ svg {
 
 table {
   border-collapse: collapse;
+  font-size: 14px;
 }
 
 caption {
@@ -11003,4 +11004,39 @@ body.sidebar-toggled footer.sticky-footer {
   font-size: .875rem;
   line-height: .5;
   border-radius: .2rem;
+}
+
+.table-condensed {
+  font-size: 12px;
+  color: black;
+}
+
+.table-before-import td {
+  background-color:rgba(0,255,0,0.1);
+}
+/* Table sort indicators */
+
+th.sortable {
+  position: relative;
+  cursor: pointer;
+}
+
+th.sortable::after {
+  font-family: FontAwesome;
+  content: "\f0dc";
+  position: absolute;
+  right: 8px;
+  color: #999;
+}
+
+th.sortable.asc::after {
+  content: "\f0d8";
+}
+
+th.sortable.desc::after {
+  content: "\f0d7";
+}
+
+th.sortable:hover::after {
+  color: #333;
 }

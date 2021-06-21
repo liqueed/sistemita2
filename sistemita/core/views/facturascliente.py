@@ -9,23 +9,21 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
 from django.db.models import Count, Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DeleteView, DetailView
+from django.views.generic import DeleteView, DetailView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
-# Django REST Framework
-from rest_framework import mixins, permissions, viewsets
-
 # Sistemita
 from sistemita.accounting.models.cobranza import Cobranza, CobranzaFactura
+from sistemita.core.constants import TIPOS_FACTURA_IMPORT
 from sistemita.core.filters import FacturaFilterSet
 from sistemita.core.forms.clientes import FacturaForm
 from sistemita.core.models.cliente import Factura
-from sistemita.core.serializers import FacturaSerializer
 from sistemita.core.utils.export import export_excel
 from sistemita.core.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
@@ -34,15 +32,6 @@ from sistemita.core.utils.strings import (
     MESSAGE_403,
 )
 from sistemita.core.views.home import error_403
-
-
-class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    """Factura view set."""
-
-    filter_fields = ('cliente', 'cobrado')
-    queryset = Factura.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = FacturaSerializer
 
 
 class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -57,11 +46,29 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     def get(self, request, *args, **kwargs):
         """Genera reporte en formato excel."""
         format_list = request.GET.get('formato', False)
-
         if format_list == 'xls':
             return export_excel(self.request, self.get_queryset())
 
         return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        """
+        Sobreescribe queryset.
+        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        """
+        queryset = Factura.objects.order_by('-creado')
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(
+                    Q(numero=search) | Q(cliente__razon_social__icontains=search) | Q(cliente__cuit__icontains=search)
+                )
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
@@ -69,31 +76,11 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(
-            Sum('total'), Count('id')
-        )
-        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(
-            Sum('total'), Count('id')
-        )
+        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(Sum('total'), Count('id'))
+        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(Sum('total'), Count('id'))
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
-
-    def get_queryset(self):
-        """Sobreescribe queryset.
-
-        Devuelve un conjunto de resultados si el usuario realiza una búsqueda.
-        """
-        queryset = Factura.objects.order_by('-fecha')
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(
-                Q(cliente__razon_social__icontains=search) |
-                Q(cliente__correo__icontains=search) |
-                Q(cliente__cuit__icontains=search)
-            )
-
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
@@ -206,6 +193,37 @@ class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
         factura.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(self.success_url)
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class FacturaImportTemplateView(PermissionRequiredMixin, TemplateView):
+    """Template para importar facturas."""
+
+    model = Factura
+    permission_required = 'core.add_factura'
+    raise_exception = True
+    template_name = 'core/facturacliente_import.html'
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Return a response, using the `response_class` for this view, with a
+        template rendered with the given context.
+        Pass response_kwargs to the constructor of the response class.
+        """
+        context['tipo_facturas'] = list(f[0] for f in TIPOS_FACTURA_IMPORT)
+        response_kwargs.setdefault('content_type', self.content_type)
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

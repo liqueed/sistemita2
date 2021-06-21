@@ -1,37 +1,37 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Eliminar Medio de pago Nro. {{ object.pk }} | Liqueed{% endblock %}
+{% block title %}Eliminar Medio de pago {{ object.nombre }} | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
       <h1 class="h3 text-gray-800">Medios de pago</h1>
       {% if perms.core.list_mediopago %}
       <a href="{% url 'core:mediopago-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
-        <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	<i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
       </a>
       {% endif %}
     </div>
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
-          Eliminar Medio de pago Nro. {{ object.pk }}
-        </h6>
+	<h6 class="m-0 font-weight-bold text-primary">
+	  Eliminar Medio de pago {{ object.nombre }}
+	</h6>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
+	<div class="table-responsive">
 
-          <form method="post" action="{% url 'core:mediopago-delete' object.pk %}">
-            {% csrf_token %}
-            <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el medio de pago <em>{{ object.nombre}}</em>.</p>
-            <div class="row">
-              <div class="col">
-                <button class="btn btn-danger" type="submit">Eliminar</button>
-                <a class="btn" href="{% url 'core:mediopago-list' %}">No eliminar</a>
-              </div>
-            </div>
-          </form>
-        </div>
+	  <form method="post" action="{% url 'core:mediopago-delete' object.pk %}">
+	    {% csrf_token %}
+	    <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el medio de pago <em>{{ object.nombre}}</em>.</p>
+	    <div class="row">
+	      <div class="col">
+		<button class="btn btn-danger" type="submit">Eliminar</button>
+		<a class="btn" href="{% url 'core:mediopago-list' %}">No eliminar</a>
+	      </div>
+	    </div>
+	  </form>
+	</div>
       </div>
     </div>
 

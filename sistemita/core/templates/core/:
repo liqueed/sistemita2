@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Importar factura de clientes{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Importación de facturas a clientes</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+	<form>
+	  <div class="input-group">
+	    <div class="custom-file">
+	      <input type="file" class="custom-file-input" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
+	      <label class="custom-file-label" >Seleccionar archivo</label>
+	    </div>
+	  </div>
+	  <div class="input-group mt-2">
+	    <button id="btn-submit" class="btn btn-primary btn-sm d-none">Validar datos</button>
+	  </div>
+	</form>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12">
+      <table class="table table-bordered table-condensed table-done d-none">
+	<thead>
+	  <tr>
+	    <th scope="col">Fecha</th>
+	    <th scope="col">Número</th>
+	    <th scope="col">Tipo</th>
+	    <th scope="col">CUIT</th>
+	    <th scope="col">Receptor</th>
+	    <th scope="col">Moneda</th>
+	    <th scope="col">Neto</th>
+	    <th scope="col">Total</th>
+	  </tr>
+	</thead>
+	<tbody>
+	</tbody>
+      </table>
+      <table class="table table-bordered table-condensed table-error d-none">
+	<head>
+	  <tr>
+	    <th scope="col">Fecha</th>
+	    <th scope="col">Punto de Venta</th>
+	    <th scope="col">Número desde</th>
+	    <th scope="col">Tipo</th>
+	    <th scope="col">Tipo doc</th>
+	    <th scope="col">CUIT</th>
+	    <th scope="col">Receptor</th>
+	    <th scope="col">Moneda</th>
+	    <th scope="col">Neto</th>
+	    <th scope="col">Total</th>
+	    <th scope="col">Errores</th>
+	  </tr>
+	</head>
+	<body>
+	</body>
+      </table>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_js %}
+
+$('.custom-file-input').on("change", function(e){
+    $('#btn-submit').removeClass('d-none');
+    e.target.parentNode.querySelector('.custom-file-label').textContent=e.target.files[0].name;
+});
+
+var fields = {
+    fecha: 'Fecha',
+    punto_de_venta: 'Punto de venta',
+    numero_desde: 'Número desde',
+    tipo: 'Tipo',
+    tipo_doc_receptor: 'Tipo doc',
+    nro_doc_receptor: 'CUIT',
+    denominacion_receptor: 'Receptor',
+    moneda: 'Moneda',
+    imp_neto_gravado: 'Neto',
+    imp_total: 'Total'
+}
+
+$("#btn-submit").click(function(e) {
+    e.preventDefault();
+    var data = new FormData();
+    var files = $('input[type=file]')[0].files[0];
+    data.append('file', files);
+
+    $.ajax({
+	type        : 'POST',
+	url         : '/api/factura/validar-importacion/',
+	data        : data,
+	processData : false,
+	contentType : false,
+	dataType    : 'json',
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
+    }).done(function(data) {
+	if (data.errors.length === 0){
+	    $('.table-done').removeClass('d-none');
+	    $.each(data.data, function(index, value) {
+		var nuevo = ``;
+		$('.table tr:last').after(
+		    `<tr>
+		     <td>${value.fecha}</td>
+		     <td>${value.numero}</td>
+		     <td>${value.tipo}</td>
+		     <td>${value.nro_doc_receptor} ${!value.exists_receptor ? nuevo: '' }</td>
+		     <td>${value.denominacion_receptor}</td>
+		     <td>${value.moneda}</td>
+		     <td>${value.imp_neto_gravado}</td>
+		     <td>${value.imp_total}</td>
+		     </tr>`
+		);
+	    });
+	} else {
+	    $(function () {
+		$('.error-popover').popover({
+		    container: 'body',
+		    trigger: 'hover',
+		    html: true,
+		})
+	    });
+	    $('.table-error').removeClass('d-none');
+	    // $(".table-error tbody tr").remove();
+	    $.each(data.errors, function(index, value) {
+		var dataContent = [];
+		$.each(value.errors, function(idx, error) {
+		    dataContent.push(`<p class='text-dark'><strong>${fields[idx]}: </strong> ${error[0]}</p>`);
+		});
+
+		$('.table-error body tr:last').after(
+		    `<tr>
+		     <td>${value.fecha}</td>
+		     <td>${value.punto_de_venta}</td>
+		     <td>${value.numero_desde}</td>
+		     <td>${value.tipo}</td>
+		     <td>${value.tipo_doc_receptor}</td>
+		     <td>${value.nro_doc_receptor}</td>
+		     <td>${value.denominacion_receptor}</td>
+		     <td>${value.moneda}</td>
+		     <td>${value.imp_neto_gravado}</td>
+		     <td>${value.imp_total}</td>
+		     <td>
+			<span type="button" class="badge badge-danger error-popover" data-toggle="popover" title="" data-content="${dataContent}">1</span>
+		     </td>
+		     </tr>`
+		);
+	    });
+
+	}
+    }).fail(function(error) {
+	console.log(error);
+    });
+});
+{% endblock %}

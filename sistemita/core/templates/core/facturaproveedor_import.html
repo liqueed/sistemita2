@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Importar factura de proveedores{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Importación de facturas de Provedores</h1>
+    </div>
+
+    <!-- Formulario -->
+    <div class="row">
+      <div class="col-6 mb-1">
+	<form>
+	  <div class="input-group">
+	    <div class="custom-file">
+	      <input type="file" class="custom-file-input" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
+	      <label class="custom-file-label" >Seleccionar archivo</label>
+	    </div>
+	  </div>
+	  <div class="input-group mt-2">
+	    <button id="btn-submit" class="btn btn-primary btn-sm d-none">Validar datos</button>
+	  </div>
+	</form>
+      </div>
+      <div class="col-6">
+	<div class="loading mt-2 d-none"><img src="{% static 'images/loader.gif' %}" alt="loading" /></div>
+      </div>
+    </div>
+    <!-- End Formulario -->
+
+    <!-- Mensajes -->
+    <div class="row">
+      <div class="col-6">
+	<div class="error-message-before-import alert alert-danger d-none" role="alert">
+	  Reporte este error al administrador del sistema.
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	</div>
+	<div class="error-message-import alert alert-danger d-none" role="alert">
+	  Reporte este error al administrador del sistema.
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	</div>
+	<div class="success-message-import alert alert-success d-none" role="alert">
+	  La importación se ha realizado exitosamente.
+	  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	</div>
+      </div>
+    </div>
+    <!-- End mensajes -->
+
+    <!-- Formato valido -->
+    <div class="row">
+      <div class="col-6">
+	<div class="valid-formats alert alert-warning" role="alert">
+	  <h4 class="alert-heading">Formato válido</h4>
+	  <hr>
+	  <p class="mb-1"><strong>Fecha:</strong> Fecha con formato válido: d/m/aaaa</p>
+	  <p class="mb-1"><strong>Punto de Venta:</strong> Solo números. Máximo 5 caracteres.</p>
+	  <p class="mb-1"><strong>Número desde:</strong> Solo números. Máximo 8 caracteres.</p>
+	  <p class="mb-1"><strong>Tipo:</strong> Tipos de factura válidos<ul>{% for factura in tipo_facturas %}<li>{{ factura }}</li>{% endfor %}</ul></p>
+	  <p class="mb-1"><strong>Tipo Doc. Emisor:</strong> Tipos de documento válidos CUIT</p>
+	  <p class="mb-1"><strong>Nro. Doc. Emisor:</strong> Formato CUIT</p>
+	  <p class="mb-1"><strong>Moneda:</strong> Tipos de monedas válidas $ y USD</p>
+	  <p class="mb-1"><strong>Imp. Neto Gravado:</strong> Solo números enteros o decimales (no requerido)</p>
+	  <p class="mb-1"><strong>Imp. Total:</strong> Solo números enteros o decimales</p>
+	</div>
+      </div>
+    </div>
+    <!-- End Formato valido -->
+
+    <!-- Tablas -->
+    <div class="row mt-3">
+      <div class="col-12">
+	<table class="table table-bordered table-condensed table-before-import d-none">
+	  <thead>
+	    <tr>
+	      <th scope="col">Fecha</th>
+	      <th scope="col">Número</th>
+	      <th scope="col">Tipo</th>
+	      <th scope="col">CUIT</th>
+	      <th scope="col">Emisor</th>
+	      <th scope="col">Moneda</th>
+	      <th scope="col">Neto</th>
+	      <th scope="col">Total</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  </tbody>
+	</table>
+	<table class="table table-bordered table-condensed table-error d-none">
+	  <thead>
+	    <tr>
+	      <th scope="col">Fecha</th>
+	      <th scope="col">Punto de Venta</th>
+	      <th scope="col">Número desde</th>
+	      <th scope="col">Tipo</th>
+	      <th scope="col">Tipo doc</th>
+	      <th scope="col">CUIT</th>
+	      <th scope="col">Emisor</th>
+	      <th scope="col">Moneda</th>
+	      <th scope="col">Neto</th>
+	      <th scope="col">Total</th>
+	      <th scope="col">Errores</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  </tbody>
+	</table>
+	<div>
+	  <button id="btn-import" class="btn btn-success btn-sm float-right d-none">Importar datos</button>
+	</div>
+      </div>
+    </div>
+    <!-- End Tablas -->
+  </div>
+{% endblock %}
+{% block extra_js %}
+
+$('.custom-file-input').on("change", function(e){
+    $('#btn-submit').removeClass('d-none');
+    e.target.parentNode.querySelector('.custom-file-label').textContent=e.target.files[0].name;
+});
+
+var fields = {
+    fecha: 'Fecha',
+    punto_de_venta: 'Punto de venta',
+    numero_desde: 'Número desde',
+    tipo: 'Tipo',
+    tipo_doc_emisor: 'Tipo doc',
+    nro_doc_emisor: 'CUIT',
+    denominacion_emisor: 'Emisor',
+    moneda: 'Moneda',
+    imp_neto_gravado: 'Neto',
+    imp_total: 'Total'
+}
+
+var dataImport;
+
+$("#btn-submit").click(function(e) {
+    e.preventDefault();
+
+    $('.loading').removeClass('d-none');
+    $('.valid-formats').addClass('d-none');
+    $('#btn-submit').addClass('d-none');
+
+    var data = new FormData();
+    var files = $('input[type=file]')[0].files[0];
+    data.append('file', files);
+
+    $.ajax({
+	type        : 'POST',
+	url         : '/api/factura-proveedor/validar-importacion/',
+	data        : data,
+	processData : false,
+	contentType : false,
+	dataType    : 'json',
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
+    }).done(function(data) {
+	if (data.errors.length === 0){
+	    $('.table-before-import').removeClass('d-none');
+	    $('.table-error').addClass('d-none');
+	    $('.table-before-import tbody tr').remove();
+	    dataImport = data.result;
+
+	    $.each(data.result, function(index, value) {
+		var nuevo = `<span class="badge badge-success">nuevo</span>`;
+		$('.table-before-import tbody').append(
+		    `<tr>
+		     <td>${value.fecha}</td>
+		     <td>${value.numero}</td>
+		     <td>${value.tipo}</td>
+		     <td>${value.nro_doc_emisor} ${!value.exists_emisor ? nuevo: '' }</td>
+		     <td>${value.denominacion_emisor}</td>
+		     <td>${value.moneda}</td>
+		     <td>${value.imp_neto_gravado}</td>
+		     <td>${value.imp_total}</td>
+		     </tr>`
+		);
+	    });
+	    $('#btn-import').removeClass('d-none');
+	} else {
+	    $(function () {
+		$('.error-popover').popover({
+		    container: 'body',
+		    trigger: 'hover',
+		    html: true,
+		})
+	    });
+	    $('.table-error').removeClass('d-none');
+	    $('.table-before-import').addClass('d-none');
+	    $('.table-error tbody tr').remove();
+	    $.each(data.errors, function(index, value) {
+		var dataContent = [];
+		var errorsLength = Object.keys(value.errors).length;0;
+		$.each(value.errors, function(idx, error) {
+		    dataContent.push(`<p class='text-dark p-0 m-0'><strong>${fields[idx]}: </strong> ${error[0]}</p>`);
+		});
+		$('.table-error tbody').append(
+		    `<tr>
+		     <td>${value.fecha}</td>
+		     <td>${value.punto_de_venta}</td>
+		     <td>${value.numero_desde}</td>
+		     <td>${value.tipo}</td>
+		     <td>${value.tipo_doc_emisor}</td>
+		     <td>${value.nro_doc_emisor}</td>
+		     <td>${value.denominacion_emisor}</td>
+		     <td>${value.moneda}</td>
+		     <td>${value.imp_neto_gravado}</td>
+		     <td>${value.imp_total}</td>
+		     <td>
+			<span type="button" class="badge badge-danger error-popover" data-toggle="popover" title="" data-content="${dataContent.join('')}">
+			  ${errorsLength}
+			</span>
+		     </td>
+		     </tr>`
+		);
+	    });
+	}
+    }).fail(function(xhr, status, error) {
+	$('.valid-formats').addClass('d-none');
+	$('.error-message-before-import').removeClass('d-none');
+	$('.error-message-before-import').append(`<p class='m-0'>${error}</p>`);
+    }).always(function(){
+	$('.loading').addClass('d-none');
+    });
+});
+
+$("#btn-import").click(function(e) {
+    e.preventDefault();
+
+    let data = {'facturas': dataImport}
+    $('.loading').removeClass('d-none');
+
+    $.ajax({
+	type        : 'POST',
+	url         : '/api/factura-proveedor/importar-lista/',
+	dataType    : 'JSON',
+	contentType : 'application/json',
+	data        : JSON.stringify(data),
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
+    }).done(function(data) {
+	$('.success-message-import').removeClass('d-none');
+    }).fail(function(xhr, status, error) {
+	$('.error-message-import').removeClass('d-none');
+	$('.error-message-import').append(`<p class='m-0'>${error}</p>`);
+    }).always(function(){
+	$('#btn-import').addClass('d-none');
+	$('.table-before-import').addClass('d-none');
+	$('.loading').addClass('d-none');
+	$('.custom-file-input').val('');
+	$('.custom-file-label').empty();
+	$('.custom-file-label').text('Seleccionar archivo');
+    });
+});
+{% endblock %}

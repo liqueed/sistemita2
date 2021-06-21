@@ -10,6 +10,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
 from django.db.models import Count, F, Q, Sum
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -18,34 +19,18 @@ from django.urls import reverse_lazy
 from django.views.generic import DeleteView, DetailView, TemplateView
 from django_filters.views import FilterView
 
-# Django Rest Framework
-from rest_framework import mixins, permissions, viewsets
-
 # Utils
 from weasyprint import HTML
 
 # Accounting
 from sistemita.accounting.filters import PagoFilterSet
 from sistemita.accounting.models.pago import Pago, PagoFactura
-from sistemita.accounting.serializers.pagos import PagoSerializer
 
 # Core
 from sistemita.core.models.proveedor import FacturaProveedor
 from sistemita.core.utils.export import export_excel
 from sistemita.core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
 from sistemita.core.views.home import error_403
-
-
-class PagoViewSet(mixins.CreateModelMixin,
-                  mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.ListModelMixin,
-                  viewsets.GenericViewSet):
-    """Pago view set."""
-
-    queryset = Pago.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = PagoSerializer
 
 
 class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -56,6 +41,25 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     permission_required = 'accounting.list_pago'
     raise_exception = True
     template_name = 'accounting/pago_list.html'
+
+    def get_queryset(self):
+        """Devuelve los resultados de la búsqueda realizada por el usuario."""
+        queryset = Pago.objects.order_by('-creado')
+
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(
+                    Q(cliente__razon_social__icontains=search)
+                    | Q(cliente__correo__icontains=search)
+                    | Q(cliente__cuit__icontains=search)
+                )
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def get(self, request, *args, **kwargs):
         """Genera reporte en formato excel."""
@@ -78,24 +82,9 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         current_week = date.today().isocalendar()[1]
 
         context['last_created'] = queryset.filter(creado__week=current_week).count()
-        context['debt_in_peso'] = queryset.filter(pagado=False).aggregate(
-            Sum('total'), Count('id')
-        )
+        context['debt_in_peso'] = queryset.filter(pagado=False).aggregate(Sum('total'), Count('id'))
 
         return context
-
-    def get_queryset(self):
-        """Modifica el orden y devuelve los resultados de la búsqueda realizada por el usuario."""
-        queryset = Pago.objects.order_by('-fecha')
-
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(
-                Q(proveedor__razon_social__icontains=search) | Q(proveedor__correo__icontains=search) |
-                Q(proveedor__cuit__icontains=search)
-            )
-
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
@@ -167,9 +156,7 @@ class PagoDeleteView(PermissionRequiredMixin, DeleteView):
 
         pago_facturas = pago.pago_facturas.all()
         for c_factura in pago_facturas:
-            FacturaProveedor.objects.filter(pk=c_factura.factura.id).update(
-                cobrado=False
-            )
+            FacturaProveedor.objects.filter(pk=c_factura.factura.id).update(cobrado=False)
 
         success_url = self.get_success_url()
         pago.delete()
@@ -203,12 +190,15 @@ class PagoGeratePDFDetailView(PermissionRequiredMixin, DetailView):
         neto_a_pagar = pago.total - subtotal_retenciones[0].sub
 
         # Rendered
-        html_string = render_to_string('accounting/pago_pdf.html', {
-            'object': pago,
-            'subtotal_comprobantes': subtotal_comprobantes,
-            'subtotal_retenciones': subtotal_retenciones,
-            'neto_a_pagar': neto_a_pagar
-        })
+        html_string = render_to_string(
+            'accounting/pago_pdf.html',
+            {
+                'object': pago,
+                'subtotal_comprobantes': subtotal_comprobantes,
+                'subtotal_retenciones': subtotal_retenciones,
+                'neto_a_pagar': neto_a_pagar,
+            },
+        )
         html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
         result = html.write_pdf(presentational_hints=True)
 
@@ -247,10 +237,13 @@ class PagoFacturaRetencionGeratePDFDetailView(PermissionRequiredMixin, DetailVie
         retencion_type = request.GET.get('type', None)
 
         # Rendered
-        html_string = render_to_string('accounting/pago_retencion_pdf.html', {
-            'object': pago_factura,
-            'retencion_type': retencion_type,
-        })
+        html_string = render_to_string(
+            'accounting/pago_retencion_pdf.html',
+            {
+                'object': pago_factura,
+                'retencion_type': retencion_type,
+            },
+        )
         html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
         result = html.write_pdf(presentational_hints=True)
 

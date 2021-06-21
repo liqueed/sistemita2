@@ -1,5 +1,7 @@
 """Formularios de proveedor."""
 
+from re import match
+
 # Crispy
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
@@ -10,11 +12,13 @@ from django import forms
 
 # Models
 from sistemita.core.models.archivo import Archivo
+from sistemita.core.models.cliente import Factura
 from sistemita.core.models.entidad import Distrito, Localidad
 from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
 
 # Utils
 from sistemita.core.utils.strings import (
+    MESSAGE_CUIT_INVALID,
     MESSAGE_PERMISSION_ERROR,
     MESSAGE_TOTAL_ZERO,
 )
@@ -22,6 +26,16 @@ from sistemita.core.utils.strings import (
 
 class ProveedorForm(forms.ModelForm):
     """Formulario de proveedor."""
+
+    correo = forms.CharField(required=True)
+    telefono = forms.CharField(required=True)
+
+    def clean_cuit(self):
+        """Verifica el cuit."""
+        cuit = self.cleaned_data['cuit']
+        if not match(r'^[0-9]{11}$', str(cuit)):
+            raise forms.ValidationError(MESSAGE_CUIT_INVALID)
+        return cuit
 
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
@@ -33,28 +47,20 @@ class ProveedorForm(forms.ModelForm):
             if 'provincia' in kwargs['data'].keys():
                 provincia = kwargs['data'].get('provincia', None)
                 if provincia:
-                    self.fields['distrito'].queryset = Distrito.objects.filter(
-                        provincia=provincia
-                    )
+                    self.fields['distrito'].queryset = Distrito.objects.filter(provincia=provincia)
 
             if 'distrito' in kwargs['data'].keys():
                 distrito = kwargs['data'].get('distrito', None)
                 if distrito:
-                    self.fields['localidad'].queryset = Localidad.objects.filter(
-                        distrito=distrito
-                    )
+                    self.fields['localidad'].queryset = Localidad.objects.filter(distrito=distrito)
         else:
             if self.instance and self.instance.provincia:
-                self.fields['distrito'].queryset = Distrito.objects.filter(
-                    provincia=self.instance.provincia
-                )
+                self.fields['distrito'].queryset = Distrito.objects.filter(provincia=self.instance.provincia)
             else:
                 self.fields['distrito'].queryset = Distrito.objects.none()
 
             if self.instance and self.instance.distrito:
-                self.fields['localidad'].queryset = Localidad.objects.filter(
-                    distrito=self.instance.distrito
-                )
+                self.fields['localidad'].queryset = Localidad.objects.filter(distrito=self.instance.distrito)
             else:
                 self.fields['localidad'].queryset = Localidad.objects.none()
 
@@ -62,40 +68,28 @@ class ProveedorForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Datos generales',
-                Div(
-                    Div('razon_social', css_class='col-8'),
-                    Div('cuit', css_class='col-4'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('correo', css_class='col-6'),
-                    Div('telefono', css_class='col-6'),
-                    css_class='row'
-                ),
+                Div(Div('razon_social', css_class='col-8'), Div('cuit', css_class='col-4'), css_class='row'),
+                Div(Div('correo', css_class='col-6'), Div('telefono', css_class='col-6'), css_class='row'),
                 HTML("""<legend>Dirección</legend>"""),
                 Div(
                     Div('calle', css_class='col-6'),
                     Div('numero', css_class='col-2'),
                     Div('piso', css_class='col-2'),
                     Div('dpto', css_class='col-2'),
-                    css_class='row'
+                    css_class='row',
                 ),
                 Div(
                     Div('provincia', css_class='col-4'),
                     Div('distrito', css_class='col-4'),
                     Div('localidad', css_class='col-4'),
-                    css_class='row'
+                    css_class='row',
                 ),
                 HTML("""<legend>Pagos</legend>"""),
-                Div(
-                    Div('cbu', css_class='col-6'),
-                    css_class='row'
-                ),
+                Div(Div('cbu', css_class='col-6'), css_class='row'),
             ),
             FormActions(
-                Submit('submit', 'Guardar', css_class='float-right'),
-                Reset('reset', 'Limpiar', css_class='float-right')
-            )
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
         )
 
     class Meta:
@@ -103,15 +97,26 @@ class ProveedorForm(forms.ModelForm):
 
         model = Proveedor
         fields = (
-            'razon_social', 'cuit', 'correo', 'telefono',
-            'calle', 'numero', 'piso', 'dpto',
-            'provincia', 'distrito', 'localidad',
-            'cbu'
+            'razon_social',
+            'cuit',
+            'correo',
+            'telefono',
+            'calle',
+            'numero',
+            'piso',
+            'dpto',
+            'provincia',
+            'distrito',
+            'localidad',
+            'cbu',
         )
 
 
 class FacturaProveedorForm(forms.ModelForm):
     """Formulario de factura de proveedor."""
+
+    factura = forms.ModelChoiceField(queryset=Factura.objects.all())
+    neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
 
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""
@@ -138,70 +143,44 @@ class FacturaProveedorForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Datos generales',
-                Div(
-                    Div('fecha', css_class='col-4'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('numero', css_class='col-4'),
-                    Div('tipo', css_class='col-2'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('proveedor', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('factura', css_class='col-6'),
-                    css_class='row'
-                ),
+                Div(Div('fecha', css_class='col-4'), css_class='row'),
+                Div(Div('numero', css_class='col-4'), Div('tipo', css_class='col-2'), css_class='row'),
+                Div(Div('proveedor', css_class='col-6'), css_class='row'),
+                Div(Div('factura', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_proveedor', css_class='row'),
-                Div(
-                    Div('detalle', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('moneda', css_class='col-2'),
-                    Div('neto', css_class='col-4'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('iva', css_class='col-2'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('total', css_class='col-4'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('cobrado', css_class='col-2'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('archivos', template='components/input_files.html'),
-                    css_class='row'
-                ),
+                Div(Div('detalle', css_class='col-6'), css_class='row'),
+                Div(Div('moneda', css_class='col-2'), Div('neto', css_class='col-4'), css_class='row'),
+                Div(Div('iva', css_class='col-2'), css_class='row'),
+                Div(Div('total', css_class='col-4'), css_class='row'),
+                Div(Div('cobrado', css_class='col-2'), css_class='row'),
+                Div(Div('archivos', template='components/input_files.html'), css_class='row'),
                 Div(css_id='adjuntos', css_class='row'),
             ),
             FormActions(
-                Submit('submit', 'Guardar', css_class='float-right'),
-                Reset('reset', 'Limpiar', css_class='float-right')
-            )
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
         )
 
-    archivos = forms.FileField(
-        widget=forms.ClearableFileInput(attrs={'multiple': True}),
-        required=False
-    )
+    archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
     class Meta:
         """Configuraciones de formulario."""
 
         model = FacturaProveedor
         fields = (
-            'fecha', 'numero', 'tipo', 'proveedor', 'factura', 'detalle',
-            'moneda', 'neto', 'iva', 'total', 'cobrado', 'archivos'
+            'fecha',
+            'numero',
+            'tipo',
+            'proveedor',
+            'factura',
+            'detalle',
+            'moneda',
+            'neto',
+            'iva',
+            'total',
+            'cobrado',
+            'archivos',
         )
 
     def clean_numero(self):

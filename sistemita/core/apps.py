@@ -1,4 +1,4 @@
-"""Módulo de configuraciones."""
+"""Configuración de la aplicación core."""
 
 # Django
 from django.apps import AppConfig

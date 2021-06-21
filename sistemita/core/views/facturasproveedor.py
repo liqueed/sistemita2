@@ -7,23 +7,21 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
 from django.db.models import Count, Q, Sum
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DeleteView, DetailView, ListView
+from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
-# Django REST Framework
-from rest_framework import mixins, permissions, viewsets
-
 # Sistemita
+from sistemita.core.constants import TIPOS_FACTURA_IMPORT
 from sistemita.core.filters import FacturaProveedorFilterSet
 from sistemita.core.forms.proveedores import FacturaProveedorForm
 from sistemita.core.models.cliente import Factura
 from sistemita.core.models.proveedor import FacturaProveedor
-from sistemita.core.serializers import FacturaProveedorSerializer
 from sistemita.core.utils.export import export_excel
 from sistemita.core.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
@@ -32,15 +30,6 @@ from sistemita.core.utils.strings import (
     MESSAGE_403,
 )
 from sistemita.core.views.home import error_403
-
-
-class FacturaProveedorViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    """Factura de proveedores view set."""
-
-    filter_fields = ('proveedor', 'cobrado')
-    queryset = FacturaProveedor.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = FacturaProveedorSerializer
 
 
 class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -61,6 +50,25 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
 
         return super().get(request, *args, **kwargs)
 
+    def get_queryset(self):
+        """
+        Sobreescribe queryset.
+        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        """
+        queryset = FacturaProveedor.objects.order_by('-creado')
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(
+                    Q(numero=search) | Q(cliente__razon_social__icontains=search) | Q(cliente__cuit__icontains=search)
+                )
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
+
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
@@ -72,23 +80,6 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
-
-    def get_queryset(self):
-        """Sobreescribe queryset.
-
-        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
-        """
-        queryset = FacturaProveedor.objects.order_by('-fecha')
-
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(
-                Q(proveedor__razon_social__icontains=search)
-                | Q(proveedor__correo__icontains=search)
-                | Q(proveedor__cuit__icontains=search)
-            )
-
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
@@ -190,7 +181,7 @@ class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
-        return super().handle_no_permission()
+        return redirect('login')
 
 
 class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
@@ -206,7 +197,7 @@ class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
-        return super().handle_no_permission()
+        return redirect('login')
 
     def get(self, request, *args, **kwargs):
         """Genera reporte en formato excel."""
@@ -216,12 +207,33 @@ class FacturaProveedorReportListView(PermissionRequiredMixin, ListView):
 
         return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        """Obtiene datos para incluir en los reportes."""
-        context = super().get_context_data(**kwargs)
-        queryset = FacturaProveedor.objects.all()
-        current_week = date.today().isocalendar()[1]
 
-        context['last_created'] = queryset.filter(creado__week=current_week).count()
+class FacturaProveedorImportTemplateView(PermissionRequiredMixin, TemplateView):
+    """Template para importar facturas."""
 
-        return context
+    model = FacturaProveedor
+    permission_required = 'core.add_facturaproveedor'
+    raise_exception = True
+    template_name = 'core/facturaproveedor_import.html'
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Return a response, using the `response_class` for this view, with a
+        template rendered with the given context.
+        Pass response_kwargs to the constructor of the response class.
+        """
+        context['tipo_facturas'] = list(f[0] for f in TIPOS_FACTURA_IMPORT)
+        response_kwargs.setdefault('content_type', self.content_type)
+        return self.response_class(
+            request=self.request,
+            template=self.get_template_names(),
+            context=context,
+            using=self.template_engine,
+            **response_kwargs
+        )
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')

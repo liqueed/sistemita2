@@ -7,19 +7,16 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Django REST Framework
-from rest_framework import mixins, permissions, viewsets
-
 # Sistemita
 from sistemita.core.forms.proveedores import ProveedorForm
 from sistemita.core.models.proveedor import Proveedor
-from sistemita.core.serializers import ProveedorSerializer
 from sistemita.core.utils.strings import (
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
@@ -29,20 +26,29 @@ from sistemita.core.utils.strings import (
 from sistemita.core.views.home import error_403
 
 
-class ProveedorViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
-    """Proveedor view set."""
-
-    queryset = Proveedor.objects.all()
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = ProveedorSerializer
-
-
 class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que devuelve un listado de proveedores."""
 
     paginate_by = 10
     permission_required = 'core.list_proveedor'
     raise_exception = True
+
+    def get_queryset(self):
+        """
+        Sobreescribe queryset.
+        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        """
+        queryset = Proveedor.objects.order_by('razon_social')
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(Q(razon_social__search=search) | Q(cuit__icontains=search))
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
@@ -53,20 +59,6 @@ class ProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
-
-    def get_queryset(self):
-        """Sobreescribe queryset.
-
-        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
-        """
-        queryset = Proveedor.objects.order_by('id')
-
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(
-                Q(razon_social__search=search) | Q(correo__icontains=search) | Q(cuit__icontains=search)
-            )
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

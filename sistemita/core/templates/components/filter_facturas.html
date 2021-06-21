@@ -1,0 +1,61 @@
+<form class="form-inline form-factura">
+  <div class="form-group mr-1 mb-2">
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	Pagado/Cobrado
+      </button>
+      <div id="id_dropdown_cobrado" name="cobrado" class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton" style="">
+	<a class="dropdown-item" href="#">Si</a>
+	<a class="dropdown-item" href="#">No</a>
+	<a class="dropdown-item" href="#">Todos</a>
+      </div>
+      <input type="hidden" name="cobrado" id="id_cobrado">
+    </div>
+    <input autocomplete="off" value="{{ request.GET.desde }}"
+	   type="text" class="form-control form-control-sm" name="desde" id="id_desde"
+	   placeholder="Desde"
+    />
+    <input autocomplete="off" value="{{ request.GET.hasta }}"
+	   type="text" class="form-control form-control-sm" name="hasta" id="id_hasta"
+	   placeholder="Hasta"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-primary btn-sm" type="submit">
+	<i class="fas fa-filter"></i>
+      </button>
+    </div>
+
+    <div class="input-group-append">
+      <button class="clean btn btn-primary btn-sm" type="submit">
+	<i class="fas fa-times-circle"></i>
+      </button>
+    </div>
+
+  </div>
+</form>
+{% block extra_js %}
+<script>
+function set_value(value){
+    if (value === 'Si'){
+	$('#id_cobrado').val('1');
+    }
+    if (value === 'No'){
+	$('#id_cobrado').val('0');
+    }
+}
+
+$('#id_dropdown_cobrado a').click(function(e){
+    let selected = $(this)[0].outerText;
+    set_value(selected);
+    $('.form-factura').submit();
+});
+
+$('#id_desde').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+$('#id_hasta').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+
+$('.clean').click(function(e){
+    $('#id_desde').val('');
+    $('#id_hasta').val('');
+});
+</script>
+{% endblock %}

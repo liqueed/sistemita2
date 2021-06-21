@@ -53,7 +53,7 @@ class PagoFacturaPago(models.Model):
     de pagos.
     """
 
-    metodo = models.ForeignKey(MedioPago, blank=False, on_delete=models.CASCADE)
+    metodo = models.ForeignKey(MedioPago, blank=False, null=True, on_delete=models.SET_NULL)
     pago_factura = models.ForeignKey(PagoFactura, blank=False, on_delete=models.CASCADE,
                                      related_name='pago_factura_pagos')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)

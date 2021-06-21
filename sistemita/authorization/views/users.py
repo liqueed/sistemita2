@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -42,6 +43,23 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     raise_exception = True
     template_name = 'authorization/user_list.html'
 
+    def get_queryset(self):
+        """Devuelve los resultados de la búsqueda realizada por el usuario."""
+        queryset = User.objects.order_by('username')
+
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(
+                    Q(username__search=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search)
+                )
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
+
     def get_context_data(self, **kwargs):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
@@ -51,21 +69,6 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         context['last_created'] = queryset.filter(date_joined__week=current_week).count()
 
         return context
-
-    def get_queryset(self):
-        """Sobreescribe queryset.
-
-        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
-        """
-        queryset = User.objects.order_by('id')
-
-        search = self.request.GET.get('search', None)
-        if search:
-            queryset = queryset.filter(
-                Q(username__search=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search)
-            )
-
-        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

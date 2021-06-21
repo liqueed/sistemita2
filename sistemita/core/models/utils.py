@@ -4,7 +4,7 @@
 from django.db import models
 
 # Constantes
-from sistemita.core.constants import MONEDAS
+from sistemita.core.constants import MONEDAS, TIPOS_FACTURA
 
 
 class TimeStampedModel(models.Model):
@@ -13,8 +13,8 @@ class TimeStampedModel(models.Model):
     Agrega al modelo los atributos para obtener cuando fue creado y modificado el objecto.
     """
 
-    creado = models.DateTimeField('Creado', editable=False, blank=True, auto_now_add=True)
-    modificado = models.DateTimeField('Modificado', editable=False, blank=True, auto_now=True)
+    creado = models.DateTimeField('creado', editable=False, blank=True, auto_now_add=True)
+    modificado = models.DateTimeField('modificado', editable=False, blank=True, auto_now=True)
 
     class Meta:
         """Configuraciones del modelo."""
@@ -26,28 +26,13 @@ class TimeStampedModel(models.Model):
 class FacturaAbstract(TimeStampedModel, models.Model):
     """Clase abstracta de facturas."""
 
-    TIPOS_FACTURA = (
-        ('A', 'A'),
-        ('ARETEN', 'A SUJETA A RETENCIÓN'),
-        ('B', 'B'),
-        ('C', 'C'),
-        ('FCPYME', 'FC PYME'),
-        ('M', 'M'),
-        ('NCA', 'NC A'),
-        ('NCARETEN', 'NC A SUJETA A RETENCION'),
-        ('NCB', 'NC B'),
-        ('NCC', 'NC C'),
-        ('NCFCPYME', 'NC FCPYME'),
-        ('NCM', 'NC M'),
-    )
-
-    numero = models.CharField('Número', max_length=20, blank=False, unique=True)
+    numero = models.CharField('número', max_length=20, blank=False)
     fecha = models.DateField(blank=False)
     detalle = models.TextField(blank=True)
     tipo = models.CharField(blank=False, max_length=8, choices=TIPOS_FACTURA, default='A')
 
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
-    neto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    neto = models.DecimalField(blank=True, decimal_places=2, max_digits=12, default=0.0)
     iva = models.PositiveSmallIntegerField(blank=False, default=21)
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
@@ -61,7 +46,7 @@ class FacturaAbstract(TimeStampedModel, models.Model):
     def get_tipo(self):
         """Retorna tipo de factura."""
         tipo = self.tipo
-        tipos = dict(self.TIPOS_FACTURA)
+        tipos = dict(TIPOS_FACTURA)
         return tipos.get(tipo)
 
     class Meta:

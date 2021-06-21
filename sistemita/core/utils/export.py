@@ -127,27 +127,41 @@ class FacturaProveedorExport(FacturaExport):
 
         for item in self.queryset:
             cobrado = 'Si' if item.cobrado else 'No'
-            cobrado_cliente = 'Si' if item.factura.cobrado else 'No'
             data.append(
                 [
                     item.fecha.strftime('%d/%m/%Y'),
                     item.numero,
                     item.get_tipo(),
                     item.proveedor.razon_social,
-                    item.moneda_monto,
+                    item.neto,
                     item.iva,
-                    item.moneda_monto,
+                    item.total,
                     cobrado,
-                    item.factura.fecha.strftime('%d/%m/%Y'),
-                    item.factura.cliente.razon_social,
-                    item.factura.numero,
-                    item.factura.get_tipo(),
-                    item.factura.moneda_monto,
-                    item.factura.iva,
-                    item.factura.total,
-                    cobrado_cliente,
                 ]
             )
+            if item.factura:
+                cobrado_cliente = 'Si' if item.factura.cobrado else 'No'
+                data.append(
+                    [
+                        item.fecha.strftime('%d/%m/%Y'),
+                        item.numero,
+                        item.get_tipo(),
+                        item.proveedor.razon_social,
+                        item.neto,
+                        item.iva,
+                        item.total,
+                        cobrado,
+                        item.factura.fecha.strftime('%d/%m/%Y'),
+                        item.factura.cliente.razon_social,
+                        item.factura.numero,
+                        item.factura.get_tipo(),
+                        item.factura.moneda_monto,
+                        item.factura.iva,
+                        item.factura.total,
+                        cobrado_cliente,
+                    ]
+                )
+
         return data
 
 
@@ -321,11 +335,9 @@ class ReporteVentaExport:
                     row.append(factura_compra)
                     row.append(item.moneda_monto)
                     row.append(factura_proveedor.moneda_monto)
+                    data.append(row)
                 else:
                     data.append(['', factura_compra, '', factura_proveedor.moneda_monto])
-
-            data.append(row)
-
         return data
 
 

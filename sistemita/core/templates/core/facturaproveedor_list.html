@@ -7,11 +7,18 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <h1 class="h3 mb-0 text-gray-800">Facturación a Proveedores</h1>
-      {% if perms.core.view_reports_factura %}
-        <a href="{% url 'core:facturaproveedor-list' %}?formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-          <i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar
-        </a>
-      {% endif %}
+      <div>
+	{% if perms.core.view_reports_factura %}
+	  <a href="{% url 'core:facturaproveedor-list' %}?formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+	    <i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar
+	  </a>
+	{% endif %}
+	{% if perms.core.add_facturaproveedor %}
+	  <a href="{% url 'core:facturaproveedor-import' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+	    <i class="fas fa-file-import fa-sm text-white-50"></i> Importar
+	  </a>
+	{% endif %}
+      </div>
     </div>
     {% include 'components/messages.html' %}
 
@@ -19,69 +26,69 @@
     {% if perms.core.view_reports_facturaproveedor %}
       <div class="row">
 
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body" role="button">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nuevas (semanal)</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_created }}</div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+	<div class="col-xl-3 col-md-6 mb-4">
+	  <div class="card border-left-success shadow h-100 py-2">
+	    <div class="card-body" role="button">
+	      <div class="row no-gutters align-items-center">
+		<div class="col mr-2">
+		  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nuevas (semanal)</div>
+		  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_created }}</div>
+		</div>
+		<div class="col-auto">
+		  <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pendientes a pagar</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ debt_in_peso.id__count|add:debt_in_dollar.id__count }}</div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-comments fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+	<div class="col-xl-3 col-md-6 mb-4">
+	  <div class="card border-left-warning shadow h-100 py-2">
+	    <div class="card-body">
+	      <div class="row no-gutters align-items-center">
+		<div class="col mr-2">
+		  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pendientes a pagar</div>
+		  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ debt_in_peso.id__count|add:debt_in_dollar.id__count }}</div>
+		</div>
+		<div class="col-auto">
+		  <i class="fas fa-comments fa-2x text-gray-300"></i>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total adeudado $</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">$ {{ debt_in_peso.total__sum|default_if_none:"0" }}</div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+	<div class="col-xl-3 col-md-6 mb-4">
+	  <div class="card border-left-danger shadow h-100 py-2">
+	    <div class="card-body">
+	      <div class="row no-gutters align-items-center">
+		<div class="col mr-2">
+		  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total adeudado $</div>
+		  <div class="h5 mb-0 font-weight-bold text-gray-800">$ {{ debt_in_peso.total__sum|default_if_none:"0" }}</div>
+		</div>
+		<div class="col-auto">
+		  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-danger shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total adeudado U$D</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">U$D {{ debt_in_dollar.total__sum|default_if_none:"0" }}</div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+	<div class="col-xl-3 col-md-6 mb-4">
+	  <div class="card border-left-danger shadow h-100 py-2">
+	    <div class="card-body">
+	      <div class="row no-gutters align-items-center">
+		<div class="col mr-2">
+		  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total adeudado U$D</div>
+		  <div class="h5 mb-0 font-weight-bold text-gray-800">U$D {{ debt_in_dollar.total__sum|default_if_none:"0" }}</div>
+		</div>
+		<div class="col-auto">
+		  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
       </div>
     {% endif %}
@@ -90,73 +97,83 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Listado de facturas a Proveedores</h6>
+	<h6 class="m-0 font-weight-bold text-primary">Listado de facturas a Proveedores</h6>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
-          <div class="row float-right">
-            {% include 'components/filter_form.html' %}
-
-            {% if perms.core.add_facturaproveedor %}
-              <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
-                <a class="btn btn-primary" role="button" href="{% url 'core:facturaproveedor-create' %}">Agregar</a>
-              </div>
-            {% endif %}
-
-          </div>
-          <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-            <thead>
-              <tr>
-                <th>Número</th>
-                <th>Fecha</th>
-                <th>Proveedor</th>
-                <th>CUIT</th>
-                <th>Monto</th>
-                <th>Pagado</th>
-                {% if perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor %}
-                  <th></th>
-                {% endif %}
-              </tr>
-            </thead>
-            <tbody>
-              {% for object in object_list %}
-                <tr>
-                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.numero|default:"-" }}</td>
-                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.fecha }}</td>
-                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.proveedor.razon_social }}</td>
-                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>{{ object.proveedor.cuit }}</td>
-                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}><div class="float-right">{{ object.moneda_monto }}</div></td>
-                  <td {% if perms.core.view_facturaproveedor %}onclick="location.href='{% url 'core:facturaproveedor-detail' object.pk %}';"{% endif %}>
-                    <div class="text-center">
-                      {% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
-                    </div>
-                  </td>
-                  {% if perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor %}
-                    <td class="text-center">
-                      {% if perms.core.change_facturaproveedor %}
-                        <a href="{% url 'core:facturaproveedor-update' object.pk %}">
-                          <i class="fas fa-wrench"></i>
-                        </a>
-                      {% endif %}
-                      {% if perms.core.delete_facturaproveedor %}
-                        <a href="{% url 'core:facturaproveedor-delete' object.pk %}">
-                          <i class="fas fa-trash"></i>
-                        </a>
-                      {% endif %}
-                    </td>
-                  {% endif %}
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan=7>Sin resultados</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-          {% include 'components/pagination.html' %}
-        </div>
+	<div class="table-responsive">
+	  <div class="row float-right">
+	    {% include 'components/filter_facturas.html' %}
+	    {% include 'components/search_form.html' %}
+	    {% if perms.core.add_facturaproveedor %}
+	      <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+		<a class="btn btn-primary" role="button" href="{% url 'core:facturaproveedor-create' %}">Agregar</a>
+	      </div>
+	    {% endif %}
+	  </div>
+	  <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+	    <thead>
+	      <tr>
+		<th data-order="numero" class="sortable">Número</th>
+		<th data-order="fecha" class="sortable">Fecha</th>
+		<th data-order="proveedor" class="sortable">Proveedor</th>
+		<th data-order="proveedor__cuit" class="sortable">CUIT</th>
+		<th data-order="total" class="sortable">Monto</th>
+		<th data-order="cobrado" class="sortable">Pagado</th>
+		<th data-order="creado" class="sortable">Creado</th>
+		{% if perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor %}
+		  <th></th>
+		{% endif %}
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% for object in object_list %}
+		<tr>
+		  <td>
+		    <a {% if perms.core.view_facturaproveedor %}href="{% url 'core:facturaproveedor-detail' object.pk %}"{% endif %}>
+		      {{ object.numero|default:"-" }}
+		    </a>
+		  </td>
+		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
+		  <td>{{ object.proveedor.razon_social }}</td>
+		  <td>{{ object.proveedor.cuit }}</td>
+		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
+		  <td>
+		    <div class="text-center">
+		      {% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
+		    </div>
+		  </td>
+		  <td>{{ object.creado|date:"d-m-Y" }}</td>
+		  {% if perms.core.view_facturaproveedor or perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor %}
+		    <td class="text-center">
+		      {% if perms.core.view_facturaproveedor %}
+			<a class="mr-1 text-decoration-none" href="{% url 'core:facturaproveedor-detail' object.pk %}">
+			  <i class="far fa-eye"></i>
+			</a>
+		      {% endif %}
+		      {% if perms.core.change_facturaproveedor %}
+			<a class="mr-1 text-decoration-none" href="{% url 'core:facturaproveedor-update' object.pk %}">
+			  <i class="fas fa-wrench"></i>
+			</a>
+		      {% endif %}
+		      {% if perms.core.delete_facturaproveedor %}
+			<a class="text-decoration-none" href="{% url 'core:facturaproveedor-delete' object.pk %}">
+			  <i class="fas fa-trash"></i>
+			</a>
+		      {% endif %}
+		    </td>
+		  {% endif %}
+		</tr>
+		{% empty %}
+		<tr>
+		  <td colspan="8">Sin resultados</td>
+		</tr>
+	      {% endfor %}
+	    </tbody>
+	  </table>
+	  {% include 'components/pagination.html' %}
+	</div>
       </div>
     </div>
   </div>
-
+<script src="{% static 'js/tableSort.js' %}"></script>
 {% endblock %}

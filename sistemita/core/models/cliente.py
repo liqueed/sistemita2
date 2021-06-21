@@ -15,14 +15,11 @@ from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
 class Cliente(TimeStampedModel, models.Model):
     """Modelo cliente."""
 
-    FORMAS_ENVIO = (
-        ('C', 'Correo'),
-        ('U', 'Link')
-    )
-    razon_social = models.CharField('Razón Social', blank=False, null=False, max_length=128)
-    cuit = models.CharField('CUIT', blank=False, null=False, max_length=11, unique=True)
-    correo = models.EmailField(blank=False)
-    telefono = models.CharField('Teléfono', max_length=14)
+    FORMAS_ENVIO = (('C', 'Correo'), ('U', 'Link'))
+    razon_social = models.CharField('Razón Social', blank=False, max_length=128)
+    cuit = models.CharField('CUIT', blank=False, max_length=11, unique=True)
+    correo = models.EmailField(blank=True, null=True, unique=True)
+    telefono = models.CharField('Teléfono', max_length=14, blank=True)
 
     calle = models.CharField('Calle', max_length=35, blank=True)
     numero = models.CharField('Número', max_length=12, blank=True)
@@ -34,11 +31,11 @@ class Cliente(TimeStampedModel, models.Model):
     localidad = models.ForeignKey(Localidad, null=True, blank=True, verbose_name='Localidad', on_delete=models.SET_NULL)
 
     tipo_envio_factura = models.CharField(
-        blank=False,
+        blank=True,
         verbose_name='Forma de envío',
         choices=FORMAS_ENVIO,
         max_length=1,
-        default='C'
+        default='C',
     )
     link_envio_factura = models.URLField(blank=True, verbose_name='URL de envío')
     correo_envio_factura = models.EmailField(blank=True, verbose_name='Correo de envío')
