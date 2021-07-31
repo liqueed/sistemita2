@@ -7,6 +7,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 # API
+from sistemita.api.archivos.views import ArchivoViewSet
 from sistemita.api.clientes.views import ClienteViewSet, FacturaViewSet
 from sistemita.api.cobranzas.views import CobranzaViewSet
 from sistemita.api.entidades.views import DistritoViewSet, LocalidadViewSet
@@ -19,7 +20,8 @@ from sistemita.api.proveedores.views import (
 
 router = routers.DefaultRouter()
 
-# Cor
+# Core
+router.register(r'archivo', ArchivoViewSet)
 router.register(r'cliente', ClienteViewSet)
 router.register(r'distrito', DistritoViewSet)
 router.register(r'factura', FacturaViewSet)
