@@ -180,17 +180,17 @@ class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
         Si elimino una factura y está asociada a una cobranza que la tiene por única
         factura, elimino la cobranza.
         """
-        factura = self.get_object()
+        self.object = self.get_object()
 
-        cobranza_factura = CobranzaFactura.objects.filter(factura=factura).first()
+        cobranza_factura = CobranzaFactura.objects.filter(factura=self.object).first()
         if cobranza_factura:
             count = cobranza_factura.cobranza.cobranza_facturas.count()
             if count == 1:
                 Cobranza.objects.get(pk=cobranza_factura.cobranza.pk).delete()
 
         # Elimino los archivos asociados
-        factura.archivos.all().delete()
-        factura.delete()
+        self.object.archivos.all().delete()
+        self.object.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(self.success_url)
 

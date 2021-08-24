@@ -171,9 +171,9 @@ class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         """Método que elimina los archivos relacionados."""
-        factura = self.get_object()
-        factura.archivos.all().delete()
-        factura.delete()
+        self.object = self.get_object()
+        self.object.archivos.all().delete()
+        self.object.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(self.success_url)
 

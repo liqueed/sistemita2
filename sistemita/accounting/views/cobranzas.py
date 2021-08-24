@@ -127,15 +127,15 @@ class CobranzaDeleteView(PermissionRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         """Sobreescribe método para modificar facturas asociadas."""
-        cobranza = self.get_object()
+        self.object = self.get_object()
 
         # Las facturas asociadas pasan estar no cobradas
-        cobranza_facturas = cobranza.cobranza_facturas.all()
+        cobranza_facturas = self.object.cobranza_facturas.all()
         for c_factura in cobranza_facturas:
             Factura.objects.filter(pk=c_factura.factura.id).update(cobrado=False)
 
         success_url = self.get_success_url()
-        cobranza.delete()
+        self.object.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(success_url)
 
