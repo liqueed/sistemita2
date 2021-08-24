@@ -152,14 +152,13 @@ class PagoDeleteView(PermissionRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         """Modifica el estado de las facturas que son desasociadas del pago al eliminarse."""
-        pago = self.get_object()
-
-        pago_facturas = pago.pago_facturas.all()
+        self.object = self.get_object()
+        pago_facturas = self.object.pago_facturas.all()
         for c_factura in pago_facturas:
             FacturaProveedor.objects.filter(pk=c_factura.factura.id).update(cobrado=False)
 
         success_url = self.get_success_url()
-        pago.delete()
+        self.object.delete()
         messages.success(request, self.success_message)
         return HttpResponseRedirect(success_url)
 
