@@ -108,9 +108,9 @@ class PagoSerializer(serializers.ModelSerializer):
                 pagos = factura['pago_factura_pagos']
                 for row in pagos:
                     PagoFacturaPago.objects.create(pago_factura=pago_factura, metodo=row['metodo'], monto=row['monto'])
-            return pago
         except Exception as error:
             raise serializers.ValidationError(error)
+        return pago
 
     def update(self, instance, validated_data):
         """Actualiza la instancia."""
