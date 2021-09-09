@@ -48,8 +48,8 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
-class PagoSerializer(serializers.ModelSerializer):
-    """Pago Serializer."""
+class PagoModelSerializer(serializers.ModelSerializer):
+    """Pago Model Serializer."""
 
     fecha = serializers.DateField(required=True)
     proveedor = ProveedorSerializer()
@@ -71,21 +71,44 @@ class PagoSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id', 'proveedor')
 
-    def validate_proveedor(self, data):
+
+class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
+    """Pago Model Serializer."""
+
+    fecha = serializers.DateField(required=True)
+    proveedor = serializers.CharField(max_length=11)
+    total = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
+    pagado = serializers.BooleanField(default=False)
+    pago_facturas = PagoFacturaSerializer(many=True)
+
+    class Meta:
+        """Clase meta."""
+
+        model = Pago
+        fields = (
+            'id',
+            'fecha',
+            'proveedor',
+            'total',
+            'pagado',
+            'pago_facturas',
+        )
+        read_only_fields = ('id', 'proveedor')
+
+    def validate_proveedor(self, attr):
         """Valida datos de proveedor."""
         try:
-            proveedor = Proveedor.objects.get(cuit=data['cuit'])
-            self.context['proveedor'] = proveedor
+            proveedor = Proveedor.objects.get(cuit=attr)
         except Proveedor.DoesNotExist as not_exist:
             raise serializers.ValidationError('Proveedor does not exist.') from not_exist
-        return data
+        return proveedor
 
     def create(self, validated_data):
         """Genera un pago con factura/s y su/s correspondiente/s pago/s."""
         try:
             # Factura
             fecha = validated_data['fecha']
-            proveedor = self.context['proveedor']
+            proveedor = validated_data['proveedor']
             total = validated_data['total']
             pagado = validated_data['pagado']
             pago = Pago.objects.create(fecha=fecha, proveedor=proveedor, total=total, pagado=pagado)
