@@ -1,0 +1,24 @@
+- model: core.cliente
+  pk: 1
+  fields:
+    razon_social: Prisma
+    cuit: 23322343451
+    correo: info@prisma.com
+    telefono: 554-4454
+    creado: 2021-08-20
+    modificado: 2021-08-20
+- model: core.proveedor
+  pk: 1
+  fields:
+    razon_social: Alan
+    cuit: 23322343452
+    correo: hola@alan.com
+    telefono: 554-4453
+    creado: 2021-08-20
+    modificado: 2021-08-20
+- model: core.mediopago
+  pk: 1
+  fields:
+    nombre: transferencia
+    creado: 2021-08-20
+    modificado: 2021-08-20
