@@ -10,9 +10,9 @@
     <div class="d-sm-flex align-items-center justify-content-between">
       <h1 class="h3 text-gray-800">Pagos a Proveedores</h1>
       {% if perms.accounting.list_pago %}
-        <a href="{% url 'accounting:pago-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
-          <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
-        </a>
+	<a href="{% url 'accounting:pago-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	  <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
       {% endif %}
     </div>
 
@@ -20,200 +20,200 @@
       {% if request.GET.create %}El pago ha sido creado exitosamente.{% endif %}
       {% if request.GET.update %}El pago ha sido modificado exitosamente.{% endif %}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
+	<span aria-hidden="true">×</span>
       </button>
     </div>
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
-          Editar pago a Proveedor Nro. {{ pk }}
-        </h6>
+	<h6 class="m-0 font-weight-bold text-primary">
+	  Editar pago a Proveedor Nro. {{ pk }}
+	</h6>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
+	<div class="table-responsive">
 
-          <form id="pago-form">
-            <fieldset>
-              <legend>Datos</legend>
-              <!-- Pago -->
-              <input id="pago" name="pago" type="hidden" value="{{ pk }}">
-              <!-- End Pago -->
+	  <form id="pago-form">
+	    <fieldset>
+	      <legend>Datos</legend>
+	      <!-- Pago -->
+	      <input id="pago" name="pago" type="hidden" value="{{ pk }}">
+	      <!-- End Pago -->
 
-              <!-- Fecha -->
-              <div class="row">
-                <div class="col-4">
-                  <div id="div_id_fecha" class="form-group">
-                    <label for="id_fecha" class=" requiredField">
-                      Fecha<span class="asteriskField">*</span>
-                    </label>
-                    <div>
-                      <input type="text" name="fecha" class="dateinput form-control" required="" id="id_fecha" autocomplete="off">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- End Fecha -->
+	      <!-- Fecha -->
+	      <div class="row">
+		<div class="col-4">
+		  <div id="div_id_fecha" class="form-group">
+		    <label for="id_fecha" class=" requiredField">
+		      Fecha<span class="asteriskField">*</span>
+		    </label>
+		    <div>
+		      <input type="text" name="fecha" class="dateinput form-control" required="" id="id_fecha" autocomplete="off">
+		    </div>
+		  </div>
+		</div>
+	      </div>
+	      <!-- End Fecha -->
 
-              <!-- Proveedor -->
-              <div class="row">
-                <div class="col-5">
-                  <div class="form-group">
-                    <label class="requiredField">
-                      Proveedor<span class="asteriskField">*</span>
-                    </label>
-                    <div class="">
-                      <select class="select form-control" id="proveedor" name="proveedor" disabled required>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row" id="info_proveedor">
-              </div>
-              <!-- End Proveedor -->
+	      <!-- Proveedor -->
+	      <div class="row">
+		<div class="col-5">
+		  <div class="form-group">
+		    <label class="requiredField">
+		      Proveedor<span class="asteriskField">*</span>
+		    </label>
+		    <div class="">
+		      <select class="select form-control" id="proveedor" name="proveedor" disabled required>
+		      </select>
+		    </div>
+		  </div>
+		</div>
+	      </div>
+	      <div class="row" id="info_proveedor">
+	      </div>
+	      <!-- End Proveedor -->
 
-              <!-- Factura -->
-              <div class="wrapper-factura card p-4 mb-3" id="pago_factura_1" data-id="1" style="width: 38rem;">
-                <div class="row">
-                  <div class="col-12">
-                    <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
-                      <span class="text-danger">&times;</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="row">
-                  <!-- Factura Proveedor -->
-                  <div class="col-12">
-                    <div class="form-group">
-                      <label class="requiredField">
-                        Factura<span class="asteriskField">*</span>
-                      </label>
-                      <div class="wrapper-selector-factura">
-                        <select class="form-control selector-factura" name="factura_1" required>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- End Factura Proveedor -->
+	      <!-- Factura -->
+	      <div class="wrapper-factura card p-4 mb-3" id="pago_factura_1" data-id="1" style="width: 38rem;">
+		<div class="row">
+		  <div class="col-12">
+		    <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
+		      <span class="text-danger">&times;</span>
+		    </button>
+		  </div>
+		</div>
+		<div class="row">
+		  <!-- Factura Proveedor -->
+		  <div class="col-12">
+		    <div class="form-group">
+		      <label class="requiredField">
+			Factura<span class="asteriskField">*</span>
+		      </label>
+		      <div class="wrapper-selector-factura">
+			<select class="form-control selector-factura" name="factura_1" required>
+			</select>
+		      </div>
+		    </div>
+		  </div>
+		  <!-- End Factura Proveedor -->
 
-                  <!-- Metodo y Monto -->
-                  <div class="col-11 wrapper-pagos">
-                    <div class="row group-pagos">
-                      <!-- Metodo -->
-                      <div class="col-6">
-                        <div class="form-group">
-                          <label class="requiredField">
-                            Metodo<span class="asteriskField">*</span>
-                          </label>
-                          <div>
-                            <select class="selector-metodo form-control" name="metodo_1_1" required>
-                              <option value="">---------</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- End Metodo -->
-                      <!-- Monto -->
-                      <div class="col-6">
-                        <div class="form-group">
-                          <label class="requiredField">
-                            Monto<span class="asteriskField">*</span>
-                          </label>
-                          <div>
-                            <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- End Monto -->
-                    </div>
-                  </div>
-                  <!-- End metodo y monto -->
+		  <!-- Metodo y Monto -->
+		  <div class="col-11 wrapper-pagos">
+		    <div class="row group-pagos">
+		      <!-- Metodo -->
+		      <div class="col-6">
+			<div class="form-group">
+			  <label class="requiredField">
+			    Metodo<span class="asteriskField">*</span>
+			  </label>
+			  <div>
+			    <select class="selector-metodo form-control" name="metodo_1_1" required>
+			      <option value="">---------</option>
+			    </select>
+			  </div>
+			</div>
+		      </div>
+		      <!-- End Metodo -->
+		      <!-- Monto -->
+		      <div class="col-6">
+			<div class="form-group">
+			  <label class="requiredField">
+			    Monto<span class="asteriskField">*</span>
+			  </label>
+			  <div>
+			    <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
+			  </div>
+			</div>
+		      </div>
+		      <!-- End Monto -->
+		    </div>
+		  </div>
+		  <!-- End metodo y monto -->
 
-                  <!-- Agrega monto -->
-                  <div class="col-1 pl-0">
-                    <div class="form-group">
-                      <label></label>
-                      <div>
-                        <button class="add-pago btn btn-success btn-xs mt-3"><i class="fas fa-plus-circle"></i></button>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- End Agrega monto -->
+		  <!-- Agrega monto -->
+		  <div class="col-1 pl-0">
+		    <div class="form-group">
+		      <label></label>
+		      <div>
+			<button class="add-pago btn btn-success btn-xs mt-3"><i class="fas fa-plus-circle"></i></button>
+		      </div>
+		    </div>
+		  </div>
+		  <!-- End Agrega monto -->
 
-                  <!-- Ganancias, ingresos e IVA -->
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
-                      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
-                      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
-                      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
-                    </div>
-                  </div>
-                  <!-- End Ganancias, ingresos e IVA -->
+		  <!-- Ganancias, ingresos e IVA -->
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
+		      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
+		      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
+		      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <!-- End Ganancias, ingresos e IVA -->
 
-                </div>
-              </div>
-              <!-- End Factura -->
+		</div>
+	      </div>
+	      <!-- End Factura -->
 
-              <!-- Agregar factura -->
-              <div class="row">
-                <div class="offset-6 col-1">
-                  <button class="add-factura btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
-                </div>
-              </div>
-              <!-- End Agregar factura -->
+	      <!-- Agregar factura -->
+	      <div class="row">
+		<div class="offset-6 col-1">
+		  <button class="add-factura btn btn-success btn-xs float-right mr-2"><i class="fas fa-plus-circle"></i></button>
+		</div>
+	      </div>
+	      <!-- End Agregar factura -->
 
-              <!-- Total -->
-              <div class="row wrapper-total mt-2">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
-                    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
-                  </div>
-                </div>
-              </div>
-              <!-- End Total -->
+	      <!-- Total -->
+	      <div class="row wrapper-total mt-2">
+		<div class="col-4">
+		  <div class="form-group">
+		    <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+		    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
+		  </div>
+		</div>
+	      </div>
+	      <!-- End Total -->
 
-              <!-- Pagado -->
-              <div class="row">
-                <div class="col-2">
-                  <div class="form-group">
-                    <div id="div_id_pagado" class="custom-control custom-checkbox">
-                      <input type="checkbox" name="pagado" class="checkbox input custom-control-input" id="id_pagado">
-                      <label for="id_pagado" class="custom-control-label">
-                        Pagado
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- End Pagado -->
+	      <!-- Pagado -->
+	      <div class="row">
+		<div class="col-2">
+		  <div class="form-group">
+		    <div id="div_id_pagado" class="custom-control custom-checkbox">
+		      <input type="checkbox" name="pagado" class="checkbox input custom-control-input" id="id_pagado">
+		      <label for="id_pagado" class="custom-control-label">
+			Pagado
+		      </label>
+		    </div>
+		  </div>
+		</div>
+	      </div>
+	      <!-- End Pagado -->
 
-            </fieldset>
+	    </fieldset>
 
-            <div class="form-group">
-              <div>
-                <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
-                <a class="btn btn-primary float-right mr-1 text-white" href="{% url 'accounting:pago-generate-pdf' pk %}" target="_blank">
-                  <i class="fas fa-file-pdf fa-sm text-white-50"></i> Comprobante
-                </a>
-                <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
-              </div>
-            </div>
+	    <div class="form-group">
+	      <div>
+		<input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+		<a class="btn btn-primary float-right mr-1 text-white" href="{% url 'accounting:pago-generate-pdf' pk %}" target="_blank">
+		  <i class="fas fa-file-pdf fa-sm text-white-50"></i> Comprobante
+		</a>
+		<input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
+	      </div>
+	    </div>
 
-          </form>
-        </div>
+	  </form>
+	</div>
       </div>
     </div>
   </div>
@@ -228,149 +228,149 @@ $(document).ready(function() {
     let idPago = $('#pago').val();
 
     $.get(`/api/pago/${idPago}/`, function(response) {
-        proveedor = response.proveedor;
-        let pagoFacturas = response.pago_facturas
+	proveedor = response.proveedor;
+	let pagoFacturas = response.pago_facturas
 
-        // fecha
-        let fecha = response.fecha.split('-');
-        $('#id_fecha').val(`${fecha[2]}/${fecha[1]}/${fecha[0]}`);
+	// fecha
+	let fecha = response.fecha.split('-');
+	$('#id_fecha').val(`${fecha[2]}/${fecha[1]}/${fecha[0]}`);
 
-        // proveedor
-        $('#proveedor').append(new Option(`${proveedor.razon_social} - CUIT ${proveedor.cuit}`, `${proveedor.id}`));
-        displayInfoProveedor(proveedor);
+	// proveedor
+	$('#proveedor').append(new Option(`${proveedor.razon_social} - CUIT ${proveedor.cuit}`, `${proveedor.id}`));
+	displayInfoProveedor(proveedor);
 
-        // Total
-        $('.input-total').val(response.total);
+	// Total
+	$('.input-total').val(response.total);
 
-        // pagado
-        $('#id_pagado').prop('checked', response.pagado);
+	// pagado
+	$('#id_pagado').prop('checked', response.pagado);
 
-        // facturas
-        pagoFacturas.forEach(function(factura, _index) {
-            let indexFactura = _index + 1;
-            let idFactura = factura.id;
+	// facturas
+	pagoFacturas.forEach(function(factura, _index) {
+	    let indexFactura = _index + 1;
+	    let idFactura = factura.id;
 
-            if (indexFactura > 1){ // Si no es el primero previamente tengo que clonar
-                let cloneFactura = $('.wrapper-factura:first').clone(true);
+	    if (indexFactura > 1){ // Si no es el primero previamente tengo que clonar
+		let cloneFactura = $('.wrapper-factura:first').clone(true);
 
-                cloneFactura.find('.close').removeClass('d-none'); // La primera factura no se puede borrar
-                cloneFactura.attr('data-inline', `{"id": ${idFactura}, "action": "update"}`);
-                cloneFactura.attr('id', `pago_factura_${indexFactura}`);
-                cloneFactura.attr('data-id', `${indexFactura}`);
-                cloneFactura.find('.selector-factura').attr('name', `factura_${indexFactura}`);
-                cloneFactura.find('.group-pagos').not(':first').remove();
-                cloneFactura.find('[name*="metodo"]').attr('name', `metodo_${indexFactura}_1`);
-                cloneFactura.find('[name*="monto"]').attr('name', `monto_${indexFactura}_1`);
+		cloneFactura.find('.close').removeClass('d-none'); // La primera factura no se puede borrar
+		cloneFactura.attr('data-inline', `{"id": ${idFactura}, "action": "update"}`);
+		cloneFactura.attr('id', `pago_factura_${indexFactura}`);
+		cloneFactura.attr('data-id', `${indexFactura}`);
+		cloneFactura.find('.selector-factura').attr('name', `factura_${indexFactura}`);
+		cloneFactura.find('.group-pagos').not(':first').remove();
+		cloneFactura.find('[name*="metodo"]').attr('name', `metodo_${indexFactura}_1`);
+		cloneFactura.find('[name*="monto"]').attr('name', `monto_${indexFactura}_1`);
 
-                // Selector factura, destruye los eventos de select2 y los vuelve a construir
-                cloneFactura.find('.wrapper-selector-factura').children().remove();
-                let htmlselector = `<select name="factura" class="select form-control selector-factura" required>`;
-                htmlselector += `<option value="" selected="">---------</option></select>`;
-                cloneFactura.find('.wrapper-selector-factura').append(htmlselector);
+		// Selector factura, destruye los eventos de select2 y los vuelve a construir
+		cloneFactura.find('.wrapper-selector-factura').children().remove();
+		let htmlselector = `<select name="factura" class="select form-control selector-factura" required>`;
+		htmlselector += `<option value="" selected="">---------</option></select>`;
+		cloneFactura.find('.wrapper-selector-factura').append(htmlselector);
 
-                cloneFactura.find('[name*="ganancias"]').attr('name', `ganancias_${indexFactura}`);
-                cloneFactura.find('[name*="ingresos_brutos"]').attr('name', `ingresos_brutos_${indexFactura}`);
-                cloneFactura.find('[name*="iva"]').attr('name', `iva_${indexFactura}`);
+		cloneFactura.find('[name*="ganancias"]').attr('name', `ganancias_${indexFactura}`);
+		cloneFactura.find('[name*="ingresos_brutos"]').attr('name', `ingresos_brutos_${indexFactura}`);
+		cloneFactura.find('[name*="iva"]').attr('name', `iva_${indexFactura}`);
 
-                $('.wrapper-factura:last').after(cloneFactura);
-            } else {
-                // Defino data line para el elemento existente
-                $(`#pago_factura_${indexFactura}`).attr('data-inline', `{"id": ${idFactura}, 'action': "update"}`);
-            }
+		$('.wrapper-factura:last').after(cloneFactura);
+	    } else {
+		// Defino data line para el elemento existente
+		$(`#pago_factura_${indexFactura}`).attr('data-inline', `{"id": ${idFactura}, 'action': "update"}`);
+	    }
 
-            // factura
-            $.get(`/api/factura-proveedor/${factura.factura}/`, function(response) {
-                $(`#pago_factura_${indexFactura} .selector-factura`).append(
-                    new Option(`${response.fecha} - ${response.proveedor.razon_social} - $${response.total}`, `${response.id}`, true, true)
-                );
-            });
+	    // factura
+	    $.get(`/api/factura-proveedor/${factura.factura}/`, function(response) {
+		$(`#pago_factura_${indexFactura} .selector-factura`).append(
+		    new Option(`${response.fecha} - ${response.proveedor.razon_social} - $${response.total}`, `${response.id}`, true, true)
+		);
+	    });
 
-            $(`#pago_factura_${indexFactura} .selector-factura`).select2({
-                ajax: {
-                    beforeSend: function(jqXHR, settings) {
-                        let idProveedor = $('#proveedor').find(":selected").val();
-                        settings.url = '/api/factura-proveedor?cobrado=0&proveedor=' + idProveedor;
-                    },
-                    url: '/api/factura-proveedor/',
-                    processResults: function (response) {
-                        let data = $.map(response, function (obj) {
-                            obj.id = obj.id;
-                            obj.text = `${obj.fecha} - ${obj.proveedor.razon_social} - $${obj.total}`;
-                            return obj;
-                        });
-                        return {
-                            results: data
-                        };
-                    },
-                    cache: true
-                }
-            }).on('change', function(){
-                let factura = $(this).select2('data')[0];
-                let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
-                switch (factura.tipo) {
-                case 'M':
-                    $(`input[name=iva_${indexFactura}]`).val(iva);
-                    break;
-                case 'ARETEN':
-                    let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
-                    iva = (Math.round(5 * iva) / 100).toFixed(2);
-                    $(`input[name=ganancias_${indexFactura}]`).val(ganancias);
-                    $(`input[name=iva_${indexFactura}]`).val(iva);
-                    break;
-                default:
-                    $(`input[name=ganancias_${indexFactura}]`).val('0.0');
-                    $(`input[name=iva_${indexFactura}]`).val('0.0');
-                    break;
-                }
-                setTotal();
-            });
+	    $(`#pago_factura_${indexFactura} .selector-factura`).select2({
+		ajax: {
+		    beforeSend: function(jqXHR, settings) {
+			let idProveedor = $('#proveedor').find(":selected").val();
+			settings.url = '/api/factura-proveedor?cobrado=0&proveedor=' + idProveedor;
+		    },
+		    url: '/api/factura-proveedor/',
+		    processResults: function (response) {
+			let data = $.map(response, function (obj) {
+			    obj.id = obj.id;
+			    obj.text = `${obj.fecha} - ${obj.proveedor.razon_social} - $${obj.total}`;
+			    return obj;
+			});
+			return {
+			    results: data
+			};
+		    },
+		    cache: true
+		}
+	    }).on('change', function(){
+		let factura = $(this).select2('data')[0];
+		let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
+		switch (factura.tipo) {
+		case 'M':
+		    $(`input[name=iva_${indexFactura}]`).val(iva);
+		    break;
+		case 'ARETEN':
+		    let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+		    iva = (Math.round(5 * iva) / 100).toFixed(2);
+		    $(`input[name=ganancias_${indexFactura}]`).val(ganancias);
+		    $(`input[name=iva_${indexFactura}]`).val(iva);
+		    break;
+		default:
+		    $(`input[name=ganancias_${indexFactura}]`).val('0.0');
+		    $(`input[name=iva_${indexFactura}]`).val('0.0');
+		    break;
+		}
+		setTotal();
+	    });
 
-            // pagos
-            factura.pago_factura_pagos.forEach(function(pago, _index){
-                let indexPago = _index + 1;
-                let idPago = pago.id;
+	    // pagos
+	    factura.pago_factura_pagos.forEach(function(pago, _index){
+		let indexPago = _index + 1;
+		let idPago = pago.id;
 
-                if (indexPago > 1){ // Si no es el primero previamente tengo que clonar
-                    let clone = $('.group-pagos:first').clone();
-                    clone.attr('data-inline', `{"id": ${idPago} ,"action": "update"}`);
-                    clone.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
-                    clone.find('[name*="metodo"]').attr('name', `metodo_${indexFactura}_${indexPago}`);
-                    clone.find('[name*="monto"]').attr('name', `monto_${indexFactura}_${indexPago}`);
+		if (indexPago > 1){ // Si no es el primero previamente tengo que clonar
+		    let clone = $('.group-pagos:first').clone();
+		    clone.attr('data-inline', `{"id": ${idPago} ,"action": "update"}`);
+		    clone.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
+		    clone.find('[name*="metodo"]').attr('name', `metodo_${indexFactura}_${indexPago}`);
+		    clone.find('[name*="monto"]').attr('name', `monto_${indexFactura}_${indexPago}`);
 
-                    $('.group-pagos:last').after(clone);
-                } else {
-                    // Defino data inline para el elemento existente
-                    $(`#pago_factura_${indexFactura} .group-pagos`).attr('data-inline', `{"id": ${idPago} ,"action": "update"}`);
-                }
-                $(`[name="metodo_${indexFactura}_${indexPago}"]`).val(`${pago.metodo}`);
-                $(`[name="monto_${indexFactura}_${indexPago}"]`).val(`${pago.monto}`);
-            });
+		    $('.group-pagos:last').after(clone);
+		} else {
+		    // Defino data inline para el elemento existente
+		    $(`#pago_factura_${indexFactura} .group-pagos`).attr('data-inline', `{"id": ${idPago} ,"action": "update"}`);
+		}
+		$(`[name="metodo_${indexFactura}_${indexPago}"]`).val(`${pago.metodo}`);
+		$(`[name="monto_${indexFactura}_${indexPago}"]`).val(`${pago.monto}`);
+	    });
 
-            // ganancias, ingresos e iva
-            $(`[name="ganancias_${indexFactura}"]`).val(`${factura.ganancias}`);
-            $(`[name="ingresos_brutos_${indexFactura}"]`).val(`${factura.ingresos_brutos}`);
-            $(`[name="iva_${indexFactura}"]`).val(`${factura.iva}`);
-        });
+	    // ganancias, ingresos e iva
+	    $(`[name="ganancias_${indexFactura}"]`).val(`${factura.ganancias}`);
+	    $(`[name="ingresos_brutos_${indexFactura}"]`).val(`${factura.ingresos_brutos}`);
+	    $(`[name="iva_${indexFactura}"]`).val(`${factura.iva}`);
+	});
 
     }).fail(function(){
-        alert('Se produjo un error, inténtalo nuevamente.')
+	alert('Se produjo un error, inténtalo nuevamente.')
     });
 
     // metodos de pago
     $.ajax({
-        url: '/api/mediopago/',
-        success: function (response) {
-            var data = $.map(response, function (obj) {
-                obj.id = obj.id;
-                obj.text = obj.nombre
-                return obj;
-            });
-            $.each(data, function(key, value) {
-                $('.selector-metodo').append($("<option></option>")
-                                             .attr("value", value['id'])
-                                             .text(value['nombre']));
-            });
-        }
+	url: '/api/mediopago/',
+	success: function (response) {
+	    var data = $.map(response, function (obj) {
+		obj.id = obj.id;
+		obj.text = obj.nombre
+		return obj;
+	    });
+	    $.each(data, function(key, value) {
+		$('.selector-metodo').append($("<option></option>")
+					     .attr("value", value['id'])
+					     .text(value['nombre']));
+	    });
+	}
     });
 });
 
@@ -451,44 +451,44 @@ $('.add-factura').click(function(e){
 
     // Vuelvo a construir selector
     clone.find('.selector-factura').select2({
-        placeholder: 'Selecciona una factura',
-        ajax: {
-            beforeSend: function(jqXHR, settings) {
-                let idProveedor = $('#proveedor').find(":selected").val();
-                settings.url = '/api/factura-proveedor?cobrado=0&proveedor=' + idProveedor;
-            },
-            url: '/api/factura-proveedor/',
-            processResults: function (response) {
-                let data = $.map(response, function (obj) {
-                    obj.id = obj.id;
-                    obj.text = `${obj.fecha} - ${obj.proveedor.razon_social} - $${obj.total}`;
-                    return obj;
-                });
-                return {
-                    results: data
-                };
-            },
-            cache: true
-        }
+	placeholder: 'Selecciona una factura',
+	ajax: {
+	    beforeSend: function(jqXHR, settings) {
+		let idProveedor = $('#proveedor').find(":selected").val();
+		settings.url = '/api/factura-proveedor?cobrado=0&proveedor=' + idProveedor;
+	    },
+	    url: '/api/factura-proveedor/',
+	    processResults: function (response) {
+		let data = $.map(response, function (obj) {
+		    obj.id = obj.id;
+		    obj.text = `${obj.fecha} - ${obj.proveedor.razon_social} - $${obj.total}`;
+		    return obj;
+		});
+		return {
+		    results: data
+		};
+	    },
+	    cache: true
+	}
     }).on('change', function(){
-        let factura = $(this).select2('data')[0];
-        let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
-        switch (factura.tipo) {
-        case 'M':
-            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
-            break;
-        case 'ARETEN':
-            let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
-            iva = (Math.round(5 * iva) / 100).toFixed(2);
-            $(`input[name=ganancias_${cloneIdFactura}]`).val(ganancias);
-            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
-            break;
-        default:
-            $(`input[name=ganancias_${cloneIdFactura}]`).val('0.0');
-            $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
-            break;
-        }
-        setTotal();
+	let factura = $(this).select2('data')[0];
+	let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
+	switch (factura.tipo) {
+	case 'M':
+	    $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+	    break;
+	case 'ARETEN':
+	    let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+	    iva = (Math.round(5 * iva) / 100).toFixed(2);
+	    $(`input[name=ganancias_${cloneIdFactura}]`).val(ganancias);
+	    $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+	    break;
+	default:
+	    $(`input[name=ganancias_${cloneIdFactura}]`).val('0.0');
+	    $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
+	    break;
+	}
+	setTotal();
     });
 });
 
@@ -496,13 +496,13 @@ $('.add-factura').click(function(e){
 $('.close').click(function(){
     let data = $(this).closest('.wrapper-factura').attr('data-inline');
     if (data.includes('add')){ // Si el wrapper es nuevo y lo elimino, lo remuevo del DOM
-        $(this).closest('.wrapper-factura').remove();
+	$(this).closest('.wrapper-factura').remove();
     } else {
-        data = JSON.parse(data);
-        let idFactura = data.id;
+	data = JSON.parse(data);
+	let idFactura = data.id;
 
-        $(this).closest('.wrapper-factura').attr('data-inline', `{"id": ${idFactura}, "action": "delete"}`);
-        $(this).closest('.wrapper-factura').addClass('d-none');
+	$(this).closest('.wrapper-factura').attr('data-inline', `{"id": ${idFactura}, "action": "delete"}`);
+	$(this).closest('.wrapper-factura').addClass('d-none');
     }
     setTotal();
 });
@@ -521,77 +521,77 @@ $('#submit-id-submit').click(function(e){
     let facturas = [];
 
     $('.wrapper-factura').each(function(){
-        let factura = $(this).find('[name*="factura"]').val();
-        let data = $(this).attr('data-inline');
-        let pagos = [];
-        let ganancias = $(this).find('[name*="ganancias"]').val();
-        let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
-        let iva = $(this).find('[name*="iva"]').val();
+	let factura = $(this).find('[name*="factura"]').val();
+	let data = $(this).attr('data-inline');
+	let pagos = [];
+	let ganancias = $(this).find('[name*="ganancias"]').val();
+	let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
+	let iva = $(this).find('[name*="iva"]').val();
 
-        // pagos
-        $(this).find('.group-pagos').each(function(e){
-            let dataPago = $(this).attr('data-inline');
-            let metodo = $(this).find('[name*="metodo"]').val();
-            let monto = $(this).find('[name*="monto"]').val();
-            pagos.push({
-                'data': JSON.parse(dataPago.replace(/'/g, '"')),
-                'metodo': metodo,
-                'monto': monto
-            });
-        });
+	// pagos
+	$(this).find('.group-pagos').each(function(e){
+	    let dataPago = $(this).attr('data-inline');
+	    let metodo = $(this).find('[name*="metodo"]').val();
+	    let monto = $(this).find('[name*="monto"]').val();
+	    pagos.push({
+		'data': JSON.parse(dataPago.replace(/'/g, '"')),
+		'metodo': metodo,
+		'monto': monto
+	    });
+	});
 
-        facturas.push({
-            'factura': parseInt(factura),
-            'data': JSON.parse(data.replace(/'/g, '"')),
-            'pago_factura_pagos': pagos,
-            'ganancias': ganancias,
-            'ingresos_brutos': ingresos_brutos,
-            'iva': iva
-        });
+	facturas.push({
+	    'factura': parseInt(factura),
+	    'data': JSON.parse(data.replace(/'/g, '"')),
+	    'pago_factura_pagos': pagos,
+	    'ganancias': ganancias,
+	    'ingresos_brutos': ingresos_brutos,
+	    'iva': iva
+	});
     });
 
     let formPagoData = {
-        'fecha': fecha,
-        'pago_facturas': facturas,
-        'total': parseInt(total),
-        'pagado': pagado
+	'fecha': fecha,
+	'pago_facturas': facturas,
+	'total': parseInt(total),
+	'pagado': pagado
     }
-    formPagoData['proveedor'] = proveedor;
+    formPagoData['proveedor'] = proveedor.cuit;
 
     $.ajax({
-        type        : 'PUT',
-        url         : `/api/pago/${pago}/`,
-        data        : JSON.stringify(formPagoData),
-        dataType    : 'json',
-        contentType : 'application/json',
-        encode      : true,
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-        }
+	type        : 'PUT',
+	url         : `/api/pago/${pago}/`,
+	data        : JSON.stringify(formPagoData),
+	dataType    : 'json',
+	contentType : 'application/json',
+	encode      : true,
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
     }).done(function(data) {
-        window.location.href = '{% url 'accounting:pago-update' pk=0 %}?update=1'.replace('0', data.id);
+	window.location.href = '{% url 'accounting:pago-update' pk=0 %}?update=1'.replace('0', data.id);
     }).fail(function() {
-        alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
+	alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
     })
 });
 
 // funciones
 function validateForm(){
     var validator = $('#pago-form').validate({
-        lang: 'es',
+	lang: 'es',
     });
 
     // Validaciones dinamicas
     $('[name*="monto"]').each(function () {
-        $(this).rules('add', {
-            required: true,
-            notEqual: '0.0'
-        });
+	$(this).rules('add', {
+	    required: true,
+	    notEqual: '0.0'
+	});
     });
 
     // Metodos
     jQuery.validator.addMethod("notEqual", function(value, element, param) {
-        return this.optional(element) || value !== param;
+	return this.optional(element) || value !== param;
     }, "Este campo es obligatorio.");
 
     return $("#pago-form").valid();
@@ -601,28 +601,28 @@ function setTotal(){
     let elementTotal = $('.input-total');
     let totalFactura = 0;
     $('.selector-factura').find(':selected').each(function(){
-        // Si el wrapper factura esta oculto no se debe sumar
-        if (!$(this).closest('.wrapper-factura').hasClass('d-none')){
-            totalFactura += parseInt($(this).text().split('$')[1]);
-            elementTotal.val(totalFactura);
-        }
+	// Si el wrapper factura esta oculto no se debe sumar
+	if (!$(this).closest('.wrapper-factura').hasClass('d-none')){
+	    totalFactura += parseInt($(this).text().split('$')[1]);
+	    elementTotal.val(totalFactura);
+	}
     });
 }
 
 function displayInfoProveedor(obj){
     if(obj !== ''){
-        var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
-        data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
-        data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
-        data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
-        data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
-        data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
-        if (obj.localidad !== null){
-            data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
-            data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
-        }
-        data += `</dl></div></div>`;
-        $('#info_proveedor').html(data);
+	var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
+	data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
+	data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
+	data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
+	data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
+	data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
+	if (obj.localidad !== null){
+	    data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
+	    data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+	}
+	data += `</dl></div></div>`;
+	$('#info_proveedor').html(data);
     }
 }
 
