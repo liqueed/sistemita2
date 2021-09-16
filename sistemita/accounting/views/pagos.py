@@ -51,9 +51,9 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         try:
             if search:
                 queryset = queryset.filter(
-                    Q(cliente__razon_social__icontains=search)
-                    | Q(cliente__correo__icontains=search)
-                    | Q(cliente__cuit__icontains=search)
+                    Q(proveedor__razon_social__icontains=search)
+                    | Q(proveedor__correo__icontains=search)
+                    | Q(proveedor__cuit__icontains=search)
                 )
             if order_by:
                 queryset = queryset.order_by(order_by)

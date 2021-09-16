@@ -7,32 +7,35 @@
     Agregar facturación de Cliente
   {% endif %} | Liqueed{% endblock %}
 {% block content %}
+{% block header %}
+  <script src="{% static 'js/select2_placeholder.js' %}"></script>
+{% endblock %}
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
       <h1 class="h3 text-gray-800">Facturación a Clientes</h1>
       {% if perms.core.list_factura %}
-        <a href="{% url 'core:factura-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
-          <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
-        </a>
+	<a href="{% url 'core:factura-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	  <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
       {% endif %}
     </div>
     {% include 'components/messages.html' %}
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
-          {% if not object.pk %}
-            Agregar facturación a Cliente
-          {% else %}
-            Editar facturación Nro. {{ object.numero|default:"SN" }} - Cliente: {{ object.cliente.razon_social}}
-          {% endif %}
-        </h6>
+	<h6 class="m-0 font-weight-bold text-primary">
+	  {% if not object.pk %}
+	    Agregar facturación a Cliente
+	  {% else %}
+	    Editar facturación Nro. {{ object.numero|default:"SN" }} - Cliente: {{ object.cliente.razon_social}}
+	  {% endif %}
+	</h6>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
-            {% crispy form %}
-            <input id="id_factura" type="hidden" value="{{ object.id }}">
-        </div>
+	<div class="table-responsive">
+	    {% crispy form %}
+	    <input id="id_factura" type="hidden" value="{{ object.id }}">
+	</div>
       </div>
     </div>
 
@@ -46,7 +49,11 @@ if (permAddArchivos !== 'True'){
 }
 
 $('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
-$('#id_cliente').select2({allowClear: true, language: 'es'});
+$('#id_cliente').select2({
+    searchInputPlaceholder: 'Buscar por razón social o cuit',
+    allowClear: true,
+    language: 'es'
+});
 $('#id_cliente').change(function(){
     updateInfoCliente();
 });
@@ -54,22 +61,22 @@ $('#id_cliente').change(function(){
 function updateInfoCliente(){
     var idCliente = $('#id_cliente').val();
     if(idCliente !== ''){
-        $.get("/api/cliente/" + idCliente + "/", function(obj) {
-            var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
-            data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
-            data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
-            data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
-            data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
-            data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
-            if (obj.localidad !== null){
-                data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
-                data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
-            }
-            data += `</dl></div></div>`;
-            $('#info_cliente').html(data);
-        });
+	$.get("/api/cliente/" + idCliente + "/", function(obj) {
+	    var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
+	    data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
+	    data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
+	    data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
+	    data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
+	    data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
+	    if (obj.localidad !== null){
+		data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
+		data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+	    }
+	    data += `</dl></div></div>`;
+	    $('#info_cliente').html(data);
+	});
     } else {
-        $('#info_cliente').html('');
+	$('#info_cliente').html('');
     }
 }
 updateInfoCliente();
@@ -79,31 +86,31 @@ var idFactura = $("#id_factura").val();
 if (idFactura) {
     var adjuntos = $("#adjuntos");
     $.get(`/api/factura/${idFactura}/`, function(data) {
-        $.each(data.archivos, function(index, item) {
-            var filename = item.documento.split(/[\\\/]/).pop();
-            var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
-            itemHtml += `<div class="col-2">`
-            itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`
-            itemHtml += `<a class="btn btn-danger btn-sm ml-2 mt-2 remove_document" id="${item.id}" href="javascript:void(0);"><i class="far fa-trash-alt"></i></a></div>`;
-            adjuntos.append(itemHtml);
-        });
+	$.each(data.archivos, function(index, item) {
+	    var filename = item.documento.split(/[\\\/]/).pop();
+	    var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
+	    itemHtml += `<div class="col-2">`
+	    itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`
+	    itemHtml += `<a class="btn btn-danger btn-sm ml-2 mt-2 remove_document" id="${item.id}" href="javascript:void(0);"><i class="far fa-trash-alt"></i></a></div>`;
+	    adjuntos.append(itemHtml);
+	});
     });
 
     $(adjuntos).on("click",".remove_document", function(e){
     e.preventDefault();
 
     var element = $(this).parent("div");
-        $.ajax({
-            url: `/api/archivo/${this.id}/`,
-            type: 'DELETE',
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-            },
-            success: function(result) {
-        element.prev().remove()
-        element.remove();
-            }
-        });
+	$.ajax({
+	    url: `/api/archivo/${this.id}/`,
+	    type: 'DELETE',
+	    beforeSend: function (xhr) {
+		xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	    },
+	    success: function(result) {
+	element.prev().remove()
+	element.remove();
+	    }
+	});
     });
 }
 

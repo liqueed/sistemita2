@@ -52,7 +52,7 @@ class UserListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         try:
             if search:
                 queryset = queryset.filter(
-                    Q(username__search=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search)
+                    Q(username__icontains=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search)
                 )
             if order_by:
                 queryset = queryset.order_by(order_by)

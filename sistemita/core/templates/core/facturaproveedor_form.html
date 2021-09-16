@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
+{% block header %}
+  <script src="{% static 'js/select2_placeholder.js' %}"></script>
+{% endblock %}
 {% block title %}
   {% if object.pk %}
     Editar facturación Nro. {{ object.numero|default:"SN" }} - Proveedor: {{ object.proveedor.razon_social }}
@@ -13,7 +16,7 @@
       <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
       {% if perms.core.list_facturaproveedor %}
       <a href="{% url 'core:facturaproveedor-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
-        <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	<i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
       </a>
       {% endif %}
     </div>
@@ -21,17 +24,17 @@
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
-          {% if not object.pk %}
-            Agregar facturación a Proveedor
-          {% else %}
-            Editar facturación Nro. {{ object.numero|default:"SN" }} - Proveedor: {{ object.proveedor.razon_social}}          {% endif %}
-        </h6>
+	<h6 class="m-0 font-weight-bold text-primary">
+	  {% if not object.pk %}
+	    Agregar facturación a Proveedor
+	  {% else %}
+	    Editar facturación Nro. {{ object.numero|default:"SN" }} - Proveedor: {{ object.proveedor.razon_social}}          {% endif %}
+	</h6>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
-          {% crispy form %}
-        </div>
+	<div class="table-responsive">
+	  {% crispy form %}
+	</div>
       </div>
     </div>
 
@@ -44,7 +47,11 @@ if (permAddArchivos !== 'True'){
     $('input[name="archivos"]').prop('disabled', true);
 }
 $('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
-$('#id_proveedor').select2({allowClear: true, language: 'es'});
+$('#id_proveedor').select2({
+    allowClear: true,
+    language: 'es',
+    searchInputPlaceholder: 'Buscar por razón social o cuit',
+});
 $('#id_proveedor').change(function(){
     updateInfoProveedor();
 });
@@ -52,22 +59,22 @@ $('#id_proveedor').change(function(){
 function updateInfoProveedor(){
     var idProveedor = $('#id_proveedor').val();
     if(idProveedor !== ''){
-        $.get("/api/proveedor/" + idProveedor + "/", function(obj) {
-            var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
-            data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
-            data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
-            data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
-            data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
-            data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
-            if (obj.localidad !== null){
-                data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
-                data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
-            }
-            data += `</dl></div></div>`;
-            $('#info_proveedor').html(data);
-        });
+	$.get("/api/proveedor/" + idProveedor + "/", function(obj) {
+	    var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
+	    data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
+	    data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
+	    data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
+	    data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
+	    data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
+	    if (obj.localidad !== null){
+		data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
+		data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+	    }
+	    data += `</dl></div></div>`;
+	    $('#info_proveedor').html(data);
+	});
     } else {
-        $('#info_proveedor').html('');
+	$('#info_proveedor').html('');
     }
 }
 updateInfoProveedor();
@@ -76,35 +83,39 @@ var idFacturaProveedor = $("#id_factura_proveedor").val();
 if (idFacturaProveedor) {
     var adjuntos = $("#adjuntos");
     $.get(`/api/factura-proveedor/${idFacturaProveedor}/`, function(data) {
-        $.each(data.archivos, function(index, item) {
-            var filename = item.documento.split(/[\\\/]/).pop();
-            var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
-            itemHtml += `<div class="col-2">`;
-            itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`;
-            itemHtml += `<a class="btn btn-danger btn-sm ml-2 mt-2 remove_document" id="${item.id}" href="javascript:void(0);"><i class="far fa-trash-alt"></i></a></div>`;
-            adjuntos.append(itemHtml);
-        });
+	$.each(data.archivos, function(index, item) {
+	    var filename = item.documento.split(/[\\\/]/).pop();
+	    var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
+	    itemHtml += `<div class="col-2">`;
+	    itemHtml += `<a class="btn btn-light btn-sm mt-2" target="_blank" href="${item.documento}"><i class="far fa-eye"></i></a>`;
+	    itemHtml += `<a class="btn btn-danger btn-sm ml-2 mt-2 remove_document" id="${item.id}" href="javascript:void(0);"><i class="far fa-trash-alt"></i></a></div>`;
+	    adjuntos.append(itemHtml);
+	});
     });
 
     $(adjuntos).on("click",".remove_document", function(e){
-        e.preventDefault();
-        var element = $(this).parent("div");
-        $.ajax({
-            url: `/api/archivo/${this.id}/`,
-            type: 'DELETE',
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-            },
-            success: function(result) {
-                element.prev().remove()
-                element.remove();
-            }
-        });
+	e.preventDefault();
+	var element = $(this).parent("div");
+	$.ajax({
+	    url: `/api/archivo/${this.id}/`,
+	    type: 'DELETE',
+	    beforeSend: function (xhr) {
+		xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	    },
+	    success: function(result) {
+		element.prev().remove()
+		element.remove();
+	    }
+	});
     });
 }
 
 // Handler factura cliente
-$('#id_factura').select2({allowClear: true, language: 'es'});
+$('#id_factura').select2({
+    allowClear: true,
+    language: 'es',
+    searchInputPlaceholder: 'Buscar fecha, número de factura, cliente o monto',
+});
 
 let idFactura = $('#id_factura').val();
 let elementView = `<div class="col-2 d-flex align-items-center pt-3">`;
@@ -125,11 +136,11 @@ function buildLinkFacturaCliente(){
     let idFactura = $('#id_factura').val();
 
     if(idFactura !== ''){
-        let url = `{% url "core:factura-detail" pk=0 %}`.replace('0', idFactura);
-        elemFacturaCliente.removeClass('d-none');
-        elemFacturaCliente.attr('href', url);
+	let url = `{% url "core:factura-detail" pk=0 %}`.replace('0', idFactura);
+	elemFacturaCliente.removeClass('d-none');
+	elemFacturaCliente.attr('href', url);
     } else {
-        elemFacturaCliente.addClass('d-none');
+	elemFacturaCliente.addClass('d-none');
     }
 }
 

@@ -4,12 +4,14 @@
 import pandas as pd
 
 # Django REST Framework
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from unidecode import unidecode
 
 # Sistemita
+from sistemita.api.clientes.filters import ClienteFilterSet, FacturaFilterSet
 from sistemita.api.clientes.serializers import (
     ClienteSerializer,
     FacturaBeforeImportSerializer,
@@ -26,13 +28,22 @@ class ClienteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = ClienteSerializer
 
+    # Filter
+    filter_fields = 'razon_social__cuit__icontains'
+    filterset_class = ClienteFilterSet
+    filter_backends = (DjangoFilterBackend,)
+
 
 class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """Factura view set."""
 
-    filter_fields = ('cliente', 'cobrado')
     queryset = Factura.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
+
+    # Filters
+    filter_fields = ('cliente', 'cobrado', 'numero__icontains')
+    filterset_class = FacturaFilterSet
+    filter_backends = (DjangoFilterBackend,)
 
     def get_serializer_class(self):
         """Devuelve un serializador en base a una acción."""

@@ -145,8 +145,8 @@ class FacturaProveedorForm(forms.ModelForm):
                 'Datos generales',
                 Div(Div('fecha', css_class='col-4'), css_class='row'),
                 Div(Div('numero', css_class='col-4'), Div('tipo', css_class='col-2'), css_class='row'),
-                Div(Div('proveedor', css_class='col-6'), css_class='row'),
-                Div(Div('factura', css_class='col-6'), css_class='row'),
+                Div(Div('proveedor', css_class='col-7'), css_class='row'),
+                Div(Div('factura', css_class='col-7'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_proveedor', css_class='row'),
                 Div(Div('detalle', css_class='col-6'), css_class='row'),

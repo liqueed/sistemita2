@@ -60,7 +60,7 @@ class Factura(FacturaAbstract):
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
-        return '{} - {} - {}'.format(self.fecha, self.cliente, self.moneda_monto)
+        return '{} -{} - {} - {}'.format(self.fecha, self.numero, self.cliente.razon_social, self.moneda_monto)
 
     class Meta:
         """Configuraciones del modelo."""

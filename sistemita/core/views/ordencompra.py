@@ -47,7 +47,9 @@ class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, FilterVi
         order_by = self.request.GET.get('order_by', None)
         try:
             if search:
-                queryset = queryset.filter(Q(razon_social__search=search) | Q(cuit__icontains=search))
+                queryset = queryset.filter(
+                    Q(cliente__razon_social__icontains=search) | Q(cliente__cuit__icontains=search)
+                )
             if order_by:
                 queryset = queryset.order_by(order_by)
         except FieldError:
