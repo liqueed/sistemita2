@@ -4,6 +4,7 @@
 {% block header %}
   <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
   <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
+  <script src="{% static 'js/select2_placeholder.js' %}"></script>
 {% endblock %}
 {% block content %}
   <div class="container-fluid">
@@ -46,7 +47,7 @@
 
 	      <!-- Proveedor -->
 	      <div class="row">
-		<div class="col-5">
+		<div class="col-6">
 		  <div class="form-group">
 		    <label class="requiredField">
 		      Proveedor<span class="asteriskField">*</span>
@@ -64,7 +65,7 @@
 	      <!-- End Proveedor -->
 
 	      <!-- Factura -->
-	      <div class="wrapper-factura card p-4 mb-3" id="pago_factura_1" data-id="1" style="width: 38rem;">
+	      <div class="wrapper-factura card p-4 mb-3" id="pago_factura_1" data-id="1" style="width: 45rem;">
 		<div class="row">
 		  <div class="col-12">
 		    <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
@@ -214,6 +215,7 @@ let proveedor; // global
 
 $('#proveedor').select2({
     placeholder: 'Selecciona un proveedor',
+    searchInputPlaceholder: 'Buscar por razón social o cuit',
     ajax: {
 	url: '/api/proveedor/',
 	processResults: function (response) {
@@ -225,6 +227,12 @@ $('#proveedor').select2({
 	    return {
 		results: data
 	    };
+	},
+	data: function (params) {
+	    var query = {
+		razon_social__cuit__icontains: params.term
+	    }
+	    return query;
 	},
 	cache: true
     }
@@ -256,21 +264,26 @@ $('#proveedor').select2({
 // Factura inicial
 $('#pago_factura_1 .selector-factura').select2({
     placeholder: 'Selecciona una factura',
+    searchInputPlaceholder: 'Buscar por número de factura',
     ajax: {
-	beforeSend: function(jqXHR, settings) {
-	    let idProveedor = $('#proveedor').find(":selected").val();
-	    settings.url = '/api/factura-proveedor?cobrado=0&proveedor=' + idProveedor;
-	},
 	url: '/api/factura-proveedor/',
 	processResults: function (response) {
 	    let data = $.map(response, function (obj) {
 		obj.id = obj.id;
-		obj.text = `${obj.fecha} - ${obj.proveedor.razon_social} - $${obj.total}`;
+		obj.text = `${obj.fecha} - ${obj.numero} - ${obj.proveedor.razon_social} - $${obj.total}`;
 		return obj;
 	    });
 	    return {
 		results: data
 	    };
+	},
+	data: function (params) {
+	    var query = {
+		proveedor: $('#proveedor').find(":selected").val(),
+		cobrado: 0,
+		numero__icontains: params.term
+	    }
+	    return query;
 	},
 	cache: true
     }
@@ -370,21 +383,26 @@ $('.add-factura').click(function(e){
     // Vuelvo a construir selector
     clone.find('.selector-factura').select2({
 	placeholder: 'Selecciona una factura',
+	searchInputPlaceholder: 'Buscar por número de factura',
 	ajax: {
-	    beforeSend: function(jqXHR, settings) {
-		let idProveedor = $('#proveedor').find(":selected").val();
-		settings.url = '/api/factura-proveedor?cobrado=0&proveedor=' + idProveedor;
-	    },
 	    url: '/api/factura-proveedor/',
 	    processResults: function (response) {
 		let data = $.map(response, function (obj) {
 		    obj.id = obj.id;
-		    obj.text = `${obj.fecha} - ${obj.proveedor.razon_social} - $${obj.total}`;
+		    obj.text = `${obj.fecha} - ${obj.numero} - ${obj.proveedor.razon_social} - $${obj.total}`;
 		    return obj;
 		});
 		return {
 		    results: data
 		};
+	    },
+	    data: function (params) {
+		var query = {
+		    proveedor: $('#proveedor').find(":selected").val(),
+		    cobrado: 0,
+		    numero__icontains: params.term
+		}
+		return query;
 	    },
 	    cache: true
 	}

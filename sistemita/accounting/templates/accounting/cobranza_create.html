@@ -4,189 +4,190 @@
 {% block header %}
     <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
     <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
+    <script src="{% static 'js/select2_placeholder.js' %}"></script>
 {% endblock %}
 {% block content %}
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
       <h1 class="h3 text-gray-800">Cobranzas a Clientes</h1>
       {% if perms.accounting.list_cobranza %}
-        <a href="{% url 'accounting:cobranza-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
-          <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
-        </a>
+	<a href="{% url 'accounting:cobranza-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	  <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
       {% endif %}
     </div>
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">
-            Agregar cobranza a Cliente
-        </h6>
+	<h6 class="m-0 font-weight-bold text-primary">
+	    Agregar cobranza a Cliente
+	</h6>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
+	<div class="table-responsive">
 
-          <form id="cobranza-form">
-            <fieldset>
-              <legend>Datos</legend>
+	  <form id="cobranza-form">
+	    <fieldset>
+	      <legend>Datos</legend>
 
-              <!-- Fecha -->
-              <div class="row">
-                <div class="col-4">
-                  <div id="div_id_fecha" class="form-group">
-                    <label for="id_fecha" class=" requiredField">
-                      Fecha<span class="asteriskField">*</span>
-                    </label>
-                    <div>
-                      <input type="text" name="fecha" class="dateinput form-control" required="" id="id_fecha" autocomplete="off">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- End Fecha -->
+	      <!-- Fecha -->
+	      <div class="row">
+		<div class="col-4">
+		  <div id="div_id_fecha" class="form-group">
+		    <label for="id_fecha" class=" requiredField">
+		      Fecha<span class="asteriskField">*</span>
+		    </label>
+		    <div>
+		      <input type="text" name="fecha" class="dateinput form-control" required="" id="id_fecha" autocomplete="off">
+		    </div>
+		  </div>
+		</div>
+	      </div>
+	      <!-- End Fecha -->
 
-              <!-- Cliente -->
-              <div class="row">
-                <div class="col-5">
-                  <div class="form-group">
-                    <label class="requiredField">
-                      Cliente<span class="asteriskField">*</span>
-                    </label>
-                    <div class="">
-                      <select class="select form-control" id="cliente" name="cliente" required>
-                        <option value="">---------</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="row" id="info_cliente">
-              </div>
-              <!--End Cliente -->
+	      <!-- Cliente -->
+	      <div class="row">
+		<div class="col-6">
+		  <div class="form-group">
+		    <label class="requiredField">
+		      Cliente<span class="asteriskField">*</span>
+		    </label>
+		    <div class="">
+		      <select class="select form-control" id="cliente" name="cliente" required>
+			<option value="">---------</option>
+		      </select>
+		    </div>
+		  </div>
+		</div>
+	      </div>
+	      <div class="row" id="info_cliente">
+	      </div>
+	      <!--End Cliente -->
 
-              <!-- Factura -->
-              <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 38rem;">
-                <div class="row">
-                  <div class="col-12">
-                    <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
-                      <span class="text-danger">&times;</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="row">
-                  <!-- Factura Cliente -->
-                  <div class="col-12">
-                    <div class="form-group">
-                      <label class="requiredField">
-                        Factura<span class="asteriskField">*</span>
-                      </label>
-                      <div class="wrapper-selector-factura">
-                        <select class="form-control selector-factura" name="factura_1" disabled required>
-                          <option value="" selected="">---------</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- End Factura Cliente -->
+	      <!-- Factura -->
+	      <div class="wrapper-factura card p-4 mb-3" id="cobranza_factura_1" data-id="1" style="width: 45rem;">
+		<div class="row">
+		  <div class="col-12">
+		    <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
+		      <span class="text-danger">&times;</span>
+		    </button>
+		  </div>
+		</div>
+		<div class="row">
+		  <!-- Factura Cliente -->
+		  <div class="col-12">
+		    <div class="form-group">
+		      <label class="requiredField">
+			Factura<span class="asteriskField">*</span>
+		      </label>
+		      <div class="wrapper-selector-factura">
+			<select class="form-control selector-factura" name="factura_1" disabled required>
+			  <option value="" selected="">---------</option>
+			</select>
+		      </div>
+		    </div>
+		  </div>
+		  <!-- End Factura Cliente -->
 
-                  <!-- Metodo y Monto -->
-                  <div class="col-11 wrapper-pagos">
-                    <div class="row group-pagos">
-                      <!-- Metodo -->
-                      <div class="col-6">
-                        <div class="form-group">
-                          <label class="requiredField">
-                            Metodo<span class="asteriskField">*</span>
-                          </label>
-                          <div>
-                            <select class="selector-metodo form-control" name="metodo_1_1" disabled required>
-                              <option value="">---------</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- End Metodo -->
-                      <!-- Monto -->
-                      <div class="col-6">
-                        <div class="form-group">
-                          <label class="requiredField">
-                            Monto<span class="asteriskField">*</span>
-                          </label>
-                          <div>
-                            <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- End Monto -->
-                    </div>
-                  </div>
-                  <!-- End metodo y monto -->
+		  <!-- Metodo y Monto -->
+		  <div class="col-11 wrapper-pagos">
+		    <div class="row group-pagos">
+		      <!-- Metodo -->
+		      <div class="col-6">
+			<div class="form-group">
+			  <label class="requiredField">
+			    Metodo<span class="asteriskField">*</span>
+			  </label>
+			  <div>
+			    <select class="selector-metodo form-control" name="metodo_1_1" disabled required>
+			      <option value="">---------</option>
+			    </select>
+			  </div>
+			</div>
+		      </div>
+		      <!-- End Metodo -->
+		      <!-- Monto -->
+		      <div class="col-6">
+			<div class="form-group">
+			  <label class="requiredField">
+			    Monto<span class="asteriskField">*</span>
+			  </label>
+			  <div>
+			    <input class="input-monto numberinput form-control" name="monto_1_1" type="number" value="0.0" step="0.01" required>
+			  </div>
+			</div>
+		      </div>
+		      <!-- End Monto -->
+		    </div>
+		  </div>
+		  <!-- End metodo y monto -->
 
-                  <!-- Agrega monto -->
-                  <div class="col-1 pl-0">
-                    <div class="form-group">
-                      <label></label>
-                      <div>
-                        <button class="add-pago btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- End Agrega monto -->
+		  <!-- Agrega monto -->
+		  <div class="col-1 pl-0">
+		    <div class="form-group">
+		      <label></label>
+		      <div>
+			<button class="add-pago btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
+		      </div>
+		    </div>
+		  </div>
+		  <!-- End Agrega monto -->
 
-                  <!-- Ganancias, ingresos e IVA -->
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
-                      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
-                      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
-                    </div>
-                  </div>
-                  <div class="col-4">
-                    <div class="form-group">
-                      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
-                      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
-                    </div>
-                  </div>
-                  <!-- End Ganancias, ingresos e IVA -->
+		  <!-- Ganancias, ingresos e IVA -->
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
+		      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
+		      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
+		      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <!-- End Ganancias, ingresos e IVA -->
 
-                </div>
-              </div>
-              <!-- End Factura -->
+		</div>
+	      </div>
+	      <!-- End Factura -->
 
-              <!-- Agregar factura -->
-              <div class="row">
-                <div class="offset-6 col-1">
-                  <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
-                </div>
-              </div>
-              <!-- End Agregar factura -->
+	      <!-- Agregar factura -->
+	      <div class="row">
+		<div class="offset-6 col-1">
+		  <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
+		</div>
+	      </div>
+	      <!-- End Agregar factura -->
 
-              <!-- Total -->
-              <div class="row wrapper-total d-none mt-2">
-                <div class="col-4">
-                  <div class="form-group">
-                    <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
-                    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
-                  </div>
-                </div>
-              </div>
-              <!-- End Total -->
+	      <!-- Total -->
+	      <div class="row wrapper-total d-none mt-2">
+		<div class="col-4">
+		  <div class="form-group">
+		    <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+		    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
+		  </div>
+		</div>
+	      </div>
+	      <!-- End Total -->
 
-            </fieldset>
+	    </fieldset>
 
-            <div class="form-group">
-              <div>
-                <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
-                <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
-              </div>
-            </div>
+	    <div class="form-group">
+	      <div>
+		<input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+		<input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
+	      </div>
+	    </div>
 
-          </form>
-        </div>
+	  </form>
+	</div>
       </div>
     </div>
   </div>
@@ -199,28 +200,35 @@ let cliente; // global
 
 $('#cliente').select2({
     placeholder: 'Selecciona un cliente',
+    searchInputPlaceholder: 'Buscar por razón social o cuit',
     ajax: {
-        url: '/api/cliente/',
-        processResults: function (response) {
-            var data = $.map(response, function (obj) {
-                obj.id = obj.id;
-                obj.text = `${obj.razon_social} - CUIT ${obj.cuit}`;
-                return obj;
-            });
-            return {
-                results: data
-            };
-        },
-        cache: true
+	url: '/api/cliente/',
+	processResults: function (response) {
+	    var data = $.map(response, function (obj) {
+		obj.id = obj.id;
+		obj.text = `${obj.razon_social} - CUIT ${obj.cuit}`;
+		return obj;
+	    });
+	    return {
+		results: data
+	    };
+	},
+	data: function (params) {
+	    var query = {
+		razon_social__cuit__icontains: params.term
+	    }
+	    return query;
+	},
+	cache: true
     }
 }).on('change', function(e) {
     // Obtengo objeto Cliente
     var obj = $(this).select2("data")[0];
     cliente = {
-        "razon_social": obj.razon_social,
-        "cuit": obj.cuit,
-        "correo": obj.correo,
-        "telefono": obj.telefono
+	"razon_social": obj.razon_social,
+	"cuit": obj.cuit,
+	"correo": obj.correo,
+	"telefono": obj.telefono
     };
 
     $('.wrapper-total').removeClass('d-none');
@@ -238,44 +246,50 @@ $('#cliente').select2({
 
 });
 
+
 // Factura inicial
 $('#cobranza_factura_1 .selector-factura').select2({
     placeholder: 'Selecciona una factura',
+    searchInputPlaceholder: 'Buscar por número de factura',
     ajax: {
-        beforeSend: function(jqXHR, settings) {
-            let idCliente = $('#cliente').find(":selected").val();
-            settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
-        },
-        url: '/api/factura/',
-        processResults: function (response) {
-            let data = $.map(response, function (obj) {
-                obj.id = obj.id;
-                obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
-                return obj;
-            });
-            return {
-                results: data
-            };
-        },
-        cache: true
+	url: '/api/factura/',
+	processResults: function (response) {
+	    let data = $.map(response, function (obj) {
+		obj.id = obj.id;
+		obj.text = `${obj.fecha} - ${obj.numero} - ${obj.cliente.razon_social} - $${obj.total}`;
+		return obj;
+	    });
+	    return {
+		results: data
+	    };
+	},
+	data: function (params) {
+	    var query = {
+		cliente: $('#cliente').find(":selected").val(),
+		cobrado: 0,
+		numero__icontains: params.term
+	    }
+	    return query;
+	},
+	cache: true
     }
 }).on('change', function(){
     let factura = $(this).select2('data')[0];
     let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
     switch (factura.tipo) {
-        case 'M':
-          $('input[name=iva_1]').val(iva);
-        break;
-        case 'ARETEN':
-          let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
-          iva = (Math.round(5 * iva) / 100).toFixed(2);
-          $('input[name=iva_1]').val(iva);
-          $('input[name=ganancias_1]').val(ganancias);
-        break;
-        default:
-          $('input[name=ganancias_1]').val('0.0');
-          $('input[name=iva_1]').val('0.0');
-        break;
+	case 'M':
+	  $('input[name=iva_1]').val(iva);
+	break;
+	case 'ARETEN':
+	  let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+	  iva = (Math.round(5 * iva) / 100).toFixed(2);
+	  $('input[name=iva_1]').val(iva);
+	  $('input[name=ganancias_1]').val(ganancias);
+	break;
+	default:
+	  $('input[name=ganancias_1]').val('0.0');
+	  $('input[name=iva_1]').val('0.0');
+	break;
     }
     setTotal();
     $('.add-factura').removeClass('d-none');
@@ -284,7 +298,7 @@ $('#cobranza_factura_1 .selector-factura').select2({
 // Metodos de pago
 $('.selector-metodo').mousedown(function(){
     if ($(this).children().length == 1){
-        displayMetodoPagoData();
+	displayMetodoPagoData();
     }
 }).on('change', function(e){
     // Boton agregar metodos
@@ -354,44 +368,49 @@ $('.add-factura').click(function(e){
 
     // Vuelvo a construir selector
     clone.find('.selector-factura').select2({
-        placeholder: 'Selecciona una factura',
-        ajax: {
-            beforeSend: function(jqXHR, settings) {
-                let idCliente = $('#cliente').find(":selected").val();
-                settings.url = '/api/factura?cobrado=0&cliente=' + idCliente;
-            },
-            url: '/api/factura/',
-            processResults: function (response) {
-                let data = $.map(response, function (obj) {
-                    obj.id = obj.id;
-                    obj.text = `${obj.fecha} - ${obj.cliente.razon_social} - $${obj.total}`;
-                    return obj;
-                });
-                return {
-                    results: data
-                };
-            },
-            cache: true
-        }
+	placeholder: 'Selecciona una factura',
+	searchInputPlaceholder: 'Buscar por número de factura',
+	ajax: {
+	    url: '/api/factura/',
+	    processResults: function (response) {
+		let data = $.map(response, function (obj) {
+		    obj.id = obj.id;
+		    obj.text = `${obj.fecha} - ${obj.numero} - ${obj.cliente.razon_social} - $${obj.total}`;
+		    return obj;
+		});
+		return {
+		    results: data
+		};
+	    },
+	    data: function (params) {
+		var query = {
+		    cliente: $('#cliente').find(":selected").val(),
+		    cobrado: 0,
+		    numero__icontains: params.term
+		}
+		return query;
+	    },
+	    cache: true
+	}
     }).on('change', function(){
-        let factura = $(this).select2('data')[0];
-        let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
-        switch (factura.tipo) {
-          case 'M':
-            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
-          break;
-        case 'ARETEN':
-            let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
-            iva = (Math.round(5 * iva) / 100).toFixed(2);
-            $(`input[name=ganancias_${cloneIdFactura}]`).val(ganancias);
-            $(`input[name=iva_${cloneIdFactura}]`).val(iva);
-          break;
-          default:
-            $(`input[name=ganancias_${cloneIdFactura}]`).val('0.0');
-            $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
-          break;
-        }
-        setTotal();
+	let factura = $(this).select2('data')[0];
+	let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
+	switch (factura.tipo) {
+	  case 'M':
+	    $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+	  break;
+	case 'ARETEN':
+	    let ganancias = (Math.round(5 * factura.neto) / 100).toFixed(2);
+	    iva = (Math.round(5 * iva) / 100).toFixed(2);
+	    $(`input[name=ganancias_${cloneIdFactura}]`).val(ganancias);
+	    $(`input[name=iva_${cloneIdFactura}]`).val(iva);
+	  break;
+	  default:
+	    $(`input[name=ganancias_${cloneIdFactura}]`).val('0.0');
+	    $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
+	  break;
+	}
+	setTotal();
     });
 });
 
@@ -414,84 +433,84 @@ $('#submit-id-submit').click(function(e){
     let facturas = [];
 
     $('.wrapper-factura').each(function(){
-        let factura = $(this).find('[name*="factura"]').val();
-        let pagos = [];
-        let ganancias = $(this).find('[name*="ganancias"]').val();
-        let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
-        let iva = $(this).find('[name*="iva"]').val();
+	let factura = $(this).find('[name*="factura"]').val();
+	let pagos = [];
+	let ganancias = $(this).find('[name*="ganancias"]').val();
+	let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
+	let iva = $(this).find('[name*="iva"]').val();
 
-        // pagos
-        $(this).find('.group-pagos').each(function(e){
-            let metodo = $(this).find('[name*="metodo"]').val();
-            let monto = $(this).find('[name*="monto"]').val();
-            pagos.push({
-                'metodo': metodo,
-                'monto': monto
-            });
-        });
+	// pagos
+	$(this).find('.group-pagos').each(function(e){
+	    let metodo = $(this).find('[name*="metodo"]').val();
+	    let monto = $(this).find('[name*="monto"]').val();
+	    pagos.push({
+		'metodo': metodo,
+		'monto': monto
+	    });
+	});
 
-        facturas.push({
-            'factura': parseInt(factura),
-            'cobranza_factura_pagos': pagos,
-            'ganancias': ganancias,
-            'ingresos_brutos': ingresos_brutos,
-            'iva': iva
-        });
+	facturas.push({
+	    'factura': parseInt(factura),
+	    'cobranza_factura_pagos': pagos,
+	    'ganancias': ganancias,
+	    'ingresos_brutos': ingresos_brutos,
+	    'iva': iva
+	});
     });
 
     let formCobranzaData = {
-        'fecha': fecha,
-        'cobranza_facturas': facturas,
-        'total': parseInt(total)
+	'fecha': fecha,
+	'cobranza_facturas': facturas,
+	'total': parseInt(total)
     }
     formCobranzaData['cliente'] = cliente;
 
     $.ajax({
-        type        : 'POST',
-        url         : '/api/cobranza/',
-        data        : JSON.stringify(formCobranzaData),
-        dataType    : 'json',
-        contentType : 'application/json',
-        encode      : true,
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-        }
+	type        : 'POST',
+	url         : '/api/cobranza/',
+	data        : JSON.stringify(formCobranzaData),
+	dataType    : 'json',
+	contentType : 'application/json',
+	encode      : true,
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
     }).done(function(data) {
-        if ('{{ perms.accounting.change_cobranza }}' === 'True'){
-            window.location.href = '{% url 'accounting:cobranza-update' pk=0 %}?create=1'.replace('0', data.id);
-        } else {
-            if ('{{ perms.accounting.view_cobranza }}' === 'True'){
-                window.location.href = '{% url 'accounting:cobranza-detail' pk=0 %}?create=1'.replace('0', data.id);
-            } else {
-                if ('{{ perms.accounting.list_cobranza }}' === 'True'){
-                    window.location.href = '{% url 'accounting:cobranza-list' %}?create=1';
-                } else {
-                    window.location.href = '{% url 'core:home' %}?create=1&type=cobranza';
-                }
-            }
-        }
+	if ('{{ perms.accounting.change_cobranza }}' === 'True'){
+	    window.location.href = '{% url 'accounting:cobranza-update' pk=0 %}?create=1'.replace('0', data.id);
+	} else {
+	    if ('{{ perms.accounting.view_cobranza }}' === 'True'){
+		window.location.href = '{% url 'accounting:cobranza-detail' pk=0 %}?create=1'.replace('0', data.id);
+	    } else {
+		if ('{{ perms.accounting.list_cobranza }}' === 'True'){
+		    window.location.href = '{% url 'accounting:cobranza-list' %}?create=1';
+		} else {
+		    window.location.href = '{% url 'core:home' %}?create=1&type=cobranza';
+		}
+	    }
+	}
     }).fail(function() {
-        alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
+	alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
     })
 });
 
 // funciones
 function validateForm(){
     var validator = $('#cobranza-form').validate({
-        lang: 'es',
+	lang: 'es',
     });
 
     // Validaciones dinamicas
     $('[name*="monto"]').each(function () {
-        $(this).rules('add', {
-            required: true,
-            notEqual: '0.0'
-        });
+	$(this).rules('add', {
+	    required: true,
+	    notEqual: '0.0'
+	});
     });
 
     // Metodos
     jQuery.validator.addMethod("notEqual", function(value, element, param) {
-        return this.optional(element) || value !== param;
+	return this.optional(element) || value !== param;
     }, "Este campo es obligatorio.");
 
     return $("#cobranza-form").valid();
@@ -500,19 +519,19 @@ function validateForm(){
 
 function displayMetodoPagoData(){
     $.ajax({
-        url: '/api/mediopago/',
-        success: function (response) {
-            var data = $.map(response, function (obj) {
-                obj.id = obj.id;
-                obj.text = obj.nombre
-                return obj;
-            });
-            $.each(data, function(key, value) {
-                $('.selector-metodo').append($("<option></option>")
-                                             .attr("value", value['id'])
-                                             .text(value['nombre']));
-            });
-        }
+	url: '/api/mediopago/',
+	success: function (response) {
+	    var data = $.map(response, function (obj) {
+		obj.id = obj.id;
+		obj.text = obj.nombre
+		return obj;
+	    });
+	    $.each(data, function(key, value) {
+		$('.selector-metodo').append($("<option></option>")
+					     .attr("value", value['id'])
+					     .text(value['nombre']));
+	    });
+	}
     });
 }
 
@@ -521,25 +540,25 @@ function setTotal(){
     let elementTotal = $('.input-total');
     let totalFactura = 0;
     $('.selector-factura').find(':selected').each(function(){
-        totalFactura += parseInt($(this).text().split('$')[1]);
+	totalFactura += parseInt($(this).text().split('$')[1]);
     });
     elementTotal.val(totalFactura);
 }
 
 function displayInfoCliente(obj){
     if(obj !== ''){
-        var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
-        data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
-        data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
-        data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
-        data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
-        data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
-        if (obj.localidad !== null){
-            data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
-            data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
-        }
-        data += `</dl></div></div>`;
-        $('#info_cliente').html(data);
+	var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
+	data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
+	data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
+	data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
+	data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
+	data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
+	if (obj.localidad !== null){
+	    data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
+	    data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+	}
+	data += `</dl></div></div>`;
+	$('#info_cliente').html(data);
     }
 }
 
