@@ -295,6 +295,19 @@ $('#cobranza_factura_1 .selector-factura').select2({
     $('.add-factura').removeClass('d-none');
 });
 
+// Restando retenciones al monto inicial
+$('.input-ganancias, .input-ingresos-brutos, .input-iva').on('input', function(e){
+    let wrapperFactura = $(this).closest('.wrapper-factura');
+    let montoFactura = wrapperFactura.find('.selector-factura').find(':selected').text().split('$')[1];
+    let montoGanancias = parseFloat(wrapperFactura.find('.input-ganancias').val());
+    let montoIngresosBrutos = parseFloat(wrapperFactura.find('.input-ingresos-brutos').val());
+    let montoIva = parseFloat(wrapperFactura.find('.input-iva').val());
+
+    let retenciones = montoGanancias + montoIngresosBrutos + montoIva;
+    let montoInicialTotal = montoFactura - retenciones;
+    let montoInicial = wrapperFactura.find('.input-monto').first().val(montoInicialTotal);
+});
+
 // Metodos de pago
 $('.selector-metodo').mousedown(function(){
     if ($(this).children().length == 1){
