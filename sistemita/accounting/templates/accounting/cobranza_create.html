@@ -89,6 +89,27 @@
 		  </div>
 		  <!-- End Factura Cliente -->
 
+		  <!-- Ganancias, ingresos e IVA -->
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
+		      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
+		      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <div class="col-4">
+		    <div class="form-group">
+		      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
+		      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <!-- End Ganancias, ingresos e IVA -->
+
 		  <!-- Metodo y Monto -->
 		  <div class="col-11 wrapper-pagos">
 		    <div class="row group-pagos">
@@ -96,7 +117,7 @@
 		      <div class="col-6">
 			<div class="form-group">
 			  <label class="requiredField">
-			    Metodo<span class="asteriskField">*</span>
+			    Método<span class="asteriskField">*</span>
 			  </label>
 			  <div>
 			    <select class="selector-metodo form-control" name="metodo_1_1" disabled required>
@@ -127,32 +148,11 @@
 		    <div class="form-group">
 		      <label></label>
 		      <div>
-			<button class="add-pago btn btn-success btn-xs mt-3 d-none"><i class="fas fa-plus-circle"></i></button>
+			<button class="add-pago btn btn-success btn-xs mt-3 d-none" title="Agregar método y monto"><i class="fas fa-plus-circle"></i></button>
 		      </div>
 		    </div>
 		  </div>
 		  <!-- End Agrega monto -->
-
-		  <!-- Ganancias, ingresos e IVA -->
-		  <div class="col-4">
-		    <div class="form-group">
-		      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
-		      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
-		    </div>
-		  </div>
-		  <div class="col-4">
-		    <div class="form-group">
-		      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
-		      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
-		    </div>
-		  </div>
-		  <div class="col-4">
-		    <div class="form-group">
-		      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
-		      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
-		    </div>
-		  </div>
-		  <!-- End Ganancias, ingresos e IVA -->
 
 		</div>
 	      </div>
@@ -161,7 +161,7 @@
 	      <!-- Agregar factura -->
 	      <div class="row">
 		<div class="offset-6 col-1">
-		  <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none"><i class="fas fa-plus-circle"></i></button>
+		  <button class="add-factura btn btn-success btn-xs float-right mr-2 d-none" title="Agregar factura"><i class="fas fa-plus-circle"></i></button>
 		</div>
 	      </div>
 	      <!-- End Agregar factura -->
@@ -293,6 +293,19 @@ $('#cobranza_factura_1 .selector-factura').select2({
     }
     setTotal();
     $('.add-factura').removeClass('d-none');
+});
+
+// Restando retenciones al monto inicial
+$('.input-ganancias, .input-ingresos-brutos, .input-iva').on('input', function(e){
+    let wrapperFactura = $(this).closest('.wrapper-factura');
+    let montoFactura = wrapperFactura.find('.selector-factura').find(':selected').text().split('$')[1];
+    let montoGanancias = parseFloat(wrapperFactura.find('.input-ganancias').val());
+    let montoIngresosBrutos = parseFloat(wrapperFactura.find('.input-ingresos-brutos').val());
+    let montoIva = parseFloat(wrapperFactura.find('.input-iva').val());
+
+    let retenciones = montoGanancias + montoIngresosBrutos + montoIva;
+    let montoInicialTotal = montoFactura - retenciones;
+    let montoInicial = wrapperFactura.find('.input-monto').first().val(montoInicialTotal);
 });
 
 // Metodos de pago
