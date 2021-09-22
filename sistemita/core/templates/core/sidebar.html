@@ -31,21 +31,21 @@
   {% if perms.core.list_cliente or perms.core.add_cliente %}
     <li class="nav-item{% if 'cliente' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_cliente %}
-        <a class="nav-link" href="{% url 'core:cliente-list' %}">
-          <i class="fas fa-user-friends"></i>
-          <span>Clientes</span>
-        </a>
+	<a class="nav-link" href="{% url 'core:cliente-list' %}">
+	  <i class="fas fa-user-friends"></i>
+	  <span>Clientes</span>
+	</a>
       {% endif %}
       {% if not perms.core.list_cliente and perms.core.add_cliente %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClientes" aria-expanded="true">
-          <i class="fas fa-user-friends"></i>
-          <span>Clientes</span>
-        </a>
-        <div id="collapseClientes" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'core:cliente-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClientes" aria-expanded="true">
+	  <i class="fas fa-user-friends"></i>
+	  <span>Clientes</span>
+	</a>
+	<div id="collapseClientes" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'core:cliente-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -55,21 +55,21 @@
   {% if perms.core.list_factura or perms.core.add_factura %}
     <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_factura %}
-        <a class="nav-link" href="{% url 'core:factura-list' %}">
-          <i class="fas fa-sticky-note"></i>
-          <span>Facturaci&oacute;n</span>
-        </a>
+	<a class="nav-link" href="{% url 'core:factura-list' %}">
+	  <i class="fas fa-sticky-note"></i>
+	  <span>Facturaci&oacute;n</span>
+	</a>
       {% endif %}
       {% if not perms.core.list_factura and perms.core.add_factura %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturas" aria-expanded="true">
-          <i class="fas fa-sticky-note"></i>
-          <span>Facturaci&oacute;n</span>
-        </a>
-        <div id="collapseFacturas" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'core:factura-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturas" aria-expanded="true">
+	  <i class="fas fa-sticky-note"></i>
+	  <span>Facturaci&oacute;n</span>
+	</a>
+	<div id="collapseFacturas" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'core:factura-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -79,21 +79,21 @@
   {% if perms.core.list_ordencompra or perms.core.add_ordencompra %}
     <li class="nav-item{% if 'ordencompra' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_ordencompra %}
-        <a class="nav-link" href="{% url 'core:ordencompra-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>&Oacute;rdenes de compra</span>
-        </a>
+	<a class="nav-link" href="{% url 'core:ordencompra-list' %}">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>&Oacute;rdenes de compra</span>
+	</a>
       {% endif %}
       {% if not perms.core.list_ordencompra and perms.core.add_ordencompra %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrdenescompra" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>&Oacute;rdenes de compra</span>
-        </a>
-        <div id="collapseOrdenescompra" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'core:ordencompra-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrdenescompra" aria-expanded="true">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>&Oacute;rdenes de compra</span>
+	</a>
+	<div id="collapseOrdenescompra" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'core:ordencompra-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -103,21 +103,21 @@
   {% if perms.accounting.add_cobranza or perms.accounting.list_cobranza %}
     <li class="nav-item{% if 'cobranza' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.accounting.list_cobranza %}
-        <a class="nav-link" href="{% url 'accounting:cobranza-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Cobranzas</span>
-        </a>
+	<a class="nav-link" href="{% url 'accounting:cobranza-list' %}">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>Cobranzas</span>
+	</a>
       {% endif %}
       {% if not perms.accounting.list_cobranza and perms.accounting.add_cobranza %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCobranza" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Cobranza</span>
-        </a>
-        <div id="collapseCobranza" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'accounting:cobranza-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCobranza" aria-expanded="true">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>Cobranza</span>
+	</a>
+	<div id="collapseCobranza" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'accounting:cobranza-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -140,21 +140,21 @@
   {% if perms.core.list_proveedor or perms.core.add_proveedor %}
     <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_proveedor %}
-        <a class="nav-link" href="{% url 'core:proveedor-list' %}">
-          <i class="fas fa-user-friends"></i>
-          <span>Proveedores</span>
-        </a>
+	<a class="nav-link" href="{% url 'core:proveedor-list' %}">
+	  <i class="fas fa-user-friends"></i>
+	  <span>Proveedores</span>
+	</a>
       {% endif %}
       {% if not perms.core.list_proveedor and perms.core.add_proveedor %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProveedor" aria-expanded="true">
-          <i class="fas fa-user-friends"></i>
-          <span>Proveedores</span>
-        </a>
-        <div id="collapseProveedor" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'core:proveedor-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProveedor" aria-expanded="true">
+	  <i class="fas fa-user-friends"></i>
+	  <span>Proveedores</span>
+	</a>
+	<div id="collapseProveedor" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'core:proveedor-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -163,23 +163,23 @@
 
   <!-- Factura Proveedores -->
   {% if perms.core.list_facturaproveedor or perms.core.add_facturaproveedor %}
-    <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name and not 'report' in  request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name and not 'report' in request.resolver_match.url_name and not 'by-user' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_facturaproveedor %}
-        <a class="nav-link" href="{% url 'core:facturaproveedor-list' %}">
-          <i class="fas fa-sticky-note"></i>
-          <span>Facturaci&oacute;n</span>
-        </a>
+	<a class="nav-link" href="{% url 'core:facturaproveedor-list' %}">
+	  <i class="fas fa-sticky-note"></i>
+	  <span>Facturaci&oacute;n</span>
+	</a>
       {% endif %}
       {% if not perms.core.list_facturaproveedor and perms.core.add_facturaproveedor %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturaProveedor" aria-expanded="true">
-          <i class="fas fa-sticky-note"></i>
-          <span>Facturaci&oacute;n</span>
-        </a>
-        <div id="collapseFacturaProveedor" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'core:facturaproveedor-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturaProveedor" aria-expanded="true">
+	  <i class="fas fa-sticky-note"></i>
+	  <span>Facturaci&oacute;n</span>
+	</a>
+	<div id="collapseFacturaProveedor" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'core:facturaproveedor-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -189,21 +189,21 @@
   {% if perms.accounting.list_pago or perms.accounting.add_pago %}
     <li class="nav-item{% if 'pago' in request.resolver_match.url_name and not 'mediopago' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.accounting.list_pago %}
-        <a class="nav-link" href="{% url 'accounting:pago-list' %}">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Pagos</span>
-        </a>
+	<a class="nav-link" href="{% url 'accounting:pago-list' %}">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>Pagos</span>
+	</a>
       {% endif %}
       {% if not perms.accounting.list_pago and perms.accounting.add_pago %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePago" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Pagos</span>
-        </a>
-        <div id="collapsePago" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'accounting:pago-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePago" aria-expanded="true">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>Pagos</span>
+	</a>
+	<div id="collapsePago" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'accounting:pago-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -213,12 +213,23 @@
   {% if perms.view_report_sales_facturaproveedor %}
     <li class="nav-item{% if 'facturaproveedor-report' == request.resolver_match.url_name %} active{% endif %}">
       <a class="nav-link" href="{% url 'core:facturaproveedor-report' %}">
-        <i class="fas fa-fw fa-chart-area"></i>
-        <span>Reporte ventas</span>
+	<i class="fas fa-fw fa-chart-area"></i>
+	<span>Reporte ventas</span>
       </a>
     </li>
   {% endif %}
   <!-- End Reporte ventas -->
+
+  <!-- Mis facturas -->
+  {% if perms.view_mis_facturasproveedor %}
+    <li class="nav-item{% if 'facturaproveedor-list-by-user' == request.resolver_match.url_name or 'facturaproveedor-detail-by-user' == request.resolver_match.url_name %} active{% endif %}">
+      <a class="nav-link" href="{% url 'core:facturaproveedor-list-by-user' %}">
+	<i class="fas fa-user-alt"></i>
+	<span>Mis facturas</span>
+      </a>
+    </li>
+  {% endif %}
+  <!-- End Mis facturas -->
 
   <!-- End Sección Proveedores -->
 
@@ -234,21 +245,21 @@
 
     <li class="nav-item{% if 'mediopago' in request.resolver_match.url_name  %} active{% endif %}">
       {% if perms.core.list_mediopago %}
-        <a class="nav-link" href="{% url 'core:mediopago-list' %}">
-          <i class="fas fa-wallet"></i>
-          <span>Medios de pago</span>
-        </a>
+	<a class="nav-link" href="{% url 'core:mediopago-list' %}">
+	  <i class="fas fa-wallet"></i>
+	  <span>Medios de pago</span>
+	</a>
       {% endif %}
       {% if not perms.core.list_mediopago and perms.core.add_mediopago %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMedioPago" aria-expanded="true">
-          <i class="fas fa-wallet"></i>
-          <span>Medio de pago</span>
-        </a>
-        <div id="collapseMedioPago" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'core:mediopago-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMedioPago" aria-expanded="true">
+	  <i class="fas fa-wallet"></i>
+	  <span>Medio de pago</span>
+	</a>
+	<div id="collapseMedioPago" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'core:mediopago-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -267,23 +278,23 @@
 
   <!-- Usuario -->
   {% if perms.authorization.list_user or perms.authorization.add_user %}
-    <li class="nav-item{% if 'user' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if 'user-list' == request.resolver_match.url_name %} active{% endif %}">
       {% if perms.authorization.list_user %}
-        <a class="nav-link" href="{% url 'authorization:user-list' %}">
-          <i class="fas fa-users"></i>
-          <span>Usuarios</span>
-        </a>
+	<a class="nav-link" href="{% url 'authorization:user-list' %}">
+	  <i class="fas fa-users"></i>
+	  <span>Usuarios</span>
+	</a>
       {% endif %}
       {% if not perms.authorization.list_user and perms.authorization.add_user %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true">
-          <i class="fas fa-users"></i>
-          <span>Usuarios</span>
-        </a>
-        <div id="collapseUser" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'authorization:user-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true">
+	  <i class="fas fa-users"></i>
+	  <span>Usuarios</span>
+	</a>
+	<div id="collapseUser" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'authorization:user-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -293,21 +304,21 @@
   {% if perms.auth.list_group or perms.auth.add_group %}
     <li class="nav-item{% if 'group' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.auth.list_group %}
-        <a class="nav-link" href="{% url 'authorization:group-list' %}">
-          <i class="fas fa-users"></i>
-          <span>Grupos</span>
-        </a>
+	<a class="nav-link" href="{% url 'authorization:group-list' %}">
+	  <i class="fas fa-users"></i>
+	  <span>Grupos</span>
+	</a>
       {% endif %}
       {% if not perms.auth.list_group and perms.auth.add_group %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGroup" aria-expanded="true">
-          <i class="fas fa-users"></i>
-          <span>Grupos</span>
-        </a>
-        <div id="collapseGroup" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'authorization:group-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGroup" aria-expanded="true">
+	  <i class="fas fa-users"></i>
+	  <span>Grupos</span>
+	</a>
+	<div id="collapseGroup" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'authorization:group-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -317,21 +328,21 @@
   {% if perms.auth.list_permission or perms.auth.add_permission %}
     <li class="nav-item{% if 'permission' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.auth.list_permission %}
-        <a class="nav-link" href="{% url 'authorization:permission-list' %}">
-          <i class="fas fa-key"></i>
-          <span>Permisos</span>
-        </a>
+	<a class="nav-link" href="{% url 'authorization:permission-list' %}">
+	  <i class="fas fa-key"></i>
+	  <span>Permisos</span>
+	</a>
       {% endif %}
       {% if not perms.auth.list_permission and perms.auth.add_permission %}
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePermission" aria-expanded="true">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Permisos</span>
-        </a>
-        <div id="collapsePermission" class="collapse">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a href="{% url 'authorization:permission-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-          </div>
-        </div>
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePermission" aria-expanded="true">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>Permisos</span>
+	</a>
+	<div id="collapsePermission" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'authorization:permission-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
       {% endif %}
     </li>
   {% endif %}
@@ -346,9 +357,9 @@
     </a>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Custom Components:</h6>
-        <a class="collapse-item" href="buttons.html">Buttons</a>
-        <a class="collapse-item" href="cards.html">Cards</a>
+	<h6 class="collapse-header">Custom Components:</h6>
+	<a class="collapse-item" href="buttons.html">Buttons</a>
+	<a class="collapse-item" href="cards.html">Cards</a>
       </div>
     </div>
   </li>
@@ -361,11 +372,11 @@
     </a>
     <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Custom Utilities:</h6>
-        <a class="collapse-item" href="utilities-color.html">Colors</a>
-        <a class="collapse-item" href="utilities-border.html">Borders</a>
-        <a class="collapse-item" href="utilities-animation.html">Animations</a>
-        <a class="collapse-item" href="utilities-other.html">Other</a>
+	<h6 class="collapse-header">Custom Utilities:</h6>
+	<a class="collapse-item" href="utilities-color.html">Colors</a>
+	<a class="collapse-item" href="utilities-border.html">Borders</a>
+	<a class="collapse-item" href="utilities-animation.html">Animations</a>
+	<a class="collapse-item" href="utilities-other.html">Other</a>
       </div>
     </div>
   </li>
@@ -386,14 +397,14 @@
     </a>
     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
-        <h6 class="collapse-header">Login Screens:</h6>
-        <a class="collapse-item" href="login.html">Login</a>
-        <a class="collapse-item" href="register.html">Register</a>
-        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-        <div class="collapse-divider"></div>
-        <h6 class="collapse-header">Other Pages:</h6>
-        <a class="collapse-item" href="404.html">404 Page</a>
-        <a class="collapse-item" href="blank.html">Blank Page</a>
+	<h6 class="collapse-header">Login Screens:</h6>
+	<a class="collapse-item" href="login.html">Login</a>
+	<a class="collapse-item" href="register.html">Register</a>
+	<a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+	<div class="collapse-divider"></div>
+	<h6 class="collapse-header">Other Pages:</h6>
+	<a class="collapse-item" href="404.html">404 Page</a>
+	<a class="collapse-item" href="blank.html">Blank Page</a>
       </div>
     </div>
   </li>

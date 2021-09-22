@@ -239,3 +239,58 @@ class FacturaProveedorImportTemplateView(PermissionRequiredMixin, TemplateView):
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
         return redirect('login')
+
+
+class FacturaProveedorByUserListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
+    """Vista que retorna un lista de facturas a proveedores."""
+
+    filterset_class = FacturaProveedorFilterSet
+    paginate_by = 10
+    permission_required = 'core.view_mis_facturasproveedor'
+    raise_exception = True
+    template_name = 'core/facturaproveedor_list.html'
+
+    def get_queryset(self):
+        """
+        Sobreescribe queryset.
+        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        """
+        user_email = self.request.user.email
+        queryset = FacturaProveedor.objects.filter(proveedor__correo=user_email).order_by('-creado')
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(Q(numero__icontains=search) | Q(total__icontains=search))
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
+
+        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(Sum('total'), Count('id'))
+        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(Sum('total'), Count('id'))
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
+
+        return context
+
+
+class FacturaProveedorByUserDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
+    """Vista que muestra el detalle de una factura a proveedor con retenciones."""
+
+    model = FacturaProveedor
+    permission_required = 'core.view_facturaproveedor'
+    raise_exception = True
+    template_name = 'core/facturaproveedor_user_detail.html'
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
