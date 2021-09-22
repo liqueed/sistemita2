@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags commontags %}
+{% block title %}Detalle de facturación Nro. {{object.numero|default:"SN" }} - Proveedor: {{ object.proveedor.razon_social }} | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
+      {% if perms.core.list_facturaproveedor %}
+      <a href="{% url 'core:facturaproveedor-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	<i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+      </a>
+      {% endif %}
+    </div>
+    {% include 'components/messages.html' %}
+
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+	<h6 class="m-0 font-weight-bold text-primary">Detalle de facturación Nro. {{ object.numero|default:"SN" }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
+      </div>
+      <div class="card-body">
+	<div class="table-responsive">
+	  <dl class="row">
+	    <dt class="col-sm-2">Fecha</dt>
+	    <dd class="col-sm-10">{{ object.fecha }}</dd>
+	    <dt class="col-sm-2">Número de factura</dt>
+	    <dd class="col-sm-10">{% if object.numero %}{{ object.numero }}{% else %}-{% endif %}</dd>
+	    <dt class="col-sm-2">Tipo</dt>
+	    <dd class="col-sm-10">{{ object.get_tipo }}</dd>
+	    <dt class="col-sm-2">Proveedor</dt>
+	    <dd class="col-sm-10">{{ object.proveedor }}</dd>
+	    <dt class="col-sm-2">Factura de cliente</dt>
+	    <dd class="col-sm-10">
+	      {% if object.factura %}
+		{{ object.factura }}
+		<a class="btn btn-light btn-xs ml-1" target="_blank" href="{% url 'core:factura-detail' object.factura.pk %}"><i class="far fa-eye"></i></a>
+	      {% else %}
+		-
+	      {% endif %}
+	    </dd>
+	    <dt class="col-sm-2">Detalle</dt>
+	    <dd class="col-sm-10">{% if object.detalle %}{{ object.detalle }}{% else %}-{% endif %}</dd>
+	    <dt class="col-sm-2">Neto</dt>
+	    <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.neto }}</dd>
+	    <dt class="col-sm-2">IVA %</dt>
+	    <dd class="col-sm-10">{{ object.iva }}</dd>
+	    <dt class="col-sm-2">Total</dt>
+	    <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.total }}</dd>
+	    <dt class="col-sm-2">Pagado</dt>
+	    <dd class="col-sm-10">{% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}</dd>
+	    <dt class="col-sm-2 mt-4"><strong>Retenciones</strong></dt>
+	    <dd class="col-sm-10"></dd>
+	    <dt class="col-sm-2"><hr class="sidebar-divider"></dt>
+	    {% for pago_factura in object.pagofactura_set.all %}
+	      <dd class="col-sm-10 mt-2"></dd>
+	      <dt class="col-sm-2">Ganancias</dt>
+	      <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.ganancias }}</dd>
+	      <dd class="col-sm-8">
+		<a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=ganancia" target="_blank">
+		  <i class="fas fa-file-pdf fa-xs"></i> Comprobante
+		</a>
+	      </dd>
+	      <dt class="col-sm-2">Ingresos brutos</dt>
+	      <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.ingresos_brutos }}</dd>
+	      <dd class="col-sm-8">
+		<a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=ingresos" target="_blank">
+		  <i class="fas fa-file-pdf fa-xs"></i> Comprobante
+		</a>
+	      </dd>
+	      <dt class="col-sm-2">Iva</dt>
+	      <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.iva }}</dd>
+	      <dd class="col-sm-8">
+		<a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=iva" target="_blank">
+		  <i class="fas fa-file-pdf fa-xs"></i> Comprobante
+		</a>
+	      </dd>
+	    {% endfor %}
+	  </dl>
+	  {% if perms.core.list_facturaproveedor %}
+	    <a href="{% url 'core:facturaproveedor-list-by-user' %}" class="btn btn-primary float-right">Volver</a>
+	  {% endif %}
+	</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

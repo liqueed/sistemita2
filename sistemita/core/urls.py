@@ -20,6 +20,8 @@ from sistemita.core.views.facturascliente import (
     FacturaUpdateView,
 )
 from sistemita.core.views.facturasproveedor import (
+    FacturaProveedorByUserDetailView,
+    FacturaProveedorByUserListView,
     FacturaProveedorCreateView,
     FacturaProveedorDeleteView,
     FacturaProveedorDetailView,
@@ -80,6 +82,16 @@ urlpatterns = [
     path('proveedor/<int:pk>/editar/', ProveedorUpdateView.as_view(), name='proveedor-update'),
     path('proveedor/<int:pk>/eliminar/', ProveedorDeleteView.as_view(), name='proveedor-delete'),
     path('factura-proveedor/', FacturaProveedorListView.as_view(), name='facturaproveedor-list'),
+    path(
+        'factura-proveedor/mis-facturas/',
+        FacturaProveedorByUserListView.as_view(),
+        name='facturaproveedor-list-by-user',
+    ),
+    path(
+        'factura-proveedor/mis-facturas/<int:pk>/',
+        FacturaProveedorByUserDetailView.as_view(),
+        name='facturaproveedor-detail-by-user',
+    ),
     path('factura-proveedor/agregar/', FacturaProveedorCreateView.as_view(), name='facturaproveedor-create'),
     path('factura-proveedor/<int:pk>/', FacturaProveedorDetailView.as_view(), name='facturaproveedor-detail'),
     path('factura-proveedor/<int:pk>/editar/', FacturaProveedorUpdateView.as_view(), name='facturaproveedor-update'),
