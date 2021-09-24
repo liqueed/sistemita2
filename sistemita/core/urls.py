@@ -30,7 +30,7 @@ from sistemita.core.views.facturasproveedor import (
     FacturaProveedorReportListView,
     FacturaProveedorUpdateView,
 )
-from sistemita.core.views.home import HomeView, error_403
+from sistemita.core.views.home import HomeView, error_403, error_404, error_500
 from sistemita.core.views.mediopago import (
     MedioPagoCreateView,
     MedioPagoDeleteView,
@@ -54,6 +54,8 @@ from sistemita.core.views.proveedores import (
 )
 
 handler400 = error_403
+handler404 = error_404
+handler500 = error_500
 
 urlpatterns = [
     # Home

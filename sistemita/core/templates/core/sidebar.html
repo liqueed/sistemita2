@@ -210,7 +210,7 @@
   <!-- End Pagos -->
 
   <!-- Reporte ventas -->
-  {% if perms.view_report_sales_facturaproveedor %}
+  {% if perms.core.view_report_sales_facturaproveedor %}
     <li class="nav-item{% if 'facturaproveedor-report' == request.resolver_match.url_name %} active{% endif %}">
       <a class="nav-link" href="{% url 'core:facturaproveedor-report' %}">
 	<i class="fas fa-fw fa-chart-area"></i>
@@ -221,7 +221,7 @@
   <!-- End Reporte ventas -->
 
   <!-- Mis facturas -->
-  {% if perms.view_mis_facturasproveedor %}
+  {% if perms.core.view_mis_facturasproveedor %}
     <li class="nav-item{% if 'facturaproveedor-list-by-user' == request.resolver_match.url_name or 'facturaproveedor-detail-by-user' == request.resolver_match.url_name %} active{% endif %}">
       <a class="nav-link" href="{% url 'core:facturaproveedor-list-by-user' %}">
 	<i class="fas fa-user-alt"></i>
