@@ -18,9 +18,10 @@ def error_403(request, exception):
     return render(request, '403.html', context={'exception': exception}, status=403)
 
 
-def error_404(request):
+def error_404(request, exception):
     """Return template 404."""
-    return render(request, '404.html')
+    print('here')
+    return render(request, '404.html', context={'exception': exception}, status=404)
 
 
 def error_500(request):

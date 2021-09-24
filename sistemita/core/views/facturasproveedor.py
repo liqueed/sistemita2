@@ -10,7 +10,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
 from django.db.models import Count, Q, Sum
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView
@@ -285,9 +285,15 @@ class FacturaProveedorByUserDetailView(PermissionRequiredMixin, SuccessMessageMi
     """Vista que muestra el detalle de una factura a proveedor con retenciones."""
 
     model = FacturaProveedor
-    permission_required = 'core.view_facturaproveedor'
+    permission_required = 'core.view_mis_facturasproveedor'
     raise_exception = True
     template_name = 'core/facturaproveedor_user_detail.html'
+
+    def get_object(self, queryset=None):
+        """Return the object the view is displaying."""
+
+        user_email = self.request.user.email
+        return get_object_or_404(FacturaProveedor, pk=self.kwargs.get('pk'), proveedor__correo=user_email)
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
