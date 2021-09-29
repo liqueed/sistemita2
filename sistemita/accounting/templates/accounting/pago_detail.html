@@ -6,81 +6,83 @@
     <div class="d-sm-flex align-items-center justify-content-between">
       <h1 class="h3 text-gray-800">Pagos a Proveedores</h1>
       {% if perms.accounting.list_pago %}
-        <a href="{% url 'accounting:pago-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
-          <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
-        </a>
+	<a href="{% url 'accounting:pago-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	  <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
       {% endif %}
     </div>
 
     <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create %}d-none{% endif %}" role="alert">
      {% if request.GET.create %}El pago ha sido creado exitosamente.{% endif %}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
+	<span aria-hidden="true">×</span>
       </button>
     </div>
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Detalle Pago Nro. {{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
+	<h6 class="m-0 font-weight-bold text-primary">Detalle Pago Nro. {{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
+	<div class="table-responsive">
 
-          <dl class="row">
-            <dt class="col-sm-2">Fecha</dt>
-            <dd class="col-sm-10">{{ object.fecha }}</dd>
-            <dt class="col-sm-2">Proveedor</dt>
-            <dd class="col-sm-10">{{ object.proveedor.razon_social }} - CUIT: {{ object.proveedor.cuit}}</dd>
-            {% for pago_factura in object.pago_facturas.all %}
-              <dt class="col-sm-2 mt-2"><hr class="sidebar-divider"></dt>
-            <dd class="col-sm-10 mt-2"></dd>
-            <dt class="col-sm-2">Factura Nro. {{ pago_factura.factura.numero|default:"SN" }}</dt>
-            <dd class="col-sm-10">
-              {{ pago_factura.factura.fecha }} - {{ pago_factura.factura.get_moneda_display }} {{ pago_factura.factura.total }}
-            </dd>
-            <dt class="col-sm-2">Pagos</dt>
-            <dd class="col-sm-10"></dd>
-            {% for pago in pago_factura.pago_factura_pagos.all %}
-            <dt class="col-sm-2">Nro. {{ forloop.counter }}</dt>
-            <dd class="col-sm-10">
-              <strong>Metodo:</strong> {{ pago.metodo }} -
-              <strong>Pago:</strong> {{ pago_factura.factura.get_moneda_display }} {{ pago.monto }}
-            </dd>
-          {% endfor %}
-            <dt class="col-sm-2">Ganancias</dt>
-            <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.ganancias }}</dd>
-            <dd class="col-sm-8">
-              <a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=ganancia" target="_blank">
-                <i class="fas fa-file-pdf fa-xs"></i> Comprobante
-              </a>
-            </dd>
-            <dt class="col-sm-2">Ingresos brutos</dt>
-            <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.ingresos_brutos }}</dd>
-            <dd class="col-sm-8">
-              <a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=ingresos" target="_blank">
-                <i class="fas fa-file-pdf fa-xs"></i> Comprobante
-              </a>
-            </dd>
-            <dt class="col-sm-2">Iva</dt>
-            <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.iva }}</dd>
-            <dd class="col-sm-8">
-              <a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=iva" target="_blank">
-                <i class="fas fa-file-pdf fa-xs"></i> Comprobante
-              </a>
-            </dd>
-          {% endfor %}
-          <dt class="col-sm-2 mt-3">TOTAL</dt>
-          <dd class="col-sm-10 mt-3"><strong>{{ object.total }}</strong></dd>
-          <dt class="col-sm-2">Pagado</dt>
-          <dd class="col-sm-10">{% if object.pagado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}</dd>
-          </dl>
-          {% if perms.accounting.list_pago %}
-            <a href="{% url 'accounting:pago-list' %}" class="btn btn-primary float-right">Volver</a>
-          {% endif %}
-          <a class="btn btn-primary float-right mr-1 text-white" href="{% url 'accounting:pago-generate-pdf' object.pk %}" target="_blank">
-            <i class="fas fa-file-pdf fa-sm text-white-50"></i> Comprobante
-          </a>
-        </div>
+	  <dl class="row">
+	    <dt class="col-sm-2">Fecha</dt>
+	    <dd class="col-sm-10">{{ object.fecha }}</dd>
+	    <dt class="col-sm-2">Proveedor</dt>
+	    <dd class="col-sm-10">{{ object.proveedor.razon_social }} - CUIT: {{ object.proveedor.cuit}}</dd>
+	    {% for pago_factura in object.pago_facturas.all %}
+	      <dt class="col-sm-2 mt-2"><hr class="sidebar-divider"></dt>
+	    <dd class="col-sm-10 mt-2"></dd>
+	    <dt class="col-sm-2">Factura Nro. </dt>
+	    <dd class="col-sm-10">{{ pago_factura.factura.numero|default:"SN" }}</dd>
+	    <dt class="col-sm-2">Fecha de pago</dt>
+	    <dd class="col-sm-10">{{ pago_factura.factura.fecha }}</dd>
+	    <dt class="col-sm-2">Monto</dt>
+	    <dd class="col-sm-10">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.factura.total }}</dd>
+	    <dt class="col-sm-2 mb-2">Pagos</dt>
+	    <dd class="col-sm-10 mb-2"></dd>
+	    {% for pago in pago_factura.pago_factura_pagos.all %}
+	    <dt class="col-sm-2">Nro. {{ forloop.counter }}</dt>
+	    <dd class="col-sm-10">
+	      <strong>Metodo:</strong> {{ pago.metodo }} -
+	      <strong>Pago:</strong> {{ pago_factura.factura.get_moneda_display }} {{ pago.monto }}
+	    </dd>
+	  {% endfor %}
+	    <dt class="col-sm-2">Ganancias</dt>
+	    <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.ganancias }}</dd>
+	    <dd class="col-sm-8">
+	      <a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=ganancia" target="_blank">
+		<i class="fas fa-file-pdf fa-xs"></i> Comprobante
+	      </a>
+	    </dd>
+	    <dt class="col-sm-2">Ingresos brutos</dt>
+	    <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.ingresos_brutos }}</dd>
+	    <dd class="col-sm-8">
+	      <a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=ingresos" target="_blank">
+		<i class="fas fa-file-pdf fa-xs"></i> Comprobante
+	      </a>
+	    </dd>
+	    <dt class="col-sm-2">Iva</dt>
+	    <dd class="col-sm-2">{{ pago_factura.factura.get_moneda_display }} {{ pago_factura.iva }}</dd>
+	    <dd class="col-sm-8">
+	      <a class="btn btn-secondary btn-xs ml-3" href="{% url 'accounting:pago-factura-retencion-pdf' pago_factura.pk %}?type=iva" target="_blank">
+		<i class="fas fa-file-pdf fa-xs"></i> Comprobante
+	      </a>
+	    </dd>
+	  {% endfor %}
+	  <dt class="col-sm-2 mt-3">TOTAL</dt>
+	  <dd class="col-sm-10 mt-3"><strong>{{ object.total }}</strong></dd>
+	  <dt class="col-sm-2">Pagado</dt>
+	  <dd class="col-sm-10">{% if object.pagado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}</dd>
+	  </dl>
+	  {% if perms.accounting.list_pago %}
+	    <a href="{% url 'accounting:pago-list' %}" class="btn btn-primary float-right">Volver</a>
+	  {% endif %}
+	  <a class="btn btn-primary float-right mr-1 text-white" href="{% url 'accounting:pago-generate-pdf' object.pk %}" target="_blank">
+	    <i class="fas fa-file-pdf fa-sm text-white-50"></i> Comprobante
+	  </a>
+	</div>
       </div>
     </div>
   </div>
