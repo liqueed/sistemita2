@@ -122,6 +122,7 @@ class FacturaProveedorForm(forms.ModelForm):
         """Inicialización de formulario."""
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
+        self.fields['fecha'].label = 'Fecha de pago'
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
 
