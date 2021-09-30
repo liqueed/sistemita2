@@ -9,14 +9,15 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 # Sistemita
 from sistemita.core.utils.strings import (
-    _MESSAGE_SUCCESS_CREATED,
     MESSAGE_403,
+    MESSAGE_SUCCESS_CREATED,
+    MESSAGE_SUCCESS_DELETE,
     MESSAGE_SUCCESS_UPDATE,
 )
 from sistemita.core.views.home import error_403
@@ -131,7 +132,7 @@ class CostoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     model = Costo
     permission_required = 'expense.add_costo'
     raise_exception = True
-    success_message = _MESSAGE_SUCCESS_CREATED.format('costo')
+    success_message = MESSAGE_SUCCESS_CREATED.format('costo')
     template_name = 'expense/costo_form.html'
 
     def get_success_url(self):
@@ -177,6 +178,23 @@ class CostoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
         return reverse('expense:costo-update', args=(self.object.id,))
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class CostoDeleteView(PermissionRequiredMixin, DeleteView):
+    """Vista que elimina un costo."""
+
+    model = Costo
+    permission_required = 'expense.delete_costo'
+    raise_exception = True
+    success_message = MESSAGE_SUCCESS_DELETE.format('costo')
+    success_url = reverse_lazy('expense:costo-list')
+    template_name = 'expense/costo_confirm_delete.html'
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
