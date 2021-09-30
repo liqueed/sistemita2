@@ -8,6 +8,7 @@ from sistemita.expense.views import (
     CostoCreateView,
     CostoDetailView,
     CostoListView,
+    CostoUpdateView,
     FondoListView,
 )
 
@@ -16,4 +17,5 @@ urlpatterns = [
     path('costos/', CostoListView.as_view(), name='costo-list'),
     path('costos/agregar', CostoCreateView.as_view(), name='costo-create'),
     path('costos/<int:pk>/', CostoDetailView.as_view(), name='costo-detail'),
+    path('costos/<int:pk>/editar/', CostoUpdateView.as_view(), name='costo-update'),
 ]

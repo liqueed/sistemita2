@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
 {% block title %}
-    {% if object.pk %}Editar Costo {{ object.descripcion }}{% else %}Agregar Costo{% endif %} | Liqueed
+    {% if object.pk %}Editar Costo: {{ object.descripcion }}{% else %}Agregar Costo{% endif %} | Liqueed
 {% endblock %}
 {% block header %}
   <script src="{% static 'js/select2_placeholder.js' %}"></script>
@@ -24,7 +24,7 @@
 	  {% if not object.pk %}
 	    Agregar Costo
 	  {% else %}
-	    Editar Costo {{ object.descripcion }}
+	    Editar Costo: {{ object.descripcion }}
 	  {% endif %}
 	</h6>
       </div>

@@ -28,6 +28,22 @@
 	</div>
       </div>
 
+      <div class="col-xl-3 col-md-6 mb-4">
+	<div class="card border-left-danger shadow h-100 py-2">
+	  <div class="card-body">
+	    <div class="row no-gutters align-items-center">
+	      <div class="col mr-2">
+		<div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Costos U$D</div>
+		<div class="h5 mb-0 font-weight-bold text-gray-800">U$D {{ fondo_dollar }}</div>
+	      </div>
+	      <div class="col-auto">
+		<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </div>
+
    </div>
     <!-- End of Cards -->
 
@@ -65,11 +81,18 @@
 		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
 		  <td>{{ object.descripcion }}</td>
 		  <td>{{ object.fondo }}</td>
-		  <td><div class="float-right">{{ object.monto }}</div></td>
+		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
 		  <td class="text-center">
+		    {% if perms.expense.view_costo %}
 		    <a class="mr-1 text-decoration-none" href="{% url 'expense:costo-detail' object.pk %}">
 		      <i class="far fa-eye"></i>
 		    </a>
+		    {% endif %}
+		    {% if perms.expense.change_costo %}
+		    <a class="mr-1 text-decoration-none" href="{% url 'expense:costo-update' object.pk %}">
+		      <i class="fas fa-wrench"></i>
+		    </a>
+		    {% endif %}
 		  </td>
 		</tr>
 		{% empty %}

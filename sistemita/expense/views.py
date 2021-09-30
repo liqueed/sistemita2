@@ -11,10 +11,14 @@ from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 
 # Sistemita
-from sistemita.core.utils.strings import _MESSAGE_SUCCESS_CREATED, MESSAGE_403
+from sistemita.core.utils.strings import (
+    _MESSAGE_SUCCESS_CREATED,
+    MESSAGE_403,
+    MESSAGE_SUCCESS_UPDATE,
+)
 from sistemita.core.views.home import error_403
 from sistemita.expense.forms import CostoForm
 from sistemita.expense.models import Costo, Fondo
@@ -153,6 +157,26 @@ class CostoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     model = Costo
     permission_required = 'expense.view_costo'
     raise_exception = True
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class CostoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+    """Vista que modifica un costo."""
+
+    form_class = CostoForm
+    model = Costo
+    permission_required = 'expense.change_costo'
+    raise_exception = True
+    success_message = MESSAGE_SUCCESS_UPDATE.format('costo')
+
+    def get_success_url(self):
+        """Luego de editar al objecto muestra la misma vista."""
+        return reverse('expense:costo-update', args=(self.object.id,))
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
