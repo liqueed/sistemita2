@@ -158,6 +158,17 @@ class Command(BaseCommand):
                     'codename': 'view_mis_facturasproveedor',
                     'content_type': ContentType.objects.get(model='facturaproveedor'),
                 },
+                # Módulo Fondo
+                {
+                    'name': 'Puede listar fondos',
+                    'codename': 'list_fondo',
+                    'content_type': ContentType.objects.get(model='expense'),
+                },
+                {
+                    'name': 'Puede listar costos ',
+                    'codename': 'list_costo',
+                    'content_type': ContentType.objects.get(model='expense'),
+                },
             ]
 
             for permission in permissions:

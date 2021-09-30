@@ -12,6 +12,7 @@ from django import forms
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.cliente import Cliente, Factura, OrdenCompra
 from sistemita.core.models.entidad import Distrito, Localidad
+from sistemita.expense.models import Fondo
 
 # Utils
 from sistemita.core.utils.strings import (
@@ -156,6 +157,7 @@ class FacturaForm(forms.ModelForm):
                 Div(Div('cobrado', css_class='col-2'), css_class='row'),
                 Div(Div('archivos', template='components/input_files.html'), css_class='row'),
                 Div(css_id='adjuntos', css_class='row'),
+                Div(Div('porcentaje_fondo', css_class='col-2'), css_class='row'),
             ),
             FormActions(
                 Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
@@ -180,6 +182,7 @@ class FacturaForm(forms.ModelForm):
             'total',
             'cobrado',
             'archivos',
+            'porcentaje_fondo',
         )
 
     def clean_numero(self):
@@ -248,6 +251,7 @@ class FacturaForm(forms.ModelForm):
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
             instance = Factura.objects.get(pk=instance.pk)
+            Fondo.objects.filter(factura=instance).update(moneda=instance.moneda, monto=instance.porcentaje_fondo_monto)
 
         for f in self.files.getlist('archivos'):
             document = Archivo.objects.create(documento=f)

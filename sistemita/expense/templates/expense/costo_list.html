@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Fondo | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Costos</h1>
+    </div>
+
+    <!-- Cards -->
+    <div class="row">
+
+      <div class="col-xl-3 col-md-6 mb-4">
+	<div class="card border-left-danger shadow h-100 py-2">
+	  <div class="card-body">
+	    <div class="row no-gutters align-items-center">
+	      <div class="col mr-2">
+		<div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Costos $</div>
+		<div class="h5 mb-0 font-weight-bold text-gray-800">$ {{ fondo_peso }}</div>
+	      </div>
+	      <div class="col-auto">
+		<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </div>
+
+   </div>
+    <!-- End of Cards -->
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+	<h6 class="m-0 font-weight-bold text-primary">Listado de costos</h6>
+      </div>
+      <div class="card-body">
+	<div class="table-responsive">
+	  <div class="row float-right">
+	    {% include 'components/filter_facturas.html' %}
+	    {% include 'components/search_form.html' %}
+	  </div>
+	  <table class="table table-bordered table-hover table-sortable" cellspacing="0" width="100%">
+	    <thead>
+	      <tr>
+		<th data-order="numero" class="sortable">Número</th>
+		<th data-order="fecha" class="sortable">Fecha</th>
+		<th data-order="cliente" class="sortable">Cliente</th>
+		<th data-order="total" class="sortable">Monto</th>
+		<th>Porcentaje</th>
+		<th data-order="total" class="sortable">Monto porcentaje</th>
+		<th>Disponible</th>
+		<th></th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% for object in object_list %}
+		<tr>
+		  <td>
+		    <a href="{% url 'core:factura-detail' object.pk %}">
+		      {{ object.fondo.factura.numero }}
+		    </a>
+		  </td>
+		  <td>{{ object.factura.fecha|date:"d-m-Y" }}</td>
+		  <td>{{ object.factura.cliente.razon_social }}</td>
+		  <td><div class="float-right">{{ object.factura.moneda_monto }}</div></td>
+		  <td><div class="float-right">{{ object.factura.porcentaje_fondo }}</div></td>
+		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
+		  <td>
+		    <div class="text-center">
+		      {% if object.disponible %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
+		    </div>
+		  </td>
+		  <td class="text-center">
+		    <a class="mr-1 text-decoration-none" href="{% url 'core:factura-detail' object.factura.pk %}">
+		      <i class="far fa-eye"></i>
+		    </a>
+		  </td>
+		</tr>
+		{% empty %}
+		<tr>
+		  <td colspan="8">Sin resultados</td>
+		</tr>
+	      {% endfor %}
+	    </tbody>
+	  </table>
+	  {% include 'components/pagination.html' %}
+	</div>
+      </div>
+    </div>
+  </div>
+<script src="{% static 'js/tableSort.js' %}"></script>
+{% endblock %}

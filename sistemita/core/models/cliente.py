@@ -2,6 +2,8 @@
 
 # Django
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Utils
 from sistemita.core.constants import MONEDAS
@@ -10,6 +12,7 @@ from sistemita.core.constants import MONEDAS
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.entidad import Distrito, Localidad, Provincia
 from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
+from sistemita.expense.models import Fondo
 
 
 class Cliente(TimeStampedModel, models.Model):
@@ -57,10 +60,21 @@ class Factura(FacturaAbstract):
 
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
+    porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
         return '{} -{} - {} - {}'.format(self.fecha, self.numero, self.cliente.razon_social, self.moneda_monto)
+
+    @property
+    def porcentaje_fondo_monto(self):
+        """Retorno el monto del porcentaje de fondo."""
+        return round(float(self.total) * self.porcentaje_fondo / 100, 2)
+
+    @property
+    def moneda_porcentaje_fondo_monto(self):
+        """Retorno el monto del porcentaje de fondo."""
+        return f'{self.get_moneda_display()} {self.porcentaje_fondo_monto}'
 
     class Meta:
         """Configuraciones del modelo."""
@@ -89,3 +103,10 @@ class OrdenCompra(TimeStampedModel, models.Model):
         ordering = ('fecha',)
         verbose_name = 'orden de compra'
         verbose_name_plural = 'ordenes de compras'
+
+
+@receiver(post_save, sender=Factura)
+def post_save_factura(sender, instance, created, **kwargs):
+    """Crea una instancia de fondo asociada a una factura si no existe."""
+    if not Fondo.objects.filter(factura=instance).exists():
+        Fondo.objects.create(factura=instance, monto=instance.porcentaje_fondo_monto)

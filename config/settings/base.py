@@ -78,6 +78,7 @@ LOCAL_APPS = [
     'sistemita.accounting.apps.AccountingAppConfig',
     'sistemita.api.apps.APIAppConfig',
     'sistemita.authorization.apps.AuthorizationAppConfig',
+    'sistemita.expense.apps.ExpenseAppConfig',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
