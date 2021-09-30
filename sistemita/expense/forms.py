@@ -22,8 +22,8 @@ class CostoForm(forms.ModelForm):
                 'Datos generales',
                 Div(Div('fecha', css_class='col-4'), css_class='row'),
                 Div(Div('descripcion', css_class='col-6'), css_class='row'),
-                Div(Div('fondo', css_class='col-6'), css_class='row'),
-                Div(Div('monto', css_class='col-6'), css_class='row'),
+                Div(Div('fondo', css_class='col-8'), css_class='row'),
+                Div(Div('moneda', css_class='col-2'), Div('monto', css_class='col-2'), css_class='row'),
             ),
             FormActions(
                 Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
@@ -38,5 +38,6 @@ class CostoForm(forms.ModelForm):
             'fecha',
             'descripcion',
             'fondo',
+            'moneda',
             'monto',
         )

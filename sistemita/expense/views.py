@@ -10,7 +10,7 @@ from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView
 
 # Sistemita
@@ -95,6 +95,24 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
             pass
         return queryset
 
+    def get_context_data(self, **kwargs):
+        """Obtiene datos para incluir en los reportes."""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+
+        fondo_peso = 0
+        for row in queryset.filter(fondo__moneda='P'):
+            fondo_peso += row.monto
+
+        fondo_dollar = 0
+        for row in queryset.filter(fondo__moneda='D'):
+            fondo_dollar += row.monto
+
+        context['fondo_dollar'] = fondo_dollar
+        context['fondo_peso'] = fondo_peso
+
+        return context
+
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
         if self.raise_exception and self.request.user.is_authenticated:
@@ -116,11 +134,25 @@ class CostoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('expense.change_costo'):
             return reverse('expense:costo-update', args=(self.object.id,))
-        # if self.request.user.has_perm('expense.view_costo'):
-        #     return reverse('expense:costo-detail', args=(self.object.id,))
-        # if self.request.user.has_perm('expense.list_costo'):
-        #     return reverse('expense:costo-list')
+        if self.request.user.has_perm('expense.view_costo'):
+            return reverse('expense:costo-detail', args=(self.object.id,))
+        if self.request.user.has_perm('expense.list_costo'):
+            return reverse('expense:costo-list')
         return reverse('core:home')
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class CostoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
+    """Vista que muestra el detalle de un costo."""
+
+    model = Costo
+    permission_required = 'expense.view_costo'
+    raise_exception = True
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
