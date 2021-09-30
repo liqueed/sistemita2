@@ -9,11 +9,14 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.views.generic import ListView
+from django.views.generic.edit import CreateView
 
 # Sistemita
-from sistemita.core.utils.strings import MESSAGE_403
+from sistemita.core.utils.strings import _MESSAGE_SUCCESS_CREATED, MESSAGE_403
 from sistemita.core.views.home import error_403
+from sistemita.expense.forms import CostoForm
 from sistemita.expense.models import Costo, Fondo
 
 
@@ -35,9 +38,7 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         order_by = self.request.GET.get('order_by', None)
         try:
             if search:
-                queryset = queryset.filter(
-                    Q(numero=search) | Q(cliente__razon_social__icontains=search)
-                )
+                queryset = queryset.filter(Q(numero=search) | Q(cliente__razon_social__icontains=search))
             if order_by:
                 queryset = queryset.order_by(order_by)
         except FieldError:
@@ -87,14 +88,39 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         order_by = self.request.GET.get('order_by', None)
         try:
             if search:
-                queryset = queryset.filter(
-                    Q(numero=search) | Q(cliente__razon_social__icontains=search)
-                )
+                queryset = queryset.filter(Q(numero=search) | Q(cliente__razon_social__icontains=search))
             if order_by:
                 queryset = queryset.order_by(order_by)
         except FieldError:
             pass
         return queryset
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class CostoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    """Vista para agregar un costo."""
+
+    form_class = CostoForm
+    model = Costo
+    permission_required = 'expense.add_costo'
+    raise_exception = True
+    success_message = _MESSAGE_SUCCESS_CREATED.format('costo')
+    template_name = 'expense/costo_form.html'
+
+    def get_success_url(self):
+        """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
+        if self.request.user.has_perm('expense.change_costo'):
+            return reverse('expense:costo-update', args=(self.object.id,))
+        # if self.request.user.has_perm('expense.view_costo'):
+        #     return reverse('expense:costo-detail', args=(self.object.id,))
+        # if self.request.user.has_perm('expense.list_costo'):
+        #     return reverse('expense:costo-list')
+        return reverse('core:home')
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

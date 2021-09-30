@@ -33,7 +33,7 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
         queryset = Permission.objects.filter(
-            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
+            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core', 'expense'],
             content_type__model__in=[
                 'archivo',
                 'cliente',
@@ -47,6 +47,8 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
                 'permission',
                 'user',
                 'group',
+                'fondo',
+                'costo',
             ],
         ).order_by('content_type__model', 'name')
 

@@ -8,18 +8,16 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Div, Fieldset, Layout, Reset, Submit
 from django import forms
 
-# Models
+# Sistemita
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.cliente import Cliente, Factura, OrdenCompra
 from sistemita.core.models.entidad import Distrito, Localidad
-from sistemita.expense.models import Fondo
-
-# Utils
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_PERMISSION_ERROR,
     MESSAGE_TOTAL_ZERO,
 )
+from sistemita.expense.models import Fondo
 
 
 class ClienteForm(forms.ModelForm):
