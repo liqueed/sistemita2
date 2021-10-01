@@ -66,11 +66,11 @@
 	  <table class="table table-bordered table-hover table-sortable" cellspacing="0" width="100%">
 	    <thead>
 	      <tr>
-		<th data-order="numero" class="sortable">Número</th>
+		<th data-order="fondo__factura__numero" class="sortable">Número</th>
+		<th data-order="fondo__factura_cliente" class="sortable">Factura</th>
 		<th data-order="fecha" class="sortable">Fecha</th>
 		<th data-order="descripcion" class="sortable">Descripción</th>
-		<th data-order="cliente" class="sortable">Factura</th>
-		<th data-order="total" class="sortable">Monto</th>
+		<th data-order="monto" class="sortable">Monto</th>
 		<th></th>
 	      </tr>
 	    </thead>
@@ -78,9 +78,9 @@
 	      {% for object in object_list %}
 		<tr>
 		  <td><a href="{% url 'expense:costo-detail' object.pk %}">{{ object.fondo.factura.numero }}</a></td>
+		  <td>{{ object.fondo }}</td>
 		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
 		  <td>{{ object.descripcion }}</td>
-		  <td>{{ object.fondo }}</td>
 		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
 		  <td class="text-center">
 		    {% if perms.expense.view_costo %}
