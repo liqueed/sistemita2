@@ -135,6 +135,12 @@ class CostoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     success_message = MESSAGE_SUCCESS_CREATED.format('costo')
     template_name = 'expense/costo_form.html'
 
+    def form_valid(self, form):
+        """Si el formulario es valido el fondo ya no está disponible."""
+        self.object = form.save()
+        Fondo.objects.filter(pk=self.object.fondo.pk).update(disponible=False)
+        return super().form_valid(form)
+
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
         if self.request.user.has_perm('expense.change_costo'):
