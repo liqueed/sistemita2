@@ -175,6 +175,18 @@ class CostoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     raise_exception = True
     success_message = MESSAGE_SUCCESS_UPDATE.format('costo')
 
+    def post(self, request, *args, **kwargs):
+        """En caso de que el costo cambie de fondo el fondo anterior pasa a estar disponible y el nuevo no. """
+        self.object = self.get_object()
+        fondo_pk = self.object.fondo.pk
+        fondo_pk_new = int(request.POST.get('fondo'))
+
+        if fondo_pk_new != fondo_pk:
+            Fondo.objects.filter(pk=fondo_pk).update(disponible=True)
+        Fondo.objects.filter(pk=fondo_pk_new).update(disponible=False)
+
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
         return reverse('expense:costo-update', args=(self.object.id,))
