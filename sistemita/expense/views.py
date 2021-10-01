@@ -11,8 +11,9 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django_filters.views import FilterView
 
 # Sistemita
 from sistemita.core.utils.strings import (
@@ -22,13 +23,15 @@ from sistemita.core.utils.strings import (
     MESSAGE_SUCCESS_UPDATE,
 )
 from sistemita.core.views.home import error_403
+from sistemita.expense.filters import CostoFilterSet, FondoFilterSet
 from sistemita.expense.forms import CostoForm
 from sistemita.expense.models import Costo, Fondo
 
 
-class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
+class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que muestra un listado de facturas que constituyen el fondo."""
 
+    filterset_class = FondoFilterSet
     paginate_by = 10
     permission_required = 'expense.list_fondo'
     raise_exception = True
@@ -44,7 +47,9 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         order_by = self.request.GET.get('order_by', None)
         try:
             if search:
-                queryset = queryset.filter(Q(numero=search) | Q(cliente__razon_social__icontains=search))
+                queryset = queryset.filter(
+                    Q(factura__numero__icontains=search) | Q(factura__cliente__razon_social__icontains=search)
+                )
             if order_by:
                 queryset = queryset.order_by(order_by)
         except FieldError:
@@ -76,9 +81,10 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         return redirect('login')
 
 
-class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
+class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que muestra un listado de costos."""
 
+    filterset_class = CostoFilterSet
     paginate_by = 10
     permission_required = 'expense.list_costo'
     raise_exception = True
