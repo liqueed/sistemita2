@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView
@@ -182,7 +183,7 @@ class CostoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = MESSAGE_SUCCESS_UPDATE.format('costo')
 
     def post(self, request, *args, **kwargs):
-        """En caso de que el costo cambie de fondo el fondo anterior pasa a estar disponible y el nuevo no. """
+        """En caso de que el costo cambie de fondo el fondo anterior pasa a estar disponible y el nuevo no."""
         self.object = self.get_object()
         fondo_pk = self.object.fondo.pk
         fondo_pk_new = int(request.POST.get('fondo'))
@@ -213,6 +214,17 @@ class CostoDeleteView(PermissionRequiredMixin, DeleteView):
     success_message = MESSAGE_SUCCESS_DELETE.format('costo')
     success_url = reverse_lazy('expense:costo-list')
     template_name = 'expense/costo_confirm_delete.html'
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Al eliminar el costo el fondo queda disponible.
+        """
+        self.object = self.get_object()
+        fondo_pk = self.object.fondo.pk
+        success_url = self.get_success_url()
+        self.object.delete()
+        Fondo.objects.filter(pk=fondo_pk).update(disponible=True)
+        return HttpResponseRedirect(success_url)
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
