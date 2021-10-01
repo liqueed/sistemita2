@@ -100,7 +100,11 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         order_by = self.request.GET.get('order_by', None)
         try:
             if search:
-                queryset = queryset.filter(Q(numero=search) | Q(cliente__razon_social__icontains=search))
+                queryset = queryset.filter(
+                    Q(fondo__factura__numero__icontains=search)
+                    | Q(fondo__factura__cliente__razon_social__icontains=search)
+                    | Q(descripcion__icontains=search)
+                )
             if order_by:
                 queryset = queryset.order_by(order_by)
         except FieldError:
