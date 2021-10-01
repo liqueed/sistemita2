@@ -265,6 +265,36 @@
   {% endif %}
   <!-- End Sección Medio de Pago -->
 
+  <!-- Sección Fondo y Costos -->
+  {% if perms.expense.list_fondo or perms.expense.list_costo %}
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+      Fondo y Costos
+    </div>
+
+    {% if perms.expense.list_fondo %}
+      <li class="nav-item{% if 'fondo' in request.resolver_match.url_name %} active{% endif %}">
+	<a class="nav-link" href="{% url 'expense:fondo-list' %}">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>Fondo</span>
+	</a>
+      </li>
+    {% endif %}
+    {% if perms.expense.list_costo %}
+      <li class="nav-item{% if 'costo' in request.resolver_match.url_name %} active{% endif %}">
+	<a class="nav-link" href="{% url 'expense:costo-list' %}">
+	  <i class="fas fa-fw fa-chart-area"></i>
+	  <span>Costos</span>
+	</a>
+      </li>
+    {% endif %}
+
+  {% endif %}
+  <!-- End Fondos y Costos -->
+
   <!-- Sección Autenticación -->
   {% if perms.authorization.add_user or perms.authorization.list_user or perms.auth.add_group or perms.auth.list_group or perms.auth.add_permission or perms.auth.list_permission %}
     <!-- Divider -->
@@ -349,34 +379,5 @@
   <!-- End Permisos -->
   <!-- End Sección Autenticación -->
 
-  <!-- Sección Fondo y Costos -->
-  {% if perms.expense.list_fondo or perms.expense.list_costo %}
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-      Fondo y Costos
-    </div>
-
-    {% if perms.expense.list_fondo %}
-      <li class="nav-item{% if 'fondo' in request.resolver_match.url_name %} active{% endif %}">
-	<a class="nav-link" href="{% url 'expense:fondo-list' %}">
-	  <i class="fas fa-fw fa-chart-area"></i>
-	  <span>Fondo</span>
-	</a>
-      </li>
-    {% endif %}
-    {% if perms.expense.list_costo %}
-      <li class="nav-item{% if 'costo' in request.resolver_match.url_name %} active{% endif %}">
-	<a class="nav-link" href="{% url 'expense:costo-list' %}">
-	  <i class="fas fa-fw fa-chart-area"></i>
-	  <span>Costos</span>
-	</a>
-      </li>
-    {% endif %}
-
-  {% endif %}
-  <!-- End Fondos y Costos -->
 </ul>
 <!-- End of Sidebar -->
