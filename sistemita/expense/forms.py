@@ -7,7 +7,7 @@ from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
 from django import forms
 
 # Models
-from sistemita.expense.models import Costo
+from sistemita.expense.models import Costo, Fondo
 
 
 class CostoForm(forms.ModelForm):
@@ -16,6 +16,8 @@ class CostoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
+        self.fields['fondo'].queryset = Fondo.objects.filter(disponible=True)
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
