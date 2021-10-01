@@ -106,16 +106,16 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
 
-        fondo_peso = 0
-        for row in queryset.filter(fondo__moneda='P'):
-            fondo_peso += row.monto
+        costo_peso = 0
+        for row in queryset.filter(moneda='P'):
+            costo_peso += row.monto
 
-        fondo_dollar = 0
-        for row in queryset.filter(fondo__moneda='D'):
-            fondo_dollar += row.monto
+        costo_dollar = 0
+        for row in queryset.filter(moneda='D'):
+            costo_dollar += row.monto
 
-        context['fondo_dollar'] = fondo_dollar
-        context['fondo_peso'] = fondo_peso
+        context['costo_dollar'] = costo_dollar
+        context['costo_peso'] = costo_peso
 
         return context
 
