@@ -39,6 +39,8 @@ class Command(BaseCommand):
             if name:
                 Permission.objects.filter(pk=permission.pk).update(name=name)
 
+        self.stdout.write(self.style.SUCCESS(f'Permisos traducidos exitosamente.'))
+
     def change_app_name(self, name, start, translation):
         """Traduce nombre del permiso según una acción dada."""
         try:

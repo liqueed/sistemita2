@@ -51,7 +51,7 @@ class Costo(TimeStampedModel):
     class Meta:
         """Configuraciones del modelo."""
 
-        db_table = 'expense_gastos'
+        db_table = 'expense_costos'
         ordering = ('creado',)
-        verbose_name = 'gasto'
-        verbose_name_plural = 'gastos'
+        verbose_name = 'costo'
+        verbose_name_plural = 'costos'
