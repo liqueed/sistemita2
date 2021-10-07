@@ -16,7 +16,9 @@ class CostoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
-        self.fields['fondo'].queryset = Fondo.objects.filter(disponible=True)
+        instance = kwargs.get('instance', None)
+        if not instance:
+            self.fields['fondo'].queryset = Fondo.objects.filter(disponible=True)
 
         self.helper = FormHelper()
         self.helper.layout = Layout(

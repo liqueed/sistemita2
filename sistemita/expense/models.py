@@ -14,7 +14,7 @@ class Fondo(TimeStampedModel):
     factura = models.ForeignKey('core.Factura', blank=False, on_delete=models.CASCADE)
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
-    disponible = models.BooleanField(default=True)
+    disponible = models.BooleanField(default=False)
 
     @property
     def moneda_monto(self):

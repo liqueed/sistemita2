@@ -249,7 +249,13 @@ class FacturaForm(forms.ModelForm):
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
             instance = Factura.objects.get(pk=instance.pk)
-            Fondo.objects.filter(factura=instance).update(moneda=instance.moneda, monto=instance.porcentaje_fondo_monto)
+
+        # Fondo
+        Fondo.objects.filter(factura=instance).update(moneda=instance.moneda, monto=instance.porcentaje_fondo_monto)
+        if instance.cobrado:
+            Fondo.objects.filter(factura=instance).update(disponible=True)
+        else:
+            Fondo.objects.filter(factura=instance).update(disponible=False)
 
         for f in self.files.getlist('archivos'):
             document = Archivo.objects.create(documento=f)
