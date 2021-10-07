@@ -24,36 +24,36 @@ class PermissionForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 '',
-                Div(
-                    Div('name', css_class='col-4'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('content_type', css_class='col-4'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('codename', css_class='col-4'),
-                    css_class='row'
-                ),
+                Div(Div('name', css_class='col-4'), css_class='row'),
+                Div(Div('content_type', css_class='col-4'), css_class='row'),
+                Div(Div('codename', css_class='col-4'), css_class='row'),
             ),
             FormActions(
-                Submit('submit', 'Guardar', css_class='float-right'),
-                Reset('reset', 'Limpiar', css_class='float-right')
-            )
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
         )
 
     content_type = forms.ModelChoiceField(
         queryset=ContentType.objects.filter(
-            app_label__in=['accounting', 'auth', 'authorization', 'core'],
+            app_label__in=['accounting', 'auth', 'authorization', 'core', 'expense'],
             model__in=[
-                 'archivo',
-                 'cliente', 'factura', 'ordencompra', 'cobranza',
-                 'proveedor', 'facturaproveedor', 'pago',
-                 'mediopago',
-                 'permission', 'user', 'group'
-            ]
-        ).order_by('model'), label='Modulo'
+                'archivo',
+                'cliente',
+                'factura',
+                'ordencompra',
+                'cobranza',
+                'proveedor',
+                'facturaproveedor',
+                'pago',
+                'mediopago',
+                'permission',
+                'user',
+                'group',
+                'fondo',
+                'costo',
+            ],
+        ).order_by('model'),
+        label='Modulo',
     )
 
     class Meta:
