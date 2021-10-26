@@ -103,10 +103,3 @@ class OrdenCompra(TimeStampedModel, models.Model):
         ordering = ('fecha',)
         verbose_name = 'orden de compra'
         verbose_name_plural = 'ordenes de compras'
-
-
-@receiver(post_save, sender=Factura)
-def post_save_factura(sender, instance, created, **kwargs):
-    """Crea una instancia de fondo asociada a una factura si no existe."""
-    if not Fondo.objects.filter(factura=instance).exists():
-        Fondo.objects.create(factura=instance, monto=instance.porcentaje_fondo_monto)

@@ -11,9 +11,10 @@ from sistemita.core.models.utils import TimeStampedModel
 class Fondo(TimeStampedModel):
     """Modelo de fondos."""
 
-    factura = models.ForeignKey('core.Factura', blank=False, on_delete=models.CASCADE)
+    factura = models.ForeignKey('core.Factura', blank=False, on_delete=models.CASCADE, related_name='factura_fondo')
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    monto_disponible = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     disponible = models.BooleanField(default=False)
 
     @property
@@ -21,9 +22,14 @@ class Fondo(TimeStampedModel):
         """Retorna la moneda y el monto."""
         return f'{self.get_moneda_display()} {self.monto}'
 
+    @property
+    def moneda_monto_disponible(self):
+        """Retorna la moneda y el monto."""
+        return f'{self.get_moneda_display()} {self.monto_disponible}'
+
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
-        return f'{self.factura}'
+        return f'{self.factura.fecha} - {self.factura.cliente} - {self.moneda_monto} | {self.moneda_monto_disponible}'
 
     class Meta:
         """Configuraciones del modelo."""

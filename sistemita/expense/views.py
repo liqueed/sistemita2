@@ -69,8 +69,8 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         for row in queryset.filter(factura__moneda='D', disponible=True):
             fondo_dollar += row.factura.porcentaje_fondo_monto
 
-        context['fondo_dollar'] = fondo_dollar
-        context['fondo_peso'] = fondo_peso
+        context['fondo_dollar'] = round(fondo_dollar, 2)
+        context['fondo_peso'] = round(fondo_peso, 2)
 
         return context
 
@@ -124,8 +124,8 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         for row in queryset.filter(moneda='D'):
             costo_dollar += row.monto
 
-        context['costo_dollar'] = costo_dollar
-        context['costo_peso'] = costo_peso
+        context['costo_dollar'] = round(costo_dollar, 2)
+        context['costo_peso'] = round(costo_peso, 2)
 
         return context
 
@@ -145,12 +145,6 @@ class CostoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
     raise_exception = True
     success_message = MESSAGE_SUCCESS_CREATED.format('costo')
     template_name = 'expense/costo_form.html'
-
-    def form_valid(self, form):
-        """Si el formulario es valido el fondo ya no está disponible."""
-        self.object = form.save()
-        Fondo.objects.filter(pk=self.object.fondo.pk).update(disponible=False)
-        return super().form_valid(form)
 
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
@@ -191,18 +185,6 @@ class CostoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
     permission_required = 'expense.change_costo'
     raise_exception = True
     success_message = MESSAGE_SUCCESS_UPDATE.format('costo')
-
-    def post(self, request, *args, **kwargs):
-        """En caso de que el costo cambie de fondo el fondo anterior pasa a estar disponible y el nuevo no."""
-        self.object = self.get_object()
-        fondo_pk = self.object.fondo.pk
-        fondo_pk_new = int(request.POST.get('fondo'))
-
-        if fondo_pk_new != fondo_pk:
-            Fondo.objects.filter(pk=fondo_pk).update(disponible=True)
-        Fondo.objects.filter(pk=fondo_pk_new).update(disponible=False)
-
-        return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""

@@ -67,6 +67,7 @@
 		<th data-order="factura__total" class="sortable">Monto</th>
 		<th>Porcentaje</th>
 		<th data-order="monto" class="sortable">Monto porcentaje</th>
+		<th data-order="monto_disponible" class="sortable">Monto disponible</th>
 		<th>Disponible</th>
 		<th></th>
 	      </tr>
@@ -84,6 +85,7 @@
 		  <td><div class="float-right">{{ object.factura.moneda_monto }}</div></td>
 		  <td><div class="float-right">{{ object.factura.porcentaje_fondo }}</div></td>
 		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
+		  <td><div class="float-right">{{ object.moneda_monto_disponible }}</div></td>
 		  <td>
 		    <div class="text-center">
 		      {% if object.disponible %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
