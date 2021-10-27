@@ -45,7 +45,7 @@ class Costo(TimeStampedModel):
 
     fecha = models.DateField(blank=False)
     descripcion = models.CharField('descripción', blank=False, max_length=500)
-    fondo = models.ForeignKey(Fondo, blank=False, on_delete=models.CASCADE)
+    fondo = models.ForeignKey(Fondo, blank=False, on_delete=models.CASCADE, related_name='costos')
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 

@@ -16,6 +16,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django_filters.views import FilterView
 
 # Sistemita
+from sistemita.core.utils.export import export_excel
 from sistemita.core.utils.strings import (
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
@@ -36,6 +37,14 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     permission_required = 'expense.list_fondo'
     raise_exception = True
     template_name = 'expense/fondo_list.html'
+
+    def get(self, request, *args, **kwargs):
+        """Genera reporte en formato excel."""
+        format_list = request.GET.get('formato', False)
+        if format_list == 'xls':
+            return export_excel(self.request, self.get_queryset())
+
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         """
