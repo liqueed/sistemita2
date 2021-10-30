@@ -5,6 +5,7 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
 from django import forms
+from django.db.models import Sum
 
 # Models
 from sistemita.expense.models import Costo, Fondo
@@ -13,15 +14,16 @@ from sistemita.expense.models import Costo, Fondo
 class CostoForm(forms.ModelForm):
     """Formulario del modelo Costo."""
 
+    monto = forms.DecimalField(required=True, min_value=1, decimal_places=2, max_digits=12, initial=0.0)
+
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
         if not instance:
-            self.fields['fondo'].queryset = Fondo.objects.filter(
-                disponible=True,
-                monto_disponible__gt=0
-            ).order_by('-factura__fecha')
+            self.fields['fondo'].queryset = Fondo.objects.filter(disponible=True, monto_disponible__gt=0).order_by(
+                '-factura__fecha'
+            )
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -62,8 +64,16 @@ class CostoForm(forms.ModelForm):
             if monto > fondo.monto_disponible:
                 raise forms.ValidationError({'monto': 'El monto debe ser menor o igual al monto disponible.'})
         else:
-            if monto > fondo.monto:
-                raise forms.ValidationError({'monto': 'El monto debe ser menor o igual al monto.'})
+            # Al editar valida que no supere el monto original sumando a otros costos para el mismo fondo
+            other_costos = Costo.objects.filter(fondo=self.instance.fondo).exclude(pk=self.instance.pk)
+            if other_costos.exists():
+                sum_costos = other_costos.aggregate(otros_costos=Sum('monto')).get('otros_costos')
+                # el monto ingresado es mayor
+                if monto > self.instance.monto:
+                    if (sum_costos + monto) > self.instance.fondo.monto:
+                        raise forms.ValidationError(
+                            {'monto': 'La suma de costos para este fondo supera el monto del fondo.'}
+                        )
 
         return data
 
