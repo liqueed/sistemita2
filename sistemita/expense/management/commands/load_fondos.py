@@ -19,7 +19,8 @@ class Command(BaseCommand):
                     factura=factura,
                     moneda=factura.moneda,
                     monto=factura.porcentaje_fondo_monto,
-                    monto_disponible=factura.porcentaje_fondo_monto
+                    monto_disponible=factura.porcentaje_fondo_monto,
+                    disponible=factura.cobrado
                 )
             else:
                 Fondo.objects.filter(
@@ -27,6 +28,7 @@ class Command(BaseCommand):
                 ).update(
                     moneda=factura.moneda,
                     monto=factura.porcentaje_fondo_monto,
-                    monto_disponible=factura.porcentaje_fondo_monto
+                    monto_disponible=factura.porcentaje_fondo_monto,
+                    disponible=factura.cobrado
                 )
         self.stdout.write(self.style.SUCCESS('Done'))
