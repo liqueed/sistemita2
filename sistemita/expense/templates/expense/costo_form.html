@@ -45,4 +45,14 @@
     allowClear: true,
     language: 'es'
   });
+
+  $('#id_fondo').change(function(){
+      var optionSelected = $(this).find("option:selected");
+      var valueSelected  = optionSelected.text();
+      if (valueSelected.includes('USD')){
+	  $('#id_moneda').val('D');
+      } else {
+	  $('#id_moneda').val('P');
+      }
+  });
 {% endblock %}

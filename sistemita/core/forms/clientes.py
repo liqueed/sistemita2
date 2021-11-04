@@ -249,7 +249,8 @@ class FacturaForm(forms.ModelForm):
             Fondo.objects.create(
                 factura=instance,
                 monto=instance.porcentaje_fondo_monto,
-                monto_disponible=instance.porcentaje_fondo_monto
+                monto_disponible=instance.porcentaje_fondo_monto,
+                disponible=instance.cobrado
             )
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
