@@ -218,13 +218,16 @@ class CostoDeleteView(PermissionRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         """
-        Al eliminar el costo el fondo queda disponible.
+        Al eliminar el costo el fondo queda disponible y se le suma el monto del costo eliminado al
+        monto disponible.
         """
         self.object = self.get_object()
-        fondo_pk = self.object.fondo.pk
-        success_url = self.get_success_url()
+        fondo = self.object.fondo
+        new_monto_disponible = fondo.monto_disponible + self.object.monto
         self.object.delete()
-        Fondo.objects.filter(pk=fondo_pk).update(disponible=True)
+        Fondo.objects.filter(pk=fondo.pk).update(disponible=True, monto_disponible=new_monto_disponible)
+
+        success_url = self.get_success_url()
         return HttpResponseRedirect(success_url)
 
     def handle_no_permission(self):
