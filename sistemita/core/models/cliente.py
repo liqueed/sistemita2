@@ -2,8 +2,6 @@
 
 # Django
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 # Utils
 from sistemita.core.constants import MONEDAS
@@ -12,7 +10,6 @@ from sistemita.core.constants import MONEDAS
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.entidad import Distrito, Localidad, Provincia
 from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
-from sistemita.expense.models import Fondo
 
 
 class Cliente(TimeStampedModel, models.Model):
