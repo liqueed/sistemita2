@@ -11,6 +11,7 @@ from sistemita.accounting.models.cobranza import (
 )
 from sistemita.api.clientes.serializers import ClienteSerializer
 from sistemita.core.models.cliente import Cliente, Factura
+from sistemita.expense.models import Fondo
 
 
 class CobranzaFacturaPagoSerializer(serializers.ModelSerializer):
@@ -113,7 +114,13 @@ class CobranzaSerializer(serializers.ModelSerializer):
                 # La factura pasa a estar cobrada
                 factura_entry = factura['factura']
                 Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
-
+                # Agrega fondo
+                Fondo.objects.create(
+                    factura=factura_entry,
+                    monto=factura_entry.porcentaje_fondo_monto,
+                    monto_disponible=factura_entry.porcentaje_fondo_monto,
+                    disponible=True
+                )
                 cobranza_factura = CobranzaFactura.objects.create(
                     cobranza=cobranza,
                     factura=factura_entry,
