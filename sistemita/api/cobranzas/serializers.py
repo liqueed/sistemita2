@@ -89,16 +89,6 @@ class CobranzaSerializer(serializers.ModelSerializer):
         monedas = []
         pks = []
         for row in data:
-            if row.get('data', False):
-                if row['data']['action'] in ['update', 'delete']:
-                    # Valida que no haya costos asociados
-                    for fondo in (
-                        self.instance.cobranza_facturas.filter(pk=row['data']['id']).first().factura.factura_fondo.all()
-                    ):
-                        if len(fondo.costos.all()) > 0:
-                            action = 'editar' if row['data']['action'] == 'update' else 'eliminar'
-                            raise serializers.ValidationError(f'Hay costos asociados a la factura que desea {action}.')
-
             monedas.append(row.get('factura').moneda)
             pks.append(row.get('factura').pk)
 

@@ -21,6 +21,7 @@ from sistemita.accounting.models.cobranza import Cobranza
 from sistemita.core.models.cliente import Factura
 from sistemita.core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 from sistemita.core.views.home import error_403
+from sistemita.expense.models import Fondo
 
 
 class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -133,6 +134,7 @@ class CobranzaDeleteView(PermissionRequiredMixin, DeleteView):
         cobranza_facturas = self.object.cobranza_facturas.all()
         for c_factura in cobranza_facturas:
             Factura.objects.filter(pk=c_factura.factura.id).update(cobrado=False)
+            Fondo.objects.filter(factura=c_factura.factura).update(disponible=False)
 
         success_url = self.get_success_url()
         self.object.delete()
