@@ -29,7 +29,10 @@ class Fondo(TimeStampedModel):
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
-        return f'{self.factura.fecha} - {self.factura.cliente} - {self.moneda_monto} | {self.moneda_monto_disponible}'
+        return (
+            f'{self.factura.fecha} - {self.factura.numero} - {self.factura.cliente.razon_social} - '
+            f'{self.moneda_monto} | {self.moneda_monto_disponible}'
+        )
 
     class Meta:
         """Configuraciones del modelo."""

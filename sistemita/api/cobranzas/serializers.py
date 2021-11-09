@@ -89,6 +89,16 @@ class CobranzaSerializer(serializers.ModelSerializer):
         monedas = []
         pks = []
         for row in data:
+            if row.get('data', False):
+                if row['data']['action'] in ['update', 'delete']:
+                    # Valida que no haya costos asociados
+                    for fondo in (
+                        self.instance.cobranza_facturas.filter(pk=row['data']['id']).first().factura.factura_fondo.all()
+                    ):
+                        if len(fondo.costos.all()) > 0:
+                            action = 'editar' if row['data']['action'] == 'update' else 'eliminar'
+                            raise serializers.ValidationError(f'Hay costos asociados a la factura que desea {action}.')
+
             monedas.append(row.get('factura').moneda)
             pks.append(row.get('factura').pk)
 
@@ -115,13 +125,8 @@ class CobranzaSerializer(serializers.ModelSerializer):
                 # La factura pasa a estar cobrada
                 factura_entry = factura['factura']
                 Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
-                # Agrega fondo
-                Fondo.objects.create(
-                    factura=factura_entry,
-                    monto=factura_entry.porcentaje_fondo_monto,
-                    monto_disponible=factura_entry.porcentaje_fondo_monto,
-                    disponible=True
-                )
+                # Habilita fondo
+                Fondo.objects.filter(factura=factura_entry).update(disponible=True)
                 cobranza_factura = CobranzaFactura.objects.create(
                     cobranza=cobranza,
                     factura=factura_entry,
@@ -154,6 +159,8 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     # La factura del cliente pasa a estar cobrada
                     factura_entry = factura['factura']
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
+                    # Se habilita el fondo asociado a la factura
+                    Fondo.objects.filter(factura=factura_entry).update(disponible=True)
                     cobranza_factura = CobranzaFactura.objects.create(
                         cobranza=instance,
                         factura=factura['factura'],
@@ -179,9 +186,11 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     if cobranza_factura.factura.id != factura_entry.id:
                         # Si la factura es diferente, la anterior pasa a estar no cobrada
                         Factura.objects.filter(pk=cobranza_factura.factura.id).update(cobrado=False)
+                        Fondo.objects.filter(factura=cobranza_factura.factura).update(disponible=False)
 
                     # La factura actual del cliente pasa a estar cobrada
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
+                    Fondo.objects.filter(factura=factura_entry).update(disponible=True)
 
                     CobranzaFactura.objects.filter(pk=factura['data']['id']).update(
                         factura=factura_entry,
@@ -209,10 +218,10 @@ class CobranzaSerializer(serializers.ModelSerializer):
                 elif factura['data']['action'] == 'delete':
                     # Elimino la factura cobranza
 
-                    # La facturas asociadas pasan a ser no cobradas
+                    # La facturas asociadas pasan a ser no cobradas y los fondos asociados pasar a no estar disponibles
                     factura_entry = factura['factura']
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=False)
-
+                    Fondo.objects.filter(factura=factura_entry.factura).update(disponible=False)
                     CobranzaFactura.objects.get(pk=factura['data']['id']).delete()
 
             instance.save()
