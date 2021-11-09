@@ -62,7 +62,9 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         try:
             if search:
                 queryset = queryset.filter(
-                    Q(numero=search) | Q(cliente__razon_social__icontains=search) | Q(cliente__cuit__icontains=search)
+                    Q(numero__icontains=search)
+                    | Q(cliente__razon_social__icontains=search)
+                    | Q(cliente__cuit__icontains=search)
                 )
             if order_by:
                 queryset = queryset.order_by(order_by)

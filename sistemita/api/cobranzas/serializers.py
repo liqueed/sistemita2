@@ -82,6 +82,22 @@ class CobranzaSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Client does not exist.') from not_exist
         return data
 
+    def validate_cobranza_facturas(self, data):
+        """Valida que las facturas sean de la misma moneda y que no haya dos facturas repetidas."""
+        monedas = []
+        pks = []
+        for row in data:
+            monedas.append(row.get('factura').moneda)
+            pks.append(row.get('factura').pk)
+
+        if len(monedas) > 1 and len(set(monedas)) > 1:
+            raise serializers.ValidationError('Las facturas deben ser de la misma monedas.')
+
+        if len(pks) > 1 >= len(set(pks)):
+            raise serializers.ValidationError('Hay facturas repetidas.')
+
+        return data
+
     def create(self, validated_data):
         """Genera una cobranza con factura/s y su/s correspondiente/s pago/s."""
         try:
