@@ -72,7 +72,7 @@ class FacturaProveedorSerializer(serializers.ModelSerializer):
         """Configuraciones del serializer."""
 
         model = FacturaProveedor
-        fields = ['id', 'fecha', 'numero', 'proveedor', 'tipo', 'iva', 'neto', 'cobrado', 'total', 'archivos']
+        fields = ['id', 'fecha', 'numero', 'proveedor', 'tipo', 'iva', 'neto', 'cobrado', 'moneda', 'total', 'archivos']
 
 
 class FacturaProveedorBeforeImportSerializer(serializers.Serializer):
