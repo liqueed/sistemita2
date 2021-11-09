@@ -659,7 +659,6 @@ function validateFacturas(){
     $('.selector-factura').each(function(){
 	pks.push($(this).attr('data-id'));
     });
-    console.log(pks);
     if (pks.length > 1){
 	let allEqual = new Set(pks).size == 1;
 	if (allEqual === false){

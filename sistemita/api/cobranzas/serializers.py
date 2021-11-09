@@ -69,6 +69,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
             'id',
             'fecha',
             'cliente',
+            'moneda',
             'total',
             'cobranza_facturas',
         )
