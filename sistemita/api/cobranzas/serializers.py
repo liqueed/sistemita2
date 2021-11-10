@@ -89,14 +89,20 @@ class CobranzaSerializer(serializers.ModelSerializer):
         monedas = []
         pks = []
         for row in data:
-            monedas.append(row.get('factura').moneda)
-            pks.append(row.get('factura').pk)
+            if row.get('data', False):
+                if row['data']['action'] in ['add', 'update']:
+                    monedas.append(row.get('factura').moneda)
+                    pks.append(row.get('factura').pk)
+            else:
+                monedas.append(row.get('factura').moneda)
+                pks.append(row.get('factura').pk)
 
         if len(monedas) > 1 and len(set(monedas)) > 1:
             raise serializers.ValidationError('Las facturas deben ser de la misma monedas.')
 
-        if len(pks) > 1 >= len(set(pks)):
-            raise serializers.ValidationError('Hay facturas repetidas.')
+        if len(pks) > 1:
+            if len(pks) != len(set(pks)):
+                raise serializers.ValidationError('Hay facturas repetidas.')
 
         return data
 

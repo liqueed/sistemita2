@@ -660,8 +660,8 @@ function validateFacturas(){
 	pks.push($(this).attr('data-id'));
     });
     if (pks.length > 1){
-	let allEqual = new Set(pks).size == 1;
-	if (allEqual === false){
+	let notEqual = new Set(pks).size == pks.length;
+	if (notEqual){
 	    $('.error-pks').remove();
 	    if ($('.alert-errors').children().length === 0) {
 		$('.alert-errors').addClass('d-none');
