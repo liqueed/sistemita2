@@ -49,7 +49,7 @@ class CobranzaFacturaSerializer(serializers.ModelSerializer):
         """Clase meta."""
 
         model = CobranzaFactura
-        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'cobranza_factura_pagos')
+        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'suss', 'cobranza_factura_pagos')
         read_only_fields = ('id',)
 
 
@@ -129,6 +129,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     ganancias=factura['ganancias'],
                     ingresos_brutos=factura['ingresos_brutos'],
                     iva=factura['iva'],
+                    suss=factura['suss'],
                 )
                 # Pagos
                 pagos = factura['cobranza_factura_pagos']
@@ -163,6 +164,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
                         iva=factura['iva'],
+                        suss=factura['suss'],
                     )
 
                     # pagos
@@ -193,6 +195,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
                         iva=factura['iva'],
+                        suss=factura['suss'],
                     )
 
                     # Pagos

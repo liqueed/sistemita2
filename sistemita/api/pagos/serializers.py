@@ -44,7 +44,7 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
         """Clase meta."""
 
         model = PagoFactura
-        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'pago_factura_pagos')
+        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'suss', 'pago_factura_pagos')
         read_only_fields = ('id',)
 
 
@@ -150,6 +150,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
                     ganancias=factura['ganancias'],
                     ingresos_brutos=factura['ingresos_brutos'],
                     iva=factura['iva'],
+                    suss=factura['suss'],
                 )
                 # Pagos
                 pagos = factura['pago_factura_pagos']
@@ -182,6 +183,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
                         iva=factura['iva'],
+                        suss=factura['suss'],
                     )
 
                     # pagos
@@ -210,6 +212,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
                         iva=factura['iva'],
+                        suss=factura['suss'],
                     )
 
                     # Pagos
