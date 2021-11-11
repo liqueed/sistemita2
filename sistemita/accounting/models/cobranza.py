@@ -39,6 +39,7 @@ class CobranzaFactura(TimeStampedModel, models.Model):
     ganancias = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     ingresos_brutos = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     iva = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    suss = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     class Meta:
         """Configuraciones del modelo."""
