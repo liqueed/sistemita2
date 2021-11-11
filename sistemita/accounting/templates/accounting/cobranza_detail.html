@@ -36,24 +36,24 @@
 	    <dt class="col-sm-2">Factura Nro</dt>
 	    <dd class="col-sm-10">{{ cobranza_factura.factura.numero|default:"-" }}</dd>
 	    <dt class="col-sm-2">Fecha</dt>
-	    <dd class="col-sm-10">{{ cobranza_factura.factura.fecha }} - ${{ cobranza_factura.factura.total }}</dd>
+	    <dd class="col-sm-10">{{ cobranza_factura.factura.fecha }} - {{ object.get_moneda_display }} {{ cobranza_factura.factura.total }}</dd>
 	    <dt class="col-sm-2">Monto</dt>
-	    <dd class="col-sm-10">$ {{ cobranza_factura.factura.total }}</dd>
+	    <dd class="col-sm-10">{{ object.get_moneda_display }} {{ cobranza_factura.factura.total }}</dd>
 	    <dt class="col-sm-2 mb-2">Pagos</dt>
 	    <dd class="col-sm-10"></dd>
 	    {% for pago in cobranza_factura.cobranza_factura_pagos.all %}
 	      <dt class="col-sm-2">Nro. {{ forloop.counter }}</dt>
-	    <dd class="col-sm-10"><strong>Metodo:</strong> {{ pago.metodo }} - <strong>Pago:</strong> ${{ pago.monto }}</dd>
+	    <dd class="col-sm-10"><strong>Metodo:</strong> {{ pago.metodo }} - <strong>Pago:</strong> {{ object.get_moneda_display }} {{ pago.monto }}</dd>
 	  {% endfor %}
 	  <dt class="col-sm-2">Ganancias</dt>
-	    <dd class="col-sm-10"> ${{ cobranza_factura.ganancias }}</dd>
+	    <dd class="col-sm-10"> {{ object.get_moneda_display }} {{ cobranza_factura.ganancias }}</dd>
 	    <dt class="col-sm-2">Ingresos brutos</dt>
-	    <dd class="col-sm-10"> ${{ cobranza_factura.ingresos_brutos }}</dd>
+	    <dd class="col-sm-10"> {{ object.get_moneda_display }} {{ cobranza_factura.ingresos_brutos }}</dd>
 	    <dt class="col-sm-2">Iva</dt>
-	    <dd class="col-sm-10"> ${{ cobranza_factura.iva }}</dd>
+	    <dd class="col-sm-10"> {{ object.get_moneda_display }} {{ cobranza_factura.iva }}</dd>
 	  {% endfor %}
 	  <dt class="col-sm-2 mt-3">TOTAL</dt>
-	    <dd class="col-sm-10 mt-3"> ${{ object.total }}</dd>
+	    <dd class="col-sm-10 mt-3"> {{ object.get_moneda_display }} {{ object.total }}</dd>
 	  </dl>
 	  {% if perms.accounting.list_cobranza %}
 	    <a href="{% url 'accounting:cobranza-list' %}" class="btn btn-primary float-right">Volver</a>
