@@ -98,26 +98,32 @@
 		  </div>
 		  <!-- End Factura Proveedor -->
 
-		  <!-- Ganancias, ingresos e IVA -->
-		  <div class="col-4">
+		  <!-- Ganancias, ingresos, IVA y Suss -->
+		  <div class="col-3">
 		    <div class="form-group">
 		      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
 		      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
 		    </div>
 		  </div>
-		  <div class="col-4">
+		  <div class="col-3">
 		    <div class="form-group">
 		      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
 		      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
 		    </div>
 		  </div>
-		  <div class="col-4">
+		  <div class="col-3">
 		    <div class="form-group">
 		      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
 		      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
 		    </div>
 		  </div>
-		  <!-- End Ganancias, ingresos e IVA -->
+		  <div class="col-3">
+		    <div class="form-group">
+		      <label class="requiredField"> Suss<span class="asteriskField">*</span> </label>
+		      <div><input class="input-suss numberinput form-control" name="suss_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <!-- End Ganancias, ingresos, IVA y Suss -->
 
 		  <!-- Metodo y Monto -->
 		  <div class="col-11 wrapper-pagos">
@@ -288,6 +294,7 @@ $(document).ready(function() {
 		cloneFactura.find('[name*="ganancias"]').attr('name', `ganancias_${indexFactura}`);
 		cloneFactura.find('[name*="ingresos_brutos"]').attr('name', `ingresos_brutos_${indexFactura}`);
 		cloneFactura.find('[name*="iva"]').attr('name', `iva_${indexFactura}`);
+		cloneFactura.find('[name*="suss"]').attr('name', `suss_${indexFactura}`);
 
 		$('.wrapper-factura:last').after(cloneFactura);
 	    } else {
@@ -382,10 +389,11 @@ $(document).ready(function() {
 		$(`[name="monto_${indexFactura}_${indexPago}"]`).val(`${pago.monto}`);
 	    });
 
-	    // ganancias, ingresos e iva
+	    // ganancias, ingresos, iva y suss
 	    $(`[name="ganancias_${indexFactura}"]`).val(`${factura.ganancias}`);
 	    $(`[name="ingresos_brutos_${indexFactura}"]`).val(`${factura.ingresos_brutos}`);
 	    $(`[name="iva_${indexFactura}"]`).val(`${factura.iva}`);
+	    $(`[name="suss_${indexFactura}"]`).val(`${factura.suss}`);
 	});
 
     }).fail(function(){
@@ -482,6 +490,7 @@ $('.add-factura').click(function(e){
     clone.find('.input-ganancias').attr('name', `ganancias_${cloneIdFactura}`);
     clone.find('.input-ingresos-brutos').attr('name', `ingresos_brutos_${cloneIdFactura}`);
     clone.find('.input-iva').attr('name', `iva_${cloneIdFactura}`);
+    clone.find('.input-suss').attr('name', `suss_${cloneIdFactura}`);
 
     $('.wrapper-factura:last').after(clone); // clonar luego del último
 
@@ -578,6 +587,7 @@ $('#submit-id-submit').click(function(e){
 	let ganancias = $(this).find('[name*="ganancias"]').val();
 	let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
 	let iva = $(this).find('[name*="iva"]').val();
+	let suss = $(this).find('[name*="suss"]').val();
 
 	// pagos
 	$(this).find('.group-pagos').each(function(e){
@@ -597,7 +607,8 @@ $('#submit-id-submit').click(function(e){
 	    'pago_factura_pagos': pagos,
 	    'ganancias': ganancias,
 	    'ingresos_brutos': ingresos_brutos,
-	    'iva': iva
+	    'iva': iva,
+	    'suss': suss
 	});
     });
 
