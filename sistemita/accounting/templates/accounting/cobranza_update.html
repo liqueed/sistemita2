@@ -397,6 +397,21 @@ $(document).ready(function() {
     });
 });
 
+
+// Restando retenciones al monto inicial
+$('.input-ganancias, .input-ingresos-brutos, .input-iva, .input-suss').on('input', function(e){
+    let wrapperFactura = $(this).closest('.wrapper-factura');
+    let montoFactura = wrapperFactura.find('.selector-factura').find(':selected').text().split('$')[1];
+    let montoGanancias = parseFloat(wrapperFactura.find('.input-ganancias').val());
+    let montoIngresosBrutos = parseFloat(wrapperFactura.find('.input-ingresos-brutos').val());
+    let montoIva = parseFloat(wrapperFactura.find('.input-iva').val());
+    let montoSuss = parseFloat(wrapperFactura.find('.input-suss').val());
+
+    let retenciones = montoGanancias + montoIngresosBrutos + montoIva + montoSuss;
+    let montoInicialTotal = parseFloat(montoFactura - retenciones).toFixed(2);
+    let montoInicial = wrapperFactura.find('.input-monto').first().val(montoInicialTotal);
+});
+
 // Edición
 $('.selector-metodo').on('change', function(e){
     // Boton agregar metodos
@@ -705,7 +720,7 @@ function setTotal(){
 	$('.input-total').prop('disabled', true);
 	$('.input-total').val('');
     } else {
-	$('.input-total').val(totalFactura);
+	$('.input-total').val(parseFloat(totalFactura).toFixed(2));
     }
 }
 
