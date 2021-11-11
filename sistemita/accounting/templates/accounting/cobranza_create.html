@@ -308,6 +308,7 @@ $('#cobranza_factura_1 .selector-factura').select2({
 	  $('input[name=iva_1]').val('0.0');
 	break;
     }
+    $('input[name=monto_1_1]').val(factura.total);
     $(this).attr('data-id', factura.id);
     $(this).attr('data-moneda', factura.moneda);
     $(this).attr('data-total', factura.total);
@@ -448,7 +449,7 @@ $('.add-factura').click(function(e){
 	    $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
 	  break;
 	}
-
+	$(`input[name=monto_${cloneIdFactura}_1]`).val(factura.total);
 	$(this).attr('data-id', factura.id);
 	$(this).attr('data-moneda', factura.moneda);
 	$(this).attr('data-total', factura.total);

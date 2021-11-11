@@ -351,6 +351,7 @@ $(document).ready(function() {
 		    $(`input[name=iva_${indexFactura}]`).val('0.0');
 		    break;
 		}
+		$(`input[name=monto_${indexFactura}_1]`).val(factura.total);
 		$(this).attr('data-id', factura.id);
 		$(this).attr('data-moneda', factura.moneda);
 		$(this).attr('data-total', factura.total);
@@ -529,6 +530,7 @@ $('.add-factura').click(function(e){
 	    $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
 	    break;
 	}
+	$(`input[name=monto_${cloneIdFactura}_1]`).val(factura.total);
 	$(this).attr('data-id', factura.id);
 	$(this).attr('data-moneda', factura.moneda);
 	$(this).attr('data-total', factura.total);
