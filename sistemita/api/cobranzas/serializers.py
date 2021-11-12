@@ -11,6 +11,7 @@ from sistemita.accounting.models.cobranza import (
 )
 from sistemita.api.clientes.serializers import ClienteSerializer
 from sistemita.core.models.cliente import Cliente, Factura
+from sistemita.expense.models import Fondo
 
 
 class CobranzaFacturaPagoSerializer(serializers.ModelSerializer):
@@ -48,7 +49,7 @@ class CobranzaFacturaSerializer(serializers.ModelSerializer):
         """Clase meta."""
 
         model = CobranzaFactura
-        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'cobranza_factura_pagos')
+        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'suss', 'cobranza_factura_pagos')
         read_only_fields = ('id',)
 
 
@@ -68,6 +69,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
             'id',
             'fecha',
             'cliente',
+            'moneda',
             'total',
             'cobranza_facturas',
         )
@@ -80,6 +82,28 @@ class CobranzaSerializer(serializers.ModelSerializer):
             self.context['cliente'] = cliente
         except Cliente.DoesNotExist as not_exist:
             raise serializers.ValidationError('Client does not exist.') from not_exist
+        return data
+
+    def validate_cobranza_facturas(self, data):
+        """Valida que las facturas sean de la misma moneda y que no haya dos facturas repetidas."""
+        monedas = []
+        pks = []
+        for row in data:
+            if row.get('data', False):
+                if row['data']['action'] in ['add', 'update']:
+                    monedas.append(row.get('factura').moneda)
+                    pks.append(row.get('factura').pk)
+            else:
+                monedas.append(row.get('factura').moneda)
+                pks.append(row.get('factura').pk)
+
+        if len(monedas) > 1 and len(set(monedas)) > 1:
+            raise serializers.ValidationError('Las facturas deben ser de la misma monedas.')
+
+        if len(pks) > 1:
+            if len(pks) != len(set(pks)):
+                raise serializers.ValidationError('Hay facturas repetidas.')
+
         return data
 
     def create(self, validated_data):
@@ -97,13 +121,15 @@ class CobranzaSerializer(serializers.ModelSerializer):
                 # La factura pasa a estar cobrada
                 factura_entry = factura['factura']
                 Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
-
+                # Habilita fondo
+                Fondo.objects.filter(factura=factura_entry).update(disponible=True)
                 cobranza_factura = CobranzaFactura.objects.create(
                     cobranza=cobranza,
                     factura=factura_entry,
                     ganancias=factura['ganancias'],
                     ingresos_brutos=factura['ingresos_brutos'],
                     iva=factura['iva'],
+                    suss=factura['suss'],
                 )
                 # Pagos
                 pagos = factura['cobranza_factura_pagos']
@@ -130,12 +156,15 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     # La factura del cliente pasa a estar cobrada
                     factura_entry = factura['factura']
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
+                    # Se habilita el fondo asociado a la factura
+                    Fondo.objects.filter(factura=factura_entry).update(disponible=True)
                     cobranza_factura = CobranzaFactura.objects.create(
                         cobranza=instance,
                         factura=factura['factura'],
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
                         iva=factura['iva'],
+                        suss=factura['suss'],
                     )
 
                     # pagos
@@ -155,15 +184,18 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     if cobranza_factura.factura.id != factura_entry.id:
                         # Si la factura es diferente, la anterior pasa a estar no cobrada
                         Factura.objects.filter(pk=cobranza_factura.factura.id).update(cobrado=False)
+                        Fondo.objects.filter(factura=cobranza_factura.factura).update(disponible=False)
 
                     # La factura actual del cliente pasa a estar cobrada
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=True)
+                    Fondo.objects.filter(factura=factura_entry).update(disponible=True)
 
                     CobranzaFactura.objects.filter(pk=factura['data']['id']).update(
                         factura=factura_entry,
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
                         iva=factura['iva'],
+                        suss=factura['suss'],
                     )
 
                     # Pagos
@@ -185,10 +217,10 @@ class CobranzaSerializer(serializers.ModelSerializer):
                 elif factura['data']['action'] == 'delete':
                     # Elimino la factura cobranza
 
-                    # La facturas asociadas pasan a ser no cobradas
+                    # La facturas asociadas pasan a ser no cobradas y los fondos asociados pasar a no estar disponibles
                     factura_entry = factura['factura']
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=False)
-
+                    Fondo.objects.filter(factura=factura_entry.factura).update(disponible=False)
                     CobranzaFactura.objects.get(pk=factura['data']['id']).delete()
 
             instance.save()

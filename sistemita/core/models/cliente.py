@@ -57,10 +57,21 @@ class Factura(FacturaAbstract):
 
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
+    porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
         return '{} -{} - {} - {}'.format(self.fecha, self.numero, self.cliente.razon_social, self.moneda_monto)
+
+    @property
+    def porcentaje_fondo_monto(self):
+        """Retorno el monto del porcentaje de fondo."""
+        return round(float(self.total) * self.porcentaje_fondo / 100, 2)
+
+    @property
+    def moneda_porcentaje_fondo_monto(self):
+        """Retorno el monto del porcentaje de fondo."""
+        return f'{self.get_moneda_display()} {self.porcentaje_fondo_monto}'
 
     class Meta:
         """Configuraciones del modelo."""

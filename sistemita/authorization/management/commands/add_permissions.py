@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     help = 'Agrega permisos'
 
-    def handle(self, *args, **kwargs):  # pylint: disable=unused-argument
+    def handle(self, *args, **kwargs):
         """Controlador del comandos."""
 
         counter = 0
@@ -164,6 +164,6 @@ class Command(BaseCommand):
                 if not Permission.objects.filter(codename=permission.get('codename')).exists():
                     Permission.objects.create(**permission)
                     counter += 1
-            print('Se agregaron {} permisos nuevos.'.format(counter))
+            self.stdout.write(self.style.SUCCESS(f'Se agregaron {counter} permisos nuevos.'))
         except ContentType.DoesNotExist as err:
-            print(err)
+            self.stdout.write(self.style.ERROR(err))

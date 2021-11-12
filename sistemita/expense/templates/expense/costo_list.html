@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Costos | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Costos</h1>
+    </div>
+
+    <!-- Cards -->
+    <div class="row">
+
+      <div class="col-xl-3 col-md-6 mb-4">
+	<div class="card border-left-danger shadow h-100 py-2">
+	  <div class="card-body">
+	    <div class="row no-gutters align-items-center">
+	      <div class="col mr-2">
+		<div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Costos $</div>
+		<div class="h5 mb-0 font-weight-bold text-gray-800">$ {{ costo_peso }}</div>
+	      </div>
+	      <div class="col-auto">
+		<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+	<div class="card border-left-danger shadow h-100 py-2">
+	  <div class="card-body">
+	    <div class="row no-gutters align-items-center">
+	      <div class="col mr-2">
+		<div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Costos U$D</div>
+		<div class="h5 mb-0 font-weight-bold text-gray-800">U$D {{ costo_dollar }}</div>
+	      </div>
+	      <div class="col-auto">
+		<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+      </div>
+
+   </div>
+    <!-- End of Cards -->
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+	<h6 class="m-0 font-weight-bold text-primary">Listado de costos</h6>
+      </div>
+      <div class="card-body">
+	<div class="table-responsive">
+	  <div class="row float-right">
+	    {% include 'components/date_range_filter.html' %}
+	    {% include 'components/search_form.html' %}
+	    {% if perms.expense.add_costo %}
+	      <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
+		<a class="btn btn-primary" role="button" href="{% url 'expense:costo-create' %}">Agregar</a>
+	      </div>
+	    {% endif %}
+	  </div>
+	  <table class="table table-bordered table-hover table-sortable" cellspacing="0" width="100%">
+	    <thead>
+	      <tr>
+		<th data-order="fondo__factura__numero" class="sortable">Número</th>
+		<th data-order="fondo__factura_cliente" class="sortable">Factura</th>
+		<th data-order="fecha" class="sortable">Fecha</th>
+		<th data-order="descripcion" class="sortable">Descripción</th>
+		<th data-order="monto" class="sortable">Monto</th>
+		<th></th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% for object in object_list %}
+		<tr>
+		  <td><a href="{% url 'expense:costo-detail' object.pk %}">{{ object.fondo.factura.numero }}</a></td>
+		  <td>{{ object.fondo }}</td>
+		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
+		  <td>{{ object.descripcion }}</td>
+		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
+		  <td class="text-center">
+		    {% if perms.expense.view_costo %}
+		    <a class="mr-1 text-decoration-none" href="{% url 'expense:costo-detail' object.pk %}">
+		      <i class="far fa-eye"></i>
+		    </a>
+		    {% endif %}
+		    {% if perms.expense.change_costo %}
+		    <a class="mr-1 text-decoration-none" href="{% url 'expense:costo-update' object.pk %}">
+		      <i class="fas fa-wrench"></i>
+		    </a>
+		    {% endif %}
+		    {% if perms.expense.delete_costo %}
+		    <a class="mr-1 text-decoration-none" href="{% url 'expense:costo-delete' object.pk %}">
+		      <i class="fas fa-trash"></i>
+		    </a>
+		    {% endif %}
+		  </td>
+		</tr>
+		{% empty %}
+		<tr>
+		  <td colspan="8">Sin resultados</td>
+		</tr>
+	      {% endfor %}
+	    </tbody>
+	  </table>
+	  {% include 'components/pagination.html' %}
+	</div>
+      </div>
+    </div>
+  </div>
+<script src="{% static 'js/tableSort.js' %}"></script>
+{% endblock %}

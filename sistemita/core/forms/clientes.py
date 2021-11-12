@@ -8,17 +8,16 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Div, Fieldset, Layout, Reset, Submit
 from django import forms
 
-# Models
+# Sistemita
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.cliente import Cliente, Factura, OrdenCompra
 from sistemita.core.models.entidad import Distrito, Localidad
-
-# Utils
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_PERMISSION_ERROR,
     MESSAGE_TOTAL_ZERO,
 )
+from sistemita.expense.models import Fondo
 
 
 class ClienteForm(forms.ModelForm):
@@ -156,6 +155,7 @@ class FacturaForm(forms.ModelForm):
                 Div(Div('cobrado', css_class='col-2'), css_class='row'),
                 Div(Div('archivos', template='components/input_files.html'), css_class='row'),
                 Div(css_id='adjuntos', css_class='row'),
+                Div(Div('porcentaje_fondo', css_class='col-2'), css_class='row'),
             ),
             FormActions(
                 Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
@@ -180,6 +180,7 @@ class FacturaForm(forms.ModelForm):
             'total',
             'cobrado',
             'archivos',
+            'porcentaje_fondo',
         )
 
     def clean_numero(self):
@@ -245,9 +246,21 @@ class FacturaForm(forms.ModelForm):
 
         if instance.pk is None:
             instance = Factura.objects.create(**data)
+            Fondo.objects.create(
+                factura=instance,
+                monto=instance.porcentaje_fondo_monto,
+                monto_disponible=instance.porcentaje_fondo_monto,
+                disponible=instance.cobrado
+            )
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
             instance = Factura.objects.get(pk=instance.pk)
+            instance.factura_fondo.update(
+                moneda=instance.moneda,
+                monto=instance.porcentaje_fondo_monto,
+                monto_disponible=instance.porcentaje_fondo_monto,
+                disponible=instance.cobrado
+            )
 
         for f in self.files.getlist('archivos'):
             document = Archivo.objects.create(documento=f)

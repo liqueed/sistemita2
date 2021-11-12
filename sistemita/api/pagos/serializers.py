@@ -44,7 +44,7 @@ class PagoFacturaSerializer(serializers.ModelSerializer):
         """Clase meta."""
 
         model = PagoFactura
-        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'pago_factura_pagos')
+        fields = ('id', 'data', 'factura', 'ganancias', 'ingresos_brutos', 'iva', 'suss', 'pago_factura_pagos')
         read_only_fields = ('id',)
 
 
@@ -65,6 +65,7 @@ class PagoModelSerializer(serializers.ModelSerializer):
             'id',
             'fecha',
             'proveedor',
+            'moneda',
             'total',
             'pagado',
             'pago_facturas',
@@ -89,6 +90,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
             'id',
             'fecha',
             'proveedor',
+            'moneda',
             'total',
             'pagado',
             'pago_facturas',
@@ -102,6 +104,28 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
         except Proveedor.DoesNotExist as not_exist:
             raise serializers.ValidationError('Proveedor does not exist.') from not_exist
         return proveedor
+
+    def validate_pago_facturas(self, data):
+        """Valida que las facturas sean de la misma moneda y que no haya dos facturas repetidas."""
+        monedas = []
+        pks = []
+        for row in data:
+            if row.get('data', False):
+                if row['data']['action'] in ['add', 'update']:
+                    monedas.append(row.get('factura').moneda)
+                    pks.append(row.get('factura').pk)
+            else:
+                monedas.append(row.get('factura').moneda)
+                pks.append(row.get('factura').pk)
+
+        if len(monedas) > 1 and len(set(monedas)) > 1:
+            raise serializers.ValidationError('Las facturas deben ser de la misma monedas.')
+
+        if len(pks) > 1:
+            if len(pks) != len(set(pks)):
+                raise serializers.ValidationError('Hay facturas repetidas.')
+
+        return data
 
     def create(self, validated_data):
         """Genera un pago con factura/s y su/s correspondiente/s pago/s."""
@@ -126,6 +150,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
                     ganancias=factura['ganancias'],
                     ingresos_brutos=factura['ingresos_brutos'],
                     iva=factura['iva'],
+                    suss=factura['suss'],
                 )
                 # Pagos
                 pagos = factura['pago_factura_pagos']
@@ -158,6 +183,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
                         iva=factura['iva'],
+                        suss=factura['suss'],
                     )
 
                     # pagos
@@ -186,6 +212,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
                         ganancias=factura['ganancias'],
                         ingresos_brutos=factura['ingresos_brutos'],
                         iva=factura['iva'],
+                        suss=factura['suss'],
                     )
 
                     # Pagos

@@ -3,7 +3,8 @@
 # Django
 from django.db import models
 
-# Models
+# Sistemita
+from sistemita.core.constants import MONEDAS
 from sistemita.core.models.cliente import Cliente, Factura
 from sistemita.core.models.mediopago import MedioPago
 from sistemita.core.models.utils import TimeStampedModel
@@ -14,6 +15,7 @@ class Cobranza(TimeStampedModel, models.Model):
 
     fecha = models.DateField(blank=False)
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
+    moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     class Meta:
@@ -37,6 +39,7 @@ class CobranzaFactura(TimeStampedModel, models.Model):
     ganancias = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     ingresos_brutos = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     iva = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    suss = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     class Meta:
         """Configuraciones del modelo."""
@@ -53,8 +56,9 @@ class CobranzaFacturaPago(models.Model):
     """
 
     metodo = models.ForeignKey(MedioPago, blank=False, null=True, on_delete=models.SET_NULL)
-    cobranza_factura = models.ForeignKey(CobranzaFactura, blank=False, on_delete=models.CASCADE,
-                                         related_name='cobranza_factura_pagos')
+    cobranza_factura = models.ForeignKey(
+        CobranzaFactura, blank=False, on_delete=models.CASCADE, related_name='cobranza_factura_pagos'
+    )
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     class Meta:

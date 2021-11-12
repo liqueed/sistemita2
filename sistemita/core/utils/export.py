@@ -341,6 +341,90 @@ class ReporteVentaExport:
         return data
 
 
+class FondoExport:
+    """Clase para exportar fondos.
+
+    Args:
+       queryset (django.queryset): queryset de fondos.
+    """
+
+    def __init__(self, queryset):
+        """Inicialización de variables."""
+        self.queryset = queryset
+
+        self.headers = [
+            'numero_factura',
+            'fecha',
+            'cliente',
+            'monto',
+            'porcentaje',
+            'monto_porcentaje',
+            'monto_disponible',
+            'disponible',
+            'fecha_costo',
+            'descripcion_costo',
+            'monto_costo',
+        ]
+
+    def get_data(self):
+        """Devuelve una lista fondos.
+
+        Returns:
+           list: Obtiene el queryset y genera un lista.
+        """
+        data = []
+
+        for item in self.queryset:
+            disponible = 'Si' if item.disponible else 'No'
+            if len(item.costos.all()):
+                data.append(
+                    [
+                        item.factura.numero,
+                        item.factura.fecha.strftime('%d/%m/%Y'),
+                        item.factura.cliente.razon_social,
+                        item.factura.moneda_monto,
+                        item.factura.porcentaje_fondo,
+                        item.moneda_monto,
+                        item.moneda_monto_disponible,
+                        disponible,
+                        item.costos.all()[0].fecha.strftime('%d/%m/%Y'),
+                        item.costos.all()[0].descripcion,
+                        item.costos.all()[0].moneda_monto,
+                    ]
+                )
+                for costo in item.costos.all()[1:]:
+                    data.append(
+                        [
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '',
+                            costo.fecha.strftime('%d/%m/%Y'),
+                            costo.descripcion,
+                            costo.moneda_monto,
+                        ]
+                    )
+            else:
+                data.append(
+                    [
+                        item.factura.numero,
+                        item.factura.fecha.strftime('%d/%m/%Y'),
+                        item.factura.cliente.razon_social,
+                        item.factura.moneda_monto,
+                        item.factura.porcentaje_fondo,
+                        item.moneda_monto,
+                        item.moneda_monto_disponible,
+                        disponible,
+                    ]
+                )
+
+        return data
+
+
 def export_excel(request, queryset):
     """Devuelve un archivo en formato excel.
 
@@ -374,6 +458,9 @@ def export_excel(request, queryset):
     elif app == 'pago':
         app_export = PagoExport(queryset)
         display_dept = True
+    elif app == 'fondo':
+        app_export = FondoExport(queryset)
+        display_dept = False
 
     # Encabezados
     for col_num, data in enumerate(app_export.headers):

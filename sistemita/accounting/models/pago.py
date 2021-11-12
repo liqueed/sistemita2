@@ -4,6 +4,7 @@
 from django.db import models
 
 # Models
+from sistemita.core.constants import MONEDAS
 from sistemita.core.models.mediopago import MedioPago
 from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
 from sistemita.core.models.utils import TimeStampedModel
@@ -14,6 +15,7 @@ class Pago(TimeStampedModel, models.Model):
 
     fecha = models.DateField(blank=False)
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
+    moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     pagado = models.BooleanField(default=True)
 
@@ -37,6 +39,7 @@ class PagoFactura(TimeStampedModel, models.Model):
     ganancias = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     ingresos_brutos = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     iva = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    suss = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     class Meta:
         """Configuraciones del modelo."""
@@ -54,8 +57,9 @@ class PagoFacturaPago(models.Model):
     """
 
     metodo = models.ForeignKey(MedioPago, blank=False, null=True, on_delete=models.SET_NULL)
-    pago_factura = models.ForeignKey(PagoFactura, blank=False, on_delete=models.CASCADE,
-                                     related_name='pago_factura_pagos')
+    pago_factura = models.ForeignKey(
+        PagoFactura, blank=False, on_delete=models.CASCADE, related_name='pago_factura_pagos'
+    )
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     class Meta:

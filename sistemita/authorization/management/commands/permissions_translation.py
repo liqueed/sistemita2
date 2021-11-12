@@ -14,7 +14,7 @@ class Command(BaseCommand):
         """Controlador del comandos."""
 
         permissions = Permission.objects.filter(
-            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core']
+            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core', 'expense']
         )
 
         for permission in permissions:
@@ -38,6 +38,8 @@ class Command(BaseCommand):
 
             if name:
                 Permission.objects.filter(pk=permission.pk).update(name=name)
+
+        self.stdout.write(self.style.SUCCESS('Permisos traducidos exitosamente.'))
 
     def change_app_name(self, name, start, translation):
         """Traduce nombre del permiso según una acción dada."""

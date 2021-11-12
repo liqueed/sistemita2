@@ -150,9 +150,9 @@ $('#id_neto').keyup(function(){getTotal()});
 $('#id_iva').change(function(){getTotal()});
 
 function getTotal(){
-    let neto = parseInt($('#id_neto').val());
+    let neto = parseFloat($('#id_neto').val());
     let iva = parseInt($('#id_iva').val());
-    let total = neto + (iva / 100) * neto;
+    let total = parseFloat(neto + (iva / 100) * neto).toFixed(2);
     $('#id_total').val(total);
 }
 {% endblock %}

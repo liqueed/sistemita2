@@ -75,7 +75,7 @@
 	      <!-- End Proveedor -->
 
 	      <!-- Factura -->
-	      <div class="wrapper-factura card p-4 mb-3" id="pago_factura_1" data-id="1" style="width: 45rem;">
+	      <div class="wrapper-factura card p-4 mb-3" id="pago_factura_1" data-id="1" style="width: 55rem;">
 		<div class="row">
 		  <div class="col-12">
 		    <button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
@@ -98,26 +98,32 @@
 		  </div>
 		  <!-- End Factura Proveedor -->
 
-		  <!-- Ganancias, ingresos e IVA -->
-		  <div class="col-4">
+		  <!-- Ganancias, ingresos, IVA y Suss -->
+		  <div class="col-3">
 		    <div class="form-group">
 		      <label class="requiredField"> Ganancias<span class="asteriskField">*</span> </label>
 		      <div><input class="input-ganancias numberinput form-control" name="ganancias_1" type="number" value="0.0" step="0.01" required /></div>
 		    </div>
 		  </div>
-		  <div class="col-4">
+		  <div class="col-3">
 		    <div class="form-group">
 		      <label class="requiredField"> Ingresos brutos<span class="asteriskField">*</span> </label>
 		      <div><input class="input-ingresos-brutos numberinput form-control" name="ingresos_brutos_1" type="number" value="0.0" step="0.01" required /></div>
 		    </div>
 		  </div>
-		  <div class="col-4">
+		  <div class="col-3">
 		    <div class="form-group">
 		      <label class="requiredField"> Iva<span class="asteriskField">*</span> </label>
 		      <div><input class="input-iva numberinput form-control" name="iva_1" type="number" value="0.0" step="0.01" required /></div>
 		    </div>
 		  </div>
-		  <!-- End Ganancias, ingresos e IVA -->
+		  <div class="col-3">
+		    <div class="form-group">
+		      <label class="requiredField"> Suss<span class="asteriskField">*</span> </label>
+		      <div><input class="input-suss numberinput form-control" name="suss_1" type="number" value="0.0" step="0.01" required /></div>
+		    </div>
+		  </div>
+		  <!-- End Ganancias, ingresos, IVA y Suss -->
 
 		  <!-- Metodo y Monto -->
 		  <div class="col-11 wrapper-pagos">
@@ -169,7 +175,7 @@
 
 	      <!-- Agregar factura -->
 	      <div class="row">
-		<div class="offset-6 col-1">
+		<div class="offset-8 col-1">
 		  <button class="add-factura btn btn-success btn-xs float-right mr-2" title="Agregar factura"><i class="fas fa-plus-circle"></i></button>
 		</div>
 	      </div>
@@ -177,12 +183,26 @@
 
 	      <!-- Total -->
 	      <div class="row wrapper-total mt-2">
-		<div class="col-4">
-		  <div class="form-group">
-		    <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
-		    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
+		  <div class="col-2">
+		      <div class="form-group">
+			  <label class="requiredField">
+			      Moneda<span class="asteriskField">*</span>
+			  </label>
+			  <div>
+			      <select class="selector-moneda form-control" name="moneda" disabled>
+				  <option value="">---------</option>
+				  <option value="P">$</option>
+				  <option value="D">USD</option>
+			      </select>
+			  </div>
+		      </div>
 		  </div>
-		</div>
+		  <div class="col-4">
+		      <div class="form-group">
+			  <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+			  <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required/></div>
+		      </div>
+		  </div>
 	      </div>
 	      <!-- End Total -->
 
@@ -204,13 +224,14 @@
 	    </fieldset>
 
 	    <div class="form-group">
-	      <div>
-		<input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
-		<a class="btn btn-primary float-right mr-1 text-white" href="{% url 'accounting:pago-generate-pdf' pk %}" target="_blank">
-		  <i class="fas fa-file-pdf fa-sm text-white-50"></i> Comprobante
-		</a>
-		<input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
-	      </div>
+		<div>
+		    <div class="alert-errors alert alert-danger alert-dismissible fade show d-none" role="alert"></div>
+		    <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+		    <a class="btn btn-primary float-right mr-1 text-white" href="{% url 'accounting:pago-generate-pdf' pk %}" target="_blank">
+			<i class="fas fa-file-pdf fa-sm text-white-50"></i> Comprobante
+		    </a>
+		    <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
+		</div>
 	    </div>
 
 	  </form>
@@ -242,6 +263,7 @@ $(document).ready(function() {
 
 	// Total
 	$('.input-total').val(response.total);
+	$(`.selector-moneda option[value=${response.moneda}]`).prop('selected', true);
 
 	// pagado
 	$('#id_pagado').prop('checked', response.pagado);
@@ -272,6 +294,7 @@ $(document).ready(function() {
 		cloneFactura.find('[name*="ganancias"]').attr('name', `ganancias_${indexFactura}`);
 		cloneFactura.find('[name*="ingresos_brutos"]').attr('name', `ingresos_brutos_${indexFactura}`);
 		cloneFactura.find('[name*="iva"]').attr('name', `iva_${indexFactura}`);
+		cloneFactura.find('[name*="suss"]').attr('name', `suss_${indexFactura}`);
 
 		$('.wrapper-factura:last').after(cloneFactura);
 	    } else {
@@ -281,9 +304,13 @@ $(document).ready(function() {
 
 	    // factura
 	    $.get(`/api/factura-proveedor/${factura.factura}/`, function(response) {
+		let moneda = response.moneda == 'P' ? '$' : 'USD';
 		$(`#pago_factura_${indexFactura} .selector-factura`).append(
-		    new Option(`${response.fecha} - ${response.numero} - ${response.proveedor.razon_social} - $${response.total}`, `${response.id}`, true, true)
+		    new Option(`${response.fecha} - ${response.numero} - ${response.proveedor.razon_social} - ${moneda} ${response.total}`, `${response.id}`, true, true)
 		);
+		$(`#pago_factura_${indexFactura} .selector-factura`).attr('data-id', response.id);
+		$(`#pago_factura_${indexFactura} .selector-factura`).attr('data-moneda', response.moneda);
+		$(`#pago_factura_${indexFactura} .selector-factura`).attr('data-total', response.total);
 	    });
 
 	    $(`#pago_factura_${indexFactura} .selector-factura`).select2({
@@ -293,8 +320,9 @@ $(document).ready(function() {
 		    url: '/api/factura-proveedor/',
 		    processResults: function (response) {
 			let data = $.map(response, function (obj) {
+			    let moneda = obj.moneda == 'P' ? '$' : 'USD';
 			    obj.id = obj.id;
-			    obj.text = `${obj.fecha} - ${obj.numero} - ${obj.proveedor.razon_social} - $${obj.total}`;
+			    obj.text = `${obj.fecha} - ${obj.numero} - ${obj.proveedor.razon_social} - ${moneda} ${obj.total}`;
 			    return obj;
 			});
 			return {
@@ -313,6 +341,7 @@ $(document).ready(function() {
 		}
 	    }).on('change', function(){
 		let factura = $(this).select2('data')[0];
+		if (factura.id == ''){ return; }
 		let iva = (Math.round(factura.iva * factura.neto) / 100).toFixed(2);
 		switch (factura.tipo) {
 		case 'M':
@@ -329,6 +358,13 @@ $(document).ready(function() {
 		    $(`input[name=iva_${indexFactura}]`).val('0.0');
 		    break;
 		}
+		$(`input[name=monto_${indexFactura}_1]`).val(factura.total);
+		$(this).attr('data-id', factura.id);
+		$(this).attr('data-moneda', factura.moneda);
+		$(this).attr('data-total', factura.total);
+
+		validateFacturas();
+		setMoneda();
 		setTotal();
 	    });
 
@@ -353,10 +389,11 @@ $(document).ready(function() {
 		$(`[name="monto_${indexFactura}_${indexPago}"]`).val(`${pago.monto}`);
 	    });
 
-	    // ganancias, ingresos e iva
+	    // ganancias, ingresos, iva y suss
 	    $(`[name="ganancias_${indexFactura}"]`).val(`${factura.ganancias}`);
 	    $(`[name="ingresos_brutos_${indexFactura}"]`).val(`${factura.ingresos_brutos}`);
 	    $(`[name="iva_${indexFactura}"]`).val(`${factura.iva}`);
+	    $(`[name="suss_${indexFactura}"]`).val(`${factura.suss}`);
 	});
 
     }).fail(function(){
@@ -379,6 +416,20 @@ $(document).ready(function() {
 	    });
 	}
     });
+});
+
+// Restando retenciones al monto inicial
+$('.input-ganancias, .input-ingresos-brutos, .input-iva, .input-suss').on('input', function(e){
+    let wrapperFactura = $(this).closest('.wrapper-factura');
+    let montoFactura = wrapperFactura.find('.selector-factura').find(':selected').text().split('$')[1];
+    let montoGanancias = parseFloat(wrapperFactura.find('.input-ganancias').val());
+    let montoIngresosBrutos = parseFloat(wrapperFactura.find('.input-ingresos-brutos').val());
+    let montoIva = parseFloat(wrapperFactura.find('.input-iva').val());
+    let montoSuss = parseFloat(wrapperFactura.find('.input-suss').val());
+
+    let retenciones = montoGanancias + montoIngresosBrutos + montoIva + montoSuss;
+    let montoInicialTotal = parseFloat(montoFactura - retenciones).toFixed(2);
+    let montoInicial = wrapperFactura.find('.input-monto').first().val(montoInicialTotal);
 });
 
 // Edición
@@ -453,6 +504,7 @@ $('.add-factura').click(function(e){
     clone.find('.input-ganancias').attr('name', `ganancias_${cloneIdFactura}`);
     clone.find('.input-ingresos-brutos').attr('name', `ingresos_brutos_${cloneIdFactura}`);
     clone.find('.input-iva').attr('name', `iva_${cloneIdFactura}`);
+    clone.find('.input-suss').attr('name', `suss_${cloneIdFactura}`);
 
     $('.wrapper-factura:last').after(clone); // clonar luego del último
 
@@ -464,8 +516,9 @@ $('.add-factura').click(function(e){
 	    url: '/api/factura-proveedor/',
 	    processResults: function (response) {
 		let data = $.map(response, function (obj) {
+		    let moneda = obj.moneda == 'P' ? '$' : 'USD';
 		    obj.id = obj.id;
-		    obj.text = `${obj.fecha} - ${obj.numero} - ${obj.proveedor.razon_social} - $${obj.total}`;
+		    obj.text = `${obj.fecha} - ${obj.numero} - ${obj.proveedor.razon_social} - ${moneda} ${obj.total}`;
 		    return obj;
 		});
 		return {
@@ -500,6 +553,13 @@ $('.add-factura').click(function(e){
 	    $(`input[name=iva_${cloneIdFactura}]`).val('0.0');
 	    break;
 	}
+	$(`input[name=monto_${cloneIdFactura}_1]`).val(factura.total);
+	$(this).attr('data-id', factura.id);
+	$(this).attr('data-moneda', factura.moneda);
+	$(this).attr('data-total', factura.total);
+
+	validateFacturas();
+	setMoneda();
 	setTotal();
     });
 });
@@ -516,6 +576,8 @@ $('.close').click(function(){
 	$(this).closest('.wrapper-factura').attr('data-inline', `{"id": ${idFactura}, "action": "delete"}`);
 	$(this).closest('.wrapper-factura').addClass('d-none');
     }
+    validateFacturas();
+    setMoneda();
     setTotal();
 });
 
@@ -539,6 +601,7 @@ $('#submit-id-submit').click(function(e){
 	let ganancias = $(this).find('[name*="ganancias"]').val();
 	let ingresos_brutos = $(this).find('[name*="ingresos_brutos"]').val();
 	let iva = $(this).find('[name*="iva"]').val();
+	let suss = $(this).find('[name*="suss"]').val();
 
 	// pagos
 	$(this).find('.group-pagos').each(function(e){
@@ -558,13 +621,16 @@ $('#submit-id-submit').click(function(e){
 	    'pago_factura_pagos': pagos,
 	    'ganancias': ganancias,
 	    'ingresos_brutos': ingresos_brutos,
-	    'iva': iva
+	    'iva': iva,
+	    'suss': suss
 	});
     });
 
+    let moneda = $('.selector-moneda').find(":selected").val();
     let formPagoData = {
 	'fecha': fecha,
 	'pago_facturas': facturas,
+	'moneda': moneda,
 	'total': parseInt(total),
 	'pagado': pagado
     }
@@ -582,9 +648,20 @@ $('#submit-id-submit').click(function(e){
 	}
     }).done(function(data) {
 	window.location.href = '{% url 'accounting:pago-update' pk=0 %}?update=1'.replace('0', data.id);
-    }).fail(function() {
-	alert('Se produjo un error, revise el formulario e inténtelo nuevamente.');
-    })
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+	if (jqXHR.status == 400) {
+	    let listErrors = jqXHR.responseJSON;
+	    const array = Object.keys(listErrors).map(key => listErrors[key]);
+	    $('.alert-errors').removeClass('d-none');
+	    for (var item in array) {
+		$('.alert-errors').append('<p class="m-0">' + array[item] + '</p>');
+	    }
+	}
+	if (jqXHR.status == 500) {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.alert-errors').append('<p class="m-0">Se produjo un error, revise el formulario e inténtelo nuevamente.</p>');
+	}
+    });
 });
 
 // funciones
@@ -606,19 +683,95 @@ function validateForm(){
 	return this.optional(element) || value !== param;
     }, "Este campo es obligatorio.");
 
-    return $("#pago-form").valid();
+    let result = $("#pago-form").valid();
+
+    // show errors
+    if (result === false) {
+	$('.alert-errors').removeClass('d-none');
+	$('.error-general').remove();
+	$('.alert-errors').append('<p class="m-0 error-general">Verifique los campos y complete los requeridos para continuar.</p>');
+    } else {
+	$('.error-general').remove();
+	if ($('.alert-errors').children().length === 0) {
+	    $('.alert-errors').addClass('d-none');
+	}
+    }
+
+    return result;
+}
+
+function setMoneda(){
+    let monedas = [];
+    $('.selector-factura').each(function () {
+	if (!$(this).closest('.wrapper-factura').hasClass('d-none')){
+	    monedas.push($(this).attr('data-moneda'));
+	}
+    });
+    if (monedas.length > 0){
+	let allEqual = new Set(monedas).size == 1;
+	if (allEqual){
+	    $('.error-moneda').remove();
+	    if ($('.alert-errors').children().length === 0) {
+		$('.alert-errors').addClass('d-none');
+	    }
+	    $(`.selector-moneda option[value=${monedas[0]}]`).prop('selected', true);
+	} else {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.error-moneda').remove();
+	    $('.alert-errors').append('<p class="m-0 error-moneda">Las facturas deben ser de la misma moneda.</p>')
+	    $('.selector-moneda option[value=""]').prop('selected', true);
+	}
+    } else {
+	$('.error-moneda').remove();
+	if ($('.alert-errors').children().length === 0) {
+	    $('.alert-errors').addClass('d-none');
+	}
+	$(`.selector-moneda option[value=${monedas[0]}]`).prop('selected', true);
+    }
 }
 
 function setTotal(){
-    let elementTotal = $('.input-total');
     let totalFactura = 0;
-    $('.selector-factura').find(':selected').each(function(){
-	// Si el wrapper factura esta oculto no se debe sumar
+    $('.selector-factura').each(function () {
 	if (!$(this).closest('.wrapper-factura').hasClass('d-none')){
-	    totalFactura += parseInt($(this).text().split('$')[1]);
-	    elementTotal.val(totalFactura);
+	    totalFactura += parseInt($(this).attr('data-total'));
 	}
     });
+    if ($('.alert-errors').children().length > 0) {
+	$('.input-total').prop('disabled', true);
+	$('.input-total').val('');
+    } else {
+	$('.input-total').val(parseFloat(totalFactura).toFixed(2));
+    }
+}
+
+function validateFacturas(){
+    let pks = [];
+    $('.selector-factura').each(function(){
+	if (!$(this).closest('.wrapper-factura').hasClass('d-none')){
+	    pks.push($(this).attr('data-id'));
+	}
+    });
+    if (pks.length > 1){
+	let allEqual = new Set(pks).size == 1;
+	if (allEqual === false){
+	    $('.error-pks').remove();
+	    if ($('.alert-errors').children().length === 0) {
+		$('.alert-errors').addClass('d-none');
+	    }
+	    $('.input-total').prop('disabled', false);
+	} else {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.error-pks').remove();
+	    $('.alert-errors').append('<p class="m-0 error-pks">Hay facturas repetidas.</p>');
+	    $('.input-total').prop('disabled', true);
+	}
+    } else {
+	$('.error-pks').remove();
+	if ($('.alert-errors').children().length === 0) {
+	    $('.alert-errors').addClass('d-none');
+	}
+    }
 }
 
 function displayInfoProveedor(obj){
