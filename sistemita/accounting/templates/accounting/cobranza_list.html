@@ -96,7 +96,7 @@
 		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
 		  <td>{{ object.cliente.razon_social }}</td>
 		  <td>{{ object.cliente.cuit }}</td>
-		  <td><div class="float-right">$ {{ object.total }}</td>
+		  <td><div class="float-right">{{ object.get_moneda_display }} {{ object.total }}</td>
 		  <td>{{ object.creado|date:"d-m-Y" }}</td>
 		  {% if perms.accounting.view_cobranza or perms.accounting.change_cobranza or perms.accounting.delete_cobranza %}
 		    <td class="text-center">

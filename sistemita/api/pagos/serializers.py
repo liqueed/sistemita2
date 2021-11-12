@@ -133,9 +133,10 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
             # Factura
             fecha = validated_data['fecha']
             proveedor = validated_data['proveedor']
+            moneda = validated_data['moneda']
             total = validated_data['total']
             pagado = validated_data['pagado']
-            pago = Pago.objects.create(fecha=fecha, proveedor=proveedor, total=total, pagado=pagado)
+            pago = Pago.objects.create(fecha=fecha, proveedor=proveedor, moneda=moneda, total=total, pagado=pagado)
 
             # Factura pago
             facturas = validated_data['pago_facturas']

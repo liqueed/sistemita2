@@ -112,8 +112,9 @@ class CobranzaSerializer(serializers.ModelSerializer):
             # Factura
             cliente = self.context['cliente']
             fecha = validated_data['fecha']
+            moneda = validated_data['moneda']
             total = validated_data['total']
-            cobranza = Cobranza.objects.create(fecha=fecha, cliente=cliente, total=total)
+            cobranza = Cobranza.objects.create(fecha=fecha, cliente=cliente, moneda=moneda, total=total)
 
             # Factura cobranza
             facturas = validated_data['cobranza_facturas']

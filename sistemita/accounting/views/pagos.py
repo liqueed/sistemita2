@@ -82,7 +82,8 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         current_week = date.today().isocalendar()[1]
 
         context['last_created'] = queryset.filter(creado__week=current_week).count()
-        context['debt_in_peso'] = queryset.filter(pagado=False).aggregate(Sum('total'), Count('id'))
+        context['debt_in_peso'] = queryset.filter(pagado=False, moneda='P').aggregate(Sum('total'), Count('id'))
+        context['debt_in_dollar'] = queryset.filter(pagado=False, moneda='D').aggregate(Sum('total'), Count('id'))
 
         return context
 
