@@ -100,3 +100,25 @@ class OrdenCompra(TimeStampedModel, models.Model):
         ordering = ('fecha',)
         verbose_name = 'orden de compra'
         verbose_name_plural = 'ordenes de compras'
+
+
+class FacturaImputada(TimeStampedModel, models.Model):
+    """Modelo de imputación de facturas."""
+
+    fecha = models.DateField(blank=False)
+    cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
+    facturas = models.ManyToManyField(Factura, related_name='facturas_imputacion')
+    nota_de_credito = models.OneToOneField(
+        Factura, blank=True, null=True, on_delete=models.SET_NULL, related_name='factura_nc'
+    )
+    moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
+    monto_facturas = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    monto_nota_de_credito = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    total_factura = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+
+    class Meta:
+        """Configuraciones del modelo."""
+
+        ordering = ('fecha',)
+        verbose_name = 'factura imputada'
+        verbose_name_plural = 'facturas imputadas'
