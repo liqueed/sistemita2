@@ -5,15 +5,18 @@
   $("#sidebarToggle, #sidebarToggleTop").on('click', function(e) {
     $("body").toggleClass("sidebar-toggled");
     $(".sidebar").toggleClass("toggled");
-    if ($(".sidebar").hasClass("toggled")) {
-      $('.sidebar .collapse').collapse('hide');
-    };
+      if ($(".sidebar").hasClass("toggled")) {
+	  $('.sidebar-brand-icon > img').attr("width","67px").attr("height", "25px");
+	 $('.sidebar .collapse').collapse('hide');
+      } else {
+	  $('.sidebar-brand-icon > img').attr("width","134px").attr("height", "50px");
+      };
   });
 
   // Close any open menu accordions when window is resized below 768px
   $(window).resize(function() {
-    if ($(window).width() < 768) {
-      $('.sidebar .collapse').collapse('hide');
+     if ($(window).width() < 768) {
+	 $('.sidebar .collapse').collapse('hide');
     };
   });
 
@@ -21,7 +24,7 @@
   $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function(e) {
     if ($(window).width() > 768) {
       var e0 = e.originalEvent,
-        delta = e0.wheelDelta || -e0.detail;
+	delta = e0.wheelDelta || -e0.detail;
       this.scrollTop += (delta < 0 ? 1 : -1) * 30;
       e.preventDefault();
     }
