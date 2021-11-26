@@ -57,7 +57,7 @@
 
   <!-- Facturación -->
   {% if perms.core.list_factura or perms.core.add_factura %}
-    <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if request.resolver_match.url_name in 'factura-list' %} active{% endif %}">
       {% if perms.core.list_factura %}
 	<a class="nav-link" href="{% url 'core:factura-list' %}">
 	  <i class="fas fa-sticky-note"></i>
@@ -78,6 +78,17 @@
     </li>
   {% endif %}
   <!-- End Facturación -->
+
+  <!-- Imputaciones -->
+  {% if perms.core.list_facturaimputada %}
+    <li class="nav-item {% if request.resolver_match.url_name in 'facturaimputada-list' %}active{% endif %}">
+	<a class="nav-link" href="{% url 'core:facturaimputada-list' %}">
+	    <i class="fas fa-sticky-note"></i>
+	    <span>Imputaciones</span>
+	</a>
+    </li>
+  {% endif %}
+  <!-- End Imputaciones -->
 
   <!-- Órdenes de compra -->
   {% if perms.core.list_ordencompra or perms.core.add_ordencompra %}
@@ -188,6 +199,16 @@
     </li>
   {% endif %}
   <!-- End Factura Proveedores -->
+
+  <!-- Imputaciones -->
+  <li class="nav-item">
+    <a class="nav-link" href="#">
+      <i class="fas fa-sticky-note"></i>
+      <span>Imputaciones</span>
+    </a>
+  </li>
+
+  <!-- End Imputaciones -->
 
   <!-- Pagos -->
   {% if perms.accounting.list_pago or perms.accounting.add_pago %}

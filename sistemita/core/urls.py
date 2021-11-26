@@ -19,6 +19,13 @@ from sistemita.core.views.facturascliente import (
     FacturaListView,
     FacturaUpdateView,
 )
+from sistemita.core.views.facturasimputada import (
+    FacturaImputadaCreateTemplateView,
+    FacturaImputadaDeleteView,
+    FacturaImputadaDetailView,
+    FacturaImputadaListView,
+    FacturaImputadaUpdateTemplateView,
+)
 from sistemita.core.views.facturasproveedor import (
     FacturaProveedorByUserDetailView,
     FacturaProveedorByUserListView,
@@ -72,6 +79,13 @@ urlpatterns = [
     path('factura/<int:pk>/editar/', FacturaUpdateView.as_view(), name='factura-update'),
     path('factura/<int:pk>/eliminar/', FacturaDeleteView.as_view(), name='factura-delete'),
     path('factura/importar/', FacturaImportTemplateView.as_view(), name='factura-import'),
+    path('facturaimputada/', FacturaImputadaListView.as_view(), name='facturaimputada-list'),
+    path('facturaimputada/agregar/', FacturaImputadaCreateTemplateView.as_view(), name='facturaimputada-create'),
+    path('facturaimputada/<int:pk>/', FacturaImputadaDetailView.as_view(), name='facturaimputada-detail'),
+    path(
+        'facturaimputada/<int:pk>/editar/', FacturaImputadaUpdateTemplateView.as_view(), name='facturaimputada-update'
+    ),
+    path('facturaimputada/<int:pk>/eliminar/', FacturaImputadaDeleteView.as_view(), name='facturaimputada-delete'),
     path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-list'),
     path('ordencompra/agregar/', OrdenCompraCreateView.as_view(), name='ordencompra-create'),
     path('ordencompra/<int:pk>/', OrdenCompraDetailView.as_view(), name='ordencompra-detail'),
