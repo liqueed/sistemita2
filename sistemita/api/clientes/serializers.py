@@ -204,10 +204,12 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
     """Factura Imputada model Serializer."""
 
     fecha = serializers.DateField(required=True)
-    cliente = ClienteSerializer()
     facturas = FacturaSerializer(many=True, read_only=True)
+    cliente = ClienteSerializer(read_only=True)
+    cliente_id = serializers.CharField(validators=[validate_is_number], write_only=True)
     facturas_list = serializers.ListField(child=serializers.DictField(), write_only=True)
-    nota_de_credito = serializers.CharField(validators=[validate_is_number])
+    nota_de_credito = FacturaSerializer(read_only=True)
+    nota_de_credito_id = serializers.CharField(validators=[validate_is_number], write_only=True)
     monto_facturas = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
     monto_nota_de_credito = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
     total_factura = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
@@ -220,20 +222,22 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
             'id',
             'fecha',
             'cliente',
+            'cliente_id',
             'facturas',
             'facturas_list',
             'nota_de_credito',
+            'nota_de_credito_id',
             'moneda',
             'monto_facturas',
             'monto_nota_de_credito',
             'total_factura',
         )
-        read_only_fields = ('id', 'cliente', 'facturas')
+        read_only_fields = ('id', 'cliente', 'facturas', 'nota_de_credito')
 
-    def validate_cliente(self, data):
+    def validate_cliente_id(self, data):
         """Valida datos de cliente."""
         try:
-            cliente = Cliente.objects.get(cuit=data['cuit'])
+            cliente = Cliente.objects.get(pk=data)
             self.context['cliente'] = cliente
             return cliente
         except Cliente.DoesNotExist as not_exist:
@@ -266,7 +270,7 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
 
         return facturas
 
-    def validate_nota_de_credito(self, data):
+    def validate_nota_de_credito_id(self, data):
         """Valida la nota de crédito."""
         try:
             cliente = self.context.get('cliente', None)
@@ -277,8 +281,11 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
+        validated_data['cliente'] = validated_data.pop('cliente_id')
+        validated_data['nota_de_credito'] = validated_data.pop('nota_de_credito_id')
+
         facturas = validated_data.pop('facturas_list')
-        nota_de_credito = validated_data.get('nota_de_credito')
+        nota_de_credito = validated_data['nota_de_credito']
         total_nc = nota_de_credito.total
         instance = FacturaImputada.objects.create(**validated_data)
 

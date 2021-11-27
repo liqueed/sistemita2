@@ -212,6 +212,7 @@ $('#cliente').select2({
     // Obtengo objeto Cliente
     var obj = $(this).select2("data")[0];
     cliente = {
+	"id": obj.id,
 	"razon_social": obj.razon_social,
 	"cuit": obj.cuit,
 	"correo": obj.correo,
@@ -271,6 +272,7 @@ $('#facturaimputada_1 .selector-factura').select2({
     validateFacturas();
     setMoneda();
     setMontoFacturas();
+    setMontoNotaDeCredito();
     setTotalFacturas();
 
     $('.selector-notadecredito').prop('disabled', false);
@@ -430,9 +432,9 @@ $('#submit-id-submit').click(function(e){
 
     let formFacturaImputada = {
 	'fecha': fecha,
-	'cliente': cliente,
+	'cliente_id': cliente.id,
 	'facturas_list': facturas,
-	'nota_de_credito': notaDeCredito,
+	'nota_de_credito_id': notaDeCredito,
 	'moneda': moneda,
 	'monto_facturas': parseFloat(montoFacturas),
 	'monto_nota_de_credito': parseFloat(montoNotaDeCredito),
@@ -589,6 +591,9 @@ function setTotalFacturas(){
     let montoFacturas =  $('.input-monto-facturas').val();
     let montoNotaDeCredito = $('.input-monto-notadecredito').val();
     let totalFacturas = montoFacturas - montoNotaDeCredito;
+    if (totalFacturas < 0){
+	totalFacturas = '0.0';
+    }
     $('.input-total').val(parseFloat(totalFacturas).toFixed(2));
 }
 
