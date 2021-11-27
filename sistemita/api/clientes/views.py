@@ -41,7 +41,7 @@ class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
     permission_classes = (permissions.IsAuthenticated,)
 
     # Filters
-    filter_fields = ('cliente', 'cobrado', 'numero__icontains')
+    filter_fields = ('cliente', 'cobrado', 'numero__icontains', 'tipo__exclude', 'tipo__startswith')
     filterset_class = FacturaFilterSet
     filter_backends = (DjangoFilterBackend,)
 

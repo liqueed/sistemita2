@@ -81,7 +81,7 @@
 
   <!-- Imputaciones -->
   {% if perms.core.list_facturaimputada %}
-    <li class="nav-item {% if request.resolver_match.url_name in 'facturaimputada-list' %}active{% endif %}">
+    <li class="nav-item {% if 'facturaimputada' in request.resolver_match.url_name %}active{% endif %}">
 	<a class="nav-link" href="{% url 'core:facturaimputada-list' %}">
 	    <i class="fas fa-sticky-note"></i>
 	    <span>Imputaciones</span>

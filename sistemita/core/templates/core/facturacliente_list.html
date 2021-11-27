@@ -115,6 +115,7 @@
 	      <tr>
 		<th data-order="numero" class="sortable">Número</th>
 		<th data-order="fecha" class="sortable">Fecha</th>
+		<th data-order="tipo" class="sortable">Tipo</th>
 		<th data-order="cliente" class="sortable">Cliente</th>
 		<th data-order="cliente__cuit" class="sortable">CUIT</th>
 		<th data-order="total" class="sortable">Monto</th>
@@ -134,6 +135,7 @@
 		    </a>
 		  </td>
 		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
+		  <td>{{ object.get_tipo_display }}</td>
 		  <td>{{ object.cliente.razon_social }}</td>
 		  <td>{{ object.cliente.cuit }}</td>
 		  <td>
