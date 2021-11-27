@@ -28,22 +28,18 @@
 	  <table class="table table-bordered table-hover table-sortable" cellspacing="0" width="100%">
 	    <thead>
 	      <tr>
-		<th data-order="factura__numero" class="sortable">Número</th>
-		<th data-order="factura__fecha" class="sortable">Fecha</th>
-		<th data-order="facura__cliente" class="sortable">Cliente</th>
 		<th data-order="factura__fecha" class="sortable">Fecha imputación</th>
 		<th data-order="factura__numero" class="sortable">Factura imputada</th>
+		<th data-order="facura__cliente" class="sortable">Cliente</th>
 		<th></th>
 	      </tr>
 	    </thead>
 	    <tbody>
 	      {% for object in object_list %}
 		<tr>
-		  <td><a href="{% url 'core:facturaimputada-detail' object.pk %}">{{ object.factura.numero|default:"-" }}</a></td>
-		  <td>{{ object.factura.fecha|date:"d-m-Y" }}</td>
-		  <td>{{ object.factura.cliente.razon_social }}</td>
 		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
 		  <td><a href="#">{{ object.nota_de_credito.numero|default:"-" }}</a></td>
+		  <td>{{ object.cliente.razon_social }}</td>
 		  <td class="text-center">
 		    <a class="mr-1 text-decoration-none" href="{% url 'core:facturaimputada-detail' object.pk %}">
 		      <i class="far fa-eye"></i>
