@@ -282,6 +282,7 @@ $('#facturaimputada_1 .selector-factura').select2({
 $('.add-factura').click(function(e){
     e.preventDefault();
 
+    if (!validateForm()){return;}
     if ($('.alert-errors').children().length > 0) { return;}
 
     let wrapperFactura = $('.wrapper-factura:first'); // clono primera factura
@@ -290,7 +291,6 @@ $('.add-factura').click(function(e){
     let clone = wrapperFactura.clone(true); // clono con datos y eventos
     let idFactura = 'facturaimputada_' + cloneIdFactura; // establezco el id
 
-    if (!validateForm()){return;}
     clone.attr('id', idFactura); // agrego id
     clone.attr('data-id', cloneIdFactura);
 
@@ -347,6 +347,7 @@ $('.add-factura').click(function(e){
 	validateFacturas();
 	setMoneda();
 	setMontoFacturas();
+	setMontoNotaDeCredito();
 	setTotalFacturas();
     });
 });
@@ -418,6 +419,7 @@ $('#submit-id-submit').click(function(e){
 	let factura = $(this).find('[name*="factura"]').val();
 	facturas.push({
 	    'factura': parseInt(factura),
+	    'action': 'add'
 	});
     });
     let notaDeCredito = $('select[name=notadecredito]').val();
@@ -429,21 +431,58 @@ $('#submit-id-submit').click(function(e){
     let formFacturaImputada = {
 	'fecha': fecha,
 	'cliente': cliente,
-	'facturas': facturas,
+	'facturas_list': facturas,
 	'nota_de_credito': notaDeCredito,
 	'moneda': moneda,
 	'monto_facturas': parseFloat(montoFacturas),
 	'monto_nota_de_credito': parseFloat(montoNotaDeCredito),
-	'total': parseFloat(total),
+	'total_factura': parseFloat(total),
     }
 
-    console.log(formFacturaImputada);
+    $.ajax({
+	type        : 'POST',
+	url         : '/api/factura-imputada/',
+	data        : JSON.stringify(formFacturaImputada),
+	dataType    : 'json',
+	contentType : 'application/json',
+	encode      : true,
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
+    }).done(function(data) {
+	if ('{{ perms.core.change_facturaimputada }}' === 'True'){
+	    window.location.href = '{% url 'core:facturaimputada-update' pk=0 %}?create=1'.replace('0', data.id);
+	} else {
+	    if ('{{ perms.core.view_facturaimputada }}' === 'True'){
+		window.location.href = '{% url 'core:facturaimputada-detail' pk=0 %}?create=1'.replace('0', data.id);
+	    } else {
+		if ('{{ perms.core.list_facturaimputada }}' === 'True'){
+		    window.location.href = '{% url 'core:facturaimputada-list' %}?create=1';
+		} else {
+		    window.location.href = '{% url 'core:home' %}?create=1&type=facturaimputada';
+		}
+	    }
+	}
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+	if (jqXHR.status == 400) {
+	    let listErrors = jqXHR.responseJSON;
+	    const array = Object.keys(listErrors).map(key => listErrors[key]);
+	    $('.alert-errors').removeClass('d-none');
+	    for (var item in array) {
+		$('.alert-errors').append('<p class="m-0">' + array[item] + '</p>');
+	    }
+	}
+	if (jqXHR.status == 500) {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.alert-errors').append('<p class="m-0">Se produjo un error, revise el formulario e inténtelo nuevamente.</p>');
+	}
+    });
 
 });
 
 // funciones
 function validateForm(){
-    var validator = $('#cobranza-form').validate({
+    var validator = $('#facturaimputada-form').validate({
 	lang: 'es',
     });
 

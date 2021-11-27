@@ -20,7 +20,7 @@ from sistemita.core.constants import (
     TIPOS_FACTURA,
     TIPOS_FACTURA_IMPORT,
 )
-from sistemita.core.models.cliente import Cliente, Factura
+from sistemita.core.models.cliente import Cliente, Factura, FacturaImputada
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_MONEDA_INVALID,
@@ -198,3 +198,111 @@ class FacturaImportSerializer(serializers.Serializer):
         )
 
         return factura
+
+
+class FacturaImputadaModelSerializer(serializers.ModelSerializer):
+    """Factura Imputada model Serializer."""
+
+    fecha = serializers.DateField(required=True)
+    cliente = ClienteSerializer()
+    facturas = FacturaSerializer(many=True, read_only=True)
+    facturas_list = serializers.ListField(child=serializers.DictField(), write_only=True)
+    nota_de_credito = serializers.CharField(validators=[validate_is_number])
+    monto_facturas = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
+    monto_nota_de_credito = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
+    total_factura = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
+
+    class Meta:
+        """Clase meta."""
+
+        model = FacturaImputada
+        fields = (
+            'id',
+            'fecha',
+            'cliente',
+            'facturas',
+            'facturas_list',
+            'nota_de_credito',
+            'moneda',
+            'monto_facturas',
+            'monto_nota_de_credito',
+            'total_factura',
+        )
+        read_only_fields = ('id', 'cliente', 'facturas')
+
+    def validate_cliente(self, data):
+        """Valida datos de cliente."""
+        try:
+            cliente = Cliente.objects.get(cuit=data['cuit'])
+            self.context['cliente'] = cliente
+            return cliente
+        except Cliente.DoesNotExist as not_exist:
+            raise serializers.ValidationError('Client does not exist.') from not_exist
+        return data
+
+    def validate_facturas_list(self, data):
+        """Valida que las facturas sean de la misma moneda y que no haya dos facturas repetidas."""
+        facturas = []
+        monedas = []
+        pks = []
+
+        for row in data:
+            try:
+                factura = Factura.objects.get(pk=row.get('factura'))
+                facturas.append(factura)
+            except Factura.DoesNotExist:
+                raise serializers.ValidationError('La factura no existe.')
+
+            if row.get('action') in ['add', 'update']:
+                monedas.append(factura.moneda)
+                pks.append(factura.pk)
+
+        if len(monedas) > 1 and len(set(monedas)) > 1:
+            raise serializers.ValidationError('Las facturas deben ser de la misma monedas.')
+
+        if len(pks) > 1:
+            if len(pks) != len(set(pks)):
+                raise serializers.ValidationError('Hay facturas repetidas.')
+
+        return facturas
+
+    def validate_nota_de_credito(self, data):
+        """Valida la nota de crédito."""
+        try:
+            cliente = self.context.get('cliente', None)
+            return Factura.objects.get(pk=data, cliente=cliente, tipo__startswith='NC')
+        except Factura.DoesNotExist as not_exist:
+            raise serializers.ValidationError('La factura no existe.') from not_exist
+        return data
+
+    def create(self, validated_data):
+
+        facturas = validated_data.pop('facturas_list')
+        nota_de_credito = validated_data.get('nota_de_credito')
+        total_nc = nota_de_credito.total
+        instance = FacturaImputada.objects.create(**validated_data)
+
+        for factura in facturas:
+
+            # Asignado facturas
+            instance.facturas.add(factura)
+
+            # Imputando costos
+            if total_nc == 0:
+                break
+            if total_nc == factura.total or total_nc > factura.total:
+                total_nc -= factura.total
+                factura.cobrado = True
+                factura.total = 0
+            elif factura.total > total_nc:
+                total_nc = 0
+                factura.total -= total_nc
+
+            factura.save()
+
+        if total_nc == 0:
+            nota_de_credito.cobrado = True
+            nota_de_credito.save()
+
+        instance.save()
+        return instance
