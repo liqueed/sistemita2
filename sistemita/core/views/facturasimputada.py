@@ -3,6 +3,7 @@
 # Django
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, TemplateView
@@ -84,18 +85,29 @@ class FacturaImputadaDeleteView(PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('core:facturaimputada-list')
     template_name = 'core/facturaimputada_confirm_delete.html'
 
-    # def delete(self, request, *args, **kwargs):
-    #     """
-    #     Al eliminar la imputación la factura suma su total y queda como no cobrada.
-    #     """
-    #     self.object = self.get_object()
-    #     fondo = self.object.fondo
-    #     new_monto_disponible = fondo.monto_disponible + self.object.monto
-    #     self.object.delete()
-    #     Fondo.objects.filter(pk=fondo.pk).update(disponible=True, monto_disponible=new_monto_disponible)
+    def delete(self, request, *args, **kwargs):
+        """
+        Al eliminar la imputación la factura suma su total y queda como no cobrada.
+        """
+        self.object = self.get_object()
+        # Restablece nota de credito
+        nota_de_credito = self.object.nota_de_credito
+        nota_de_credito.cobrado = False
+        nota_de_credito.total += nota_de_credito.monto_imputado
+        nota_de_credito.monto_imputado = 0
+        nota_de_credito.save()
 
-    #     success_url = self.get_success_url()
-    #     return HttpResponseRedirect(success_url)
+        # Restablece facturas
+        facturas = self.object.facturas.all()
+        for factura in facturas:
+            factura.total += factura.monto_imputado
+            factura.monto_imputado = 0
+            factura.cobrado = False
+            factura.save()
+
+        self.object.delete()
+        success_url = self.get_success_url()
+        return HttpResponseRedirect(success_url)
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
