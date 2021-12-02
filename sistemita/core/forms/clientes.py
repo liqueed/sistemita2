@@ -127,6 +127,7 @@ class FacturaForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
 
+        self.fields['monto_imputado'].widget.attrs['readonly'] = True
         # Permisos
         if not self.user.has_perm('core.change_nro_factura'):
             self.fields['numero'].widget.attrs['readonly'] = True
@@ -156,6 +157,7 @@ class FacturaForm(forms.ModelForm):
                 Div(Div('archivos', template='components/input_files.html'), css_class='row'),
                 Div(css_id='adjuntos', css_class='row'),
                 Div(Div('porcentaje_fondo', css_class='col-2'), css_class='row'),
+                Div(Div('monto_imputado', css_class='col-2'), css_class='row'),
             ),
             FormActions(
                 Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
@@ -181,6 +183,7 @@ class FacturaForm(forms.ModelForm):
             'cobrado',
             'archivos',
             'porcentaje_fondo',
+            'monto_imputado',
         )
 
     def clean_numero(self):
@@ -250,7 +253,7 @@ class FacturaForm(forms.ModelForm):
                 factura=instance,
                 monto=instance.porcentaje_fondo_monto,
                 monto_disponible=instance.porcentaje_fondo_monto,
-                disponible=instance.cobrado
+                disponible=instance.cobrado,
             )
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
@@ -259,7 +262,7 @@ class FacturaForm(forms.ModelForm):
                 moneda=instance.moneda,
                 monto=instance.porcentaje_fondo_monto,
                 monto_disponible=instance.porcentaje_fondo_monto,
-                disponible=instance.cobrado
+                disponible=instance.cobrado,
             )
 
         for f in self.files.getlist('archivos'):

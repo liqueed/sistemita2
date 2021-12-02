@@ -253,7 +253,7 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
         for row in data:
             try:
                 factura = Factura.objects.get(pk=row.get('factura'))
-                facturas.append(factura)
+                facturas.append({'factura': factura, 'action': row.get('action')})
             except Factura.DoesNotExist:
                 raise serializers.ValidationError('La factura no existe.')
 
@@ -285,31 +285,43 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
         validated_data['nota_de_credito'] = validated_data.pop('nota_de_credito_id')
 
         facturas = validated_data.pop('facturas_list')
-        nota_de_credito = validated_data['nota_de_credito']
+        nota_de_credito = validated_data.get('nota_de_credito')
         total_nc = nota_de_credito.total
         instance = FacturaImputada.objects.create(**validated_data)
 
-        for factura in facturas:
-
+        for row in facturas:
+            factura = row.get('factura')
             # Asignado facturas
             instance.facturas.add(factura)
 
             # Imputando costos
             if total_nc == 0:
                 break
-            if total_nc == factura.total or total_nc > factura.total:
+            if total_nc == factura.total:
+                factura.monto_imputado = total_nc
                 total_nc -= factura.total
                 factura.cobrado = True
                 factura.total = 0
-            elif factura.total > total_nc:
+            elif total_nc > factura.total:
+                total_nc -= factura.total
+                factura.monto_imputado = factura.total
+                factura.cobrado = True
+                factura.total = 0
+            elif total_nc < factura.total:
+                factura.monto_imputado = total_nc
                 total_nc = 0
                 factura.total -= total_nc
 
             factura.save()
 
-        if total_nc == 0:
+        nota_de_credito.monto_imputado = nota_de_credito.total - total_nc
+        nota_de_credito.total = total_nc
+        if nota_de_credito.total == 0:
             nota_de_credito.cobrado = True
-            nota_de_credito.save()
+        nota_de_credito.save()
 
         instance.save()
         return instance
+
+    def update(self, instance, validated_data):
+        pass
