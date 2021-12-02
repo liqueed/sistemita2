@@ -1,6 +1,7 @@
 """Serializadores de clientes."""
 
 # Imports
+import json
 from datetime import datetime
 from re import match
 
@@ -309,8 +310,8 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
                 factura.total = 0
             elif total_nc < factura.total:
                 factura.monto_imputado = total_nc
-                total_nc = 0
                 factura.total -= total_nc
+                total_nc = 0
 
             factura.save()
 
@@ -324,4 +325,75 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        pass
+        """Edición de facturas imputadas."""
+        facturas = validated_data.get('facturas_list')
+        nota_de_credito = instance.nota_de_credito
+        total_nc = nota_de_credito.total
+
+        for row in facturas:
+            factura = row.get('factura')
+            action = row.get('action')
+            if 'add' in action:
+                instance.facturas.add(factura)
+                if total_nc == 0:
+                    break
+                if total_nc == factura.total:
+                    factura.monto_imputado = total_nc
+                    total_nc -= factura.total
+                    factura.cobrado = True
+                    factura.total = 0
+                elif total_nc > factura.total:
+                    total_nc -= factura.total
+                    factura.monto_imputado = factura.total
+                    factura.cobrado = True
+                    factura.total = 0
+                elif total_nc < factura.total:
+                    factura.monto_imputado = total_nc
+                    factura.total -= total_nc
+                    total_nc = 0
+                factura.save()
+            elif 'update' in action:
+                replace_pk = json.loads(action.replace("'", "\""))['id']
+                # Verifico si no son facturas iguales
+                if factura.pk != replace_pk:
+                    # Restablece los valores de la factura remplaza
+                    factura_repleace = Factura.objects.get(pk=replace_pk)
+                    factura_repleace.total += factura_repleace.monto_imputado
+                    factura_repleace.monto_imputado = 0
+                    factura_repleace.cobrado = False
+                    factura_repleace.save()
+                    instance.facturas.remove(factura_repleace)
+
+                    # Imputa a la nueva factura
+                    instance.facturas.add(factura)
+                    if total_nc == factura.total:
+                        factura.monto_imputado = total_nc
+                        total_nc -= factura.total
+                        factura.cobrado = True
+                        factura.total = 0
+                    elif total_nc > factura.total:
+                        total_nc -= factura.total
+                        factura.monto_imputado = factura.total
+                        factura.cobrado = True
+                        factura.total = 0
+                    elif total_nc < factura.total:
+                        factura.monto_imputado = total_nc
+                        factura.total -= total_nc
+                        total_nc = 0
+                    factura.save()
+            elif 'delete' in action:
+                total_nc += factura.monto_imputado
+                factura.total += factura.monto_imputado
+                factura.cobrado = False
+                factura.monto_imputado = 0
+                factura.save()
+                instance.facturas.remove(factura)
+
+        nota_de_credito.monto_imputado = nota_de_credito.total - total_nc
+        nota_de_credito.total = total_nc
+        if nota_de_credito.total == 0:
+            nota_de_credito.cobrado = True
+        nota_de_credito.save()
+
+        instance.save()
+        return instance
