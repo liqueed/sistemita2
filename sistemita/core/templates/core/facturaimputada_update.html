@@ -492,13 +492,13 @@ $('#submit-id-submit').click(function(e){
 	}
     }).done(function(data) {
 	if ('{{ perms.core.change_facturaimputada }}' === 'True'){
-	    window.location.href = '{% url 'core:facturaimputada-update' pk=0 %}?create=1'.replace('0', data.id);
+	    window.location.href = '{% url 'core:facturaimputada-update' pk=0 %}?update=1'.replace('0', data.id);
 	} else {
 	    if ('{{ perms.core.view_facturaimputada }}' === 'True'){
-		window.location.href = '{% url 'core:facturaimputada-detail' pk=0 %}?create=1'.replace('0', data.id);
+		window.location.href = '{% url 'core:facturaimputada-detail' pk=0 %}?update=1'.replace('0', data.id);
 	    } else {
 		if ('{{ perms.core.list_facturaimputada }}' === 'True'){
-		    window.location.href = '{% url 'core:facturaimputada-list' %}?create=1';
+		    window.location.href = '{% url 'core:facturaimputada-list' %}?update=1';
 		} else {
 		    window.location.href = '{% url 'core:home' %}?create=1&type=facturaimputada';
 		}

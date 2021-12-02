@@ -38,7 +38,7 @@
 	      {% for object in object_list %}
 		<tr>
 		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
-		  <td><a href="#">{{ object.nota_de_credito.numero|default:"-" }}</a></td>
+		  <td><a href="{% url 'core:facturaimputada-detail' object.pk %}">{{ object.nota_de_credito.numero|default:"-" }}</a></td>
 		  <td>{{ object.cliente.razon_social }}</td>
 		  <td class="text-center">
 		    <a class="mr-1 text-decoration-none" href="{% url 'core:facturaimputada-detail' object.pk %}">
