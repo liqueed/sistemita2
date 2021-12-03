@@ -16,9 +16,10 @@ from sistemita.api.clientes.serializers import (
     ClienteSerializer,
     FacturaBeforeImportSerializer,
     FacturaImportSerializer,
+    FacturaImputadaModelSerializer,
     FacturaSerializer,
 )
-from sistemita.core.models.cliente import Cliente, Factura
+from sistemita.core.models.cliente import Cliente, Factura, FacturaImputada
 
 
 class ClienteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -41,7 +42,7 @@ class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
     permission_classes = (permissions.IsAuthenticated,)
 
     # Filters
-    filter_fields = ('cliente', 'cobrado', 'numero__icontains')
+    filter_fields = ('cliente', 'cobrado', 'numero__icontains', 'tipo__exclude', 'tipo__startswith')
     filterset_class = FacturaFilterSet
     filter_backends = (DjangoFilterBackend,)
 
@@ -107,3 +108,17 @@ class FacturaViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({}, status=status.HTTP_201_CREATED)
+
+
+class FacturaImputadaViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """Factura Imputada view set."""
+
+    queryset = FacturaImputada.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = FacturaImputadaModelSerializer

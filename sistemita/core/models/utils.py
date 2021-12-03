@@ -37,6 +37,7 @@ class FacturaAbstract(TimeStampedModel, models.Model):
     total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     cobrado = models.BooleanField(default=False)
+    monto_imputado = models.DecimalField(blank=True, decimal_places=2, max_digits=12, default=0.0)
 
     @property
     def moneda_monto(self):

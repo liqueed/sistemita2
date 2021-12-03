@@ -1,0 +1,616 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Editar Imputación Nro. {{ pk }} | Liqueed{% endblock %}
+{% block header %}
+    <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
+    <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
+    <script src="{% static 'js/select2_placeholder.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+	<h1 class="h3 text-gray-800">Imputaciones</h1>
+	{% if perms.core.list_facturaimputada %}
+	<a href="{% url 'core:facturaimputada-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	    <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
+	{% endif %}
+    </div>
+
+    <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create and not request.GET.update %}d-none{% endif %}" role="alert">
+     {% if request.GET.create %}La imputación ha sido creada exitosamente.{% endif %}
+     {% if request.GET.update %}La imputación ha sido modificada exitosamente.{% endif %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	<span aria-hidden="true">×</span>
+      </button>
+    </div>
+
+    <div class="card shadow mb-4">
+	<div class="card-header py-3">
+	    <h6 class="m-0 font-weight-bold text-primary">Editar Imputación #{{ pk }}</h6>
+	</div>
+	<div class="card-body">
+	    <div class="table-responsive">
+
+		<form id="facturaimputada-form">
+		    <fieldset>
+			<legend>Datos</legend>
+			<!-- Factura imputada -->
+			<input id="facturaimputada" name="facturaimputada" type="hidden" value="{{ pk }}">
+			<!-- End Factura imputada -->
+
+
+			<!-- Fecha -->
+			<div class="row">
+			    <div class="col-4">
+				<div id="div_id_fecha" class="form-group">
+				    <label for="id_fecha" class=" requiredField">
+					Fecha<span class="asteriskField">*</span>
+				    </label>
+				    <div>
+					<input type="text" name="fecha" class="dateinput form-control" required="" id="id_fecha" autocomplete="off">
+				    </div>
+				</div>
+			    </div>
+			</div>
+			<!-- End Fecha -->
+
+
+			<!-- Cliente -->
+			<div class="row">
+			    <div class="col-6">
+				<div class="form-group">
+				    <label class="requiredField">
+					Cliente<span class="asteriskField">*</span>
+				    </label>
+				    <div class="">
+					<select class="select form-control" id="cliente" name="cliente" disabled required>
+					</select>
+				    </div>
+				</div>
+			    </div>
+			</div>
+			<div class="row" id="info_cliente">
+			</div>
+			<!-- End Cliente -->
+
+			<!-- Nota de crédito -->
+			<div class="wrapper-notadecredito card p-4 mb-3" id="notadecredito" data-id="1" style="width: 55rem;">
+			    <div class="row">
+				<!-- Factura Cliente -->
+				<div class="col-12">
+				    <div class="form-group">
+					<label class="requiredField">
+					    Nota de crédito<span class="asteriskField">*</span>
+					</label>
+					<div class="wrapper-selector-notadecredito">
+					    <select class="form-control selector-notadecredito" name="notadecredito" disabled required>
+						<option value="" selected="">---------</option>
+					    </select>
+					</div>
+				    </div>
+				</div>
+			    </div>
+			</div>
+			<!-- End factura -->
+
+			<!-- Factura -->
+			<div class="card p-3 mb-3" style="width: 55rem;">
+
+			    <label class="requiredField">
+				Facturas<span class="asteriskField">*</span>
+			    </label>
+			    <div class="wrapper-factura" id="facturaimputada_1" style="width: 53rem;">
+				<div class="row">
+				    <div class="col-12">
+					<button type="button" class="close d-none" aria-label="Elimar" title="Eliminar">
+					    <span class="text-danger">&times;</span>
+					</button>
+				    </div>
+				</div>
+				<div class="row">
+				    <!-- Factura Cliente -->
+				    <div class="col-12">
+					<div class="form-group">
+					    <div class="wrapper-selector-factura">
+						<select class="form-control selector-factura" name="factura_1" required>
+						    <option value="" selected="">---------</option>
+						</select>
+					    </div>
+					</div>
+				    </div>
+				    <!-- End Factura Cliente -->
+				</div>
+			    </div>
+			</div>
+			<!-- End factura -->
+
+			<!-- Agregar factura -->
+			<div class="row">
+			    <div class="offset-8 col-1">
+				<button class="add-factura btn btn-success btn-xs float-right mr-2 mb-4" title="Agregar factura"><i class="fas fa-plus-circle"></i></button>
+			    </div>
+			</div>
+			<!-- End Agregar factura -->
+
+
+			<!-- Total -->
+			<div class="row wrapper-total mt-2">
+			    <div class="col-2">
+				<div class="form-group">
+				    <label class="requiredField">
+					Moneda<span class="asteriskField">*</span>
+				    </label>
+				    <div>
+					<select class="selector-moneda form-control" name="moneda" disabled>
+					    <option value="">---------</option>
+					    <option value="P">$</option>
+					    <option value="D">USD</option>
+					</select>
+				    </div>
+				</div>
+			    </div>
+			    <div class="col-2">
+				<div class="form-group">
+				    <label class="requiredField"> Monto facturas<span class="asteriskField">*</span> </label>
+				    <div><input class="input-monto-facturas numberinput form-control" type="number" name="monto-facturas" value="0.0" step="0.01" required disabled/></div>
+				</div>
+			    </div>
+			    <div class="col-2">
+				<div class="form-group">
+				    <label class="requiredField"> Monto nota de crédito<span class="asteriskField">*</span> </label>
+				    <div><input class="input-monto-notadecredito numberinput form-control" type="number" name="monto-notadecredito" value="0.0" step="0.01" required disabled/></div>
+				</div>
+			    </div>
+			    <div class="col-2">
+				<div class="form-group">
+				    <label class="requiredField"> Total facturas<span class="asteriskField">*</span> </label>
+				    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required disabled/></div>
+				</div>
+			    </div>
+			</div>
+			<!-- End Total -->
+
+		    </fieldset>
+
+		    <div class="form-group">
+			<div>
+			    <div class="alert-errors alert alert-danger alert-dismissible fade show d-none" role="alert"></div>
+			    <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+			    <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
+			</div>
+		    </div>
+
+		</form>
+
+	    </div>
+	</div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+
+$('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+
+var cliente; // global
+
+// Carga datos
+$(document).ready(function() {
+    let idFacturaImputada = $('#facturaimputada').val();
+
+    $.get(`/api/factura-imputada/${idFacturaImputada}/`, function(response) {
+	cliente = response.cliente;
+	let facturas = response.facturas
+
+	// fecha
+	let fecha = response.fecha.split('-');
+	$('#id_fecha').val(`${fecha[2]}/${fecha[1]}/${fecha[0]}`);
+
+	// cliente
+	$('#cliente').append(new Option(`${cliente.razon_social} - CUIT ${cliente.cuit}`, `${cliente.id}`));
+	displayInfoCliente(cliente);
+
+	// Total
+	$('.input-monto-facturas').val(response.monto_facturas);
+	$('.input-monto-notadecredito').val(response.monto_nota_de_credito);
+	$('.input-total').val(response.total_factura);
+	$(`.selector-moneda option[value=${response.moneda}]`).prop('selected', true);
+
+	// nota de credito
+	$.get(`/api/factura/${response.nota_de_credito.id}/`, function(response) {
+	    let moneda = response.moneda == 'P' ? '$' : 'USD';
+	    $(`#notadecredito .selector-notadecredito`).append(
+		new Option(`${response.fecha} - ${response.numero} - ${response.cliente.razon_social} - ${moneda} ${response.total}`, `${response.id}`, true, true)
+	    );
+	    $(`#notadecredito .selector-notadecredito`).attr('data-id', response.id);
+	    $(`#notadecredito .selector-notadecredito`).attr('data-moneda', response.moneda);
+	    $(`#notadecredito .selector-notadecredito`).attr('data-total', response.total);
+	});
+
+	// facturas
+	facturas.forEach(function(factura, _index) {
+	    let indexFactura = _index + 1;
+	    let idFactura = factura.id;
+	    if (indexFactura > 1){ // Si no es el primero previamente tengo que clonar
+		let cloneFactura = $('.wrapper-factura:first').clone(true);
+
+		cloneFactura.find('.close').removeClass('d-none'); // La primera factura no se puede borrar
+		cloneFactura.attr('data-inline', `{"id": ${idFactura}, "action": "update"}`);
+		cloneFactura.attr('id', `facturaimputada_${indexFactura}`);
+		cloneFactura.attr('data-id', `${indexFactura}`);
+		cloneFactura.find('.selector-factura').attr('name', `factura_${indexFactura}`);
+
+		// Selector factura, destruye los eventos de select2 y los vuelve a construir
+		cloneFactura.find('.wrapper-selector-factura').children().remove();
+		let htmlselector = `<select name="factura" class="select form-control selector-factura" required>`;
+		htmlselector += `<option value="" selected="">---------</option></select>`;
+		cloneFactura.find('.wrapper-selector-factura').append(htmlselector);
+
+		$('.wrapper-factura:last').after(cloneFactura);
+	    } else {
+		console.log(indexFactura);
+
+		// Defino data line para el elemento existente
+		$(`#facturaimputada_${indexFactura}`).attr('data-inline', `{"id": ${idFactura}, 'action': "update"}`);
+	    }
+
+	    // factura
+	    $.get(`/api/factura/${factura.id}/`, function(response) {
+		let moneda = response.moneda == 'P' ? '$' : 'USD';
+		$(`#facturaimputada_${indexFactura} .selector-factura`).append(
+		    new Option(`${response.fecha} - ${response.numero} - ${response.cliente.razon_social} - ${moneda} ${response.total}`, `${response.id}`, true, true)
+		);
+		$(`#facturaimputada_${indexFactura} .selector-factura`).attr('data-id', response.id);
+		$(`#facturaimputada_${indexFactura} .selector-factura`).attr('data-moneda', response.moneda);
+		$(`#facturaimputada_${indexFactura} .selector-factura`).attr('data-total', response.total);
+	    });
+
+	    $(`#facturaimputada_${indexFactura} .selector-factura`).select2({
+		searchInputPlaceholder: 'Buscar por número de factura',
+		ajax: {
+		    url: '/api/factura/',
+		    processResults: function (response) {
+			let data = $.map(response, function (obj) {
+			    let moneda = obj.moneda == 'P' ? '$' : 'USD';
+			    obj.id = obj.id;
+			    obj.text = `${obj.fecha} - ${obj.numero} - ${obj.cliente.razon_social} - ${moneda} ${obj.total}`;
+			    return obj;
+			});
+			return {
+			    results: data
+			};
+		    },
+		    data: function (params) {
+			var query = {
+			    cliente: $('#cliente').find(":selected").val(),
+			    cobrado: 0,
+			    numero__icontains: params.term,
+			    tipo__exclude: 'NC'
+			}
+			return query;
+		    },
+		    cache: true
+		}
+	    }).on('change', function(){
+		let factura = $(this).select2('data')[0];
+		$(this).attr('data-id', factura.id);
+		$(this).attr('data-moneda', factura.moneda);
+		$(this).attr('data-total', factura.total);
+
+		validateFacturas();
+		setMoneda();
+		setMontoFacturas();
+		setMontoNotaDeCredito();
+		setTotalFacturas();
+	    });
+
+	});
+
+    }).fail(function(){
+	alert('Se produjo un error, inténtalo nuevamente.')
+    });
+});
+
+// Clona factura
+$('.add-factura').click(function(e){
+    e.preventDefault();
+
+    if (!validateForm()){return;}
+    if ($('.alert-errors').children().length > 0) { return;}
+
+    let wrapperFactura = $('.wrapper-factura:first'); // clono primera factura
+    let countFacturas = $('.wrapper-factura').length;
+    let cloneIdFactura = countFacturas + 1; // Id del elemento clonado
+    let clone = wrapperFactura.clone(true); // clono con datos y eventos
+    let idFactura = 'facturaimputada_' + cloneIdFactura; // establezco el id
+
+    clone.attr('id', idFactura); // agrego id
+    clone.attr('data-id', cloneIdFactura);
+    clone.attr('data-inline', '{"action": "add"}');
+
+    clone.find('input').each(function(){$(this).val('0.0')}); // remuevo valores
+    clone.find('.close').removeClass('d-none');
+
+    // Selector factura, destruye los eventos de select2
+    clone.find(`.wrapper-selector-factura`).children().remove();
+    let htmlselector = `<select name="factura" class="select form-control selector-factura" required>`;
+    htmlselector += `<option value="" selected="">---------</option></select>`;
+    clone.find('.wrapper-selector-factura').append(htmlselector);
+
+    // setea atributos
+    clone.find('.selector-factura').attr('name', `factura_${cloneIdFactura}`);
+    $('.wrapper-factura:last').after(clone); // clonar luego del último
+
+    // Vuelvo a construir selector
+    clone.find('.selector-factura').select2({
+	placeholder: 'Selecciona una factura',
+	searchInputPlaceholder: 'Buscar por número de factura',
+	ajax: {
+	    url: '/api/factura/',
+	    processResults: function (response) {
+		let data = $.map(response, function (obj) {
+		    let moneda = obj.moneda == 'P' ? '$' : 'USD';
+		    obj.id = obj.id;
+		    obj.text = `${obj.fecha} - ${obj.numero} - ${obj.cliente.razon_social} - ${moneda} ${obj.total}`;
+		    return obj;
+		});
+		return {
+		    results: data
+		};
+	    },
+	    data: function (params) {
+		var query = {
+		    cliente: $('#cliente').find(":selected").val(),
+		    cobrado: 0,
+		    numero__icontains: params.term,
+		    tipo__exclude: 'NC'
+		}
+		return query;
+	    },
+	    cache: true
+	}
+    }).on('change', function(){
+	let factura = $(this).select2('data')[0];
+	$(this).attr('data-id', factura.id);
+	$(this).attr('data-moneda', factura.moneda);
+	$(this).attr('data-total', factura.total);
+
+	validateFacturas();
+	setMoneda();
+	setMontoFacturas();
+	setMontoNotaDeCredito();
+	setTotalFacturas();
+    });
+});
+
+// Eliminar factura
+$('.close').click(function(){
+    let data = $(this).closest('.wrapper-factura').attr('data-inline');
+
+    if (data.includes('add')){ // Si el wrapper es nuevo y lo elimino, lo remuevo del DOM
+	$(this).closest('.wrapper-factura').remove();
+    } else {
+	data = JSON.parse(data);
+	let idFactura = data.id;
+
+	$(this).closest('.wrapper-factura').attr('data-inline', `{"id": ${idFactura}, "action": "delete"}`);
+	$(this).closest('.wrapper-factura').addClass('d-none');
+    }
+
+    validateFacturas();
+    setMoneda()
+    setMontoFacturas();
+    if ($('.alert-errors').children().length === 0) {
+	$('.alert-errors').addClass('d-none');
+    }
+});
+
+// Guardar
+$('#submit-id-submit').click(function(e){
+    e.preventDefault();
+    if (!validateForm()){return;}
+
+    let fecha = $('input[name=fecha]').val().split("/");
+    fecha = new Date(fecha[2], fecha[1] - 1, fecha[0]).toISOString().slice(0, 10);
+
+    let facturaImputada = $('#facturaimputada').val();
+    let facturas = [];
+    $('.wrapper-factura').each(function(){
+	let factura = $(this).find('[name*="factura"]').val();
+	facturas.push({
+	    'factura': parseInt(factura),
+	    'action': $(this).attr('data-inline')
+	});
+    });
+    let notaDeCredito = $('select[name=notadecredito]').val();
+    let moneda = $('.selector-moneda').find(":selected").val();
+    let montoFacturas = $('input[name=monto-facturas]').val();
+    let montoNotaDeCredito = $('input[name=monto-notadecredito]').val();
+    let total = $('input[name=total]').val();
+
+    let formFacturaImputada = {
+	'fecha': fecha,
+	'cliente_id': cliente.id,
+	'facturas_list': facturas,
+	'nota_de_credito_id': notaDeCredito,
+	'moneda': moneda,
+	'monto_facturas': parseFloat(montoFacturas),
+	'monto_nota_de_credito': parseFloat(montoNotaDeCredito),
+	'total_factura': parseFloat(total),
+    }
+
+    $.ajax({
+	type        : 'PUT',
+	url         : `/api/factura-imputada/${facturaImputada}/`,
+	data        : JSON.stringify(formFacturaImputada),
+	dataType    : 'json',
+	contentType : 'application/json',
+	encode      : true,
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
+    }).done(function(data) {
+	if ('{{ perms.core.change_facturaimputada }}' === 'True'){
+	    window.location.href = '{% url 'core:facturaimputada-update' pk=0 %}?update=1'.replace('0', data.id);
+	} else {
+	    if ('{{ perms.core.view_facturaimputada }}' === 'True'){
+		window.location.href = '{% url 'core:facturaimputada-detail' pk=0 %}?update=1'.replace('0', data.id);
+	    } else {
+		if ('{{ perms.core.list_facturaimputada }}' === 'True'){
+		    window.location.href = '{% url 'core:facturaimputada-list' %}?update=1';
+		} else {
+		    window.location.href = '{% url 'core:home' %}?create=1&type=facturaimputada';
+		}
+	    }
+	}
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+	if (jqXHR.status == 400) {
+	    let listErrors = jqXHR.responseJSON;
+	    const array = Object.keys(listErrors).map(key => listErrors[key]);
+	    $('.alert-errors').removeClass('d-none');
+	    for (var item in array) {
+		$('.alert-errors').append('<p class="m-0">' + array[item] + '</p>');
+	    }
+	}
+	if (jqXHR.status == 500) {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.alert-errors').append('<p class="m-0">Se produjo un error, revise el formulario e inténtelo nuevamente.</p>');
+	}
+    });
+
+});
+
+// funciones
+function validateForm(){
+    var validator = $('#facturaimputada-form').validate({
+	lang: 'es',
+    });
+
+    let result = $("#facturaimputada-form").valid();
+
+    // show errors
+    if (result === false) {
+	$('.alert-errors').removeClass('d-none');
+	$('.error-general').remove();
+	$('.alert-errors').append('<p class="m-0 error-general">Verifique los campos y complete los requeridos para continuar.</p>');
+    } else {
+	$('.error-general').remove();
+	if ($('.alert-errors').children().length === 0) {
+	    $('.alert-errors').addClass('d-none');
+	}
+    }
+
+    return result;
+}
+
+function validateFacturas(){
+    let pks = [];
+    $('.selector-factura, .selector-notadecredito').each(function(){
+	let dataId = $(this).attr('data-id');
+	if (dataId !== undefined){
+	    pks.push(dataId);
+	}
+    });
+    if (pks.length > 1){
+	let notEqual = new Set(pks).size == pks.length;
+	if (notEqual){
+	    $('.error-pks').remove();
+	    if ($('.alert-errors').children().length === 0) {
+		$('.alert-errors').addClass('d-none');
+	    }
+	} else {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.error-pks').remove();
+	    $('.alert-errors').append('<p class="m-0 error-pks">Hay facturas repetidas.</p>');
+	}
+    } else {
+	$('.error-pks').remove();
+	if ($('.alert-errors').children().length === 0) {
+	    $('.alert-errors').addClass('d-none');
+	}
+    }
+}
+
+function setMoneda(){
+    let monedas = [];
+    $('.selector-factura, .selector-notadecredito').each(function () {
+	let moneda = $(this).attr('data-moneda');
+	if (moneda !== undefined){
+	    monedas.push(moneda);
+	}
+    });
+    if (monedas.length > 0){
+	let allEqual = new Set(monedas).size == 1;
+	if (allEqual){
+	    $('.error-moneda').remove();
+	    if ($('.alert-errors').children().length === 0) {
+		$('.alert-errors').addClass('d-none');
+	    }
+	    $(`.selector-moneda option[value=${monedas[0]}]`).prop('selected', true);
+	} else {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.error-moneda').remove();
+	    $('.alert-errors').append('<p class="m-0 error-moneda">Las facturas deben ser de la misma moneda.</p>')
+	    $('.selector-moneda option[value=""]').prop('selected', true);
+	}
+    } else {
+	$('.error-moneda').remove();
+	if ($('.alert-errors').children().length === 0) {
+	    $('.alert-errors').addClass('d-none');
+	}
+	$(`.selector-moneda option[value=${monedas[0]}]`).prop('selected', true);
+    }
+}
+
+
+function setMontoFacturas(){
+    let totalFactura = 0;
+    $('.selector-factura').each(function () {
+	totalFactura += parseFloat($(this).attr('data-total')).toFixed(2);
+    });
+    if ($('.alert-errors').children().length > 0) {
+	$('.input-monto-facturas').val('0.0');
+    } else {
+	$('.input-monto-facturas').val(parseFloat(totalFactura).toFixed(2));
+    }
+}
+
+
+function setMontoNotaDeCredito(){
+    let totalNotaDeCredito = parseFloat($('.selector-notadecredito').attr('data-total')).toFixed(2);
+    if ($('.alert-errors').children().length > 0) {
+	$('.input-monto-notadecredito').val('0.0');
+    } else {
+	$('.input-monto-notadecredito').val(parseFloat(totalNotaDeCredito).toFixed(2));
+    }
+}
+
+function setTotalFacturas(){
+    let montoFacturas =  $('.input-monto-facturas').val();
+    let montoNotaDeCredito = $('.input-monto-notadecredito').val();
+    let totalFacturas = montoFacturas - montoNotaDeCredito;
+    if (totalFacturas < 0){
+	totalFacturas = '0.0';
+    }
+    $('.input-total').val(parseFloat(totalFacturas).toFixed(2));
+}
+
+
+function displayInfoCliente(obj){
+    if(obj !== ''){
+	var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
+	data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
+	data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
+	data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${obj.correo}</dd>`;
+	data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${obj.telefono}</dd>`;
+	data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}</dd>`;
+	if (obj.localidad !== null){
+	    data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
+	    data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+	}
+	data += `</dl></div></div>`;
+	$('#info_cliente').html(data);
+    }
+}
+
+{% endblock %}

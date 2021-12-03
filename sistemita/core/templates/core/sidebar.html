@@ -7,6 +7,10 @@
       <img width='134px' height='50px' src="{% static 'images/logo-top-light.png' %}" />
     </div>
   </a>
+  <!-- Sidebar Toggler (Sidebar) -->
+  <div class="text-center d-none d-md-inline">
+      <button class="rounded-circle border-0" id="sidebarToggle"></button>
+  </div>
 
   <hr class="sidebar-divider my-0">
 
@@ -53,7 +57,7 @@
 
   <!-- Facturación -->
   {% if perms.core.list_factura or perms.core.add_factura %}
-    <li class="nav-item{% if 'factura' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if request.resolver_match.url_name in 'factura-list, factura-update, factura-create, factura-detail, factura-delete' %} active{% endif %}">
       {% if perms.core.list_factura %}
 	<a class="nav-link" href="{% url 'core:factura-list' %}">
 	  <i class="fas fa-sticky-note"></i>
@@ -74,6 +78,17 @@
     </li>
   {% endif %}
   <!-- End Facturación -->
+
+  <!-- Imputaciones -->
+  {% if perms.core.list_facturaimputada %}
+    <li class="nav-item {% if 'facturaimputada' in request.resolver_match.url_name %}active{% endif %}">
+	<a class="nav-link" href="{% url 'core:facturaimputada-list' %}">
+	    <i class="fas fa-sticky-note"></i>
+	    <span>Imputaciones</span>
+	</a>
+    </li>
+  {% endif %}
+  <!-- End Imputaciones -->
 
   <!-- Órdenes de compra -->
   {% if perms.core.list_ordencompra or perms.core.add_ordencompra %}
@@ -138,7 +153,7 @@
 
   <!-- Proveedores -->
   {% if perms.core.list_proveedor or perms.core.add_proveedor %}
-    <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if request.resolver_match.url_name in 'proveedor-list, proveedor-create, proveedor-update, proveedor-delete, proveedor-detail' %} active{% endif %}">
       {% if perms.core.list_proveedor %}
 	<a class="nav-link" href="{% url 'core:proveedor-list' %}">
 	  <i class="fas fa-user-friends"></i>
@@ -163,7 +178,7 @@
 
   <!-- Factura Proveedores -->
   {% if perms.core.list_facturaproveedor or perms.core.add_facturaproveedor %}
-    <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name and not 'report' in request.resolver_match.url_name and not 'by-user' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if 'facturaproveedor-' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_facturaproveedor %}
 	<a class="nav-link" href="{% url 'core:facturaproveedor-list' %}">
 	  <i class="fas fa-sticky-note"></i>
@@ -184,6 +199,17 @@
     </li>
   {% endif %}
   <!-- End Factura Proveedores -->
+
+  <!-- Imputaciones -->
+  {% if perms.core.list_facturaproveedorimputada %}
+    <li class="nav-item {% if 'facturaproveedorimputada-' in request.resolver_match.url_name  %}active{% endif %}">
+	<a class="nav-link" href="{% url 'core:facturaproveedorimputada-list' %}">
+	    <i class="fas fa-sticky-note"></i>
+	    <span>Imputaciones</span>
+	</a>
+    </li>
+  {% endif %}
+  <!-- End Imputaciones -->
 
   <!-- Pagos -->
   {% if perms.accounting.list_pago or perms.accounting.add_pago %}
