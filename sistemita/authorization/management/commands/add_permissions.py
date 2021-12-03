@@ -49,6 +49,11 @@ class Command(BaseCommand):
                     'content_type': ContentType.objects.get(model='facturaproveedor'),
                 },
                 {
+                    'name': 'Puede listar Facturas imputadas de Proveedores',
+                    'codename': 'list_facturaproveedorimputada',
+                    'content_type': ContentType.objects.get(model='facturaproveedorimputada'),
+                },
+                {
                     'name': 'Puede listar Grupos',
                     'codename': 'list_group',
                     'content_type': ContentType.objects.get(model='group'),
