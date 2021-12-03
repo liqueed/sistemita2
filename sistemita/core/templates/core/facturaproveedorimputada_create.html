@@ -434,7 +434,7 @@ $('#submit-id-submit').click(function(e){
 	'nota_de_credito_id': notaDeCredito,
 	'moneda': moneda,
 	'monto_facturas': parseFloat(montoFacturas),
-	'monto_nota_de_credito': parseFloat(montoNotaDeCredito),
+	'monto_nota_de_credito': parseFloat(montoNotaDeCredito).fixedTo(2),
 	'total_factura': parseFloat(total),
     }
 
@@ -565,7 +565,7 @@ function setMoneda(){
 function setMontoFacturas(){
     let totalFactura = 0;
     $('.selector-factura').each(function () {
-	totalFactura += parseInt($(this).attr('data-total'));
+	totalFactura += parseFloat($(this).attr('data-total')).toFixed(2);
     });
     if ($('.alert-errors').children().length > 0) {
 	$('.input-monto-facturas').val('0.0');
@@ -576,7 +576,7 @@ function setMontoFacturas(){
 
 
 function setMontoNotaDeCredito(){
-    let totalNotaDeCredito = parseInt($('.selector-notadecredito').attr('data-total'));
+    let totalNotaDeCredito = parseFloat($('.selector-notadecredito').attr('data-total')).toFixed(2);
     if ($('.alert-errors').children().length > 0) {
 	$('.input-monto-notadecredito').val('0.0');
     } else {
