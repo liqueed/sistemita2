@@ -232,6 +232,47 @@ $('#cliente').select2({
     $('.selector-notadecredito').val('').trigger('change');
 });
 
+// Nota de credito
+$('#notadecredito .selector-notadecredito').select2({
+    placeholder: 'Selecciona una nota de crédito',
+    searchInputPlaceholder: 'Buscar por número de factura',
+    ajax: {
+	url: '/api/factura/',
+	processResults: function (response) {
+	    let data = $.map(response, function (obj) {
+		let moneda = obj.moneda == 'P' ? '$' : 'USD';
+		obj.id = obj.id;
+		obj.text = `${obj.fecha} - ${obj.numero} - ${obj.cliente.razon_social} - ${moneda} ${obj.total}`;
+		return obj;
+	    });
+	    return {
+		results: data
+	    };
+	},
+	data: function (params) {
+	    var query = {
+		cliente: $('#cliente').find(":selected").val(),
+		cobrado: 0,
+		numero__icontains: params.term,
+		tipo__startswith: 'NC'
+	    }
+	    return query;
+	},
+	cache: true
+    }
+}).on('change', function(){
+    let notadecredito = $(this).select2('data')[0];
+    if (notadecredito.id == ''){ return; }
+    $(this).attr('data-id', notadecredito.id);
+    $(this).attr('data-moneda', notadecredito.moneda);
+    $(this).attr('data-total', notadecredito.total);
+
+    validateFacturas();
+    setMoneda();
+    setMontoNotaDeCredito();
+    setTotalFacturas();
+    $('.selector-factura').prop('disabled', false);
+});
 
 // Factura inicial
 $('#facturaimputada_1 .selector-factura').select2({
@@ -363,49 +404,6 @@ $('.close').click(function(){
 	$('.alert-errors').addClass('d-none');
     }
 });
-
-// Nota de credito
-$('#notadecredito .selector-notadecredito').select2({
-    placeholder: 'Selecciona una nota de crédito',
-    searchInputPlaceholder: 'Buscar por número de factura',
-    ajax: {
-	url: '/api/factura/',
-	processResults: function (response) {
-	    let data = $.map(response, function (obj) {
-		let moneda = obj.moneda == 'P' ? '$' : 'USD';
-		obj.id = obj.id;
-		obj.text = `${obj.fecha} - ${obj.numero} - ${obj.cliente.razon_social} - ${moneda} ${obj.total}`;
-		return obj;
-	    });
-	    return {
-		results: data
-	    };
-	},
-	data: function (params) {
-	    var query = {
-		cliente: $('#cliente').find(":selected").val(),
-		cobrado: 0,
-		numero__icontains: params.term,
-		tipo__startswith: 'NC'
-	    }
-	    return query;
-	},
-	cache: true
-    }
-}).on('change', function(){
-    let notadecredito = $(this).select2('data')[0];
-    if (notadecredito.id == ''){ return; }
-    $(this).attr('data-id', notadecredito.id);
-    $(this).attr('data-moneda', notadecredito.moneda);
-    $(this).attr('data-total', notadecredito.total);
-
-    validateFacturas();
-    setMoneda();
-    setMontoNotaDeCredito();
-    setTotalFacturas();
-    $('.selector-factura').prop('disabled', false);
-});
-
 
 // Guardar
 $('#submit-id-submit').click(function(e){
