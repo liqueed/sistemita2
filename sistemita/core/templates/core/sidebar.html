@@ -153,7 +153,7 @@
 
   <!-- Proveedores -->
   {% if perms.core.list_proveedor or perms.core.add_proveedor %}
-    <li class="nav-item{% if 'proveedor' in request.resolver_match.url_name and not 'facturaproveedor' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if request.resolver_match.url_name in 'proveedor-list, proveedor-create, proveedor-update, proveedor-delete, proveedor-detail' %} active{% endif %}">
       {% if perms.core.list_proveedor %}
 	<a class="nav-link" href="{% url 'core:proveedor-list' %}">
 	  <i class="fas fa-user-friends"></i>
@@ -178,7 +178,7 @@
 
   <!-- Factura Proveedores -->
   {% if perms.core.list_facturaproveedor or perms.core.add_facturaproveedor %}
-    <li class="nav-item{% if 'facturaproveedor' in request.resolver_match.url_name and not 'report' in request.resolver_match.url_name and not 'by-user' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if 'facturaproveedor-' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_facturaproveedor %}
 	<a class="nav-link" href="{% url 'core:facturaproveedor-list' %}">
 	  <i class="fas fa-sticky-note"></i>
@@ -201,13 +201,14 @@
   <!-- End Factura Proveedores -->
 
   <!-- Imputaciones -->
-  <li class="nav-item">
-    <a class="nav-link" href="#">
-      <i class="fas fa-sticky-note"></i>
-      <span>Imputaciones</span>
-    </a>
-  </li>
-
+  {% if perms.core.list_facturaproveedorimputada %}
+    <li class="nav-item {% if 'facturaproveedorimputada-' in request.resolver_match.url_name  %}active{% endif %}">
+	<a class="nav-link" href="{% url 'core:facturaproveedorimputada-list' %}">
+	    <i class="fas fa-sticky-note"></i>
+	    <span>Imputaciones</span>
+	</a>
+    </li>
+  {% endif %}
   <!-- End Imputaciones -->
 
   <!-- Pagos -->

@@ -1,4 +1,4 @@
-"""Vistas del modelo FacturaImputada de clientes."""
+"""Vistas del modelo FacturaImputada de proveedores."""
 
 # Django
 from django.contrib import messages
@@ -12,20 +12,20 @@ from django.views.generic.edit import DeleteView
 from django_filters.views import FilterView
 
 # Sistemita
-from sistemita.core.filters import FacturaImputadaFilterSet
-from sistemita.core.models.cliente import FacturaImputada
+from sistemita.core.filters import FacturaProveedorImputadaFilterSet
+from sistemita.core.models.proveedor import FacturaProveedorImputada
 from sistemita.core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 from sistemita.core.views.home import error_403
 
 
-class FacturaImputadaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
-    """Vista que muestra un listado de facturas imputadas."""
+class FacturaProveedorImputadaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
+    """Vista que muestra un listado de facturas imputadas de proveedores."""
 
-    filterset_class = FacturaImputadaFilterSet
+    filterset_class = FacturaProveedorImputadaFilterSet
     paginate_by = 10
-    permission_required = 'core.list_facturaimputada'
+    permission_required = 'core.list_facturaproveedorimputada'
     raise_exception = True
-    template_name = 'core/facturaimputada_list.html'
+    template_name = 'core/facturaproveedorimputada_list.html'
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
@@ -34,12 +34,12 @@ class FacturaImputadaListView(PermissionRequiredMixin, SuccessMessageMixin, Filt
         return redirect('login')
 
 
-class FacturaImputadaCreateTemplateView(PermissionRequiredMixin, TemplateView):
+class FacturaProveedorImputadaCreateTemplateView(PermissionRequiredMixin, TemplateView):
     """Vista para agregar una factura."""
 
-    permission_required = 'core.add_facturaimputada'
+    permission_required = 'core.add_facturaproveedorimputada'
     raise_exception = True
-    template_name = 'core/facturaimputada_create.html'
+    template_name = 'core/facturaproveedorimputada_create.html'
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
@@ -48,11 +48,11 @@ class FacturaImputadaCreateTemplateView(PermissionRequiredMixin, TemplateView):
         return redirect('login')
 
 
-class FacturaImputadaDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
+class FacturaProveedorImputadaDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
     """Vista que muestra el detalle de una factura imputada."""
 
-    model = FacturaImputada
-    permission_required = 'core.view_facturaimputada'
+    model = FacturaProveedorImputada
+    permission_required = 'core.view_facturaproveedorimputada'
     raise_exception = True
 
     def handle_no_permission(self):
@@ -62,12 +62,12 @@ class FacturaImputadaDetailView(PermissionRequiredMixin, SuccessMessageMixin, De
         return redirect('login')
 
 
-class FacturaImputadaUpdateTemplateView(PermissionRequiredMixin, TemplateView):
+class FacturaProveedorImputadaUpdateTemplateView(PermissionRequiredMixin, TemplateView):
     """Vista que modifica una factura imputada."""
 
-    permission_required = 'core.change_facturaimputada'
+    permission_required = 'core.change_facturaproveedorimputada'
     raise_exception = True
-    template_name = 'core/facturaimputada_update.html'
+    template_name = 'core/facturaproveedorimputada_update.html'
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
@@ -76,15 +76,15 @@ class FacturaImputadaUpdateTemplateView(PermissionRequiredMixin, TemplateView):
         return redirect('login')
 
 
-class FacturaImputadaDeleteView(PermissionRequiredMixin, DeleteView):
+class FacturaProveedorImputadaDeleteView(PermissionRequiredMixin, DeleteView):
     """Vista que elimina un costo."""
 
-    model = FacturaImputada
-    permission_required = 'core.delete_facturaimputada'
+    model = FacturaProveedorImputada
+    permission_required = 'core.delete_facturaproveedorimputada'
     raise_exception = True
     success_message = _MESSAGE_SUCCESS_DELETE.format('factura imputada')
-    success_url = reverse_lazy('core:facturaimputada-list')
-    template_name = 'core/facturaimputada_confirm_delete.html'
+    success_url = reverse_lazy('core:facturaproveedorimputada-list')
+    template_name = 'core/facturaproveedorimputada_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         """

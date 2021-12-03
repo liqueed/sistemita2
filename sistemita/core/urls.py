@@ -37,6 +37,13 @@ from sistemita.core.views.facturasproveedor import (
     FacturaProveedorReportListView,
     FacturaProveedorUpdateView,
 )
+from sistemita.core.views.facturasproveedorimputada import (
+    FacturaProveedorImputadaCreateTemplateView,
+    FacturaProveedorImputadaDeleteView,
+    FacturaProveedorImputadaDetailView,
+    FacturaProveedorImputadaListView,
+    FacturaProveedorImputadaUpdateTemplateView,
+)
 from sistemita.core.views.home import HomeView, error_403, error_404, error_500
 from sistemita.core.views.mediopago import (
     MedioPagoCreateView,
@@ -114,6 +121,27 @@ urlpatterns = [
     path('factura-proveedor/<int:pk>/eliminar/', FacturaProveedorDeleteView.as_view(), name='facturaproveedor-delete'),
     path('factura-proveedor/importar/', FacturaProveedorImportTemplateView.as_view(), name='facturaproveedor-import'),
     path('factura-proveedor/reporte-ventas/', FacturaProveedorReportListView.as_view(), name='facturaproveedor-report'),
+    path('facturaproveedorimputada/', FacturaProveedorImputadaListView.as_view(), name='facturaproveedorimputada-list'),
+    path(
+        'facturaproveedorimputada/agregar/',
+        FacturaProveedorImputadaCreateTemplateView.as_view(),
+        name='facturaproveedorimputada-create',
+    ),
+    path(
+        'facturaproveedorimputada/<int:pk>/',
+        FacturaProveedorImputadaDetailView.as_view(),
+        name='facturaproveedorimputada-detail',
+    ),
+    path(
+        'facturaproveedorimputada/<int:pk>/editar/',
+        FacturaProveedorImputadaUpdateTemplateView.as_view(),
+        name='facturaproveedorimputada-update',
+    ),
+    path(
+        'facturaproveedorimputada/<int:pk>/eliminar/',
+        FacturaProveedorImputadaDeleteView.as_view(),
+        name='facturaproveedorimputada-delete',
+    ),
     # Medio de pago
     path('mediopago/', MedioPagoListView.as_view(), name='mediopago-list'),
     path('mediopago/agregar/', MedioPagoCreateView.as_view(), name='mediopago-create'),
