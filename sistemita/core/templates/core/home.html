@@ -7,15 +7,18 @@
 
     <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create %}d-none{% endif %}" role="alert">
       {% if request.GET.create %}
-        {% if request.GET.type == 'cobranza' %}
-          La cobranza ha sido creada exitosamente.
-        {% endif %}
-        {% if request.GET.type == 'pago' %}
-          El pago ha sido creado exitosamente.
-        {% endif %}
+	{% if request.GET.type == 'cobranza' %}
+	  La cobranza ha sido creada exitosamente.
+	{% endif %}
+	{% if request.GET.type == 'pago' %}
+	  El pago ha sido creado exitosamente.
+	{% endif %}
+	{% if request.GET.type == 'facturaimputada' %}
+	  La imputación ha sido creada exitosamente.
+	{% endif %}
       {% endif %}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">×</span>
+	<span aria-hidden="true">×</span>
       </button>
     </div>
 

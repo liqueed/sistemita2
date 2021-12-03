@@ -126,6 +126,7 @@
 	      <tr>
 		<th data-order="numero" class="sortable">Número</th>
 		<th data-order="fecha" class="sortable">Fecha de pago</th>
+		<th data-order="tipo" class="sortable">Tipo</th>
 		<th data-order="proveedor" class="sortable">Proveedor</th>
 		<th data-order="proveedor__cuit" class="sortable">CUIT</th>
 		<th data-order="total" class="sortable">Monto</th>
@@ -151,6 +152,7 @@
 		    {% endif %}
 		  </td>
 		  <td>{{ object.fecha|date:"d-m-Y" }}</td>
+		  <td>{{ object.get_tipo_display }}</td>
 		  <td>{{ object.proveedor.razon_social }}</td>
 		  <td>{{ object.proveedor.cuit }}</td>
 		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>

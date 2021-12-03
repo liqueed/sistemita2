@@ -523,7 +523,7 @@ $('#submit-id-submit').click(function(e){
     let formCobranzaData = {
 	'fecha': fecha,
 	'cobranza_facturas': facturas,
-	'total': parseInt(total),
+	'total': parseFloat(total).toFixed(2),
 	'moneda': moneda
     }
     formCobranzaData['cliente'] = cliente;
@@ -655,7 +655,7 @@ function setMoneda(){
 function setTotal(){
     let totalFactura = 0;
     $('.selector-factura').each(function () {
-	totalFactura += parseInt($(this).attr('data-total'));
+	totalFactura += parseFloat($(this).attr('data-total')).toFixed(2);
     });
     if ($('.alert-errors').children().length > 0) {
 	$('.input-total').prop('disabled', true);

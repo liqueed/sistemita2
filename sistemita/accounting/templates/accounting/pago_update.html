@@ -631,7 +631,7 @@ $('#submit-id-submit').click(function(e){
 	'fecha': fecha,
 	'pago_facturas': facturas,
 	'moneda': moneda,
-	'total': parseInt(total),
+	'total': parseFloat(total).toFixed(2),
 	'pagado': pagado
     }
     formPagoData['proveedor'] = proveedor.cuit;
@@ -734,7 +734,7 @@ function setTotal(){
     let totalFactura = 0;
     $('.selector-factura').each(function () {
 	if (!$(this).closest('.wrapper-factura').hasClass('d-none')){
-	    totalFactura += parseInt($(this).attr('data-total'));
+	    totalFactura += parseFloat($(this).attr('data-total')).toFixed(2);
 	}
     });
     if ($('.alert-errors').children().length > 0) {

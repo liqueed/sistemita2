@@ -77,10 +77,34 @@ class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, Fil
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(Sum('total'), Count('id'))
-        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(Sum('total'), Count('id'))
-        context['last_created'] = queryset.filter(creado__week=current_week).count()
+        # dollar
+        nc_dollar = queryset.filter(cobrado=False, moneda='D', tipo__startswith='NC').aggregate(Sum('total'))
+        nc_dollar_total = nc_dollar.get('total__sum') if nc_dollar.get('total__sum') else 0
+        factura_dollar = (
+            queryset.filter(cobrado=False, moneda='D')
+            .exclude(tipo__startswith='NC')
+            .aggregate(Sum('total'), Count('id'))
+        )
+        factura_dollar_total = factura_dollar.get('total__sum') if factura_dollar.get('total__sum') else 0
+        context['debt_in_dollar'] = {
+            'total__sum': factura_dollar_total - nc_dollar_total,
+            'id__count': factura_dollar.get('id__count'),
+        }
 
+        # peso
+        nc_peso = queryset.filter(cobrado=False, moneda='P', tipo__startswith='NC').aggregate(Sum('total'))
+        nc_peso_total = nc_peso.get('total__sum') if nc_peso.get('total__sum') else 0
+        factura_peso = (
+            queryset.filter(cobrado=False, moneda='P')
+            .exclude(tipo__startswith='NC')
+            .aggregate(Sum('total'), Count('id'))
+        )
+        factura_peso_total = factura_peso.get('total__sum') if factura_peso.get('total__sum') else 0
+        context['debt_in_peso'] = {
+            'total__sum': factura_peso_total - nc_peso_total,
+            'id__count': factura_peso.get('id__count'),
+        }
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
         return context
 
     def handle_no_permission(self):
