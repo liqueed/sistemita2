@@ -18,10 +18,15 @@ from sistemita.api.proveedores.filters import (
 from sistemita.api.proveedores.serializers import (
     FacturaProveedorBeforeImportSerializer,
     FacturaProveedorImportSerializer,
+    FacturaProveedorImputadaModelSerializer,
     FacturaProveedorSerializer,
     ProveedorSerializer,
 )
-from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
+from sistemita.core.models.proveedor import (
+    FacturaProveedor,
+    FacturaProveedorImputada,
+    Proveedor,
+)
 
 
 class ProveedorViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -44,7 +49,7 @@ class FacturaProveedorViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, 
     permission_classes = (permissions.IsAuthenticated,)
 
     # Filters
-    filter_fields = ('proveedor', 'cobrado', 'numero__icontains')
+    filter_fields = ('proveedor', 'cobrado', 'numero__icontains', 'tipo__exclude', 'tipo__startswith')
     filterset_class = FacturaProveedorFilterSet
     filter_backends = (DjangoFilterBackend,)
 
@@ -110,3 +115,17 @@ class FacturaProveedorViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, 
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({}, status=status.HTTP_201_CREATED)
+
+
+class FacturaProveedorImputadaViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """Factura Imputada view set."""
+
+    queryset = FacturaProveedorImputada.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = FacturaProveedorImputadaModelSerializer

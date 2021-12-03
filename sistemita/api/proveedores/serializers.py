@@ -1,6 +1,7 @@
 """Serializers de proveedores."""
 
 # Imports
+import json
 from datetime import datetime
 from re import match
 
@@ -20,7 +21,11 @@ from sistemita.core.constants import (
     TIPOS_FACTURA,
     TIPOS_FACTURA_IMPORT,
 )
-from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
+from sistemita.core.models.proveedor import (
+    FacturaProveedor,
+    FacturaProveedorImputada,
+    Proveedor,
+)
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_MONEDA_INVALID,
@@ -196,3 +201,206 @@ class FacturaProveedorImportSerializer(serializers.Serializer):
         )
 
         return factura
+
+
+class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
+    """Factura Imputada model Serializer."""
+
+    fecha = serializers.DateField(required=True)
+    facturas = FacturaProveedorSerializer(many=True, read_only=True)
+    proveedor = ProveedorSerializer(read_only=True)
+    proveedor_id = serializers.CharField(validators=[validate_is_number], write_only=True)
+    facturas_list = serializers.ListField(child=serializers.DictField(), write_only=True)
+    nota_de_credito = FacturaProveedorSerializer(read_only=True)
+    nota_de_credito_id = serializers.CharField(validators=[validate_is_number], write_only=True)
+    monto_facturas = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
+    monto_nota_de_credito = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
+    total_factura = serializers.DecimalField(required=True, decimal_places=2, max_digits=12)
+
+    class Meta:
+        """Clase meta."""
+
+        model = FacturaProveedorImputada
+        fields = (
+            'id',
+            'fecha',
+            'proveedor',
+            'proveedor_id',
+            'facturas',
+            'facturas_list',
+            'nota_de_credito',
+            'nota_de_credito_id',
+            'moneda',
+            'monto_facturas',
+            'monto_nota_de_credito',
+            'total_factura',
+        )
+        read_only_fields = ('id', 'proveedor', 'facturas', 'nota_de_credito')
+
+    def validate_proveedor_id(self, data):
+        """Valida datos de proveedor."""
+        try:
+            proveedor = Proveedor.objects.get(pk=data)
+            self.context['proveedor'] = proveedor
+            return proveedor
+        except Proveedor.DoesNotExist as not_exist:
+            raise serializers.ValidationError('Proveedor does not exist.') from not_exist
+        return data
+
+    def validate_facturas_list(self, data):
+        """Valida que las facturas sean de la misma moneda y que no haya dos facturas repetidas."""
+        facturas = []
+        monedas = []
+        pks = []
+
+        for row in data:
+            try:
+                factura = FacturaProveedor.objects.get(pk=row.get('factura'))
+                facturas.append({'factura': factura, 'action': row.get('action')})
+            except FacturaProveedor.DoesNotExist:
+                raise serializers.ValidationError('La factura no existe.')
+
+            if row.get('action') in ['add', 'update']:
+                monedas.append(factura.moneda)
+                pks.append(factura.pk)
+
+        if len(monedas) > 1 and len(set(monedas)) > 1:
+            raise serializers.ValidationError('Las facturas deben ser de la misma monedas.')
+
+        if len(pks) > 1:
+            if len(pks) != len(set(pks)):
+                raise serializers.ValidationError('Hay facturas repetidas.')
+
+        return facturas
+
+    def validate_nota_de_credito_id(self, data):
+        """Valida la nota de crédito."""
+        try:
+            proveedor = self.context.get('proveedor', None)
+            return FacturaProveedor.objects.get(pk=data, proveedor=proveedor, tipo__startswith='NC')
+        except FacturaProveedor.DoesNotExist as not_exist:
+            raise serializers.ValidationError('La factura no existe.') from not_exist
+        return data
+
+    def create(self, validated_data):
+
+        validated_data['proveedor'] = validated_data.pop('proveedor_id')
+        validated_data['nota_de_credito'] = validated_data.pop('nota_de_credito_id')
+
+        facturas = validated_data.pop('facturas_list')
+        nota_de_credito = validated_data.get('nota_de_credito')
+        total_nc = nota_de_credito.total
+        instance = FacturaProveedorImputada.objects.create(**validated_data)
+
+        for row in facturas:
+            factura = row.get('factura')
+            # Asignado facturas
+            instance.facturas.add(factura)
+
+            # Imputando costos
+            if total_nc == 0:
+                break
+            if total_nc == factura.total:
+                factura.monto_imputado = total_nc
+                total_nc -= factura.total
+                factura.cobrado = True
+                factura.total = 0
+            elif total_nc > factura.total:
+                total_nc -= factura.total
+                factura.monto_imputado = factura.total
+                factura.cobrado = True
+                factura.total = 0
+            elif total_nc < factura.total:
+                factura.monto_imputado = total_nc
+                factura.total -= total_nc
+                total_nc = 0
+
+            factura.save()
+
+        nota_de_credito.monto_imputado = nota_de_credito.total - total_nc
+        nota_de_credito.total = total_nc
+        if nota_de_credito.total == 0:
+            nota_de_credito.cobrado = True
+        nota_de_credito.save()
+
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        """Edición de facturas imputadas."""
+        facturas = validated_data.get('facturas_list')
+        nota_de_credito = instance.nota_de_credito
+        total_nc = nota_de_credito.total
+
+        for row in facturas:
+            factura = row.get('factura')
+            action = row.get('action')
+            if 'add' in action:
+                instance.facturas.add(factura)
+                if total_nc == 0:
+                    break
+                if total_nc == factura.total:
+                    factura.monto_imputado = total_nc
+                    total_nc -= factura.total
+                    factura.cobrado = True
+                    factura.total = 0
+                elif total_nc > factura.total:
+                    total_nc -= factura.total
+                    factura.monto_imputado = factura.total
+                    factura.cobrado = True
+                    factura.total = 0
+                elif total_nc < factura.total:
+                    factura.monto_imputado = total_nc
+                    factura.total -= total_nc
+                    total_nc = 0
+                factura.save()
+            elif 'update' in action:
+                replace_pk = json.loads(action.replace("'", "\""))['id']
+                # Verifico si no son facturas iguales
+                if factura.pk != replace_pk:
+                    # Restablece los valores de la factura remplaza
+                    factura_repleace = FacturaProveedor.objects.get(pk=replace_pk)
+                    nota_de_credito.total += factura_repleace.monto_imputado
+                    nota_de_credito.monto_imputado -= factura_repleace.monto_imputado
+                    nota_de_credito.save()
+                    total_nc = nota_de_credito.total
+
+                    factura_repleace.total += factura_repleace.monto_imputado
+                    factura_repleace.monto_imputado = 0
+                    factura_repleace.cobrado = False
+                    factura_repleace.save()
+                    instance.facturas.remove(factura_repleace)
+
+                    # Imputa a la nueva factura
+                    instance.facturas.add(factura)
+                    if total_nc == factura.total:
+                        factura.monto_imputado = total_nc
+                        total_nc -= factura.total
+                        factura.cobrado = True
+                        factura.total = 0
+                    elif total_nc > factura.total:
+                        total_nc -= factura.total
+                        factura.monto_imputado = factura.total
+                        factura.cobrado = True
+                        factura.total = 0
+                    elif total_nc < factura.total:
+                        factura.monto_imputado = total_nc
+                        factura.total -= total_nc
+                        total_nc = 0
+                    factura.save()
+            elif 'delete' in action:
+                total_nc += factura.monto_imputado
+                factura.total += factura.monto_imputado
+                factura.cobrado = False
+                factura.monto_imputado = 0
+                factura.save()
+                instance.facturas.remove(factura)
+
+        nota_de_credito.monto_imputado = nota_de_credito.total - total_nc
+        nota_de_credito.total = total_nc
+        if nota_de_credito.total == 0:
+            nota_de_credito.cobrado = True
+        nota_de_credito.save()
+
+        instance.save()
+        return instance
