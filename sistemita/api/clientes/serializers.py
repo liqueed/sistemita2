@@ -358,6 +358,11 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
                 if factura.pk != replace_pk:
                     # Restablece los valores de la factura remplaza
                     factura_repleace = Factura.objects.get(pk=replace_pk)
+                    nota_de_credito.total += factura_repleace.monto_imputado
+                    nota_de_credito.monto_imputado -= factura_repleace.monto_imputado
+                    nota_de_credito.save()
+                    total_nc = nota_de_credito.total
+
                     factura_repleace.total += factura_repleace.monto_imputado
                     factura_repleace.monto_imputado = 0
                     factura_repleace.cobrado = False

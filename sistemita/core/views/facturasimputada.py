@@ -1,6 +1,7 @@
 """Vistas del modelo FacturaImpuracion."""
 
 # Django
+from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
@@ -107,6 +108,7 @@ class FacturaImputadaDeleteView(PermissionRequiredMixin, DeleteView):
 
         self.object.delete()
         success_url = self.get_success_url()
+        messages.success(request, self.success_message)
         return HttpResponseRedirect(success_url)
 
     def handle_no_permission(self):
