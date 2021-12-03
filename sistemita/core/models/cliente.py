@@ -103,7 +103,7 @@ class OrdenCompra(TimeStampedModel, models.Model):
 
 
 class FacturaImputada(TimeStampedModel, models.Model):
-    """Modelo de imputación de facturas."""
+    """Modelo de imputación de facturas de cliente."""
 
     fecha = models.DateField(blank=False)
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)

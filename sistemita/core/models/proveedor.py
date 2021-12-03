@@ -3,6 +3,9 @@
 # Django
 from django.db import models
 
+# Utils
+from sistemita.core.constants import MONEDAS
+
 # Models
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.cliente import Factura
@@ -71,3 +74,25 @@ class FacturaProveedor(FacturaAbstract):
         ordering = ('fecha',)
         verbose_name = 'factura proveedor'
         verbose_name_plural = 'facturas proveedores'
+
+
+class FacturaProveedorImputada(TimeStampedModel, models.Model):
+    """Modelo de imputación de facturas de proveedores."""
+
+    fecha = models.DateField(blank=False)
+    proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
+    facturas = models.ManyToManyField(FacturaProveedor, related_name='facturas_imputacion')
+    nota_de_credito = models.OneToOneField(
+        FacturaProveedor, blank=True, null=True, on_delete=models.SET_NULL, related_name='factura_nc'
+    )
+    moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
+    monto_facturas = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    monto_nota_de_credito = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    total_factura = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+
+    class Meta:
+        """Configuraciones del modelo."""
+
+        ordering = ('fecha',)
+        verbose_name = 'factura proveedor imputada'
+        verbose_name_plural = 'facturas proveedor imputadas'
