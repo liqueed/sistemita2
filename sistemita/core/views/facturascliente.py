@@ -78,8 +78,16 @@ class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         queryset = self.get_queryset()
         current_week = date.today().isocalendar()[1]
 
-        context['debt_in_dollar'] = queryset.filter(cobrado=False, moneda='D').aggregate(Sum('total'), Count('id'))
-        context['debt_in_peso'] = queryset.filter(cobrado=False, moneda='P').aggregate(Sum('total'), Count('id'))
+        context['debt_in_dollar'] = (
+            queryset.filter(cobrado=False, moneda='D')
+            .exclude(tipo__startswith='NC')
+            .aggregate(Sum('total'), Count('id'))
+        )
+        context['debt_in_peso'] = (
+            queryset.filter(cobrado=False, moneda='P')
+            .exclude(tipo__startswith='NC')
+            .aggregate(Sum('total'), Count('id'))
+        )
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
