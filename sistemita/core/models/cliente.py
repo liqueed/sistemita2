@@ -52,12 +52,22 @@ class Cliente(TimeStampedModel, models.Model):
         verbose_name_plural = 'clientes'
 
 
+class FacturaCategoria(TimeStampedModel):
+    """Categoría de factura."""
+    nombre = models.CharField(blank=False, max_length=100, unique=True)
+
+    def __str__(self):
+        """Devuelve una represetación legible del modelo."""
+        return f'{self.nombre}'
+
+
 class Factura(FacturaAbstract):
     """Modelo factura de cliente."""
 
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
     porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
+    categoria = models.ForeignKey(FacturaCategoria, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
