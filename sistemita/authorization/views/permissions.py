@@ -39,6 +39,7 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
                 'cliente',
                 'factura',
                 'facturaimputada',
+                'facturacategoria',
                 'ordencompra',
                 'cobranza',
                 'proveedor',
