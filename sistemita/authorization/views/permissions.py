@@ -44,6 +44,7 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
                 'cobranza',
                 'proveedor',
                 'facturaproveedor',
+                'facturaproveedorcategoria',
                 'facturaproveedorimputada',
                 'pago',
                 'mediopago',

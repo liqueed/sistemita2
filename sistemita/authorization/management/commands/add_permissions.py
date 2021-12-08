@@ -89,6 +89,11 @@ class Command(BaseCommand):
                     'content_type': ContentType.objects.get(model='proveedor'),
                 },
                 {
+                    'name': 'Puede listar Categoría de Facturas de Proveedores',
+                    'codename': 'list_facturaproveedorcategoria',
+                    'content_type': ContentType.objects.get(model='facturaproveedorcategoria'),
+                },
+                {
                     'name': 'Puede listar Usuarios',
                     'codename': 'list_user',
                     'content_type': ContentType.objects.get(model='user'),
