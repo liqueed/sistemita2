@@ -272,7 +272,7 @@ class FacturaProveedorByUserListView(PermissionRequiredMixin, SuccessMessageMixi
     paginate_by = 10
     permission_required = 'core.view_mis_facturasproveedor'
     raise_exception = True
-    template_name = 'core/facturaproveedor_list.html'
+    template_name = 'core/facturaproveedor_misfacturas.html'
 
     def get_queryset(self):
         """

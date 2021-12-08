@@ -178,7 +178,7 @@
 
   <!-- Factura Proveedores -->
   {% if perms.core.list_facturaproveedor or perms.core.add_facturaproveedor %}
-    <li class="nav-item{% if 'facturaproveedor-' in request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if request.resolver_match.url_name in 'facturaproveedor-list, facturaproveedor-create, facturaproveedor-detail, facturaproveedor-update, facturaproveedor-delete' %} active{% endif %}">
       {% if perms.core.list_facturaproveedor %}
 	<a class="nav-link" href="{% url 'core:facturaproveedor-list' %}">
 	  <i class="fas fa-sticky-note"></i>
@@ -248,7 +248,7 @@
 
   <!-- Mis facturas -->
   {% if perms.core.view_mis_facturasproveedor %}
-    <li class="nav-item{% if 'facturaproveedor-list-by-user' == request.resolver_match.url_name or 'facturaproveedor-detail-by-user' == request.resolver_match.url_name %} active{% endif %}">
+    <li class="nav-item{% if request.resolver_match.url_name == 'facturaproveedor-list-by-user' or request.resolver_match.url_name == 'facturaproveedor-detail-by-user' %} active{% endif %}">
       <a class="nav-link" href="{% url 'core:facturaproveedor-list-by-user' %}">
 	<i class="fas fa-user-alt"></i>
 	<span>Mis facturas</span>
