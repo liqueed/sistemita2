@@ -11,6 +11,13 @@ from sistemita.core.views.clientes import (
     ClienteListView,
     ClienteUpdateView,
 )
+from sistemita.core.views.facturascategoria import (
+    FacturaCategoriaCreateView,
+    FacturaCategoriaDeleteView,
+    FacturaCategoriaDetailView,
+    FacturaCategoriaListView,
+    FacturaCategoriaUpdateView,
+)
 from sistemita.core.views.facturascliente import (
     FacturaCreateView,
     FacturaDeleteView,
@@ -80,12 +87,20 @@ urlpatterns = [
     path('cliente/<int:pk>/', ClienteDetailView.as_view(), name='cliente-detail'),
     path('cliente/<int:pk>/editar/', ClienteUpdateView.as_view(), name='cliente-update'),
     path('cliente/<int:pk>/eliminar/', ClienteDeleteView.as_view(), name='cliente-delete'),
+    # Factura
     path('factura/', FacturaListView.as_view(), name='factura-list'),
     path('factura/agregar/', FacturaCreateView.as_view(), name='factura-create'),
     path('factura/<int:pk>/', FacturaDetailView.as_view(), name='factura-detail'),
     path('factura/<int:pk>/editar/', FacturaUpdateView.as_view(), name='factura-update'),
     path('factura/<int:pk>/eliminar/', FacturaDeleteView.as_view(), name='factura-delete'),
     path('factura/importar/', FacturaImportTemplateView.as_view(), name='factura-import'),
+    # Factura categoría
+    path('facturacategoria/', FacturaCategoriaListView.as_view(), name='facturacategoria-list'),
+    path('facturacategoria/agregar/', FacturaCategoriaCreateView.as_view(), name='facturacategoria-create'),
+    path('facturacategoria/<int:pk>/', FacturaCategoriaDetailView.as_view(), name='facturacategoria-detail'),
+    path('facturacategoria/<int:pk>/editar/', FacturaCategoriaUpdateView.as_view(), name='facturacategoria-update'),
+    path('facturacategoria/<int:pk>/eliminar/', FacturaCategoriaDeleteView.as_view(), name='facturacategoria-delete'),
+    # Factura imputada
     path('facturaimputada/', FacturaImputadaListView.as_view(), name='facturaimputada-list'),
     path('facturaimputada/agregar/', FacturaImputadaCreateTemplateView.as_view(), name='facturaimputada-create'),
     path('facturaimputada/<int:pk>/', FacturaImputadaDetailView.as_view(), name='facturaimputada-detail'),
@@ -93,6 +108,7 @@ urlpatterns = [
         'facturaimputada/<int:pk>/editar/', FacturaImputadaUpdateTemplateView.as_view(), name='facturaimputada-update'
     ),
     path('facturaimputada/<int:pk>/eliminar/', FacturaImputadaDeleteView.as_view(), name='facturaimputada-delete'),
+    # Orden de compra
     path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-list'),
     path('ordencompra/agregar/', OrdenCompraCreateView.as_view(), name='ordencompra-create'),
     path('ordencompra/<int:pk>/', OrdenCompraDetailView.as_view(), name='ordencompra-detail'),

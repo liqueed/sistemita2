@@ -10,7 +10,12 @@ from django import forms
 
 # Sistemita
 from sistemita.core.models.archivo import Archivo
-from sistemita.core.models.cliente import Cliente, Factura, OrdenCompra
+from sistemita.core.models.cliente import (
+    Cliente,
+    Factura,
+    FacturaCategoria,
+    OrdenCompra,
+)
 from sistemita.core.models.entidad import Distrito, Localidad
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
@@ -185,7 +190,7 @@ class FacturaForm(forms.ModelForm):
             'archivos',
             'porcentaje_fondo',
             'monto_imputado',
-            'categoria'
+            'categoria',
         )
 
     def clean_numero(self):
@@ -302,3 +307,29 @@ class OrdenCompraForm(forms.ModelForm):
 
         model = OrdenCompra
         fields = ('fecha', 'cliente', 'moneda', 'monto')
+
+
+class FacturaCategoriaForm(forms.ModelForm):
+    """Formulario de Categoría de factura."""
+
+    def __init__(self, *args, **kwargs):
+        """Inicialización del formulario."""
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Datos generales',
+                Div(Div('nombre', css_class='col-4'), css_class='row'),
+            ),
+            FormActions(
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
+        )
+
+    class Meta:
+        """Configuraciones del formulario."""
+
+        model = FacturaCategoria
+        fields = ('nombre',)
