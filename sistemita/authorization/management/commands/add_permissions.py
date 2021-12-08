@@ -44,6 +44,11 @@ class Command(BaseCommand):
                     'content_type': ContentType.objects.get(model='facturaimputada'),
                 },
                 {
+                    'name': 'Puede listar Categoría de Facturas',
+                    'codename': 'list_facturacategoria',
+                    'content_type': ContentType.objects.get(model='facturacategoria'),
+                },
+                {
                     'name': 'Puede listar Facturas A Proveedores',
                     'codename': 'list_facturaproveedor',
                     'content_type': ContentType.objects.get(model='facturaproveedor'),
@@ -82,6 +87,11 @@ class Command(BaseCommand):
                     'name': 'Puede listar Proveedores',
                     'codename': 'list_proveedor',
                     'content_type': ContentType.objects.get(model='proveedor'),
+                },
+                {
+                    'name': 'Puede listar Categoría de Facturas de Proveedores',
+                    'codename': 'list_facturaproveedorcategoria',
+                    'content_type': ContentType.objects.get(model='facturaproveedorcategoria'),
                 },
                 {
                     'name': 'Puede listar Usuarios',

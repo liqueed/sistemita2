@@ -79,6 +79,18 @@
   {% endif %}
   <!-- End Facturación -->
 
+  <!-- Categoria -->
+  {% if perms.core.list_facturacategoria or perms.core.add_facturacategoria %}
+    <li class="nav-item{% if request.resolver_match.url_name in 'facturacategoria-list, facturacategoria-update, facturacategoria-create, facturacategoria-detail, facturacategoria-delete' %} active{% endif %}">
+      <a class="nav-link" href="{% url 'core:facturacategoria-list' %}">
+	<i class="fas fa-sticky-note"></i>
+	<span>Categoría</span>
+      </a>
+    </li>
+  {% endif %}
+  <!-- End Categoria -->
+
+
   <!-- Imputaciones -->
   {% if perms.core.list_facturaimputada %}
     <li class="nav-item {% if 'facturaimputada' in request.resolver_match.url_name %}active{% endif %}">
@@ -199,6 +211,17 @@
     </li>
   {% endif %}
   <!-- End Factura Proveedores -->
+
+  <!-- Categoria -->
+  {% if perms.core.list_facturaprovedorcategoria or perms.core.add_facturaproveedorcategoria %}
+    <li class="nav-item{% if request.resolver_match.url_name in 'facturaproveedorcategoria-list, facturaproveedorcategoria-update, facturaproveedorcategoria-create, facturaproveedorcategoria-detail, facturaproveedorcategoria-delete' %} active{% endif %}">
+      <a class="nav-link" href="{% url 'core:facturaproveedorcategoria-list' %}">
+	<i class="fas fa-sticky-note"></i>
+	<span>Categoría</span>
+      </a>
+    </li>
+  {% endif %}
+  <!-- End Categoria -->
 
   <!-- Imputaciones -->
   {% if perms.core.list_facturaproveedorimputada %}

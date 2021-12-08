@@ -50,6 +50,16 @@ class Proveedor(TimeStampedModel, models.Model):
         return '{} Nro: {} '.format(self.calle, self.numero)
 
 
+class FacturaProveedorCategoria(TimeStampedModel):
+    """Categoría de factura de proveedores."""
+
+    nombre = models.CharField(blank=False, max_length=100, unique=True)
+
+    def __str__(self):
+        """Devuelve una represetación legible del modelo."""
+        return f'{self.nombre}'
+
+
 class FacturaProveedor(FacturaAbstract):
     """Modelo de factura de proveedor."""
 
@@ -58,6 +68,7 @@ class FacturaProveedor(FacturaAbstract):
     factura = models.ForeignKey(
         Factura, blank=True, null=True, on_delete=models.CASCADE, related_name='facturas_proveedor'
     )
+    categoria = models.ForeignKey(FacturaProveedorCategoria, blank=True, null=True, on_delete=models.SET_NULL)
 
     @property
     def moneda_monto(self):

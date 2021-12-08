@@ -10,7 +10,12 @@ from django import forms
 
 # Sistemita
 from sistemita.core.models.archivo import Archivo
-from sistemita.core.models.cliente import Cliente, Factura, OrdenCompra
+from sistemita.core.models.cliente import (
+    Cliente,
+    Factura,
+    FacturaCategoria,
+    OrdenCompra,
+)
 from sistemita.core.models.entidad import Distrito, Localidad
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
@@ -146,6 +151,7 @@ class FacturaForm(forms.ModelForm):
                 'Datos generales',
                 Div(Div('fecha', css_class='col-4'), css_class='row'),
                 Div(Div('numero', css_class='col-4'), Div('tipo', css_class='col-2'), css_class='row'),
+                Div(Div('categoria', css_class='col-4'), css_class='row'),
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_cliente', css_class='row'),
@@ -184,6 +190,7 @@ class FacturaForm(forms.ModelForm):
             'archivos',
             'porcentaje_fondo',
             'monto_imputado',
+            'categoria',
         )
 
     def clean_numero(self):
@@ -300,3 +307,29 @@ class OrdenCompraForm(forms.ModelForm):
 
         model = OrdenCompra
         fields = ('fecha', 'cliente', 'moneda', 'monto')
+
+
+class FacturaCategoriaForm(forms.ModelForm):
+    """Formulario de Categoría de factura."""
+
+    def __init__(self, *args, **kwargs):
+        """Inicialización del formulario."""
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Datos generales',
+                Div(Div('nombre', css_class='col-4'), css_class='row'),
+            ),
+            FormActions(
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
+        )
+
+    class Meta:
+        """Configuraciones del formulario."""
+
+        model = FacturaCategoria
+        fields = ('nombre',)
