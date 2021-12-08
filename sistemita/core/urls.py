@@ -44,6 +44,13 @@ from sistemita.core.views.facturasproveedor import (
     FacturaProveedorReportListView,
     FacturaProveedorUpdateView,
 )
+from sistemita.core.views.facturasproveedorcategoria import (
+    FacturaProveedorCategoriaCreateView,
+    FacturaProveedorCategoriaDeleteView,
+    FacturaProveedorCategoriaDetailView,
+    FacturaProveedorCategoriaListView,
+    FacturaProveedorCategoriaUpdateView,
+)
 from sistemita.core.views.facturasproveedorimputada import (
     FacturaProveedorImputadaCreateTemplateView,
     FacturaProveedorImputadaDeleteView,
@@ -120,6 +127,7 @@ urlpatterns = [
     path('proveedor/<int:pk>/', ProveedorDetailView.as_view(), name='proveedor-detail'),
     path('proveedor/<int:pk>/editar/', ProveedorUpdateView.as_view(), name='proveedor-update'),
     path('proveedor/<int:pk>/eliminar/', ProveedorDeleteView.as_view(), name='proveedor-delete'),
+    # Factura de proveedores
     path('factura-proveedor/', FacturaProveedorListView.as_view(), name='facturaproveedor-list'),
     path(
         'factura-proveedor/mis-facturas/',
@@ -137,6 +145,31 @@ urlpatterns = [
     path('factura-proveedor/<int:pk>/eliminar/', FacturaProveedorDeleteView.as_view(), name='facturaproveedor-delete'),
     path('factura-proveedor/importar/', FacturaProveedorImportTemplateView.as_view(), name='facturaproveedor-import'),
     path('factura-proveedor/reporte-ventas/', FacturaProveedorReportListView.as_view(), name='facturaproveedor-report'),
+    # Facturas categorías
+    path(
+        'facturaproveedorcategoria/', FacturaProveedorCategoriaListView.as_view(), name='facturaproveedorcategoria-list'
+    ),
+    path(
+        'facturaproveedorcategoria/agregar/',
+        FacturaProveedorCategoriaCreateView.as_view(),
+        name='facturaproveedorcategoria-create',
+    ),
+    path(
+        'facturaproveedorcategoria/<int:pk>/',
+        FacturaProveedorCategoriaDetailView.as_view(),
+        name='facturaproveedorcategoria-detail',
+    ),
+    path(
+        'facturaproveedorcategoria/<int:pk>/editar/',
+        FacturaProveedorCategoriaUpdateView.as_view(),
+        name='facturaproveedorcategoria-update',
+    ),
+    path(
+        'facturaproveedorcategoria/<int:pk>/eliminar/',
+        FacturaProveedorCategoriaDeleteView.as_view(),
+        name='facturaproveedorcategoria-delete',
+    ),
+    # Factura de proveedores imputada
     path('facturaproveedorimputada/', FacturaProveedorImputadaListView.as_view(), name='facturaproveedorimputada-list'),
     path(
         'facturaproveedorimputada/agregar/',

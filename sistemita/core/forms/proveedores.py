@@ -14,7 +14,11 @@ from django import forms
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.cliente import Factura
 from sistemita.core.models.entidad import Distrito, Localidad
-from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
+from sistemita.core.models.proveedor import (
+    FacturaProveedor,
+    FacturaProveedorCategoria,
+    Proveedor,
+)
 
 # Utils
 from sistemita.core.utils.strings import (
@@ -146,6 +150,7 @@ class FacturaProveedorForm(forms.ModelForm):
                 'Datos generales',
                 Div(Div('fecha', css_class='col-4'), css_class='row'),
                 Div(Div('numero', css_class='col-4'), Div('tipo', css_class='col-2'), css_class='row'),
+                Div(Div('categoria', css_class='col-4'), css_class='row'),
                 Div(Div('proveedor', css_class='col-7'), css_class='row'),
                 Div(Div('factura', css_class='col-7'), css_class='row'),
                 # Aca va la data extra del cliente por JS
@@ -182,6 +187,7 @@ class FacturaProveedorForm(forms.ModelForm):
             'total',
             'cobrado',
             'archivos',
+            'categoria',
         )
 
     def clean_numero(self):
@@ -255,3 +261,29 @@ class FacturaProveedorForm(forms.ModelForm):
             instance.archivos.add(document)
 
         return instance
+
+
+class FacturaProveedorCategoriaForm(forms.ModelForm):
+    """Formulario de Categoría de factura de proveedores."""
+
+    def __init__(self, *args, **kwargs):
+        """Inicialización del formulario."""
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['autocomplete'] = 'off'
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'Datos generales',
+                Div(Div('nombre', css_class='col-4'), css_class='row'),
+            ),
+            FormActions(
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
+        )
+
+    class Meta:
+        """Configuraciones del formulario."""
+
+        model = FacturaProveedorCategoria
+        fields = ('nombre',)
