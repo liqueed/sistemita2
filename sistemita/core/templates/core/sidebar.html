@@ -190,7 +190,7 @@
 
   <!-- Factura Proveedores -->
   {% if perms.core.list_facturaproveedor or perms.core.add_facturaproveedor %}
-    <li class="nav-item{% if request.resolver_match.url_name in 'facturaproveedor-list, facturaproveedor-create, facturaproveedor-detail, facturaproveedor-update, facturaproveedor-delete' %} active{% endif %}">
+    <li class="nav-item{% if request.resolver_match.url_name in 'facturaproveedor-list, facturaproveedor-create, facturaproveedor-detail, facturaproveedor-update, facturaproveedor-delete' and 'factura' in request.resolver_match.url_name  %} active{% endif %}">
       {% if perms.core.list_facturaproveedor %}
 	<a class="nav-link" href="{% url 'core:facturaproveedor-list' %}">
 	  <i class="fas fa-sticky-note"></i>
