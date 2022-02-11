@@ -11,6 +11,11 @@ from django.test import TestCase
 from sistemita.authorization.models import User
 
 
+def rand_range(_min, _max):
+    """Genera un número dentro de un rango."""
+    return random.randint(_min, _max)
+
+
 def randN(length):
     """Devuelve un numero random de una longitud especifica."""
 
@@ -20,6 +25,7 @@ def randN(length):
 
 
 class BaseTestCase(TestCase):
+    """BaseTestCase."""
 
     fixtures = [
         'fixtures/countries.json',

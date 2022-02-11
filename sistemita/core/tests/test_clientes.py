@@ -22,7 +22,7 @@ class ClienteTest(BaseTestCase):
         self.client = Client()
 
     def test_string_representation(self):
-        """Representación legible del model modelo."""
+        """Representación legible del modelo."""
         cliente = self.instance
         self.assertEqual(str(cliente), f'{cliente.razon_social} - {cliente.cuit}')
 

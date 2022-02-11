@@ -1,1 +1,2 @@
-from .cliente import * # noqa
+from .cliente import *  # noqa
+from .proveedor import *  # noqa
