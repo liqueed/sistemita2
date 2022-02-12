@@ -197,6 +197,12 @@ class ProveedorTest(BaseTestCase):
         form = ProveedorForm(data=self.data)
         self.assertTrue(form.is_valid())
 
+    def test_form_fields_required(self):
+        """Valida los campos requeridos."""
+        form = ProveedorForm(data={})
+        required_fields = ['razon_social', 'cuit', 'correo', 'telefono']
+        self.assertHasProps(form.errors, required_fields)
+
     def test_form_cuit_invalid(self):
         """Valida el cuit."""
         self.data['cuit'] = randN(10)

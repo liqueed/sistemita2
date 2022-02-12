@@ -28,6 +28,8 @@ from sistemita.expense.models import Fondo
 class ClienteForm(forms.ModelForm):
     """Formulario de cliente."""
 
+    razon_social = forms.CharField(required=True)
+    cuit = forms.CharField(required=True, max_length=11)
     correo = forms.CharField(required=True)
     telefono = forms.CharField(required=True)
 

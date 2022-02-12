@@ -11,6 +11,11 @@ from django.test import TestCase
 from sistemita.authorization.models import User
 
 
+def rand_element_from_array(array):
+    """Devuelve un elemento random de un array."""
+    return random.choice(array)
+
+
 def rand_range(_min, _max):
     """Genera un número dentro de un rango."""
     return random.randint(_min, _max)
@@ -70,3 +75,13 @@ class BaseTestCase(TestCase):
 
         user.is_active = True
         user.save()
+
+    @staticmethod
+    def get_required_fields(model):
+        """Retorna un listado con los campos requeridos de un modelo."""
+        fields = model._meta.get_fields()
+        required_fields = [f.name for f in fields if getattr(f, 'blank', False)]
+        required_fields.remove('id')
+        required_fields.remove('creado')
+        required_fields.remove('modificado')
+        return required_fields
