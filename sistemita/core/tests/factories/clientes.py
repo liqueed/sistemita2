@@ -1,10 +1,15 @@
 """Cliente factories."""
 
+# Django
+from django.utils import timezone
+
 # Fake
+from factory import SubFactory
 from factory.django import DjangoModelFactory
 from faker import Faker
 
 # Sistemita
+from sistemita.core.constants import MONEDAS
 from sistemita.core.models import (
     Cliente,
     Distrito,
@@ -100,7 +105,12 @@ class OrdenCompraFactoryData:
     """Creación de datos para el modelo de orden de compra de clientes."""
 
     def __init__(self):
-        self.data = {'nombre': self.nombre}
+        self.data = {
+            'fecha': timezone.datetime.strptime(fake.date(), '%Y-%m-%d').strftime('%d/%m/%Y'),
+            'cliente': ClienteFactory.create().pk,
+            'moneda': rand_element_from_array(MONEDAS)[0],
+            'monto': str(fake.pydecimal(2, 2, True)),
+        }
 
     def build(self):
         """Devuelve un diccionario con datos."""
@@ -114,3 +124,8 @@ class OrdenCompraFactory(DjangoModelFactory):
         """Factory settings."""
 
         model = OrdenCompra
+
+    fecha = fake.date()
+    cliente = SubFactory(ClienteFactory)
+    moneda = rand_element_from_array(MONEDAS)[0]
+    monto = str(fake.pydecimal(2, 2, True))

@@ -284,6 +284,8 @@ class FacturaForm(forms.ModelForm):
 class OrdenCompraForm(forms.ModelForm):
     """Formulario de orden de compra."""
 
+    monto = forms.DecimalField(decimal_places=2, max_digits=12, min_value=0, initial=0.0)
+
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
