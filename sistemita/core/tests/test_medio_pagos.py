@@ -194,7 +194,7 @@ class MedioPagoTest(BaseTestCase):
     # Formulario
     def test_form_valid(self):
         """Valida formulario con datos correctos."""
-        form = MedioPagoForm(data=self.data)
+        form = MedioPagoForm(data={'nombre': 'Nombre único'})
         self.assertTrue(form.is_valid())
 
     def test_form_fields_required(self):
@@ -206,12 +206,13 @@ class MedioPagoTest(BaseTestCase):
     def test_nombre_unique(self):
         """Verifica si el nombre ya está registrado."""
         form = MedioPagoForm(data=self.data)
-        form.save()
-        medio_2 = MedioPagoFactoryData().build()
-        medio_2['nombre'] = self.data.get('nombre')
-        form_2 = MedioPagoForm(data=medio_2)
+        if self.instance.nombre != self.data.get('nombre'):
+            form.save()
+            medio_2 = MedioPagoFactoryData().build()
+            medio_2['nombre'] = self.data.get('nombre')
+            form = MedioPagoForm(data=medio_2)
         self.assertHasProps(
-            form_2.errors,
+            form.errors,
             [
                 'nombre',
             ],

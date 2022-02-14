@@ -27,3 +27,12 @@ repos:
       - id: flake8
         args: ['--config=setup.cfg']
         additional_dependencies: [flake8-isort]
+
+  - repo: local
+    hooks:
+      - id: tests
+        name: tests
+        entry: docker-compose -f local.yml run --rm django python manage.py test
+        always_run: true
+        pass_filenames: false
+        language: system
