@@ -7,6 +7,7 @@ from faker import Faker
 from sistemita.core.models import (
     Cliente,
     Distrito,
+    FacturaCategoria,
     Localidad,
     MedioPago,
     Proveedor,
@@ -33,6 +34,7 @@ class ClienteFactory(DjangoModelFactory):
         """Factory settings."""
 
         model = Cliente
+        django_get_or_create = ('razon_social',)
 
 
 class ClienteFactoryData:
@@ -80,6 +82,7 @@ class ProveedorFactory(DjangoModelFactory):
         """Factory settings."""
 
         model = Proveedor
+        django_get_or_create = ('razon_social',)
 
 
 class ProveedorFactoryData:
@@ -140,5 +143,37 @@ class MedioPagoFactory(DjangoModelFactory):
         """Factory settings."""
 
         model = MedioPago
+        django_get_or_create = ('nombre',)
 
     nombre = MedioPagoFactoryData().nombre
+
+
+class FacturaClienteCategoriaFactoryData:
+    """Creación de datos para el modelo de categoría de facturas a clientes."""
+
+    _categorias = [
+        'ACOMPAÑAMIENTO',
+        'CURSO CSM',
+        'CURSO CSPO',
+        'WORKSHOP',
+    ]
+
+    def __init__(self):
+        self.nombre = rand_element_from_array(self._categorias)
+        self.data = {'nombre': self.nombre}
+
+    def build(self):
+        """Devuelve un diccionario con datos."""
+        return self.data
+
+
+class FacturaClienteCategoriaFactory(DjangoModelFactory):
+    """Factory categoría de factura a cliente que herada de DjangoModelFactory."""
+
+    class Meta:
+        """Factory settings."""
+
+        model = FacturaCategoria
+        django_get_or_create = ('nombre',)
+
+    nombre = FacturaClienteCategoriaFactoryData().nombre

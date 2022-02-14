@@ -17,7 +17,7 @@ fake = Faker('es_ES')
 
 
 class MedioPagoTest(BaseTestCase):
-    """ "Medio de pagos tests."""
+    """Medio de pagos tests."""
 
     def setUp(self):
         self.data = MedioPagoFactoryData().build()
@@ -207,9 +207,9 @@ class MedioPagoTest(BaseTestCase):
         """Verifica si el nombre ya está registrado."""
         form = MedioPagoForm(data=self.data)
         form.save()
-        cliente_2 = MedioPagoFactoryData().build()
-        cliente_2['nombre'] = self.data.get('nombre')
-        form_2 = MedioPagoForm(data=cliente_2)
+        medio_2 = MedioPagoFactoryData().build()
+        medio_2['nombre'] = self.data.get('nombre')
+        form_2 = MedioPagoForm(data=medio_2)
         self.assertHasProps(
             form_2.errors,
             [
