@@ -8,6 +8,7 @@ from sistemita.core.models import (
     Cliente,
     Distrito,
     FacturaCategoria,
+    FacturaProveedorCategoria,
     Localidad,
     MedioPago,
     Proveedor,
@@ -177,3 +178,34 @@ class FacturaClienteCategoriaFactory(DjangoModelFactory):
         django_get_or_create = ('nombre',)
 
     nombre = FacturaClienteCategoriaFactoryData().nombre
+
+
+class FacturaProveedorCategoriaFactoryData:
+    """Creación de datos para el modelo de categoría de facturas a proveedores."""
+
+    _categorias = [
+        'COACH',
+        'CONTABILODAD',
+        'EQUIPO LIQUEED',
+        'OTROS GASTOS',
+    ]
+
+    def __init__(self):
+        self.nombre = rand_element_from_array(self._categorias)
+        self.data = {'nombre': self.nombre}
+
+    def build(self):
+        """Devuelve un diccionario con datos."""
+        return self.data
+
+
+class FacturaProveedorCategoriaFactory(DjangoModelFactory):
+    """Factory categoría de factura de proveedores que herada de DjangoModelFactory."""
+
+    class Meta:
+        """Factory settings."""
+
+        model = FacturaProveedorCategoria
+        django_get_or_create = ('nombre',)
+
+    nombre = FacturaProveedorCategoriaFactoryData().nombre
