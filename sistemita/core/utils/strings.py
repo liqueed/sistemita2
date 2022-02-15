@@ -33,3 +33,5 @@ MESSAGE_MONEDA_INVALID = 'Tipo de moneda inválida.'
 MESSAGE_NUMERO_EXISTS = 'El numero de factura {} ya existe para el {}.'
 
 MESSAGE_ONLY_NUMBERS = 'Solo número.'
+
+MESSAGE_ERROR_EMAIL_UNIQUE = 'Este email ya está en uso.'

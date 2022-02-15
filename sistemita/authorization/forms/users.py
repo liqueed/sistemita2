@@ -40,43 +40,18 @@ class UserCreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 '',
-                Div(
-                    Div('first_name', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('last_name', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('username', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('email', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('password', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('password_confirmation', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('is_superuser', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('groups', css_class='col-6'),
-                    css_class='row'
-                ),
+                Div(Div('first_name', css_class='col-6'), css_class='row'),
+                Div(Div('last_name', css_class='col-6'), css_class='row'),
+                Div(Div('username', css_class='col-6'), css_class='row'),
+                Div(Div('email', css_class='col-6'), css_class='row'),
+                Div(Div('password', css_class='col-6'), css_class='row'),
+                Div(Div('password_confirmation', css_class='col-6'), css_class='row'),
+                Div(Div('is_superuser', css_class='col-6'), css_class='row'),
+                Div(Div('groups', css_class='col-6'), css_class='row'),
             ),
             FormActions(
-                Submit('submit', 'Guardar', css_class='float-right'),
-                Reset('reset', 'Limpiar', css_class='float-right')
-            )
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
         )
 
     first_name = forms.CharField(min_length=2, max_length=50, label='Nombre')
@@ -87,7 +62,7 @@ class UserCreateForm(forms.ModelForm):
         max_length=50,
         label='Nombre de usuario',
         validators=[UnicodeUsernameValidator],
-        help_text=HELP_TEXT_USERNAME.format(50)
+        help_text=HELP_TEXT_USERNAME.format(50),
     )
 
     email = forms.EmailField(min_length=6, max_length=70)
@@ -96,21 +71,18 @@ class UserCreateForm(forms.ModelForm):
         max_length=70,
         widget=forms.PasswordInput(),
         label='Contraseña',
-        help_text=password_validation.password_validators_help_text_html
+        help_text=password_validation.password_validators_help_text_html,
     )
     password_confirmation = forms.CharField(
         max_length=70,
         widget=forms.PasswordInput(),
         label='Repetir contraseña',
-        help_text=HELP_TEXT_PASSWORD_CONFIRMATION
+        help_text=HELP_TEXT_PASSWORD_CONFIRMATION,
     )
 
     is_superuser = forms.BooleanField(required=False, label='Administrador')
     groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.order_by('name'),
-        help_text=HELP_TEXT_MULTIPLE_CHOICE,
-        label='Grupos',
-        required=False
+        queryset=Group.objects.order_by('name'), help_text=HELP_TEXT_MULTIPLE_CHOICE, label='Grupos', required=False
     )
 
     def clean_username(self):
@@ -141,7 +113,10 @@ class UserCreateForm(forms.ModelForm):
     def clean(self):
         """Verifica si las contraseñas coinciden y tienen el formato válido."""
         data = super().clean()
-        password = data['password']
+        password = data.get('password', None)
+
+        if not password:
+            return data
 
         try:
             validate_password(password)
@@ -151,7 +126,7 @@ class UserCreateForm(forms.ModelForm):
         password_confirmation = data['password_confirmation']
 
         if password != password_confirmation:
-            raise forms.ValidationError('Las contraseñas no coinciden.')
+            self.add_error('password_confirmation', 'Las contraseñas no coinciden.')
 
         return data
 
@@ -193,39 +168,17 @@ class UserUpdateForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 '',
-                Div(
-                    Div('first_name', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('last_name', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('username', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('email', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('password_read_only', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('is_superuser', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('groups', css_class='col-6'),
-                    css_class='row'
-                ),
+                Div(Div('first_name', css_class='col-6'), css_class='row'),
+                Div(Div('last_name', css_class='col-6'), css_class='row'),
+                Div(Div('username', css_class='col-6'), css_class='row'),
+                Div(Div('email', css_class='col-6'), css_class='row'),
+                Div(Div('password_read_only', css_class='col-6'), css_class='row'),
+                Div(Div('is_superuser', css_class='col-6'), css_class='row'),
+                Div(Div('groups', css_class='col-6'), css_class='row'),
             ),
             FormActions(
-                Submit('submit', 'Guardar', css_class='float-right'),
-                Reset('reset', 'Limpiar', css_class='float-right')
-            )
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
         )
 
     first_name = forms.CharField(min_length=2, max_length=50, label='Nombre')
@@ -237,16 +190,13 @@ class UserUpdateForm(forms.ModelForm):
         widget=ReadOnlyPasswordWidget,
         required=False,
         label='Contraseña',
-        help_text=("Para cambiar la contraseña usar <a href=\"../password/\">este formulario</a>.")
+        help_text=("Para cambiar la contraseña usar <a href=\"../password/\">este formulario</a>."),
     )
 
     is_superuser = forms.BooleanField(required=False, label='Administrador')
 
     groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.order_by('name'),
-        help_text=HELP_TEXT_MULTIPLE_CHOICE,
-        label='Grupos',
-        required=False
+        queryset=Group.objects.order_by('name'), help_text=HELP_TEXT_MULTIPLE_CHOICE, label='Grupos', required=False
     )
 
     class Meta:
@@ -266,17 +216,10 @@ class PasswordResetForm(SetPasswordForm):
         self.helper.layout = Layout(
             Fieldset(
                 '',
-                Div(
-                    Div('new_password1', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('new_password2', css_class='col-6'),
-                    css_class='row'
-                ),
+                Div(Div('new_password1', css_class='col-6'), css_class='row'),
+                Div(Div('new_password2', css_class='col-6'), css_class='row'),
             ),
             FormActions(
-                Submit('submit', 'Guardar', css_class='float-right'),
-                Reset('reset', 'Limpiar', css_class='float-right')
-            )
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
         )

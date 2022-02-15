@@ -62,6 +62,10 @@ class BaseTestCase(TestCase):
         for prop in props:
             self.assertHasProp(obj, prop)
 
+    def assertHasErrorDetail(self, element, msg):
+        """Verifica el mensaje."""
+        self.assertEqual(element[0], msg)
+
     def create_superuser(self):
         """Crea un super usuario."""
         user = User.objects.create(username='admin')
@@ -69,6 +73,7 @@ class BaseTestCase(TestCase):
         user.is_active = True
         user.is_superuser = True
         user.save()
+        return user
 
     def create_user(self, permissions=[]):
         """Crea un usuario que puede tener permisos."""
@@ -82,6 +87,7 @@ class BaseTestCase(TestCase):
 
         user.is_active = True
         user.save()
+        return user
 
     @staticmethod
     def get_required_fields(model):

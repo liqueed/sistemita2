@@ -3,10 +3,16 @@
 # Django
 from django.contrib.auth.models import AbstractUser, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.db import models
+
+# Utils
+from sistemita.core.utils.strings import MESSAGE_ERROR_EMAIL_UNIQUE
 
 
 class User(AbstractUser):
     """Modelo Usuario."""
+
+    email = models.EmailField('email', unique=True, error_messages={'unique': MESSAGE_ERROR_EMAIL_UNIQUE})
 
     @property
     def full_name(self):
@@ -20,12 +26,12 @@ class User(AbstractUser):
 
 def permission_string_method(self):
     """Devuelve un string del modelo personalizado y traducido."""
-    return '%s' % (self.name)
+    return f'{self.name}'
 
 
 def contentype_string_method(self):
     """Devuelve un string del modelo personalizado y traducido."""
-    return '%s' % (self.name.title())
+    return f'{self.name.title()}'
 
 
 Permission.__str__ = permission_string_method

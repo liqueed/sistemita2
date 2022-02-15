@@ -1,4 +1,4 @@
-"""Users test."""
+"""Clientes test."""
 
 # Django
 from django.core.management import call_command
