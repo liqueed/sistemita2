@@ -1,7 +1,7 @@
 """Users test."""
 
 # Django
-from django.test import Client
+from django.core.management import call_command
 from faker import Faker
 
 # Sistemita
@@ -11,35 +11,42 @@ from sistemita.core.tests.factories import (
     ProveedorFactory,
     ProveedorFactoryData,
 )
-from sistemita.utils.tests import BaseTestCase, rand_range, randN
+from sistemita.utils.tests import (
+    BaseTestCase,
+    prevent_request_warnings,
+    rand_range,
+    randN,
+)
 
 fake = Faker('es_ES')
 
 
-class ProveedorTest(BaseTestCase):
-    """ProveedoreTest model."""
+def setUpModule():
+    """Agrega permisos a utilizar por los test."""
+    call_command('permissions_translation', verbosity=0)
+    call_command('add_permissions', verbosity=0)
+
+
+class ProveedorModelTest(BaseTestCase):
+    """Test sobre el modelo."""
 
     def setUp(self):
-        self.data = ProveedorFactoryData().build()
-        self.instance = ProveedorFactory.create()
-        self.client = Client()
+        self.instance = ProveedorFactory.build()
 
     def test_string_representation(self):
         """Representación legible del model modelo."""
         proveedor = self.instance
         self.assertEqual(str(proveedor), f'{proveedor.razon_social} - {proveedor.cuit}')
 
-    # Listado
-    def test_length_in_template(self):
-        """Verifica cantidad de proveedores en el template listado."""
-        count = Proveedor.objects.count()
-        self.create_superuser()
-        self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get('/proveedor/')
-        self.assertEqual(len(response.context['object_list']), count)
+
+class ProveedorListViewTest(BaseTestCase):
+    """Test sobre vista de listado."""
+
+    def setUp(self):
+        self.instance = ProveedorFactory.create()
 
     def test_list_with_superuser(self):
-        """Verifica que el usuario admin puede acceder al listado de proveedores."""
+        """Verifica que el usuario admin puede acceder al listado."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/proveedor/')
@@ -47,15 +54,16 @@ class ProveedorTest(BaseTestCase):
         self.assertTemplateUsed(response, template_name='core/proveedor_list.html')
 
     def test_list_with_user_in_group(self):
-        """Verifica que el usuario con permisos puede acceder al listado de proveedores."""
+        """Verifica que el usuario con permisos puede acceder al listado."""
         self.create_user(['list_proveedor'])
         self.client.login(username='user', password='user12345')
         response = self.client.get('/proveedor/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, template_name='core/proveedor_list.html')
 
+    @prevent_request_warnings
     def test_list_user_no_permissions(self):
-        """Verifica que el usuario sin permisos no pueda acceder al listado de proveedores."""
+        """Verifica que el usuario sin permisos no pueda acceder al listado."""
         self.create_user()
         self.client.login(username='user', password='user12345')
         response = self.client.get('/proveedor/')
@@ -63,14 +71,41 @@ class ProveedorTest(BaseTestCase):
         self.assertTemplateUsed(response, template_name='403.html')
 
     def test_list_with_anonymous(self):
-        """Verifica que redirige al login al usuario sin acceso intenta lista proveedores."""
+        """Verifica que redirige al login al usuario sin acceso intenta lista."""
         response = self.client.get('/proveedor/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
 
-    # Agregar
+    def test_length_in_template(self):
+        """Verifica cantidad en el template listado."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get('/proveedor/')
+        self.assertQuerysetEqual(response.context['object_list'], [self.instance], transform=lambda x: x)
+
+    def test_last_created_in_template(self):
+        """Verifica cantidad de instancias creadas en la semana."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get('/proveedor/')
+        self.assertEqual(response.context['last_created'], Proveedor.objects.count())
+
+
+class ProveedorCreateViewTest(BaseTestCase):
+    """Tests sobre la vista de crear."""
+
+    fixtures = [
+        'fixtures/countries.json',
+        'fixtures/states.json',
+        'fixtures/districts.json',
+        'fixtures/localities.json',
+    ]
+
+    def setUp(self):
+        self.data = ProveedorFactoryData().build()
+
     def test_add_with_superuser(self):
-        """Verifica que el usuario admin puede acceder a crear proveedores."""
+        """Verifica que el usuario admin puede acceder a crear."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/proveedor/agregar/')
@@ -78,15 +113,16 @@ class ProveedorTest(BaseTestCase):
         self.assertTemplateUsed(response, template_name='core/proveedor_form.html')
 
     def test_add_with_user_in_group(self):
-        """Verifica que el usuario con permisos puede acceder a agregar proveedores."""
+        """Verifica que el usuario con permisos puede acceder a agregar."""
         self.create_user(['add_proveedor'])
         self.client.login(username='user', password='user12345')
         response = self.client.get('/proveedor/agregar/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, template_name='core/proveedor_form.html')
 
+    @prevent_request_warnings
     def test_add_with_user_no_permissions(self):
-        """Verifica que el usuario sin permisos no pueda acceder a crear proveedores."""
+        """Verifica que el usuario sin permisos no pueda acceder a crear."""
         self.create_user()
         self.client.login(username='user', password='user12345')
         response = self.client.get('/proveedor/agregar/')
@@ -94,104 +130,23 @@ class ProveedorTest(BaseTestCase):
         self.assertTemplateUsed(response, template_name='403.html')
 
     def test_add_with_user_anonymous(self):
-        """Verifica que redirige al login al usuario sin acceso intenta crear proveedores."""
+        """Verifica que redirige al login al usuario sin acceso intenta crear."""
         response = self.client.get('/proveedor/agregar/')
         self.assertEqual(response.status_code, 302)
 
-    # Editar
-    def test_update_with_superuser(self):
-        """Verifica que el usuario admin puede acceder a editar proveedores."""
-        self.create_superuser()
-        self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get(f'/proveedor/{self.instance.pk}/editar/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/proveedor_form.html')
-
-    def test_update_with_user_in_group(self):
-        """Verifica que el usuario con permisos puede acceder a editar proveedores."""
-        self.create_user(['change_proveedor'])
-        self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/proveedor/{self.instance.pk}/editar/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/proveedor_form.html')
-
-    def test_update_with_user_no_permissions(self):
-        """Verifica que el usuario sin permisos no pueda acceder a editar proveedores."""
+    @prevent_request_warnings
+    def test_post_with_user_no_permissions(self):
+        """Verifica que un usuario sin permisos no pueda realizar un post."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/proveedor/{self.instance.pk}/editar/')
+        response = self.client.post('/proveedor/agregar/')
         self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, template_name='403.html')
 
-    def test_update_with_user_anonymous(self):
-        """Verifica que redirige al login al usuario sin acceso intenta editar proveedores."""
-        response = self.client.get(f'/proveedor/{self.instance.pk}/editar/')
+    def test_post_with_user_anonymous(self):
+        """Verifica que redirige al login al usuario sin acceso intenta realizar un post."""
+        response = self.client.post('/proveedor/agregar/')
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/')
 
-    # Detail
-    def test_detail_with_superuser(self):
-        """Verifica que el usuario admin puede acceder a detallar proveedores."""
-        self.create_superuser()
-        self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get(f'/proveedor/{self.instance.pk}/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/proveedor_detail.html')
-
-    def test_detail_with_user_in_group(self):
-        """Verifica que el usuario con permisos puede acceder a agregar proveedores."""
-        self.create_user(['view_proveedor'])
-        self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/proveedor/{self.instance.pk}/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/proveedor_detail.html')
-
-    def test_detail_with_user_no_permissions(self):
-        """Verifica que el usuario sin permisos no pueda acceder a detallar proveedores."""
-        self.create_user()
-        self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/proveedor/{self.instance.pk}/')
-        self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, template_name='403.html')
-
-    def test_detail_with_user_anonymous(self):
-        """Verifica que redirige al login al usuario sin acceso intenta detallar proveedores."""
-        response = self.client.get(f'/proveedor/{self.instance.pk}/')
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/')
-
-    # Delete
-    def test_delete_with_superuser(self):
-        """Verifica que el usuario admin puede acceder a eliminar proveedores."""
-        self.create_superuser()
-        self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get(f'/proveedor/{self.instance.pk}/eliminar/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/proveedor_confirm_delete.html')
-
-    def test_delete_with_user_in_group(self):
-        """Verifica que el usuario con permisos puede acceder a eliminar proveedores."""
-        self.create_user(['delete_proveedor'])
-        self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/proveedor/{self.instance.pk}/eliminar/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/proveedor_confirm_delete.html')
-
-    def test_delete_with_user_no_permissions(self):
-        """Verifica que el usuario sin permisos no pueda acceder a eliminar proveedores."""
-        self.create_user()
-        self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/proveedor/{self.instance.pk}/eliminar/')
-        self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, template_name='403.html')
-
-    def test_delete_with_user_anonymous(self):
-        """Verifica que redirige al login al usuario sin acceso intenta eliminar proveedores."""
-        response = self.client.get(f'/proveedor/{self.instance.pk}/eliminar/')
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/')
-
-    # Formulario
     def test_form_valid(self):
         """Valida formulario con datos correctos."""
         form = ProveedorForm(data=self.data)
@@ -260,3 +215,149 @@ class ProveedorTest(BaseTestCase):
                 'correo',
             ],
         )
+
+
+class ProveedorDetailViewTest(BaseTestCase):
+    """Test sobre la vista de detalle."""
+
+    def setUp(self):
+        self.instance = ProveedorFactory.create()
+
+    def test_detail_with_superuser(self):
+        """Verifica que el usuario admin puede acceder a detallar proveedores."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get(f'/proveedor/{self.instance.pk}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template_name='core/proveedor_detail.html')
+
+    def test_detail_with_user_in_group(self):
+        """Verifica que el usuario con permisos puede acceder a agregar proveedores."""
+        self.create_user(['view_proveedor'])
+        self.client.login(username='user', password='user12345')
+        response = self.client.get(f'/proveedor/{self.instance.pk}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template_name='core/proveedor_detail.html')
+
+    @prevent_request_warnings
+    def test_detail_with_user_no_permissions(self):
+        """Verifica que el usuario sin permisos no pueda acceder a detallar proveedores."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.get(f'/proveedor/{self.instance.pk}/')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, template_name='403.html')
+
+    def test_detail_with_user_anonymous(self):
+        """Verifica que redirige al login al usuario sin acceso intenta detallar proveedores."""
+        response = self.client.get(f'/proveedor/{self.instance.pk}/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/')
+
+
+class ProveedorUpdateViewTest(BaseTestCase):
+    """Test sobre la vista de editar."""
+
+    def setUp(self):
+        """Creación de instancia."""
+        self.instance = ProveedorFactory.create()
+
+    def test_update_with_superuser(self):
+        """Verifica que el usuario admin puede acceder a editar proveedores."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get(f'/proveedor/{self.instance.pk}/editar/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template_name='core/proveedor_form.html')
+
+    def test_update_with_user_in_group(self):
+        """Verifica que el usuario con permisos puede acceder a editar proveedores."""
+        self.create_user(['change_proveedor'])
+        self.client.login(username='user', password='user12345')
+        response = self.client.get(f'/proveedor/{self.instance.pk}/editar/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template_name='core/proveedor_form.html')
+
+    @prevent_request_warnings
+    def test_update_with_user_no_permissions(self):
+        """Verifica que el usuario sin permisos no pueda acceder a editar proveedores."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.get(f'/proveedor/{self.instance.pk}/editar/')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, template_name='403.html')
+
+    def test_update_with_user_anonymous(self):
+        """Verifica que redirige al login al usuario sin acceso intenta editar proveedores."""
+        response = self.client.get(f'/proveedor/{self.instance.pk}/editar/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/')
+
+    @prevent_request_warnings
+    def test_post_with_user_no_permissions(self):
+        """Verifica que el usuario sin permisos no pueda acceder a editar."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.post(f'/proveedor/{self.instance.pk}/editar/')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, template_name='403.html')
+
+    def test_post_with_user_anonymous(self):
+        """Verifica que redirige al login al usuario sin acceso intenta editar."""
+        response = self.client.post(f'/proveedor/{self.instance.pk}/editar/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/')
+
+
+class ProveedorDeleteViewTest(BaseTestCase):
+    """Test sobre la vista de eliminar."""
+
+    def setUp(self):
+        """Creación de instancia."""
+        self.instance = ProveedorFactory.create()
+
+    def test_delete_with_superuser(self):
+        """Verifica que el usuario admin puede acceder a eliminar."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get(f'/proveedor/{self.instance.pk}/eliminar/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template_name='core/proveedor_confirm_delete.html')
+
+    def test_delete_with_user_in_group(self):
+        """Verifica que el usuario con permisos puede acceder a eliminar."""
+        self.create_user(['delete_proveedor'])
+        self.client.login(username='user', password='user12345')
+        response = self.client.get(f'/proveedor/{self.instance.pk}/eliminar/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, template_name='core/proveedor_confirm_delete.html')
+
+    @prevent_request_warnings
+    def test_delete_with_user_no_permissions(self):
+        """Verifica que el usuario sin permisos no pueda acceder a eliminar."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.get(f'/proveedor/{self.instance.pk}/eliminar/')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, template_name='403.html')
+
+    def test_delete_with_user_anonymous(self):
+        """Verifica que redirige al login al usuario sin acceso intenta eliminar."""
+        response = self.client.get(f'/proveedor/{self.instance.pk}/eliminar/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/')
+
+    @prevent_request_warnings
+    def test_detroy_with_user_no_permissions(self):
+        """Verifica que el usuario sin permisos no pueda acceder a eliminar."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.delete(f'/proveedor/{self.instance.pk}/eliminar/')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, template_name='403.html')
+
+    def test_detroy_with_user_anonymous(self):
+        """Verifica que redirige al login al usuario sin acceso intenta eliminar."""
+        response = self.client.delete(f'/proveedor/{self.instance.pk}/eliminar/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/')

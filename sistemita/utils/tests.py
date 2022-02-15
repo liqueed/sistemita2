@@ -1,10 +1,10 @@
 """Commons functions for Tests."""
 
+import logging
 import random
 
 # Django
 from django.contrib.auth.models import Permission
-from django.core.management import call_command
 from django.test import TestCase
 
 # Sistemita
@@ -29,22 +29,29 @@ def randN(length):
     return random.randint(_min, _max)
 
 
+def prevent_request_warnings(original_function):
+    """
+    If we need to test for 404s or 405s this decorator can prevent the
+    request class from throwing warnings.
+    """
+
+    def new_function(*args, **kwargs):
+        # raise logging level to ERROR
+        logger = logging.getLogger('django.request')
+        previous_logging_level = logger.getEffectiveLevel()
+        logger.setLevel(logging.ERROR)
+
+        # trigger original function that would throw warning
+        original_function(*args, **kwargs)
+
+        # lower logging level back to previous
+        logger.setLevel(previous_logging_level)
+
+    return new_function
+
+
 class BaseTestCase(TestCase):
     """BaseTestCase."""
-
-    fixtures = [
-        'fixtures/countries.json',
-        'fixtures/states.json',
-        'fixtures/districts.json',
-        'fixtures/localities.json',
-    ]
-
-    @classmethod
-    def setUpTestData(cls):
-        """Método que se ejecuta una única vez para cargar datos."""
-        call_command('collectstatic', interactive=False)
-        call_command('permissions_translation')
-        call_command('add_permissions')
 
     def assertHasProp(self, obj, prop):
         """Verifica si el objeto tiene una propiedad."""
