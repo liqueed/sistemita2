@@ -4,7 +4,7 @@
 from factory.django import DjangoModelFactory
 from faker import Faker
 
-# Sistemita
+# Models
 from sistemita.authorization.models import User
 
 fake = Faker('es_ES')

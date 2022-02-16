@@ -291,7 +291,7 @@ class UserUpdateViewTest(BaseTestCase):
         data = self.data
         data.pop('password')
         data.pop('password_confirmation')
-        form = UserUpdateForm(data=self.data)
+        form = UserUpdateForm(data=data)
         self.assertTrue(form.is_valid())
 
     def test_form_fields_required(self):
