@@ -8,3 +8,4 @@ class APIAppConfig(AppConfig):
     """Configuraciones del módulo."""
 
     name = 'sistemita.api'
+    verbose_name = 'api'

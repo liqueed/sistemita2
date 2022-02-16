@@ -29,33 +29,35 @@ class GroupForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 '',
-                Div(
-                    Div('name', css_class='col-6'),
-                    css_class='row'
-                ),
-                Div(
-                    Div('permissions', css_class='col-6', size=20),
-                    css_class='row'
-                ),
+                Div(Div('name', css_class='col-6'), css_class='row'),
+                Div(Div('permissions', css_class='col-6', size=20), css_class='row'),
             ),
             FormActions(
-                Submit('submit', 'Guardar', css_class='float-right'),
-                Reset('reset', 'Limpiar', css_class='float-right')
-            )
+                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+            ),
         )
 
     permissions = forms.ModelMultipleChoiceField(
         help_text=HELP_TEXT_MULTIPLE_CHOICE,
         queryset=Permission.objects.filter(
-            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core'],
+            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core', 'expense'],
             content_type__model__in=[
                 'archivo',
-                'cliente', 'factura', 'ordencompra', 'cobranza',
-                'proveedor', 'facturaproveedor', 'pago',
+                'cliente',
+                'factura',
+                'ordencompra',
+                'cobranza',
+                'proveedor',
+                'facturaproveedor',
+                'pago',
                 'mediopago',
-                'permission', 'user', 'group'
-            ]
-        ).order_by('content_type__model', 'name')
+                'permission',
+                'user',
+                'group',
+                'fondo',
+                'costo',
+            ],
+        ).order_by('content_type__model', 'name'),
     )
 
     class Meta:

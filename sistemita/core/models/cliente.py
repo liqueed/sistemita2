@@ -105,6 +105,9 @@ class OrdenCompra(TimeStampedModel, models.Model):
         """Retorno el monto de la orden de compra."""
         return f'{self.get_moneda_display()} {self.monto}'
 
+    def __str__(self):
+        return f'{self.fecha} | {self.cliente}'
+
     class Meta:
         """Configuraciones del modelo."""
 

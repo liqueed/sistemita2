@@ -196,5 +196,5 @@ urlpatterns = [
     path('mediopago/agregar/', MedioPagoCreateView.as_view(), name='mediopago-create'),
     path('mediopago/<int:pk>/', MedioPagoDetailView.as_view(), name='mediopago-detail'),
     path('mediopago/<int:pk>/editar/', MedioPagoUpdateView.as_view(), name='mediopago-update'),
-    path('medio/<int:pk>/eliminar/', MedioPagoDeleteView.as_view(), name='mediopago-delete'),
+    path('mediopago/<int:pk>/eliminar/', MedioPagoDeleteView.as_view(), name='mediopago-delete'),
 ]

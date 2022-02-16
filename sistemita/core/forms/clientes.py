@@ -28,6 +28,8 @@ from sistemita.expense.models import Fondo
 class ClienteForm(forms.ModelForm):
     """Formulario de cliente."""
 
+    razon_social = forms.CharField(required=True)
+    cuit = forms.CharField(required=True, max_length=11)
     correo = forms.CharField(required=True)
     telefono = forms.CharField(required=True)
 
@@ -281,6 +283,8 @@ class FacturaForm(forms.ModelForm):
 
 class OrdenCompraForm(forms.ModelForm):
     """Formulario de orden de compra."""
+
+    monto = forms.DecimalField(decimal_places=2, max_digits=12, min_value=0, initial=0.0)
 
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
