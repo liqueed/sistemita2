@@ -1,13 +1,12 @@
 """User factories."""
 
 # Fake
+from factory import Faker
 from factory.django import DjangoModelFactory
-from faker import Faker
 
 # Models
 from sistemita.authorization.models import User
-
-fake = Faker('es_ES')
+from sistemita.utils.tests import generate_dict_factory
 
 
 class UserFactory(DjangoModelFactory):
@@ -19,11 +18,11 @@ class UserFactory(DjangoModelFactory):
         model = User
         django_get_or_create = ('username', 'email')
 
-    first_name = fake.first_name()
-    last_name = fake.last_name()
-    username = fake.simple_profile().get('username')
-    email = fake.simple_profile().get('mail')
-    password = fake.password()
+    first_name = Faker('first_name')
+    last_name = Faker('last_name')
+    username = Faker('user_name')
+    email = Faker('email')
+    password = Faker('password')
     is_active = True
 
 
@@ -38,16 +37,9 @@ class UserFactoryData:
 
     def __init__(self):
 
-        self._password = fake.password()
-        self.data = {
-            'first_name': fake.first_name(),
-            'last_name': fake.last_name(),
-            'username': fake.simple_profile().get('username'),
-            'email': fake.simple_profile().get('mail'),
-            'password': self._password,
-            'password_confirmation': self._password,
-            'is_active': True,
-        }
+        UserFactoryDictData = generate_dict_factory(UserFactory)
+        self.data = UserFactoryDictData()
+        self.data.update({'password_confirmation': self.data.get('password')})
 
     def build(self):
         """Building data for forms."""

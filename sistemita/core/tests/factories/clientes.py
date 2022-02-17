@@ -4,9 +4,9 @@
 from django.utils import timezone
 
 # Fake
-from factory import SubFactory
+from factory import Faker, SubFactory
 from factory.django import DjangoModelFactory
-from faker import Faker
+from faker import Faker as fake
 
 # Sistemita
 from sistemita.core.constants import MONEDAS
@@ -18,28 +18,28 @@ from sistemita.core.models import (
     OrdenCompra,
     Provincia,
 )
-from sistemita.utils.tests import rand_element_from_array, randN
+from sistemita.utils.tests import generate_dict_factory
 
-fake = Faker('es_ES')
+fake = fake()
 
 
 class ClienteFactory(DjangoModelFactory):
     """Fabrica de datos de cliente."""
 
-    razon_social = fake.name()
-    cuit = randN(11)
-    correo = fake.email()
-    telefono = fake.phone_number()[0:14]
-    calle = fake.name()[0:35]
-    numero = fake.numerify(text='##@@')
-    piso = fake.numerify(text='#@')
-    dpto = fake.lexify(text='?')
+    razon_social = Faker('name')
+    cuit = Faker('random_number', digits=11, fix_len=True)
+    correo = Faker('email')
+    telefono = Faker('bothify', text='+##########')
+    calle = Faker('name')
+    numero = Faker('random_number', digits=4)
+    piso = Faker('random_number', digits=2)
+    dpto = Faker('bothify', text='?')
 
     class Meta:
         """Factory settings."""
 
         model = Cliente
-        django_get_or_create = ('razon_social',)
+        django_get_or_create = ('razon_social', 'correo', 'cuit')
 
 
 class ClienteFactoryData:
@@ -51,41 +51,14 @@ class ClienteFactoryData:
         distrito = Distrito.objects.filter(provincia=provincia).order_by('?').first()
         localidad = Localidad.objects.filter(distrito=distrito).order_by('?').first()
 
-        self.data = {
-            'razon_social': fake.name(),
-            'cuit': randN(11),
-            'correo': fake.email(),
-            'telefono': fake.phone_number()[0:14],
-            'calle': fake.name()[0:35],
-            'numero': fake.numerify(text='##@@'),
-            'piso': fake.numerify(text='#@'),
-            'dpto': fake.lexify(text='?'),
-            'provincia': provincia.pk,
-            'distrito': distrito.pk,
-            'localidad': localidad.pk,
-        }
+        ClienteDictFactory = generate_dict_factory(ClienteFactory)
+        self.data = ClienteDictFactory()
+        self.data.update({'provincia': provincia.pk})
+        self.data.update({'distrito': distrito.pk})
+        self.data.update({'localidad': localidad.pk})
 
     def build(self):
         """Building data for forms."""
-        return self.data
-
-
-class FacturaClienteCategoriaFactoryData:
-    """Creación de datos para el modelo de categoría de facturas a clientes."""
-
-    _categorias = [
-        'ACOMPAÑAMIENTO',
-        'CURSO CSM',
-        'CURSO CSPO',
-        'WORKSHOP',
-    ]
-
-    def __init__(self):
-        self.nombre = rand_element_from_array(self._categorias)
-        self.data = {'nombre': self.nombre}
-
-    def build(self):
-        """Devuelve un diccionario con datos."""
         return self.data
 
 
@@ -98,19 +71,15 @@ class FacturaClienteCategoriaFactory(DjangoModelFactory):
         model = FacturaCategoria
         django_get_or_create = ('nombre',)
 
-    nombre = FacturaClienteCategoriaFactoryData().nombre
+    nombre = Faker('random_element', elements=('ACOMPAÑAMIENTO', 'CURSO CSM', 'CURSO CSPO', 'WORKSHOP'))
 
 
-class OrdenCompraFactoryData:
-    """Creación de datos para el modelo de orden de compra de clientes."""
+class FacturaClienteCategoriaFactoryData:
+    """Creación de datos para el modelo de categoría de facturas a clientes."""
 
     def __init__(self):
-        self.data = {
-            'fecha': timezone.datetime.strptime(fake.date(), '%Y-%m-%d').strftime('%d/%m/%Y'),
-            'cliente': ClienteFactory.create().pk,
-            'moneda': rand_element_from_array(MONEDAS)[0],
-            'monto': str(fake.pydecimal(2, 2, True)),
-        }
+        FacturaClienteCategoriaDictFactory = generate_dict_factory(FacturaClienteCategoriaFactory)
+        self.data = FacturaClienteCategoriaDictFactory()
 
     def build(self):
         """Devuelve un diccionario con datos."""
@@ -125,7 +94,22 @@ class OrdenCompraFactory(DjangoModelFactory):
 
         model = OrdenCompra
 
-    fecha = fake.date()
     cliente = SubFactory(ClienteFactory)
-    moneda = rand_element_from_array(MONEDAS)[0]
-    monto = str(fake.pydecimal(2, 2, True))
+    fecha = Faker('date')
+    moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
+    monto = Faker('pydecimal', max_value=10000000, positive=True)
+
+
+class OrdenCompraFactoryData:
+    """Creación de datos para el modelo de orden de compra de clientes."""
+
+    def __init__(self):
+        OrdenCompraDictFactory = generate_dict_factory(OrdenCompraFactory)
+        self.data = OrdenCompraDictFactory()
+        self.data.update({'fecha': timezone.datetime.strptime(fake.date(), '%Y-%m-%d').strftime('%d/%m/%Y')})
+        self.data.update({'cliente': ClienteFactory.create().pk})
+        self.data.update({'monto': str(fake.pydecimal(2, 2, True))})
+
+    def build(self):
+        """Devuelve un diccionario con datos."""
+        return self.data

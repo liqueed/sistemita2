@@ -1,7 +1,8 @@
 """Proveedor factories."""
 
+from factory import Faker
 from factory.django import DjangoModelFactory
-from faker import Faker
+from faker import Faker as fake
 
 # Sistemita
 from sistemita.core.models import (
@@ -11,29 +12,29 @@ from sistemita.core.models import (
     Proveedor,
     Provincia,
 )
-from sistemita.utils.tests import rand_element_from_array, randN
+from sistemita.utils.tests import generate_dict_factory
 
-fake = Faker('es_ES')
+fake = fake()
 
 
 class ProveedorFactory(DjangoModelFactory):
     """ProveedorFactory factory."""
 
-    razon_social = fake.name()
-    cuit = randN(11)
-    correo = fake.email()
-    telefono = fake.phone_number()[0:14]
-    calle = fake.name()[0:35]
-    numero = fake.numerify(text='##@@')
-    piso = fake.numerify(text='#@')
-    dpto = fake.lexify(text='?')
-    cbu = randN(11)
+    razon_social = Faker('name')
+    cuit = Faker('random_number', digits=11, fix_len=True)
+    correo = Faker('email')
+    telefono = Faker('bothify', text='+##########')
+    calle = Faker('name')
+    numero = Faker('random_number', digits=4)
+    piso = Faker('random_number', digits=2)
+    dpto = Faker('bothify', text='?')
+    cbu = Faker('random_number', digits=22)
 
     class Meta:
         """Factory settings."""
 
         model = Proveedor
-        django_get_or_create = ('razon_social',)
+        django_get_or_create = ('razon_social', 'correo', 'cuit')
 
 
 class ProveedorFactoryData:
@@ -45,42 +46,14 @@ class ProveedorFactoryData:
         distrito = Distrito.objects.filter(provincia=provincia).order_by('?').first()
         localidad = Localidad.objects.filter(distrito=distrito).order_by('?').first()
 
-        self.data = {
-            'razon_social': fake.name(),
-            'cuit': randN(11),
-            'correo': fake.email(),
-            'telefono': fake.phone_number()[0:14],
-            'calle': fake.name()[0:35],
-            'numero': fake.numerify(text='##@@'),
-            'piso': fake.numerify(text='#@'),
-            'dpto': fake.lexify(text='?'),
-            'provincia': provincia.pk,
-            'distrito': distrito.pk,
-            'localidad': localidad.pk,
-            'cbu': randN(11),
-        }
+        ProveedorFactoryDictFactory = generate_dict_factory(ProveedorFactory)
+        self.data = ProveedorFactoryDictFactory()
+        self.data.update({'provincia': provincia.pk})
+        self.data.update({'distrito': distrito.pk})
+        self.data.update({'localidad': localidad.pk})
 
     def build(self):
         """Building data for forms."""
-        return self.data
-
-
-class FacturaProveedorCategoriaFactoryData:
-    """Creación de datos para el modelo de categoría de facturas a proveedores."""
-
-    _categorias = [
-        'COACH',
-        'CONTABILODAD',
-        'EQUIPO LIQUEED',
-        'OTROS GASTOS',
-    ]
-
-    def __init__(self):
-        self.nombre = rand_element_from_array(self._categorias)
-        self.data = {'nombre': self.nombre}
-
-    def build(self):
-        """Devuelve un diccionario con datos."""
         return self.data
 
 
@@ -93,4 +66,16 @@ class FacturaProveedorCategoriaFactory(DjangoModelFactory):
         model = FacturaProveedorCategoria
         django_get_or_create = ('nombre',)
 
-    nombre = FacturaProveedorCategoriaFactoryData().nombre
+    nombre = Faker('random_element', elements=('COACH', 'CONTABILODAD', 'EQUIPO LIQUEED', 'OTROS GASTOS'))
+
+
+class FacturaProveedorCategoriaFactoryData:
+    """Creación de datos para el modelo de categoría de facturas a proveedores."""
+
+    def __init__(self):
+        FacturaProveedorCategoriaDictFactory = generate_dict_factory(FacturaProveedorCategoriaFactory)
+        self.data = FacturaProveedorCategoriaDictFactory()
+
+    def build(self):
+        """Devuelve un diccionario con datos."""
+        return self.data

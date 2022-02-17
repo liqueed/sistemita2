@@ -72,7 +72,7 @@ class Factura(FacturaAbstract):
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
-        return '{} -{} - {} - {}'.format(self.fecha, self.numero, self.cliente.razon_social, self.moneda_monto)
+        return f'{self.fecha} - {self.numero} - {self.cliente.razon_social} - {self.moneda_monto}'
 
     @property
     def porcentaje_fondo_monto(self):
