@@ -1,18 +1,18 @@
 """Cliente factories."""
 
-# Django
-from django.utils import timezone
-
 # Fake
+import factory
+from django.utils import timezone
 from factory import Faker, SubFactory
 from factory.django import DjangoModelFactory
 from faker import Faker as fake
 
 # Sistemita
-from sistemita.core.constants import MONEDAS
+from sistemita.core.constants import MONEDAS, TIPOS_FACTURA
 from sistemita.core.models import (
     Cliente,
     Distrito,
+    Factura,
     FacturaCategoria,
     Localidad,
     OrdenCompra,
@@ -87,7 +87,7 @@ class FacturaClienteCategoriaFactoryData:
 
 
 class OrdenCompraFactory(DjangoModelFactory):
-    """Fabrica de datos del modelo orden compra de clientes."""
+    """Fabrica de instancias del modelo orden compra de clientes."""
 
     class Meta:
         """Factory settings."""
@@ -95,7 +95,7 @@ class OrdenCompraFactory(DjangoModelFactory):
         model = OrdenCompra
 
     cliente = SubFactory(ClienteFactory)
-    fecha = Faker('date')
+    fecha = Faker('date_this_month')
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
     monto = Faker('pydecimal', max_value=10000000, positive=True)
 
@@ -113,3 +113,35 @@ class OrdenCompraFactoryData:
     def build(self):
         """Devuelve un diccionario con datos."""
         return self.data
+
+
+class FacturaClienteFactory(DjangoModelFactory):
+    """Fabrica de instancias del modelo de facturas de clientes."""
+
+    class Meta:
+        """Factory settings."""
+
+        model = Factura
+
+    fecha = Faker('date_this_month')
+    numero = Faker('random_number', digits=10)
+    tipo = Faker('random_element', elements=[row[0] for row in TIPOS_FACTURA])
+    categoria = SubFactory(FacturaClienteCategoriaFactory)
+
+    cliente = SubFactory(ClienteFactory)
+
+    detalle = Faker('text', max_nb_chars=50)
+    moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
+    neto = Faker('pydecimal', max_value=10000, positive=True, right_digits=2)
+    iva = Faker('random_number', digits=2)
+    total = factory.LazyAttribute(lambda o: round(o.neto + (o.iva * o.neto / 100), 2))
+    cobrado = Faker('pybool')
+
+    porcentaje_fondo = Faker('random_number', digits=2)
+
+    @factory.post_generation
+    def archivos(self, create, extracted, **kwargs):
+        """Asigna archivos a la factory."""
+        if not create or not extracted:
+            return
+        self.archivos.add(*extracted)
