@@ -136,6 +136,11 @@ class Command(BaseCommand):
                     'content_type': ContentType.objects.get(model='factura'),
                 },
                 {
+                    'name': 'Puede editar moneda de Facturas A Clientes',
+                    'codename': 'change_moneda_factura',
+                    'content_type': ContentType.objects.get(model='factura'),
+                },
+                {
                     'name': 'Puede editar archivos de Facturas A Clientes',
                     'codename': 'change_archivos_factura',
                     'content_type': ContentType.objects.get(model='factura'),

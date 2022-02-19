@@ -17,9 +17,11 @@ from sistemita.core.models.cliente import (
     OrdenCompra,
 )
 from sistemita.core.models.entidad import Distrito, Localidad
+from sistemita.core.utils.commons import get_porcentaje_agregado
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_PERMISSION_ERROR,
+    MESSAGE_TOTAL_INVALID,
     MESSAGE_TOTAL_ZERO,
 )
 from sistemita.expense.models import Fondo
@@ -125,8 +127,6 @@ class ClienteForm(forms.ModelForm):
 class FacturaForm(forms.ModelForm):
     """Formuarlio de Facturación a cliente."""
 
-    neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
-
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""
         self.user = kwargs.pop('user')
@@ -138,8 +138,9 @@ class FacturaForm(forms.ModelForm):
         # Permisos
         if not self.user.has_perm('core.change_nro_factura'):
             self.fields['numero'].widget.attrs['readonly'] = True
-        if not self.user.has_perm('core.change_neto_factura'):
+        if not self.user.has_perm('core.change_moneda_factura'):
             self.fields['moneda'].widget.attrs['readonly'] = True
+        if not self.user.has_perm('core.change_neto_factura'):
             self.fields['neto'].widget.attrs['readonly'] = True
         if not self.user.has_perm('core.change_iva_factura'):
             self.fields['iva'].widget.attrs['readonly'] = True
@@ -172,6 +173,7 @@ class FacturaForm(forms.ModelForm):
             ),
         )
 
+    neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
     archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
     class Meta:
@@ -206,7 +208,7 @@ class FacturaForm(forms.ModelForm):
     def clean_moneda(self):
         """Verifica si el usuario tiene permisos para editar el campo."""
         moneda = self.cleaned_data['moneda']
-        if not self.user.has_perm('core.change_neto_factura'):
+        if not self.user.has_perm('core.change_moneda_factura'):
             if self.instance.moneda != moneda:
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
         return moneda
@@ -229,16 +231,24 @@ class FacturaForm(forms.ModelForm):
 
     def clean_total(self):
         """Verifica si el usuario tiene permisos para editar el campo."""
-        total = self.cleaned_data['total']
 
+        total = self.cleaned_data.get('total', None)
+        neto = self.cleaned_data.get('neto', None)
+        iva = self.cleaned_data.get('iva', None)
+
+        # Verifico que el total calculado no haya sido modificado
         if not self.user.has_perm('core.change_total_factura'):
-            # Verifico que el total calculado no haya sido modificado
             neto = float(self.instance.neto)
-            total_calculado = neto + (self.instance.iva / 100) * neto
+            total_calculado = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
             if total_calculado != float(total):
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+
         if total == 0:
             raise forms.ValidationError(MESSAGE_TOTAL_ZERO)
+
+        if total and neto and iva:
+            if total != get_porcentaje_agregado(amount=neto, percentage=iva):
+                raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
 
         return total
 
@@ -263,6 +273,7 @@ class FacturaForm(forms.ModelForm):
                 monto=instance.porcentaje_fondo_monto,
                 monto_disponible=instance.porcentaje_fondo_monto,
                 disponible=instance.cobrado,
+                moneda=instance.moneda,
             )
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)

@@ -18,6 +18,8 @@ from sistemita.core.models import (
     OrdenCompra,
     Provincia,
 )
+from sistemita.core.tests.factories import ArchivoFactory
+from sistemita.core.utils.commons import get_porcentaje_agregado
 from sistemita.utils.tests import generate_dict_factory
 
 fake = fake()
@@ -134,10 +136,13 @@ class FacturaClienteFactory(DjangoModelFactory):
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
     neto = Faker('pydecimal', max_value=10000, positive=True, right_digits=2)
     iva = Faker('random_number', digits=2)
-    total = factory.LazyAttribute(lambda o: round(o.neto + (o.iva * o.neto / 100), 2))
+    total = factory.LazyAttribute(lambda o: get_porcentaje_agregado(amount=o.neto, percentage=o.iva))
     cobrado = Faker('pybool')
 
     porcentaje_fondo = Faker('random_number', digits=2)
+    monto_imputado = factory.LazyAttribute(
+        lambda o: get_porcentaje_agregado(amount=o.total, percentage=o.porcentaje_fondo)
+    )
 
     @factory.post_generation
     def archivos(self, create, extracted, **kwargs):
@@ -145,3 +150,22 @@ class FacturaClienteFactory(DjangoModelFactory):
         if not create or not extracted:
             return
         self.archivos.add(*extracted)
+
+
+class FacturaClienteFactoryData:
+    """Creación de datos para el modelo de factura de clientes."""
+
+    def __init__(self):
+        FacturaClienteDictFactory = generate_dict_factory(FacturaClienteFactory)
+        cliente = ClienteFactory.create()
+        categoria = FacturaClienteCategoriaFactory.create()
+        archivo = ArchivoFactory.build()
+        self.data = FacturaClienteDictFactory()
+        self.data.update({'cliente': cliente.pk})
+        self.data.update({'categoria': categoria.pk})
+        self.data.update({'archivos': archivo.documento.file})
+        self.data.update({'monto_imputado': 0.0})
+
+    def build(self):
+        """Devuelve un diccionario con datos."""
+        return self.data
