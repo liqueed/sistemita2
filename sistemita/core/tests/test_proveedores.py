@@ -167,6 +167,7 @@ class ProveedorCreateViewTest(BaseTestCase):
     def test_cuit_unique(self):
         """Verifica si el cuit ya está registrado."""
         form = ProveedorForm(data=self.data)
+        form.is_valid()
         form.save()
         proveedor_2 = ProveedorFactoryData().build()
         proveedor_2['cuit'] = self.data.get('cuit')
@@ -181,6 +182,7 @@ class ProveedorCreateViewTest(BaseTestCase):
     def test_correo_unique(self):
         """Verifica si el email ya está registrado."""
         form = ProveedorForm(data=self.data)
+        form.is_valid()
         form.save()
         proveedor_2 = ProveedorFactoryData().build()
         proveedor_2['correo'] = self.data.get('correo')

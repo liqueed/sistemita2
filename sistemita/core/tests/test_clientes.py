@@ -34,9 +34,6 @@ class ClienteModelTest(BaseTestCase):
 class ClienteListViewTest(BaseTestCase):
     """Test sobre vista de listado."""
 
-    def setUp(self):
-        self.instance = ClienteFactory.create()
-
     def test_list_with_superuser(self):
         """Verifica que el usuario admin puede acceder al listado."""
         self.create_superuser()
@@ -70,10 +67,11 @@ class ClienteListViewTest(BaseTestCase):
 
     def test_length_in_template(self):
         """Verifica cantidad de instancias en el template listado."""
+        instance = ClienteFactory.create()
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/cliente/')
-        self.assertQuerysetEqual(response.context['object_list'], [self.instance], transform=lambda x: x)
+        self.assertQuerysetEqual(response.context['object_list'], [instance], transform=lambda x: x)
 
     def test_last_created_in_template(self):
         """Verifica cantidad de instancias creadas en la semana."""
@@ -81,6 +79,13 @@ class ClienteListViewTest(BaseTestCase):
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/cliente/')
         self.assertEqual(response.context['last_created'], Cliente.objects.count())
+
+    def test_list_empty(self):
+        """Verifica un listado vacío cuando no hay instancias."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get('/factura/')
+        self.assertContains(response, 'Sin resultados')
 
 
 class ClienteCreateViewTest(BaseTestCase):

@@ -1,5 +1,7 @@
 """Módulo de Constantes."""
 
+from decimal import Decimal
+
 # No modificar el orden
 MONEDAS = (('P', '$'), ('D', 'USD'))
 
@@ -38,3 +40,5 @@ TIPOS_FACTURA_IMPORT = (
 )
 
 TIPOS_DOC_IMPORT = 'CUIT'
+
+ZERO_DECIMAL = Decimal(0)

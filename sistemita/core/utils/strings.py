@@ -26,6 +26,7 @@ _MESSAGE_SUCCESS_UPDATE = 'La {} ha sido modificada exitosamente.'
 _MESSAGE_SUCCESS_DELETE = 'La {} ha sido eliminada exitosamente.'
 
 MESSAGE_TOTAL_ZERO = 'El total no puede ser igual a 0.'
+MESSAGE_TOTAL_INVALID = 'El total ingresado no es el correcto.'
 MESSAGE_TIPO_FACTURA_INVALID = 'Tipo de factura inválida.'
 MESSAGE_TIPO_DOC_IMPORT_INVALID = 'Tipo de documento inválido.'
 MESSAGE_CUIT_INVALID = 'Número de CUIT inválido.'

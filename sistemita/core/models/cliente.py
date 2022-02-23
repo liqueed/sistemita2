@@ -72,7 +72,7 @@ class Factura(FacturaAbstract):
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
-        return '{} -{} - {} - {}'.format(self.fecha, self.numero, self.cliente.razon_social, self.moneda_monto)
+        return f'{self.fecha} - {self.numero} - {self.cliente.razon_social} - {self.moneda_monto}'
 
     @property
     def porcentaje_fondo_monto(self):
@@ -136,3 +136,12 @@ class FacturaImputada(TimeStampedModel, models.Model):
         ordering = ('fecha',)
         verbose_name = 'factura imputada'
         verbose_name_plural = 'facturas imputadas'
+
+    def __str__(self):
+        """Representación del modelo."""
+        return f'{self.fecha} | {self.cliente} | {self.total_factura}'
+
+    def save(self, *args, **kwargs):
+        """Valida que el total de la factura no sea negativo."""
+        self.total_factura = max(self.total_factura, 0.0)
+        return super().save(*args, **kwargs)

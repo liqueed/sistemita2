@@ -4,20 +4,18 @@
 from django.contrib.auth.models import Group
 
 # Fake
+from factory import Faker
 from factory.django import DjangoModelFactory
-from faker import Faker
 
 # Sistemita
 from sistemita.authorization.models import ContentType, Permission
-from sistemita.utils.tests import rand_range
-
-fake = Faker('es_ES')
+from sistemita.utils.tests import generate_dict_factory, rand_range
 
 
 class GroupFactory(DjangoModelFactory):
     """Fabrica de grupos."""
 
-    name = fake.name()
+    name = Faker('name')
 
     class Meta:
         """Factory settings."""
@@ -30,8 +28,6 @@ class GroupFactoryData:
     """UserFactoryData model."""
 
     def __init__(self):
-        limit = rand_range(1, 10)
-
         content_type_ids = [
             row
             for row in ContentType.objects.filter(
@@ -54,7 +50,7 @@ class GroupFactoryData:
                 ],
             ).values_list('pk', flat=True)
         ]
-
+        limit = rand_range(1, 10)
         permissions = [
             p
             for p in Permission.objects.filter(content_type_id__in=content_type_ids)
@@ -62,10 +58,9 @@ class GroupFactoryData:
             .values_list('pk', flat=True)
         ]
 
-        self.data = {
-            'name': fake.name(),
-            'permissions': permissions,
-        }
+        GroupFactoryDictData = generate_dict_factory(GroupFactory)
+        self.data = GroupFactoryDictData()
+        self.data.update({'permissions': permissions})
 
     def build(self):
         """Building data for forms."""

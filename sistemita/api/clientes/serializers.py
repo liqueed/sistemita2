@@ -75,7 +75,20 @@ class FacturaSerializer(serializers.ModelSerializer):
         """Configuraciones del serializer."""
 
         model = Factura
-        fields = ['id', 'fecha', 'numero', 'cliente', 'tipo', 'moneda', 'neto', 'iva', 'cobrado', 'total', 'archivos']
+        fields = [
+            'id',
+            'fecha',
+            'numero',
+            'cliente',
+            'tipo',
+            'moneda',
+            'neto',
+            'iva',
+            'cobrado',
+            'total',
+            'archivos',
+            'monto_imputado',
+        ]
 
 
 class FacturaBeforeImportSerializer(serializers.Serializer):
@@ -242,7 +255,7 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
             self.context['cliente'] = cliente
             return cliente
         except Cliente.DoesNotExist as not_exist:
-            raise serializers.ValidationError('Client does not exist.') from not_exist
+            raise serializers.ValidationError('El cliente no existe.') from not_exist
         return data
 
     def validate_facturas_list(self, data):
@@ -329,6 +342,8 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
         facturas = validated_data.get('facturas_list')
         nota_de_credito = instance.nota_de_credito
         total_nc = nota_de_credito.total
+        instance.monto_facturas = validated_data.get('monto_facturas')
+        instance.total_factura = validated_data.get('total_factura')
 
         for row in facturas:
             factura = row.get('factura')
@@ -394,7 +409,7 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
                 factura.save()
                 instance.facturas.remove(factura)
 
-        nota_de_credito.monto_imputado = nota_de_credito.total - total_nc
+        nota_de_credito.monto_imputado = (nota_de_credito.total + nota_de_credito.monto_imputado) - total_nc
         nota_de_credito.total = total_nc
         if nota_de_credito.total == 0:
             nota_de_credito.cobrado = True

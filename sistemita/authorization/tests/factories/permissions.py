@@ -1,14 +1,12 @@
 """Permissions factories."""
 
 # Fake
+from factory import Faker
 from factory.django import DjangoModelFactory
-from faker import Faker
 
 # Sistemita
 from sistemita.authorization.models import ContentType, Permission
-
-fake = Faker('es_ES')
-
+from sistemita.utils.tests import generate_dict_factory
 
 content_type = (
     ContentType.objects.filter(
@@ -44,9 +42,9 @@ class PermissionFactory(DjangoModelFactory):
         model = Permission
         django_get_or_create = ('content_type', 'codename')
 
-    name = fake.name()
+    name = Faker('name')
     content_type = content_type
-    codename = fake.name().replace(' ', '_').lower()
+    codename = Faker('bothify', text='???_????_????')
 
 
 class PermissionFactoryData:
@@ -54,11 +52,9 @@ class PermissionFactoryData:
 
     def __init__(self):
 
-        self.data = {
-            'name': fake.name(),
-            'content_type': content_type.pk,
-            'codename': fake.name().replace(' ', '_').lower(),
-        }
+        PermissionFactoryDictData = generate_dict_factory(PermissionFactory)
+        self.data = PermissionFactoryDictData()
+        self.data.update({'content_type': content_type.pk})
 
     def build(self):
         """Building data for forms."""
