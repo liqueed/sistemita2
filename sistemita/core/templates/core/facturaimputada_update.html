@@ -193,6 +193,7 @@
 $('#id_fecha').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
 
 var cliente; // global
+var nota_de_credito;
 
 // Carga datos
 $(document).ready(function() {
@@ -218,6 +219,7 @@ $(document).ready(function() {
 
 	// nota de credito
 	$.get(`/api/factura/${response.nota_de_credito.id}/`, function(response) {
+	    nota_de_credito = response;
 	    let moneda = response.moneda == 'P' ? '$' : 'USD';
 	    $(`#notadecredito .selector-notadecredito`).append(
 		new Option(`${response.fecha} - ${response.numero} - ${response.cliente.razon_social} - ${moneda} ${response.total}`, `${response.id}`, true, true)
@@ -248,8 +250,6 @@ $(document).ready(function() {
 
 		$('.wrapper-factura:last').after(cloneFactura);
 	    } else {
-		console.log(indexFactura);
-
 		// Defino data line para el elemento existente
 		$(`#facturaimputada_${indexFactura}`).attr('data-inline', `{"id": ${idFactura}, 'action': "update"}`);
 	    }
@@ -263,6 +263,7 @@ $(document).ready(function() {
 		$(`#facturaimputada_${indexFactura} .selector-factura`).attr('data-id', response.id);
 		$(`#facturaimputada_${indexFactura} .selector-factura`).attr('data-moneda', response.moneda);
 		$(`#facturaimputada_${indexFactura} .selector-factura`).attr('data-total', response.total);
+		$(`#facturaimputada_${indexFactura} .selector-factura`).attr('data-monto-imputado', response.monto_imputado);
 	    });
 
 	    $(`#facturaimputada_${indexFactura} .selector-factura`).select2({
@@ -296,11 +297,11 @@ $(document).ready(function() {
 		$(this).attr('data-id', factura.id);
 		$(this).attr('data-moneda', factura.moneda);
 		$(this).attr('data-total', factura.total);
-
+		$(this).attr('data-monto-imputado', factura.monto_imputado);
 		validateFacturas();
 		setMoneda();
 		setMontoFacturas();
-		setMontoNotaDeCredito();
+		restoreMontoNotaDeCredito();
 		setTotalFacturas();
 	    });
 
@@ -374,11 +375,11 @@ $('.add-factura').click(function(e){
 	$(this).attr('data-id', factura.id);
 	$(this).attr('data-moneda', factura.moneda);
 	$(this).attr('data-total', factura.total);
-
+	$(this).attr('data-monto-imputado', factura.monto_imputado);
 	validateFacturas();
 	setMoneda();
 	setMontoFacturas();
-	setMontoNotaDeCredito();
+	restoreMontoNotaDeCredito();
 	setTotalFacturas();
     });
 });
@@ -400,6 +401,7 @@ $('.close').click(function(){
     validateFacturas();
     setMoneda()
     setMontoFacturas();
+    restoreMontoNotaDeCredito();
     if ($('.alert-errors').children().length === 0) {
 	$('.alert-errors').addClass('d-none');
     }
@@ -566,7 +568,9 @@ function setMoneda(){
 function setMontoFacturas(){
     let totalFactura = 0;
     $('.selector-factura').each(function () {
-	totalFactura += parseFloat($(this).attr('data-total')).toFixed(2);
+	if($(this).closest('.wrapper-factura').not('.d-none').length){
+	    totalFactura += Number(parseFloat($(this).attr('data-total')).toFixed(2)) + Number(parseFloat($(this).attr('data-monto-imputado')).toFixed(2))
+	}
     });
     if ($('.alert-errors').children().length > 0) {
 	$('.input-monto-facturas').val('0.0');
@@ -595,6 +599,15 @@ function setTotalFacturas(){
     $('.input-total').val(parseFloat(totalFacturas).toFixed(2));
 }
 
+function restoreMontoNotaDeCredito(){
+    let totalNotaDeCredito = Number(parseFloat(nota_de_credito.total).toFixed(2)) + Number(parseFloat(nota_de_credito.monto_imputado).toFixed(2));
+    if ($('.alert-errors').children().length > 0) {
+	$('.input-monto-notadecredito').val('0.0');
+    } else {
+	$('.input-monto-notadecredito').val(parseFloat(totalNotaDeCredito).toFixed(2));
+    }
+
+}
 
 function displayInfoCliente(obj){
     if(obj !== ''){
