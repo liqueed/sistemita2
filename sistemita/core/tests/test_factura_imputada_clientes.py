@@ -4,8 +4,14 @@
 from django.core.management import call_command
 from faker import Faker
 
+from sistemita.core.constants import ZERO_DECIMAL
+
 # Sistemita
-from sistemita.core.tests.factories import FacturaImputadaClienteFactory
+from sistemita.core.models import Factura
+from sistemita.core.tests.factories import (
+    FacturaClienteFactory,
+    FacturaImputadaClienteFactory,
+)
 from sistemita.utils.tests import BaseTestCase, prevent_request_warnings
 
 fake = Faker('es_ES')
@@ -195,7 +201,11 @@ class FacturaImputadaClienteDeleteViewTest(BaseTestCase):
 
     def setUp(self):
         """Creación de instancia."""
-        self.instance = FacturaImputadaClienteFactory.create()
+        facturas = []
+        for _ in range(0, 2):
+            factura = FacturaClienteFactory.create(tipo='A', cobrado=False)
+            facturas.append(factura)
+        self.instance = FacturaImputadaClienteFactory.create(facturas=facturas)
 
     def test_delete_with_superuser(self):
         """Verifica que el usuario admin puede acceder a eliminar."""
@@ -245,14 +255,24 @@ class FacturaImputadaClienteDeleteViewTest(BaseTestCase):
 
     def test_detroy_restore_nota_de_credito(self):
         """Al eliminar una factura imputada la nota de crédito debe reestablecerse."""
-        # nota de credito / cobrado False
-        # nota de credito / valor restaurado
-        # nota de credito / monto imputado a 0
-        pass
+        self.create_user(['delete_facturaimputada'])
+        self.client.login(username='user', password='user12345')
+        nota_de_credito = Factura.objects.get(pk=self.instance.nota_de_credito.pk)
+        monto_nota_de_credito = nota_de_credito.total_sin_imputar
+        self.client.delete(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        nota_de_credito.refresh_from_db()
+        self.assertFalse(nota_de_credito.cobrado)
+        self.assertEqual(nota_de_credito.total, monto_nota_de_credito)
+        self.assertEqual(nota_de_credito.monto_imputado, ZERO_DECIMAL)
 
     def test_detroy_restore_facturas(self):
         """Al eliminar una factura imputada las facturas deben ser reestablecidas."""
-        # facturas se le suma el monto imputado
-        # Imputado a 0
-        # cobrado a False
-        pass
+        self.create_user(['delete_facturaimputada'])
+        self.client.login(username='user', password='user12345')
+        facturas = [Factura.objects.get(pk=factura.pk) for factura in self.instance.facturas.all()]
+        self.client.delete(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        for factura in facturas:
+            factura.refresh_from_db()
+            self.assertFalse(factura.cobrado)
+            self.assertEqual(factura.total, factura.total_sin_imputar)
+            self.assertEqual(factura.monto_imputado, ZERO_DECIMAL)

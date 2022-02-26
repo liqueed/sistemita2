@@ -22,7 +22,10 @@ from sistemita.core.models import (
     Provincia,
 )
 from sistemita.core.tests.factories import ArchivoFactory
-from sistemita.core.utils.commons import get_porcentaje_agregado
+from sistemita.core.utils.commons import (
+    get_porcentaje_agregado,
+    get_total_factura,
+)
 from sistemita.utils.tests import generate_dict_factory, rand_range
 
 fake = fake()
@@ -203,19 +206,23 @@ class FacturaImputadaClienteFactory(DjangoModelFactory):
         self.monto_facturas = 0
         self.total_factura = 0
 
+        total_nc = self.nota_de_credito.total
         for factura in self.facturas.all():
             self.monto_facturas += Decimal(factura.total)
             factura.moneda = self.moneda
             factura.cliente = self.cliente
-            if self.nota_de_credito.total > 0:
-                amount = self.nota_de_credito.total - factura.total
-                self.nota_de_credito.total = max(amount, ZERO_DECIMAL)
-                factura.total -= abs(amount)
-                factura.monto_imputado = abs(amount)
+            if total_nc > 0:
+                factura_total = get_total_factura(factura.total, total_nc)
+                factura.monto_imputado = factura.total if factura_total == 0 else total_nc
+                total_nc -= factura.total if total_nc > factura.total else total_nc
+                factura.total = factura_total
             factura.save()
 
+        self.nota_de_credito.monto_imputado = self.nota_de_credito.total - total_nc
+        self.nota_de_credito.total = total_nc
+        self.nota_de_credito.cobrado = not bool(self.nota_de_credito.total)
         self.nota_de_credito.save()
-        self.total_factura = max(self.monto_facturas - self.monto_nota_de_credito, ZERO_DECIMAL)
+        self.total_factura = get_total_factura(self.monto_facturas, self.monto_nota_de_credito)
 
 
 class FacturaImputadaClienteFactoryData:
@@ -239,11 +246,8 @@ class FacturaImputadaClienteFactoryData:
             facturas_id.append(factura.pk)
             facturas.append(factura)
             monto_facturas += factura.total
-            if nota_de_credito.total != 0:
-                nota_de_credito.total -= factura.total
-                nota_de_credito.monto_imputado += factura.total
 
-        total_factura = max(monto_facturas - nota_de_credito.total, ZERO_DECIMAL)
+        total_factura = get_total_factura(monto_facturas, nota_de_credito.total_sin_imputar)
         nota_de_credito.save()
         facturas_list = []
         for pk in facturas_id:

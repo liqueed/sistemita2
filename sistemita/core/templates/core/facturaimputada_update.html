@@ -402,6 +402,7 @@ $('.close').click(function(){
     setMoneda()
     setMontoFacturas();
     restoreMontoNotaDeCredito();
+    setTotalFacturas();
     if ($('.alert-errors').children().length === 0) {
 	$('.alert-errors').addClass('d-none');
     }
