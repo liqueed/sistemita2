@@ -167,6 +167,11 @@ class Command(BaseCommand):
                     'content_type': ContentType.objects.get(model='facturaproveedor'),
                 },
                 {
+                    'name': 'Puede editar moneda de Facturas A Proveedores',
+                    'codename': 'change_moneda_facturaproveedor',
+                    'content_type': ContentType.objects.get(model='facturaproveedor'),
+                },
+                {
                     'name': 'Puede editar archivos de Facturas A Proveedores',
                     'codename': 'change_archivos_facturaproveedor',
                     'content_type': ContentType.objects.get(model='facturaproveedor'),

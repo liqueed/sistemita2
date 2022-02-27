@@ -21,9 +21,11 @@ from sistemita.core.models.proveedor import (
 )
 
 # Utils
+from sistemita.core.utils.commons import get_porcentaje_agregado
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_PERMISSION_ERROR,
+    MESSAGE_TOTAL_INVALID,
     MESSAGE_TOTAL_ZERO,
 )
 
@@ -119,9 +121,6 @@ class ProveedorForm(forms.ModelForm):
 class FacturaProveedorForm(forms.ModelForm):
     """Formulario de factura de proveedor."""
 
-    factura = forms.ModelChoiceField(queryset=Factura.objects.all(), required=False)
-    neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
-
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""
         self.user = kwargs.pop('user')
@@ -133,8 +132,9 @@ class FacturaProveedorForm(forms.ModelForm):
         # Permisos
         if not self.user.has_perm('core.change_nro_facturaproveedor'):
             self.fields['numero'].widget.attrs['readonly'] = True
-        if not self.user.has_perm('core.change_neto_facturaproveedor'):
+        if not self.user.has_perm('core.change_moneda_facturaproveedor'):
             self.fields['moneda'].widget.attrs['readonly'] = True
+        if not self.user.has_perm('core.change_neto_facturaproveedor'):
             self.fields['neto'].widget.attrs['readonly'] = True
         if not self.user.has_perm('core.change_iva_facturaproveedor'):
             self.fields['iva'].widget.attrs['readonly'] = True
@@ -168,6 +168,8 @@ class FacturaProveedorForm(forms.ModelForm):
             ),
         )
 
+    neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
+    factura = forms.ModelChoiceField(queryset=Factura.objects.all(), required=False)
     archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
     class Meta:
@@ -224,16 +226,24 @@ class FacturaProveedorForm(forms.ModelForm):
 
     def clean_total(self):
         """Verifica si el usuario tiene permisos para editar el campo."""
-        total = self.cleaned_data['total']
+        total = self.cleaned_data.get('total', None)
+        neto = self.cleaned_data.get('neto', None)
+        iva = self.cleaned_data.get('iva', None)
 
+        # Verifico que el total calculado no haya sido modificado
         if not self.user.has_perm('core.change_total_facturaproveedor'):
-            # Verifico que el total calculado no haya sido modificado
             neto = float(self.instance.neto)
-            total_calculado = neto + (self.instance.iva / 100) * neto
+            total_calculado = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
             if total_calculado != float(total):
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+
         if total == 0:
             raise forms.ValidationError(MESSAGE_TOTAL_ZERO)
+
+        if total and neto and iva:
+            if total != get_porcentaje_agregado(amount=neto, percentage=iva):
+                raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
+
         return total
 
     def clean_archivos(self):

@@ -721,7 +721,7 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         facturas_validate = []
         total_nc = instance.nota_de_credito.total_sin_imputar
         _factura = (
-            instance.facturas.all().order_by('facturas_imputacion').last()
+            instance.facturas.all().order_by('facturas_imputacion').first()
         )  # en frontend no se puede eliminar la primera
 
         for factura in instance.facturas.all().order_by('facturas_imputacion'):
