@@ -98,9 +98,9 @@ class BaseTestCase(TestCase):
         user.save()
         return user
 
-    def create_user(self, permissions=[]):
+    def create_user(self, permissions=[], **kwargs):
         """Crea un usuario que puede tener permisos."""
-        user = User.objects.create(username='user')
+        user = User.objects.create(username='user', **kwargs)
         user.set_password('user12345')
 
         for row in permissions:
