@@ -23,7 +23,6 @@ fake = Faker('es_ES')
 
 def setUpModule():
     """Agrega permisos a utilizar por los test."""
-    call_command('permissions_translation', verbosity=0)
     call_command('add_permissions', verbosity=0)
 
 
@@ -46,9 +45,6 @@ class UserModelTest(BaseTestCase):
 
 class UserListViewTest(BaseTestCase):
     """Test sobre vista de listado."""
-
-    def setUp(self):
-        self.instance = UserFactory.create()
 
     def test_list_with_superuser(self):
         """Verifica que el usuario admin puede acceder al listado."""
@@ -85,13 +81,15 @@ class UserListViewTest(BaseTestCase):
         """Verifica cantidad de instancias en el template listado."""
         super_user = self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
+        instance = UserFactory.create()
         response = self.client.get('/usuario/')
-        self.assertQuerysetEqual(response.context['object_list'], [super_user, self.instance], transform=lambda x: x)
+        self.assertQuerysetEqual(response.context['object_list'], [super_user, instance], transform=lambda x: x)
 
     def test_last_created_in_template(self):
         """Verifica cantidad de instancias creadas en la semana."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
+        UserFactory.create()
         response = self.client.get('/usuario/')
         self.assertEqual(response.context['last_created'], User.objects.count())
 

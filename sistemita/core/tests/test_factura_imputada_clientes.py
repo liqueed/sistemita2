@@ -19,7 +19,6 @@ fake = Faker('es_ES')
 
 def setUpModule():
     """Agrega permisos a utilizar por los test."""
-    call_command('permissions_translation', verbosity=0)
     call_command('add_permissions', verbosity=0)
 
 

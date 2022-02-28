@@ -18,7 +18,6 @@ fake = Faker('es_ES')
 
 def setUpModule():
     """Agrega permisos a utilizar por los test."""
-    call_command('permissions_translation', verbosity=0)
     call_command('add_permissions', verbosity=0)
 
 
@@ -36,9 +35,6 @@ class MedioPagoModelTest(BaseTestCase):
 
 class MedioPagoListViewTest(BaseTestCase):
     """Test sobre vista de listado."""
-
-    def setUp(self):
-        self.instance = MedioPagoFactory.create()
 
     def test_list_with_superuser(self):
         """Verifica que el usuario admin puede acceder al listado de medios de pagos."""
@@ -73,18 +69,26 @@ class MedioPagoListViewTest(BaseTestCase):
 
     def test_length_in_template(self):
         """Verifica cantidad de medio de pago en el template listado."""
-        count = MedioPago.objects.count()
+        MedioPagoFactory.create()
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/mediopago/')
-        self.assertEqual(len(response.context['object_list']), count)
+        self.assertEqual(len(response.context['object_list']), MedioPago.objects.count())
 
     def test_last_created_in_template(self):
         """Verifica cantidad de instancias creadas en la semana."""
+        MedioPagoFactory.create()
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/mediopago/')
         self.assertEqual(response.context['last_created'], MedioPago.objects.count())
+
+    def test_list_empty(self):
+        """Verifica un listado vacío cuando no hay instancias."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get('/mediopago/')
+        self.assertContains(response, 'Sin resultados')
 
 
 class MedioPagoCreateViewTest(BaseTestCase):

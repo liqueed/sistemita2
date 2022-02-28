@@ -23,7 +23,6 @@ fake = Faker('es_ES')
 
 def setUpModule():
     """Agrega permisos a utilizar por los test."""
-    call_command('permissions_translation', verbosity=0)
     call_command('add_permissions', verbosity=0)
 
 
@@ -41,9 +40,6 @@ class ProveedorModelTest(BaseTestCase):
 
 class ProveedorListViewTest(BaseTestCase):
     """Test sobre vista de listado."""
-
-    def setUp(self):
-        self.instance = ProveedorFactory.create()
 
     def test_list_with_superuser(self):
         """Verifica que el usuario admin puede acceder al listado."""
@@ -80,15 +76,24 @@ class ProveedorListViewTest(BaseTestCase):
         """Verifica cantidad en el template listado."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
+        instance = ProveedorFactory.create()
         response = self.client.get('/proveedor/')
-        self.assertQuerysetEqual(response.context['object_list'], [self.instance], transform=lambda x: x)
+        self.assertQuerysetEqual(response.context['object_list'], [instance], transform=lambda x: x)
 
     def test_last_created_in_template(self):
         """Verifica cantidad de instancias creadas en la semana."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
+        ProveedorFactory.create()
         response = self.client.get('/proveedor/')
         self.assertEqual(response.context['last_created'], Proveedor.objects.count())
+
+    def test_list_empty(self):
+        """Verifica un listado vacío cuando no hay instancias."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get('/ordencompra/')
+        self.assertContains(response, 'Sin resultados')
 
 
 class ProveedorCreateViewTest(BaseTestCase):
