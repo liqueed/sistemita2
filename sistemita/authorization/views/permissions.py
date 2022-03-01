@@ -3,9 +3,9 @@
 # Django
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.auth.models import Permission
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
@@ -13,6 +13,7 @@ from django.views.generic.edit import CreateView, UpdateView
 
 # Forms
 from sistemita.authorization.forms.permissions import PermissionForm
+from sistemita.authorization.models import Permission
 from sistemita.core.utils.strings import (
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
@@ -33,27 +34,29 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
     def get_queryset(self):
         """Devuelve los resultados de la búsqueda realizada por el usuario."""
         queryset = Permission.objects.filter(
-            content_type__app_label__in=['accounting', 'auth', 'authorization', 'core', 'expense'],
-            content_type__model__in=[
-                'archivo',
-                'cliente',
-                'factura',
-                'facturaimputada',
-                'facturacategoria',
-                'ordencompra',
-                'cobranza',
-                'proveedor',
-                'facturaproveedor',
-                'facturaproveedorcategoria',
-                'facturaproveedorimputada',
-                'pago',
-                'mediopago',
-                'permission',
-                'user',
-                'group',
-                'fondo',
-                'costo',
-            ],
+            Q(content_type__app_label__in=['accounting', 'auth', 'authorization', 'core', 'expense'])
+            | Q(
+                content_type__model__in=[
+                    'archivo',
+                    'cliente',
+                    'factura',
+                    'facturaimputada',
+                    'facturacategoria',
+                    'ordencompra',
+                    'cobranza',
+                    'proveedor',
+                    'facturaproveedor',
+                    'facturaproveedorcategoria',
+                    'facturaproveedorimputada',
+                    'pago',
+                    'mediopago',
+                    'permission',
+                    'user',
+                    'group',
+                    'fondo',
+                    'costo',
+                ]
+            )
         ).order_by('content_type__model', 'name')
 
         search = self.request.GET.get('search', None)

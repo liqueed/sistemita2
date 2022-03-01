@@ -16,6 +16,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django_filters.views import FilterView
 
 # Sistemita
+from sistemita.core.models import Factura
 from sistemita.core.utils.export import export_excel
 from sistemita.core.utils.strings import (
     MESSAGE_403,
@@ -82,6 +83,21 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         context['fondo_peso'] = round(fondo_peso, 2)
 
         return context
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class FondoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
+    """Vista que muestra el detalle de un Fondo."""
+
+    model = Factura
+    permission_required = 'expense.view_fondo'
+    raise_exception = True
+    template_name = 'expense/fondo_detail.html'
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

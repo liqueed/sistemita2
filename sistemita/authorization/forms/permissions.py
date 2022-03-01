@@ -7,6 +7,7 @@ from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
 
 # Django
 from django import forms
+from django.db.models import Q
 
 # Models
 from sistemita.authorization.models import ContentType, Permission
@@ -35,23 +36,29 @@ class PermissionForm(forms.ModelForm):
 
     content_type = forms.ModelChoiceField(
         queryset=ContentType.objects.filter(
-            app_label__in=['accounting', 'auth', 'authorization', 'core', 'expense'],
-            model__in=[
-                'archivo',
-                'cliente',
-                'factura',
-                'ordencompra',
-                'cobranza',
-                'proveedor',
-                'facturaproveedor',
-                'pago',
-                'mediopago',
-                'permission',
-                'user',
-                'group',
-                'fondo',
-                'costo',
-            ],
+            Q(app_label__in=['accounting', 'auth', 'authorization', 'core', 'expense'])
+            | Q(
+                model__in=[
+                    'archivo',
+                    'cliente',
+                    'factura',
+                    'facturaimputada',
+                    'facturacategoria',
+                    'ordencompra',
+                    'cobranza',
+                    'proveedor',
+                    'facturaproveedor',
+                    'facturaproveedorcategoria',
+                    'facturaproveedorimputada',
+                    'pago',
+                    'mediopago',
+                    'permission',
+                    'user',
+                    'group',
+                    'fondo',
+                    'costo',
+                ]
+            )
         ).order_by('model'),
         label='Modulo',
     )

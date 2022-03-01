@@ -57,6 +57,10 @@ class Costo(TimeStampedModel):
         """Retorna la moneda y el monto."""
         return f'{self.get_moneda_display()} {self.monto}'
 
+    def __str__(self):
+        """Devuelve una represetación legible del modelo."""
+        return f'{self.fecha} | {self.monto}'
+
     class Meta:
         """Configuraciones del modelo."""
 
