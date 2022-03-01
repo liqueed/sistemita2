@@ -129,6 +129,8 @@ class FacturaProveedorForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
 
+        self.fields['monto_imputado'].widget.attrs['readonly'] = True
+
         # Permisos
         if not self.user.has_perm('core.change_nro_facturaproveedor'):
             self.fields['numero'].widget.attrs['readonly'] = True
@@ -162,6 +164,7 @@ class FacturaProveedorForm(forms.ModelForm):
                 Div(Div('cobrado', css_class='col-2'), css_class='row'),
                 Div(Div('archivos', template='components/input_files.html'), css_class='row'),
                 Div(css_id='adjuntos', css_class='row'),
+                Div(Div('monto_imputado', css_class='col-2'), css_class='row'),
             ),
             FormActions(
                 Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
@@ -189,6 +192,7 @@ class FacturaProveedorForm(forms.ModelForm):
             'total',
             'cobrado',
             'archivos',
+            'monto_imputado',
             'categoria',
         )
 

@@ -433,8 +433,8 @@ $('#submit-id-submit').click(function(e){
 	'facturas_list': facturas,
 	'nota_de_credito_id': notaDeCredito,
 	'moneda': moneda,
-	'monto_facturas': parseFloat(montoFacturas),
-	'monto_nota_de_credito': parseFloat(montoNotaDeCredito),
+	'monto_facturas': parseFloat(montoFacturas).toFixed(2),
+	'monto_nota_de_credito': parseFloat(montoNotaDeCredito).toFixed(2),
 	'total_factura': parseFloat(total),
     }
 

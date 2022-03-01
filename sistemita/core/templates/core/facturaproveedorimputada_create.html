@@ -433,7 +433,7 @@ $('#submit-id-submit').click(function(e){
 	'facturas_list': facturas,
 	'nota_de_credito_id': notaDeCredito,
 	'moneda': moneda,
-	'monto_facturas': parseFloat(montoFacturas),
+	'monto_facturas': parseFloat(montoFacturas).toFixed(2),
 	'monto_nota_de_credito': parseFloat(montoNotaDeCredito).toFixed(2),
 	'total_factura': parseFloat(total),
     }
@@ -565,7 +565,7 @@ function setMoneda(){
 function setMontoFacturas(){
     let totalFactura = 0;
     $('.selector-factura').each(function () {
-	totalFactura += parseFloat($(this).attr('data-total')).toFixed(2);
+	totalFactura += Number(parseFloat($(this).attr('data-total')).toFixed(2));
     });
     if ($('.alert-errors').children().length > 0) {
 	$('.input-monto-facturas').val('0.0');

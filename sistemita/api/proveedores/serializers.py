@@ -26,6 +26,7 @@ from sistemita.core.models.proveedor import (
     FacturaProveedorImputada,
     Proveedor,
 )
+from sistemita.core.utils.commons import get_total_factura
 from sistemita.core.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_MONEDA_INVALID,
@@ -77,7 +78,21 @@ class FacturaProveedorSerializer(serializers.ModelSerializer):
         """Configuraciones del serializer."""
 
         model = FacturaProveedor
-        fields = ['id', 'fecha', 'numero', 'proveedor', 'tipo', 'iva', 'neto', 'cobrado', 'moneda', 'total', 'archivos']
+        fields = [
+            'id',
+            'fecha',
+            'numero',
+            'proveedor',
+            'tipo',
+            'iva',
+            'neto',
+            'cobrado',
+            'moneda',
+            'total',
+            'archivos',
+            'monto_imputado',
+            'total_sin_imputar',
+        ]
 
 
 class FacturaProveedorBeforeImportSerializer(serializers.Serializer):
@@ -237,6 +252,13 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id', 'proveedor', 'facturas', 'nota_de_credito')
 
+    def to_representation(self, instance):
+        """Modifica el orden de las facturas imputadas."""
+        rep = super().to_representation(instance)
+        facturas = instance.facturas.all().order_by('facturas_imputacion')
+        rep['facturas'] = FacturaProveedorSerializer(facturas, many=True).data
+        return rep
+
     def validate_proveedor_id(self, data):
         """Valida datos de proveedor."""
         try:
@@ -244,18 +266,23 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
             self.context['proveedor'] = proveedor
             return proveedor
         except Proveedor.DoesNotExist as not_exist:
-            raise serializers.ValidationError('Proveedor does not exist.') from not_exist
+            raise serializers.ValidationError('El proveedor no existe.') from not_exist
         return data
 
     def validate_facturas_list(self, data):
-        """Valida que las facturas sean de la misma moneda y que no haya dos facturas repetidas."""
+        """
+        Valida que las facturas sean de la misma moneda.
+        Valida que las facturas sean del mismo proveedor.
+        Valida que no haya dos facturas repetidas.
+        """
         facturas = []
         monedas = []
         pks = []
 
         for row in data:
             try:
-                factura = FacturaProveedor.objects.get(pk=row.get('factura'))
+                proveedor = self.context.get('proveedor', None)
+                factura = FacturaProveedor.objects.get(pk=row.get('factura'), proveedor=proveedor)
                 facturas.append({'factura': factura, 'action': row.get('action')})
             except FacturaProveedor.DoesNotExist:
                 raise serializers.ValidationError('La factura no existe.')
@@ -282,6 +309,37 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('La factura no existe.') from not_exist
         return data
 
+    def validate(self, attrs):
+        """
+        Valida el monto de facturas.
+        Valida el monto de nota de credito.
+        Valida el total de factura.
+        """
+        total_factura = 0
+        monto_facturas = 0
+
+        for row in attrs.get('facturas_list'):
+            if 'add' in row.get('action'):
+                monto_facturas += row.get('factura').total_sin_imputar
+
+            if 'update' in row.get('action'):
+                monto_facturas += row.get('factura').total_sin_imputar
+
+        # Valida el monto de facturas
+        if attrs.get('monto_facturas') != monto_facturas:
+            raise serializers.ValidationError({'monto_facturas': 'El monto de facturas no es correcto.'})
+
+        # Validación del total de nota de credito
+        if attrs.get('monto_nota_de_credito') != attrs.get('nota_de_credito_id').total_sin_imputar:
+            raise serializers.ValidationError({'monto_nota_de_credito': 'El monto de nota de crédito no es correcto.'})
+
+        # Valida el total factura
+        total_factura = get_total_factura(monto_facturas, attrs.get('nota_de_credito_id').total_sin_imputar)
+        if attrs.get('total_factura') != total_factura:
+            raise serializers.ValidationError({'total_factura': 'El total de factura no es correcto.'})
+
+        return attrs
+
     def create(self, validated_data):
 
         validated_data['proveedor'] = validated_data.pop('proveedor_id')
@@ -300,27 +358,16 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
             # Imputando costos
             if total_nc == 0:
                 break
-            if total_nc == factura.total:
-                factura.monto_imputado = total_nc
-                total_nc -= factura.total
-                factura.cobrado = True
-                factura.total = 0
-            elif total_nc > factura.total:
-                total_nc -= factura.total
-                factura.monto_imputado = factura.total
-                factura.cobrado = True
-                factura.total = 0
-            elif total_nc < factura.total:
-                factura.monto_imputado = total_nc
-                factura.total -= total_nc
-                total_nc = 0
-
+            factura_total = get_total_factura(factura.total, total_nc)
+            factura.monto_imputado = factura.total if factura_total == 0 else total_nc
+            total_nc -= factura.total if total_nc > factura.total else total_nc
+            factura.total = factura_total
+            factura.cobrado = not bool(factura.total)
             factura.save()
 
         nota_de_credito.monto_imputado = nota_de_credito.total - total_nc
         nota_de_credito.total = total_nc
-        if nota_de_credito.total == 0:
-            nota_de_credito.cobrado = True
+        nota_de_credito.cobrado = not bool(nota_de_credito.total)
         nota_de_credito.save()
 
         instance.save()
@@ -331,6 +378,8 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
         facturas = validated_data.get('facturas_list')
         nota_de_credito = instance.nota_de_credito
         total_nc = nota_de_credito.total
+        instance.monto_facturas = validated_data.get('monto_facturas')
+        instance.total_factura = validated_data.get('total_factura')
 
         for row in facturas:
             factura = row.get('factura')
@@ -339,32 +388,24 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
                 instance.facturas.add(factura)
                 if total_nc == 0:
                     break
-                if total_nc == factura.total:
-                    factura.monto_imputado = total_nc
-                    total_nc -= factura.total
-                    factura.cobrado = True
-                    factura.total = 0
-                elif total_nc > factura.total:
-                    total_nc -= factura.total
-                    factura.monto_imputado = factura.total
-                    factura.cobrado = True
-                    factura.total = 0
-                elif total_nc < factura.total:
-                    factura.monto_imputado = total_nc
-                    factura.total -= total_nc
-                    total_nc = 0
+                factura_total = get_total_factura(factura.total, total_nc)
+                factura.monto_imputado = factura.total if factura_total == 0 else total_nc
+                total_nc -= factura.total if total_nc > factura.total else total_nc
+                factura.total = factura_total
+                factura.cobrado = not bool(factura.total)
                 factura.save()
             elif 'update' in action:
                 replace_pk = json.loads(action.replace("'", "\""))['id']
                 # Verifico si no son facturas iguales
                 if factura.pk != replace_pk:
-                    # Restablece los valores de la factura remplaza
+                    # Restablece los valores de la nota de credito
                     factura_repleace = FacturaProveedor.objects.get(pk=replace_pk)
                     nota_de_credito.total += factura_repleace.monto_imputado
                     nota_de_credito.monto_imputado -= factura_repleace.monto_imputado
                     nota_de_credito.save()
                     total_nc = nota_de_credito.total
 
+                    # Restablece los valores de la factura a remplazar
                     factura_repleace.total += factura_repleace.monto_imputado
                     factura_repleace.monto_imputado = 0
                     factura_repleace.cobrado = False
@@ -373,20 +414,11 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
 
                     # Imputa a la nueva factura
                     instance.facturas.add(factura)
-                    if total_nc == factura.total:
-                        factura.monto_imputado = total_nc
-                        total_nc -= factura.total
-                        factura.cobrado = True
-                        factura.total = 0
-                    elif total_nc > factura.total:
-                        total_nc -= factura.total
-                        factura.monto_imputado = factura.total
-                        factura.cobrado = True
-                        factura.total = 0
-                    elif total_nc < factura.total:
-                        factura.monto_imputado = total_nc
-                        factura.total -= total_nc
-                        total_nc = 0
+                    factura_total = get_total_factura(factura.total, total_nc)
+                    factura.monto_imputado = factura.total if factura_total == 0 else total_nc
+                    total_nc -= factura.total if total_nc > factura.total else total_nc
+                    factura.total = factura_total
+                    factura.cobrado = not bool(factura.total)
                     factura.save()
             elif 'delete' in action:
                 total_nc += factura.monto_imputado
@@ -396,10 +428,9 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
                 factura.save()
                 instance.facturas.remove(factura)
 
-        nota_de_credito.monto_imputado = nota_de_credito.total - total_nc
+        nota_de_credito.monto_imputado = (nota_de_credito.total + nota_de_credito.monto_imputado) - total_nc
         nota_de_credito.total = total_nc
-        if nota_de_credito.total == 0:
-            nota_de_credito.cobrado = True
+        nota_de_credito.cobrado = not bool(nota_de_credito.total)
         nota_de_credito.save()
 
         instance.save()

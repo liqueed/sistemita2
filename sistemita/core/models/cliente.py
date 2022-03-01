@@ -133,7 +133,7 @@ class FacturaImputada(TimeStampedModel, models.Model):
     class Meta:
         """Configuraciones del modelo."""
 
-        ordering = ('fecha',)
+        ordering = ('-fecha',)
         verbose_name = 'factura imputada'
         verbose_name_plural = 'facturas imputadas'
 
