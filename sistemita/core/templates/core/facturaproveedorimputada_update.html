@@ -601,7 +601,7 @@ function setTotalFacturas(){
 }
 
 function restoreMontoNotaDeCredito(){
-    let totalNotaDeCredito = Number(parseFloat(nota_de_credito.total_sin_imputar).toFixed(2)) + Number(parseFloat(nota_de_credito.monto_imputado).toFixed(2));
+    let totalNotaDeCredito = Number(parseFloat(nota_de_credito.total_sin_imputar).toFixed(2));
     if ($('.alert-errors').children().length > 0) {
 	$('.input-monto-notadecredito').val('0.0');
     } else {
