@@ -5,6 +5,13 @@ from decimal import Decimal
 from sistemita.core.constants import ZERO_DECIMAL
 
 
+def get_porcentaje(total, percentage):
+    """
+    Devuelve un monto que corresponde al porcentaje de un total.
+    """
+    return round(float(total) * percentage / 100, 2)
+
+
 def get_porcentaje_agregado(amount, percentage):
     """
     Recibe un monto, le suma porcentaje y devuelve un total.

@@ -38,7 +38,7 @@ class Fondo(TimeStampedModel):
         """Configuraciones del modelo."""
 
         db_table = 'expense_fondos'
-        ordering = ('creado',)
+        ordering = ('-factura__fecha',)
         verbose_name = 'fondo'
         verbose_name_plural = 'fondos'
 

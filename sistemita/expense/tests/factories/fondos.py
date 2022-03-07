@@ -2,12 +2,12 @@
 
 # Fake
 import factory
-from factory import Faker, SubFactory
+from factory import SubFactory
 from factory.django import DjangoModelFactory
 
 # Sistemita
-from sistemita.core.constants import MONEDAS
 from sistemita.core.tests.factories import FacturaClienteFactory
+from sistemita.core.utils.commons import get_porcentaje
 from sistemita.expense.models import Fondo
 from sistemita.utils.tests import generate_dict_factory
 
@@ -21,13 +21,13 @@ class FondoFactory(DjangoModelFactory):
         model = Fondo
 
     factura = SubFactory(FacturaClienteFactory)
-    moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
-    monto = Faker('pydecimal', max_value=10000, positive=True, right_digits=2)
-    monto_disponible = factory.LazyAttribute(lambda o: o.monto)
-    disponible = Faker('pybool')
+    moneda = factory.LazyAttribute(lambda o: o.factura.moneda)
+    monto = factory.LazyAttribute(lambda o: get_porcentaje(o.factura.total, o.factura.porcentaje_fondo))
+    monto_disponible = factory.LazyAttribute(lambda o: get_porcentaje(o.factura.total, o.factura.porcentaje_fondo))
+    disponible = True
 
 
-class FonodoFactoryData:
+class FondoFactoryData:
     """ClienteFactoryData model."""
 
     def __init__(self):

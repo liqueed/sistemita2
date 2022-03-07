@@ -277,8 +277,7 @@ class FacturaForm(forms.ModelForm):
             )
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
-            instance = Factura.objects.get(pk=instance.pk)
-            instance.factura_fondo.update(
+            instance.factura_fondo.update_or_create(
                 moneda=instance.moneda,
                 monto=instance.porcentaje_fondo_monto,
                 monto_disponible=instance.porcentaje_fondo_monto,
