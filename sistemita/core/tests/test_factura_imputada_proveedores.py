@@ -1,4 +1,4 @@
-"""Factura imputada cliente test."""
+"""Factura imputada proveedor test."""
 
 # Django
 from django.core.management import call_command
@@ -7,10 +7,10 @@ from faker import Faker
 from sistemita.core.constants import ZERO_DECIMAL
 
 # Sistemita
-from sistemita.core.models import Factura
+from sistemita.core.models import FacturaProveedor
 from sistemita.core.tests.factories import (
-    FacturaClienteFactory,
-    FacturaImputadaClienteFactory,
+    FacturaImputadaProveedorFactory,
+    FacturaProveedorFactory,
 )
 from sistemita.utils.tests import BaseTestCase, prevent_request_warnings
 
@@ -22,65 +22,65 @@ def setUpModule():
     call_command('add_permissions', verbosity=0)
 
 
-class FacturaImputadaClienteModelTest(BaseTestCase):
+class FacturaImputadaProveedorModelTest(BaseTestCase):
     """Test sobre el modelo."""
 
     def setUp(self):
-        self.instance = FacturaImputadaClienteFactory.build()
+        self.instance = FacturaImputadaProveedorFactory.build()
 
     def test_string_representation(self):
         """Representación legible del modelo."""
         factura = self.instance
-        self.assertEqual(str(factura), f'{factura.fecha} | {factura.cliente} | {factura.total_factura}')
+        self.assertEqual(str(factura), f'{factura.fecha} | {factura.proveedor} | {factura.total_factura}')
 
 
-class FacturaImputadaClienteListViewTest(BaseTestCase):
+class FacturaImputadaProveedorListViewTest(BaseTestCase):
     """Test sobre vista de listado."""
 
     def test_list_with_superuser(self):
         """Verifica que el usuario admin puede acceder al listado."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get('/facturaimputada/')
+        response = self.client.get('/facturaproveedorimputada/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_list.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_list.html')
 
     def test_list_with_user_in_group(self):
         """Verifica que el usuario con permisos puede acceder al listado."""
-        self.create_user(['list_facturaimputada'])
+        self.create_user(['list_facturaproveedorimputada'])
         self.client.login(username='user', password='user12345')
-        response = self.client.get('/facturaimputada/')
+        response = self.client.get('/facturaproveedorimputada/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_list.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_list.html')
 
     @prevent_request_warnings
     def test_list_user_no_permissions(self):
         """Verifica que el usuario sin permisos no pueda acceder al listado."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.get('/facturaimputada/')
+        response = self.client.get('/facturaproveedorimputada/')
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, template_name='403.html')
 
     def test_list_with_anonymous(self):
         """Verifica que redirige al login al usuario sin acceso intenta listar."""
-        response = self.client.get('/facturaimputada/')
+        response = self.client.get('/facturaproveedorimputada/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
 
     def test_length_in_template(self):
         """Verifica cantidad de instancias en el template listado."""
-        instance = FacturaImputadaClienteFactory.create()
+        instance = FacturaImputadaProveedorFactory.create()
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get('/facturaimputada/')
+        response = self.client.get('/facturaproveedorimputada/')
         self.assertQuerysetEqual(response.context['object_list'], [instance], transform=lambda x: x)
 
     def test_list_empty(self):
         """Verifica un listado vacío cuando no hay instancias."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get('/facturaimputada/')
+        response = self.client.get('/facturaproveedorimputada/')
         self.assertContains(response, 'Sin resultados')
 
 
@@ -91,30 +91,30 @@ class FacturaImputadaClienteCreateViewTest(BaseTestCase):
         """Verifica que el usuario admin puede acceder a crear."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get('/facturaimputada/agregar/')
+        response = self.client.get('/facturaproveedorimputada/agregar/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_create.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_create.html')
 
     def test_add_with_user_in_group(self):
         """Verifica que el usuario con permisos puede acceder a agregar."""
-        self.create_user(['add_facturaimputada'])
+        self.create_user(['add_facturaproveedorimputada'])
         self.client.login(username='user', password='user12345')
-        response = self.client.get('/facturaimputada/agregar/')
+        response = self.client.get('/facturaproveedorimputada/agregar/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_create.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_create.html')
 
     @prevent_request_warnings
     def test_add_with_user_no_permissions(self):
         """Verifica que el usuario sin permisos no pueda acceder a crear."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.get('/facturaimputada/agregar/')
+        response = self.client.get('/facturaproveedorimputada/agregar/')
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, template_name='403.html')
 
     def test_add_with_user_anonymous(self):
         """Verifica que redirige al login al usuario sin acceso intenta crear."""
-        response = self.client.get('/facturaimputada/agregar/')
+        response = self.client.get('/facturaproveedorimputada/agregar/')
         self.assertEqual(response.status_code, 302)
 
 
@@ -122,36 +122,36 @@ class FacturaImputadaClienteDetailViewTest(BaseTestCase):
     """Test sobre la vista de detalle."""
 
     def setUp(self):
-        self.instance = FacturaImputadaClienteFactory.create()
+        self.instance = FacturaImputadaProveedorFactory.create()
 
     def test_detail_with_superuser(self):
         """Verifica que el usuario admin puede acceder a detallar."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_detail.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_detail.html')
 
     def test_detail_with_user_in_group(self):
         """Verifica que el usuario con permisos puede acceder a agregar."""
-        self.create_user(['view_facturaimputada'])
+        self.create_user(['view_facturaproveedorimputada'])
         self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_detail.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_detail.html')
 
     @prevent_request_warnings
     def test_detail_with_user_no_permissions(self):
         """Verifica que el usuario sin permisos no pueda acceder a detallar."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/')
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, template_name='403.html')
 
     def test_detail_with_user_anonymous(self):
         """Verifica que redirige al login al usuario sin acceso intenta detallar."""
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
 
@@ -161,36 +161,36 @@ class FacturaImputadaClienteUpdateViewTest(BaseTestCase):
 
     def setUp(self):
         """Creación de instancia."""
-        self.instance = FacturaImputadaClienteFactory.create()
+        self.instance = FacturaImputadaProveedorFactory.create()
 
     def test_update_with_superuser(self):
         """Verifica que el usuario admin puede acceder a editar."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/editar/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/editar/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_update.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_update.html')
 
     def test_update_with_user_in_group(self):
         """Verifica que el usuario con permisos puede acceder a editar."""
-        self.create_user(['change_facturaimputada'])
+        self.create_user(['change_facturaproveedorimputada'])
         self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/editar/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/editar/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_update.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_update.html')
 
     @prevent_request_warnings
     def test_update_with_user_no_permissions(self):
         """Verifica que el usuario sin permisos no pueda acceder a editar."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/editar/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/editar/')
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, template_name='403.html')
 
     def test_update_with_user_anonymous(self):
         """Verifica que redirige al login al usuario sin acceso intenta editar."""
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/editar/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/editar/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
 
@@ -202,38 +202,38 @@ class FacturaImputadaClienteDeleteViewTest(BaseTestCase):
         """Creación de instancia."""
         facturas = []
         for _ in range(0, 2):
-            factura = FacturaClienteFactory.create(tipo='A', cobrado=False)
+            factura = FacturaProveedorFactory.create(tipo='A', cobrado=False)
             facturas.append(factura)
-        self.instance = FacturaImputadaClienteFactory.create(facturas=facturas)
+        self.instance = FacturaImputadaProveedorFactory.create(facturas=facturas)
 
     def test_delete_with_superuser(self):
         """Verifica que el usuario admin puede acceder a eliminar."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/eliminar/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_confirm_delete.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_confirm_delete.html')
 
     def test_delete_with_user_in_group(self):
         """Verifica que el usuario con permisos puede acceder a eliminar."""
-        self.create_user(['delete_facturaimputada'])
+        self.create_user(['delete_facturaproveedorimputada'])
         self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/eliminar/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, template_name='core/facturaimputada_confirm_delete.html')
+        self.assertTemplateUsed(response, template_name='core/facturaproveedorimputada_confirm_delete.html')
 
     @prevent_request_warnings
     def test_delete_with_user_no_permissions(self):
         """Verifica que el usuario sin permisos no pueda acceder a eliminar."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/eliminar/')
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, template_name='403.html')
 
     def test_delete_with_user_anonymous(self):
         """Verifica que redirige al login al usuario sin acceso intenta eliminar."""
-        response = self.client.get(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        response = self.client.get(f'/facturaproveedorimputada/{self.instance.pk}/eliminar/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
 
@@ -242,23 +242,23 @@ class FacturaImputadaClienteDeleteViewTest(BaseTestCase):
         """Verifica que el usuario sin permisos no pueda acceder a eliminar."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.delete(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        response = self.client.delete(f'/facturaproveedorimputada/{self.instance.pk}/eliminar/')
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, template_name='403.html')
 
     def test_detroy_with_user_anonymous(self):
         """Verifica que redirige al login al usuario sin acceso intenta eliminar."""
-        response = self.client.delete(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        response = self.client.delete(f'/facturaproveedorimputada/{self.instance.pk}/eliminar/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
 
     def test_detroy_restore_nota_de_credito(self):
         """Al eliminar una factura imputada la nota de crédito debe reestablecerse."""
-        self.create_user(['delete_facturaimputada'])
+        self.create_user(['delete_facturaproveedorimputada'])
         self.client.login(username='user', password='user12345')
-        nota_de_credito = Factura.objects.get(pk=self.instance.nota_de_credito.pk)
+        nota_de_credito = FacturaProveedor.objects.get(pk=self.instance.nota_de_credito.pk)
         monto_nota_de_credito = nota_de_credito.total_sin_imputar
-        self.client.delete(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        self.client.delete(f'/facturaproveedorimputada/{self.instance.pk}/eliminar/')
         nota_de_credito.refresh_from_db()
         self.assertFalse(nota_de_credito.cobrado)
         self.assertEqual(nota_de_credito.total, monto_nota_de_credito)
@@ -266,10 +266,10 @@ class FacturaImputadaClienteDeleteViewTest(BaseTestCase):
 
     def test_detroy_restore_facturas(self):
         """Al eliminar una factura imputada las facturas deben ser reestablecidas."""
-        self.create_user(['delete_facturaimputada'])
+        self.create_user(['delete_facturaproveedorimputada'])
         self.client.login(username='user', password='user12345')
-        facturas = [Factura.objects.get(pk=factura.pk) for factura in self.instance.facturas.all()]
-        self.client.delete(f'/facturaimputada/{self.instance.pk}/eliminar/')
+        facturas = [FacturaProveedor.objects.get(pk=factura.pk) for factura in self.instance.facturas.all()]
+        self.client.delete(f'/facturaproveedorimputada/{self.instance.pk}/eliminar/')
         for factura in facturas:
             factura.refresh_from_db()
             self.assertFalse(factura.cobrado)

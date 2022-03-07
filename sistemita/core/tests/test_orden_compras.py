@@ -22,7 +22,6 @@ fake = Faker('es_ES')
 
 def setUpModule():
     """Agrega permisos a utilizar por los test."""
-    call_command('permissions_translation', verbosity=0)
     call_command('add_permissions', verbosity=0)
 
 
@@ -40,9 +39,6 @@ class OrdenCompraModelTest(BaseTestCase):
 
 class OrdenCompraListViewTest(BaseTestCase):
     """Test sobre vista de listado."""
-
-    def setUp(self):
-        self.instance = OrdenCompraFactory.create()
 
     def test_list_with_superuser(self):
         """Verifica que el usuario admin puede acceder al listado de ordenes de compras."""
@@ -79,15 +75,24 @@ class OrdenCompraListViewTest(BaseTestCase):
         """Verifica cantidad de instancias en el template listado."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
+        instance = OrdenCompraFactory.create()
         response = self.client.get('/ordencompra/')
-        self.assertQuerysetEqual(response.context['object_list'], [self.instance], transform=lambda x: x)
+        self.assertQuerysetEqual(response.context['object_list'], [instance], transform=lambda x: x)
 
     def test_last_created_in_template(self):
         """Verifica cantidad de instancias creadas en la semana."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
+        OrdenCompraFactory.create()
         response = self.client.get('/ordencompra/')
         self.assertEqual(response.context['last_created'], OrdenCompra.objects.count())
+
+    def test_list_empty(self):
+        """Verifica un listado vacío cuando no hay instancias."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get('/ordencompra/')
+        self.assertContains(response, 'Sin resultados')
 
 
 class OrdenCompraCreateViewTest(BaseTestCase):

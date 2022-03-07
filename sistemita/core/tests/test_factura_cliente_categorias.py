@@ -18,7 +18,6 @@ fake = Faker('es_ES')
 
 def setUpModule():
     """Agrega permisos a utilizar por los test."""
-    call_command('permissions_translation', verbosity=0)
     call_command('add_permissions', verbosity=0)
 
 
@@ -36,9 +35,6 @@ class FacturaClienteCategoriaModelTest(BaseTestCase):
 
 class FacturaClienteCategoriaListViewTest(BaseTestCase):
     """Test sobre vista de listado."""
-
-    def setUp(self):
-        self.instance = FacturaClienteCategoriaFactory.create()
 
     def test_list_with_superuser(self):
         """Verifica que el usuario admin puede acceder al listado."""
@@ -73,17 +69,26 @@ class FacturaClienteCategoriaListViewTest(BaseTestCase):
 
     def test_length_in_template(self):
         """Verifica cantidad de categorías en el template listado."""
+        instance = FacturaClienteCategoriaFactory.create()
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/facturacategoria/')
-        self.assertQuerysetEqual(response.context['object_list'], [self.instance], transform=lambda x: x)
+        self.assertQuerysetEqual(response.context['object_list'], [instance], transform=lambda x: x)
 
     def test_last_created_in_template(self):
         """Verifica cantidad de instancias creadas en la semana."""
+        FacturaClienteCategoriaFactory.create()
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/facturacategoria/')
         self.assertEqual(response.context['last_created'], FacturaCategoria.objects.count())
+
+    def test_list_empty(self):
+        """Verifica un listado vacío cuando no hay instancias."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get('/facturacategoria/')
+        self.assertContains(response, 'Sin resultados')
 
 
 class FacturaClienteCategoriaCreateViewTest(BaseTestCase):

@@ -98,6 +98,16 @@ class Command(BaseCommand):
                     'codename': 'list_user',
                     'content_type': ContentType.objects.get(model='user'),
                 },
+                {
+                    'name': 'Puede listar Fondos',
+                    'codename': 'list_fondo',
+                    'content_type': ContentType.objects.get(model='fondo'),
+                },
+                {
+                    'name': 'Puede listar Costos',
+                    'codename': 'list_costo',
+                    'content_type': ContentType.objects.get(model='costo'),
+                },
                 # Reportes
                 {
                     'name': 'Puede ver reportes de Facturas A Clientes',
@@ -164,6 +174,11 @@ class Command(BaseCommand):
                 {
                     'name': 'Puede editar total de Facturas A Proveedores',
                     'codename': 'change_total_facturaproveedor',
+                    'content_type': ContentType.objects.get(model='facturaproveedor'),
+                },
+                {
+                    'name': 'Puede editar moneda de Facturas A Proveedores',
+                    'codename': 'change_moneda_facturaproveedor',
                     'content_type': ContentType.objects.get(model='facturaproveedor'),
                 },
                 {

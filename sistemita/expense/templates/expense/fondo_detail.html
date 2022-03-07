@@ -1,42 +1,45 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags commontags %}
-{% block title %}Detalle de facturación Nro. {{object.numero|default:"SN" }} - Proveedor: {{ object.proveedor.razon_social }} | Liqueed{% endblock %}
+{% block title %}Detalle de Fondo | Liqueed{% endblock %}
 {% block content %}
   <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
-      <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
-      {% if perms.core.list_facturaproveedor %}
-      <a href="{% url 'core:facturaproveedor-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
-	<i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
-      </a>
+      <h1 class="h3 text-gray-800">Factura de Fondo</h1>
+      {% if perms.core.list_factura %}
+	<a href="{% url 'core:factura-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	  <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
       {% endif %}
     </div>
-    {% include 'components/messages.html' %}
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-	<h6 class="m-0 font-weight-bold text-primary">Detalle de facturación Nro. {{ object.numero|default:"SN" }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
+	<h6 class="m-0 font-weight-bold text-primary">
+	  Detalle de fondo. Facturación Nro. {{ object.numero|default:"SN" }} - Cliente: {{ object.cliente.razon_social }}
+	</h6>
       </div>
       <div class="card-body">
 	<div class="table-responsive">
 	  <dl class="row">
-	    <dt class="col-sm-2">Fecha de pago</dt>
+	    <dt class="col-sm-2">Fecha</dt>
 	    <dd class="col-sm-10">{{ object.fecha }}</dd>
 	    <dt class="col-sm-2">Número de factura</dt>
 	    <dd class="col-sm-10">{% if object.numero %}{{ object.numero }}{% else %}-{% endif %}</dd>
 	    <dt class="col-sm-2">Tipo</dt>
 	    <dd class="col-sm-10">{{ object.get_tipo }}</dd>
-	    <dt class="col-sm-2">Proveedor</dt>
-	    <dd class="col-sm-10">{{ object.proveedor }}</dd>
-	    <dt class="col-sm-2">Factura de cliente</dt>
-	    <dd class="col-sm-10">
-	      {% if object.factura %}
-		{{ object.factura }}
-		<a class="btn btn-light btn-xs ml-1" target="_blank" href="{% url 'core:factura-detail' object.factura.pk %}"><i class="far fa-eye"></i></a>
-	      {% else %}
-		-
-	      {% endif %}
-	    </dd>
+	    <dt class="col-sm-2">Cliente</dt>
+	    <dd class="col-sm-10">{{ object.cliente }}</dd>
+	    <dt class="col-sm-2">Factura proveedores</dt>
+	    {% if object.facturaproveedor_set.all|length %}
+	      {% for item in object.facturaproveedor_set.all %}
+		{% if forloop.counter != 1  %}
+		  <dt class="col-sm-2"><dt>
+		{% endif %}
+		<dd class="col-sm-10">{{ item }} <a class="btn btn-light btn-xs" target="_blank" href="{% url 'core:facturaproveedor-detail' item.pk %}"><i class="far fa-eye"></i></a></dd>
+	      {% endfor %}
+	    {% else %}
+	      <dd class="col-sm-10">-</dd>
+	    {% endif %}
 	    <dt class="col-sm-2">Detalle</dt>
 	    <dd class="col-sm-10">{% if object.detalle %}{{ object.detalle }}{% else %}-{% endif %}</dd>
 	    <dt class="col-sm-2">Neto</dt>
@@ -47,7 +50,7 @@
 	    <dd class="col-sm-10">{{ object.monto_imputado }}</dd>
 	    <dt class="col-sm-2">Total</dt>
 	    <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.total }}</dd>
-	    <dt class="col-sm-2">Pagado</dt>
+	    <dt class="col-sm-2">Cobrado</dt>
 	    <dd class="col-sm-10">{% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}</dd>
 	    <dt class="col-sm-2">Archivos</dt>
 	    {% if object.archivos.all|length %}
@@ -58,14 +61,14 @@
 		<div class="col-7">
 		  <a class="btn btn-light btn-sm" target="_blank" href="{{ archivo.documento.url }}"><i class="far fa-eye"></i></a>
 		</div>
-	    <dt class="col-sm-2"></dt>
-	  {% endfor %}
-	{% else %}
-	  <dd class="col-sm-10">-</dd>
-	{% endif %}
+		<dt class="col-sm-2"></dt>
+	      {% endfor %}
+	    {% else %}
+	      <dd class="col-sm-10">-</dd>
+	    {% endif %}
 	  </dl>
-	  {% if perms.core.list_facturaproveedor %}
-	    <a href="{% url 'core:facturaproveedor-list' %}" class="btn btn-primary float-right">Volver</a>
+	  {% if perms.core.list_factura %}
+	    <a href="{% url 'core:factura-list' %}" class="btn btn-primary float-right">Volver</a>
 	  {% endif %}
 	</div>
       </div>

@@ -10,6 +10,7 @@ from sistemita.core.constants import MONEDAS
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.entidad import Distrito, Localidad, Provincia
 from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
+from sistemita.core.utils.commons import get_porcentaje
 
 
 class Cliente(TimeStampedModel, models.Model):
@@ -77,7 +78,7 @@ class Factura(FacturaAbstract):
     @property
     def porcentaje_fondo_monto(self):
         """Retorno el monto del porcentaje de fondo."""
-        return round(float(self.total) * self.porcentaje_fondo / 100, 2)
+        return get_porcentaje(self.total, self.porcentaje_fondo)
 
     @property
     def moneda_porcentaje_fondo_monto(self):
@@ -133,7 +134,7 @@ class FacturaImputada(TimeStampedModel, models.Model):
     class Meta:
         """Configuraciones del modelo."""
 
-        ordering = ('fecha',)
+        ordering = ('-fecha',)
         verbose_name = 'factura imputada'
         verbose_name_plural = 'facturas imputadas'
 

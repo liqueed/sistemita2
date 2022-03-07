@@ -8,22 +8,15 @@ from django import forms
 from django.db.models import Sum
 
 # Models
-from sistemita.expense.models import Costo, Fondo
+from sistemita.expense.models import Costo
 
 
 class CostoForm(forms.ModelForm):
     """Formulario del modelo Costo."""
 
-    monto = forms.DecimalField(required=True, min_value=1, decimal_places=2, max_digits=12, initial=0.0)
-
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
-        instance = kwargs.get('instance', None)
-        if not instance:
-            self.fields['fondo'].queryset = Fondo.objects.filter(disponible=True, monto_disponible__gt=0).order_by(
-                '-factura__fecha'
-            )
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -38,6 +31,8 @@ class CostoForm(forms.ModelForm):
                 Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
             ),
         )
+
+    monto = forms.DecimalField(required=True, min_value=1, decimal_places=2, max_digits=12, initial=0.0)
 
     class Meta:
         """Configuraciones del formulario."""
@@ -55,7 +50,10 @@ class CostoForm(forms.ModelForm):
         """Valida que el monto sea menor o igual al monto disponible del fondo."""
         data = super().clean()
         monto = data.get('monto')
-        fondo = data.get('fondo')
+        fondo = data.get('fondo', None)
+
+        if not fondo:
+            raise forms.ValidationError({'fondo': 'Campo requerido.'})
 
         if data.get('moneda') != data.get('fondo').factura.moneda:
             raise forms.ValidationError({'moneda': 'La moneda debe ser igual a la moneda de la factura.'})
@@ -70,7 +68,7 @@ class CostoForm(forms.ModelForm):
                 sum_costos = other_costos.aggregate(otros_costos=Sum('monto')).get('otros_costos')
                 # el monto ingresado es mayor
                 if monto > self.instance.monto:
-                    if (sum_costos + monto) > self.instance.fondo.monto:
+                    if float(sum_costos + monto) > self.instance.fondo.monto:
                         raise forms.ValidationError(
                             {'monto': 'La suma de costos para este fondo supera el monto del fondo.'}
                         )
@@ -101,25 +99,17 @@ class CostoForm(forms.ModelForm):
                 instance.fondo.save()
 
             # Caso: cambio el monto del costo
-            if instance.monto != self.instance.monto:
-                if self.instance.monto > instance.monto:
+            if instance.monto != monto:
+                diff = abs(instance.monto - monto)
+                if monto > instance.monto:
                     # el monto ingresado es mayor
-                    diff = self.instance.monto - instance.monto
                     instance.fondo.monto_disponible -= diff
-                    instance.fondo.save()
                 else:
-                    diff = instance.monto - self.instance.monto
                     instance.fondo.monto_disponible += diff
-                    instance.fondo.save()
-
             costo_qs.update(**data)
 
         # Disponibilidad
-        if instance.fondo.monto_disponible == 0:
-            instance.fondo.disponible = False
-        else:
-            instance.fondo.disponible = True
-
+        instance.fondo.disponible = bool(instance.fondo.monto_disponible)
         instance.fondo.save()
         instance.refresh_from_db()
 

@@ -38,7 +38,7 @@ class Fondo(TimeStampedModel):
         """Configuraciones del modelo."""
 
         db_table = 'expense_fondos'
-        ordering = ('creado',)
+        ordering = ('-factura__fecha',)
         verbose_name = 'fondo'
         verbose_name_plural = 'fondos'
 
@@ -56,6 +56,10 @@ class Costo(TimeStampedModel):
     def moneda_monto(self):
         """Retorna la moneda y el monto."""
         return f'{self.get_moneda_display()} {self.monto}'
+
+    def __str__(self):
+        """Devuelve una represetación legible del modelo."""
+        return f'{self.fecha} | {self.monto}'
 
     class Meta:
         """Configuraciones del modelo."""

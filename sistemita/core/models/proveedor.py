@@ -70,14 +70,14 @@ class FacturaProveedor(FacturaAbstract):
     )
     categoria = models.ForeignKey(FacturaProveedorCategoria, blank=True, null=True, on_delete=models.SET_NULL)
 
+    def __str__(self):
+        """Retorna una representación legible del modelo."""
+        return f'{self.fecha} - {self.numero} - {self.proveedor.razon_social} - {self.moneda_monto}'
+
     @property
     def moneda_monto(self):
         """Retorna el total con su moneda."""
         return f'{self.get_moneda_display()} {self.total}'
-
-    def __str__(self):
-        """Retorna una representación legible del modelo."""
-        return '{} - {} - {}'.format(self.fecha, self.proveedor, self.moneda_monto)
 
     class Meta:
         """Configuraciones del modelo."""
@@ -104,6 +104,15 @@ class FacturaProveedorImputada(TimeStampedModel, models.Model):
     class Meta:
         """Configuraciones del modelo."""
 
-        ordering = ('fecha',)
+        ordering = ('-fecha',)
         verbose_name = 'factura proveedor imputada'
         verbose_name_plural = 'facturas proveedor imputadas'
+
+    def __str__(self):
+        """Representación del modelo."""
+        return f'{self.fecha} | {self.proveedor} | {self.total_factura}'
+
+    def save(self, *args, **kwargs):
+        """Valida que el total de la factura no sea negativo."""
+        self.total_factura = max(self.total_factura, 0.0)
+        return super().save(*args, **kwargs)

@@ -402,6 +402,7 @@ $('.close').click(function(){
     setMoneda()
     setMontoFacturas();
     restoreMontoNotaDeCredito();
+    setTotalFacturas();
     if ($('.alert-errors').children().length === 0) {
 	$('.alert-errors').addClass('d-none');
     }
@@ -600,13 +601,12 @@ function setTotalFacturas(){
 }
 
 function restoreMontoNotaDeCredito(){
-    let totalNotaDeCredito = Number(parseFloat(nota_de_credito.total).toFixed(2)) + Number(parseFloat(nota_de_credito.monto_imputado).toFixed(2));
+    let totalNotaDeCredito = Number(parseFloat(nota_de_credito.total_sin_imputar).toFixed(2));
     if ($('.alert-errors').children().length > 0) {
 	$('.input-monto-notadecredito').val('0.0');
     } else {
 	$('.input-monto-notadecredito').val(parseFloat(totalNotaDeCredito).toFixed(2));
     }
-
 }
 
 function displayInfoCliente(obj){

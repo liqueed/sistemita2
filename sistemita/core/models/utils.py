@@ -50,6 +50,11 @@ class FacturaAbstract(TimeStampedModel, models.Model):
         tipos = dict(TIPOS_FACTURA)
         return tipos.get(tipo)
 
+    @property
+    def total_sin_imputar(self):
+        """Retorna el total y su moneda."""
+        return self.total + self.monto_imputado
+
     class Meta:
         """Configuraciones del modelo."""
 

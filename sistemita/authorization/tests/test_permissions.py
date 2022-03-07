@@ -17,7 +17,6 @@ fake = Faker('es_ES')
 
 def setUpModule():
     """Agrega permisos a utilizar por los test."""
-    call_command('permissions_translation', verbosity=0)
     call_command('add_permissions', verbosity=0)
 
 
@@ -35,9 +34,6 @@ class PermissionModelTest(BaseTestCase):
 
 class PermissionListViewTest(BaseTestCase):
     """Test sobre vista de listado."""
-
-    def setUp(self):
-        self.instance = PermissionFactory.create()
 
     def test_list_with_superuser(self):
         """Verifica que el usuario admin puede acceder al listado."""
@@ -75,7 +71,7 @@ class PermissionListViewTest(BaseTestCase):
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
         response = self.client.get('/permiso/')
-        self.assertEqual(len(response.context['object_list']), 10)
+        self.assertEqual(len(response.context['object_list']), 10)  # El total del paginado
 
 
 class PermissionCreateViewTest(BaseTestCase):

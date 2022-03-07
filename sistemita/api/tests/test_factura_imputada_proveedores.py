@@ -8,11 +8,11 @@ from rest_framework.test import APIClient
 
 # Sistemita
 from sistemita.core.constants import ZERO_DECIMAL
-from sistemita.core.models import Factura
+from sistemita.core.models import FacturaProveedor
 from sistemita.core.tests.factories import (
-    FacturaClienteFactory,
-    FacturaImputadaClienteFactory,
-    FacturaImputadaClienteFactoryData,
+    FacturaImputadaProveedorFactory,
+    FacturaImputadaProveedorFactoryData,
+    FacturaProveedorFactory,
 )
 from sistemita.core.utils.commons import get_total_factura
 from sistemita.utils.tests import (
@@ -27,8 +27,8 @@ def setUpModule():
     call_command('add_permissions', verbosity=0)
 
 
-class FacturaImputadaClienteListViewAPITestCase(BaseTestCase):
-    """Tests sobre la API de clientes."""
+class FacturaImputadaProveedorListViewAPITestCase(BaseTestCase):
+    """Tests sobre la API de proveedores."""
 
     def setUp(self):
         self.client = APIClient()
@@ -37,13 +37,13 @@ class FacturaImputadaClienteListViewAPITestCase(BaseTestCase):
         """Verifica que el usuario admin pueda listar."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get('/api/factura-imputada/')
+        response = self.client.get('/api/facturaproveedor-imputada/')
         self.assertEqual(response.status_code, 200)
 
     @prevent_request_warnings
     def test_list_with_anonymous(self):
         """Verifica que el usuario sin acceso no pueda listar."""
-        request = self.client.get('/api/factura-imputada/')
+        request = self.client.get('/api/facturaproveedor-imputada/')
         self.assertEqual(request.status_code, 403)
 
     def test_list_length(self):
@@ -51,8 +51,8 @@ class FacturaImputadaClienteListViewAPITestCase(BaseTestCase):
         self.create_user()
         self.client.login(username='user', password='user12345')
         limit = rand_range(1, 10)
-        FacturaImputadaClienteFactory.create_batch(limit)
-        response = self.client.get('/api/factura-imputada/')
+        FacturaImputadaProveedorFactory.create_batch(limit)
+        response = self.client.get('/api/facturaproveedor-imputada/')
         self.assertEqual(len(response.json()), limit)
         self.assertEqual(response.status_code, 200)
 
@@ -60,37 +60,37 @@ class FacturaImputadaClienteListViewAPITestCase(BaseTestCase):
         """Verifica que devuelva un listado vacío."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.get('/api/factura-imputada/')
+        response = self.client.get('/api/facturaproveedor-imputada/')
         self.assertEqual(len(response.json()), 0)
         self.assertEqual(response.status_code, 200)
 
 
-class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
+class FacturaImputadaProveedorCreateViewAPITestCase(BaseTestCase):
     """Tests sobre la vista de crear."""
 
     def setUp(self):
         self.client = APIClient()
-        self.data_create = FacturaImputadaClienteFactoryData().create()
+        self.data_create = FacturaImputadaProveedorFactoryData().create()
 
     def test_add_with_superuser(self):
         """Verifica que el usuario admin puede acceder a crear."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         self.assertEqual(response.status_code, 201)
 
     def test_add_with_user_authenticated(self):
         """Verifica que el usuario con permisos puede acceder a agregar."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         self.assertEqual(response.status_code, 201)
 
     @prevent_request_warnings
     def test_add_with_user_anonymous(self):
         """Verifica que redirige al login al usuario sin acceso intenta crear."""
-        response = self.client.get('/cliente/agregar/')
-        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/api/facturaproveedor-imputada/')
+        self.assertEqual(response.status_code, 403)
 
     @prevent_request_warnings
     def test_validate_id_cliente(self):
@@ -98,9 +98,9 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         self.create_user()
         self.client.login(username='user', password='user12345')
         data = self.data_create
-        data['cliente_id'] = self.data_create.get('cliente_id') + 1
-        response = self.client.post('/api/factura-imputada/', data, format='json')
-        self.assertHasErrorDetail(response.data.get('cliente_id'), 'El cliente no existe.')
+        data['proveedor_id'] = self.data_create.get('proveedor_id') + 1
+        response = self.client.post('/api/facturaproveedor-imputada/', data, format='json')
+        self.assertHasErrorDetail(response.data.get('proveedor_id'), 'El proveedor no existe.')
         self.assertEqual(response.status_code, 400)
 
     @prevent_request_warnings
@@ -110,7 +110,7 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         data = self.data_create
         data.get('facturas_list')[0]['factura'] = 0
-        response = self.client.post('/api/factura-imputada/', data, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', data, format='json')
         self.assertHasErrorDetail(response.data.get('facturas_list'), 'La factura no existe.')
         self.assertEqual(response.status_code, 400)
 
@@ -121,11 +121,11 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         data = self.data_create
         for row in data.get('facturas_list'):
-            factura = Factura.objects.get(pk=row.get('factura'))
+            factura = FacturaProveedor.objects.get(pk=row.get('factura'))
             new_moneda = 'P' if factura.moneda == 'D' else 'D'
-            Factura.objects.filter(pk=factura.pk).update(moneda=new_moneda)
+            FacturaProveedor.objects.filter(pk=factura.pk).update(moneda=new_moneda)
             break
-        response = self.client.post('/api/factura-imputada/', data, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', data, format='json')
         self.assertHasErrorDetail(response.data.get('facturas_list'), 'Las facturas deben ser de la misma monedas.')
         self.assertEqual(response.status_code, 400)
 
@@ -137,7 +137,7 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         data = self.data_create
         repeat = data.get('facturas_list')[0]
         data.get('facturas_list').append(repeat)
-        response = self.client.post('/api/factura-imputada/', data, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', data, format='json')
         self.assertHasErrorDetail(response.data.get('facturas_list'), 'Hay facturas repetidas.')
         self.assertEqual(response.status_code, 400)
 
@@ -148,7 +148,7 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         data = self.data_create
         data['nota_de_credito_id'] = 0
-        response = self.client.post('/api/factura-imputada/', data, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', data, format='json')
         self.assertHasErrorDetail(response.data.get('nota_de_credito_id'), 'La factura no existe.')
         self.assertEqual(response.status_code, 400)
 
@@ -158,8 +158,8 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         monto_facturas = 0
         for row in self.data_create.get('facturas_list'):
-            monto_facturas += Factura.objects.get(pk=row.get('factura')).total
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+            monto_facturas += FacturaProveedor.objects.get(pk=row.get('factura')).total
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         self.assertEqual(Decimal(response.data.get('monto_facturas')), monto_facturas)
         self.assertEqual(response.status_code, 201)
 
@@ -167,9 +167,9 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         """Valida que el tipo de factura de la nota de credito."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         nota_de_credito_id = response.data.get('nota_de_credito').get('id')
-        nota_de_credito = Factura.objects.get(pk=nota_de_credito_id)
+        nota_de_credito = FacturaProveedor.objects.get(pk=nota_de_credito_id)
         self.assertEqual(nota_de_credito.tipo, 'NC')
         self.assertEqual(response.status_code, 201)
 
@@ -177,8 +177,8 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         """Valida el monto de la nota de credito."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        nota_de_credito = Factura.objects.get(pk=self.data_create.get('nota_de_credito_id'))
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        nota_de_credito = FacturaProveedor.objects.get(pk=self.data_create.get('nota_de_credito_id'))
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         self.assertEqual(Decimal(response.data.get('monto_nota_de_credito')), nota_de_credito.total)
         self.assertEqual(response.status_code, 201)
 
@@ -188,10 +188,10 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         monto_facturas = 0
         for row in self.data_create.get('facturas_list'):
-            monto_facturas += Factura.objects.get(pk=row.get('factura')).total
-        nota_de_credito = Factura.objects.get(pk=self.data_create.get('nota_de_credito_id'))
+            monto_facturas += FacturaProveedor.objects.get(pk=row.get('factura')).total
+        nota_de_credito = FacturaProveedor.objects.get(pk=self.data_create.get('nota_de_credito_id'))
         total_factura = get_total_factura(monto_facturas, nota_de_credito.total_sin_imputar)
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         self.assertEqual(Decimal(response.data.get('total_factura')), total_factura)
         self.assertEqual(response.status_code, 201)
 
@@ -201,11 +201,11 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         monto_facturas = 0
         for row in self.data_create.get('facturas_list'):
-            monto_facturas += Factura.objects.get(pk=row.get('factura')).total
-        Factura.objects.filter(pk=self.data_create.get('nota_de_credito_id')).update(total=monto_facturas)
+            monto_facturas += FacturaProveedor.objects.get(pk=row.get('factura')).total
+        FacturaProveedor.objects.filter(pk=self.data_create.get('nota_de_credito_id')).update(total=monto_facturas)
         self.data_create['total_factura'] = 0
         self.data_create['monto_nota_de_credito'] = monto_facturas
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         self.assertEqual(Decimal(response.data.get('total_factura')), ZERO_DECIMAL)
         self.assertEqual(response.status_code, 201)
 
@@ -216,11 +216,11 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         """
         self.create_user()
         self.client.login(username='user', password='user12345')
-        nota_de_credito = Factura.objects.get(pk=self.data_create.get('nota_de_credito_id'))
+        nota_de_credito = FacturaProveedor.objects.get(pk=self.data_create.get('nota_de_credito_id'))
         monto_facturas = 0
         for row in self.data_create.get('facturas_list'):
-            monto_facturas += Factura.objects.filter(pk=row.get('factura')).first().total_sin_imputar
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+            monto_facturas += FacturaProveedor.objects.filter(pk=row.get('factura')).first().total_sin_imputar
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         nota_de_credito.refresh_from_db()
         self.assertEqual(nota_de_credito.cobrado, nota_de_credito.total_sin_imputar <= monto_facturas)
         self.assertEqual(response.status_code, 201)
@@ -229,12 +229,12 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         """Valida el monto descontado a la nota de credito sobre el monto total de facturas."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        nota_de_credito = Factura.objects.get(pk=self.data_create.get('nota_de_credito_id'))
+        nota_de_credito = FacturaProveedor.objects.get(pk=self.data_create.get('nota_de_credito_id'))
         monto_facturas = 0
         for row in self.data_create.get('facturas_list'):
-            monto_facturas += Factura.objects.filter(pk=row.get('factura')).first().total
+            monto_facturas += FacturaProveedor.objects.filter(pk=row.get('factura')).first().total
         monto_nota_de_credito = max(nota_de_credito.total - monto_facturas, 0)
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         nota_de_credito.refresh_from_db()
         self.assertEqual(nota_de_credito.total, monto_nota_de_credito)
         self.assertEqual(response.status_code, 201)
@@ -243,11 +243,11 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         """Valida el total de facturas luego de descontar la nota de credito."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        nota_de_credito = Factura.objects.get(pk=self.data_create.get('nota_de_credito_id'))
+        nota_de_credito = FacturaProveedor.objects.get(pk=self.data_create.get('nota_de_credito_id'))
         facturas = []
         total_nc = nota_de_credito.total
         for factura in self.data_create.get('facturas_list'):
-            item = Factura.objects.get(pk=factura.get('factura'))
+            item = FacturaProveedor.objects.get(pk=factura.get('factura'))
             factura_total = get_total_factura(item.total_sin_imputar, total_nc)
             factura_monto_imputado = item.total_sin_imputar if factura_total == 0 else total_nc
             total_nc -= item.total_sin_imputar if total_nc > item.total_sin_imputar else total_nc
@@ -260,11 +260,11 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
                 }
             )
 
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         nota_de_credito.refresh_from_db()
         results = 0
         for row in facturas:
-            results += Factura.objects.filter(
+            results += FacturaProveedor.objects.filter(
                 pk=row.get('id'),
                 cobrado=row.get('cobrado'),
                 monto_imputado=row.get('monto_imputado'),
@@ -277,12 +277,12 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         """Valida los datos de nota de credito luego de imputar facturas."""
         self.create_user()
         self.client.login(username='user', password='user12345')
-        nota_de_credito = Factura.objects.get(pk=self.data_create.get('nota_de_credito_id'))
+        nota_de_credito = FacturaProveedor.objects.get(pk=self.data_create.get('nota_de_credito_id'))
         total_nc = nota_de_credito.total
         for factura in self.data_create.get('facturas_list'):
-            item = Factura.objects.get(pk=factura.get('factura'))
+            item = FacturaProveedor.objects.get(pk=factura.get('factura'))
             total_nc -= item.total_sin_imputar if total_nc > item.total_sin_imputar else total_nc
-        response = self.client.post('/api/factura-imputada/', self.data_create, format='json')
+        response = self.client.post('/api/facturaproveedor-imputada/', self.data_create, format='json')
         nota_de_credito.refresh_from_db()
         self.assertEqual(nota_de_credito.total, total_nc)
         self.assertEqual(response.status_code, 201)
@@ -295,9 +295,9 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         self.client = APIClient()
         facturas = []
         for _ in range(0, 2):
-            factura = FacturaClienteFactory.create(tipo='A', cobrado=False)
+            factura = FacturaProveedorFactory.create(tipo='A', cobrado=False)
             facturas.append(factura)
-        self.instance = FacturaImputadaClienteFactory.create(facturas=facturas)
+        self.instance = FacturaImputadaProveedorFactory.create(facturas=facturas)
 
     def test_update_with_superuser(self):
         """Verifica que el usuario admin puede editar."""
@@ -305,16 +305,16 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         self.client.login(username='admin', password='admin123')  # login super user
         instance = self.instance
         facturas_list = []
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for f in instance.facturas.all():
             facturas_list.append({'factura': f.pk, 'action': '{"id": ' + str(f.pk) + ', \"action\": "update"}'})
         facturas_list.append({'factura': new_factura.pk, 'action': 'add'})  # Agrega un nueva factura
         monto_facturas = instance.monto_facturas + new_factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         self.assertEqual(response.status_code, 200)
 
     def test_update_with_user_authenticated(self):
@@ -323,16 +323,16 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         instance = self.instance
         facturas_list = []
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for f in instance.facturas.all():
             facturas_list.append({'factura': f.pk, 'action': '{"id": ' + str(f.pk) + ', \"action\": "update"}'})
         facturas_list.append({'factura': new_factura.pk, 'action': 'add'})  # Agrega un nueva factura
         monto_facturas = instance.monto_facturas + new_factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         self.assertEqual(response.status_code, 200)
 
     @prevent_request_warnings
@@ -340,16 +340,16 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         """Verifica que no pueda editar si no es un usuario autenticado."""
         instance = self.instance
         facturas_list = []
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for f in instance.facturas.all():
             facturas_list.append({'factura': f.pk, 'action': '{"id": ' + str(f.pk) + ', \"action\": "update"}'})
         facturas_list.append({'factura': new_factura.pk, 'action': 'add'})  # Agrega una nueva factura
         monto_facturas = instance.monto_facturas + new_factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         self.assertEqual(response.status_code, 403)
 
     def test_update_add_factura(self):
@@ -359,16 +359,16 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         instance = self.instance
         facturas_list = []
         amount_facturas = instance.facturas.count()
-        factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for f in instance.facturas.all():
             facturas_list.append({'factura': f.pk, 'action': '{"id": ' + str(f.pk) + ', \"action\": "update"}'})
         facturas_list.append({'factura': factura.pk, 'action': 'add'})  # Agrega una nueva factura
         monto_facturas = instance.monto_facturas + factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.facturas.count(), amount_facturas + 1)
         self.assertEqual(response.status_code, 200)
@@ -379,16 +379,16 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         instance = self.instance
         facturas_list = []
-        factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for f in instance.facturas.all():
             facturas_list.append({'factura': f.pk, 'action': '{"id": ' + str(f.pk) + ', \"action\": "update"}'})
         facturas_list.append({'factura': factura.pk, 'action': 'add'})  # Agrego una nueva factura
         monto_facturas = instance.monto_facturas + factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.monto_facturas, monto_facturas)
         self.assertEqual(response.status_code, 200)
@@ -400,16 +400,16 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         instance = self.instance
         facturas_list = []
         monto_nota_de_credito = instance.monto_nota_de_credito
-        factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for f in instance.facturas.all():
             facturas_list.append({'factura': f.pk, 'action': '{"id": ' + str(f.pk) + ', \"action\": "update"}'})
         facturas_list.append({'factura': factura.pk, 'action': 'add'})  # Agrego una nueva factura
         monto_facturas = instance.monto_facturas + factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.monto_nota_de_credito, monto_nota_de_credito)
         self.assertEqual(response.status_code, 200)
@@ -420,16 +420,16 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         instance = self.instance
         facturas_list = []
-        factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for f in instance.facturas.all():
             facturas_list.append({'factura': f.pk, 'action': '{"id": ' + str(f.pk) + ', \"action\": "update"}'})
         facturas_list.append({'factura': factura.pk, 'action': 'add'})  # Agrego una nueva factura
         monto_facturas = instance.monto_facturas + factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.total_factura, total_factura)
         self.assertEqual(response.status_code, 200)
@@ -442,8 +442,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         facturas_list = []
         facturas_validate = []
         total_nc = instance.nota_de_credito.total_sin_imputar
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for factura in instance.facturas.order_by('facturas_imputacion').all():
             factura_total = get_total_factura(factura.total_sin_imputar, total_nc)
@@ -461,9 +461,9 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         facturas_validate.append({'id': new_factura.pk, 'monto_imputado': factura_monto_imputado})
         monto_facturas = instance.monto_facturas + new_factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
 
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         for factura in instance.facturas.all().order_by('facturas_imputacion'):
             self.assertEqual(
@@ -479,8 +479,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         instance = self.instance
         facturas_list = []
         total_nc = instance.nota_de_credito.total_sin_imputar
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         for factura in instance.facturas.all():
             total_nc -= factura.total_sin_imputar if total_nc > factura.total_sin_imputar else total_nc
@@ -492,9 +492,9 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         total_nc -= new_factura.total_sin_imputar if total_nc > new_factura.total_sin_imputar else total_nc
         monto_facturas = instance.monto_facturas + new_factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
 
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.nota_de_credito.total, total_nc)
         self.assertEqual(response.status_code, 200)
@@ -505,8 +505,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         instance = self.instance
         facturas_list = []
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         factura = instance.facturas.all().order_by('?').first()
         for f in instance.facturas.all().exclude(pk=factura.pk):
@@ -516,8 +516,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         )  # Edita una factura
         monto_facturas = instance.monto_facturas - factura.total_sin_imputar + new_factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.monto_facturas, monto_facturas)
         self.assertEqual(response.status_code, 200)
@@ -528,8 +528,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         instance = self.instance
         facturas_list = []
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         _factura = instance.facturas.all().order_by('?').first()
         for f in instance.facturas.all().exclude(pk=_factura.pk):
@@ -542,8 +542,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         # Restablezco la nota de credito
         total_nota_de_credito = instance.nota_de_credito.total + instance.nota_de_credito.monto_imputado
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.monto_nota_de_credito, total_nota_de_credito)
         self.assertEqual(response.status_code, 200)
@@ -554,8 +554,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         self.client.login(username='user', password='user12345')
         instance = self.instance
         facturas_list = []
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         _factura = instance.facturas.all().order_by('?').first()
         for f in instance.facturas.all().exclude(pk=_factura.pk):
@@ -566,8 +566,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         )
         monto_facturas = instance.monto_facturas - _factura.total_sin_imputar + new_factura.total_sin_imputar
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.total_factura, total_factura)
         self.assertEqual(response.status_code, 200)
@@ -580,8 +580,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         facturas_list = []
         facturas_validate = []
         total_nc = instance.nota_de_credito.total_sin_imputar
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         _factura = instance.facturas.all().order_by('?').first()
 
@@ -606,8 +606,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         facturas_validate.append({'id': new_factura.pk, 'monto_imputado': factura_monto_imputado})
         monto_facturas = instance.monto_facturas - _factura.total_sin_imputar + new_factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
 
         for factura in instance.facturas.all().order_by('facturas_imputacion'):
@@ -624,8 +624,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         instance = self.instance
         facturas_list = []
         total_nc = instance.nota_de_credito.total_sin_imputar
-        new_factura = FacturaClienteFactory.create(
-            tipo='A', cobrado=False, moneda=instance.moneda, cliente=instance.cliente
+        new_factura = FacturaProveedorFactory.create(
+            tipo='A', cobrado=False, moneda=instance.moneda, proveedor=instance.proveedor
         )
         _factura = instance.facturas.all().order_by('?').first()  # factura a remplazar
         for factura in instance.facturas.all():
@@ -641,9 +641,9 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         total_nc -= new_factura.total_sin_imputar if total_nc > new_factura.total_sin_imputar else total_nc
         monto_facturas = instance.monto_facturas + new_factura.total
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
 
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.nota_de_credito.total, total_nc)
         self.assertEqual(response.status_code, 200)
@@ -663,8 +663,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         )
         monto_facturas = instance.monto_facturas - _factura.total_sin_imputar
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.monto_facturas, monto_facturas)
         self.assertEqual(response.status_code, 200)
@@ -685,8 +685,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         )
         monto_facturas = instance.monto_facturas - _factura.total_sin_imputar
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.monto_nota_de_credito, monto_nota_de_credito)
         self.assertEqual(response.status_code, 200)
@@ -706,8 +706,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
         )
         monto_facturas = instance.monto_facturas - _factura.total_sin_imputar
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         self.assertEqual(instance.total_factura, total_factura)
         self.assertEqual(response.status_code, 200)
@@ -741,8 +741,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
 
         monto_facturas = instance.monto_facturas - _factura.total_sin_imputar
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         for factura in instance.facturas.all().order_by('facturas_imputacion'):
             self.assertEqual(
@@ -780,8 +780,8 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
 
         monto_facturas = instance.monto_facturas - _factura.total_sin_imputar
         total_factura = get_total_factura(monto_facturas, instance.nota_de_credito.total_sin_imputar)
-        data = FacturaImputadaClienteFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
-        response = self.client.put(f'/api/factura-imputada/{self.instance.pk}/', data, format='json')
+        data = FacturaImputadaProveedorFactoryData().update(instance, facturas_list, monto_facturas, total_factura)
+        response = self.client.put(f'/api/facturaproveedor-imputada/{self.instance.pk}/', data, format='json')
         instance.refresh_from_db()
         total_nc += _factura.monto_imputado
         self.assertEqual(instance.nota_de_credito.total, total_nc)

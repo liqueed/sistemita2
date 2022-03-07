@@ -49,6 +49,7 @@
 	    <thead>
 	      <tr>
 		<th data-order="name" class="sortable">Nombre</th>
+		<th data-order="app_label" class="sortable">Módulo</th>
 		{% if perms.auth.change_permission or perms.auth.delete_permission %}
 		  <th></th>
 		{% endif %}
@@ -61,6 +62,9 @@
 		    <a {% if perms.auth.view_permission %}href="{% url 'authorization:permission-detail' object.pk %}"{% endif %}>
 		      {{ object.name }}
 		    </a>
+		  </td>
+		  <td>
+		      {{ object.content_type.app_label }}
 		  </td>
 		  {% if perms.auth.view_permission or perms.auth.change_permission or perms.auth.delete_permission %}
 		    <td class="text-center">
@@ -84,7 +88,7 @@
 		</tr>
 		{% empty %}
 		<tr>
-		  <td colspan="2">Sin resultados</td>
+		  <td colspan="3">Sin resultados</td>
 		</tr>
 	      {% endfor %}
 	    </tbody>

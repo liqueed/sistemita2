@@ -33,78 +33,6 @@
     </div>
     {% include 'components/messages.html' %}
 
-    <!-- Cards -->
-    {% if perms.core.view_reports_facturaproveedor %}
-      <div class="row">
-
-	<div class="col-xl-3 col-md-6 mb-4">
-	  <div class="card border-left-success shadow h-100 py-2">
-	    <div class="card-body" role="button">
-	      <div class="row no-gutters align-items-center">
-		<div class="col mr-2">
-		  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nuevas (semanal)</div>
-		  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_created }}</div>
-		</div>
-		<div class="col-auto">
-		  <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-		</div>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-
-	<div class="col-xl-3 col-md-6 mb-4">
-	  <div class="card border-left-warning shadow h-100 py-2">
-	    <div class="card-body">
-	      <div class="row no-gutters align-items-center">
-		<div class="col mr-2">
-		  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pendientes a pagar</div>
-		  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ debt_in_peso.id__count|add:debt_in_dollar.id__count }}</div>
-		</div>
-		<div class="col-auto">
-		  <i class="fas fa-comments fa-2x text-gray-300"></i>
-		</div>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-
-	<div class="col-xl-3 col-md-6 mb-4">
-	  <div class="card border-left-danger shadow h-100 py-2">
-	    <div class="card-body">
-	      <div class="row no-gutters align-items-center">
-		<div class="col mr-2">
-		  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total adeudado $</div>
-		  <div class="h5 mb-0 font-weight-bold text-gray-800">$ {{ debt_in_peso.total__sum|default_if_none:"0" }}</div>
-		</div>
-		<div class="col-auto">
-		  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-		</div>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-
-	<div class="col-xl-3 col-md-6 mb-4">
-	  <div class="card border-left-danger shadow h-100 py-2">
-	    <div class="card-body">
-	      <div class="row no-gutters align-items-center">
-		<div class="col mr-2">
-		  <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total adeudado U$D</div>
-		  <div class="h5 mb-0 font-weight-bold text-gray-800">U$D {{ debt_in_dollar.total__sum|default_if_none:"0" }}</div>
-		</div>
-		<div class="col-auto">
-		  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-		</div>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-
-      </div>
-    {% endif %}
-    <!-- End of Cards -->
-
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
       <div class="card-header py-3">
@@ -161,7 +89,7 @@
 		      {% if object.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
 		    </div>
 		  </td>
-		  <td>{{ object.factura }}</td>
+		  <td>{{ object.factura|default_if_none:"-" }}</td>
 		  {% if perms.core.view_facturaproveedor or perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor or perms.core.view_mis_facturasproveedor %}
 		    {% if not 'facturaproveedor-list-by-user' == request.resolver_match.url_name %}
 		      <td class="text-center">
