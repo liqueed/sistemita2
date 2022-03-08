@@ -66,6 +66,7 @@
 	      <tr>
 		<th data-order="factura__numero" class="sortable">Número</th>
 		<th data-order="factura__fecha" class="sortable">Fecha</th>
+		<th data-order="facura__tipo" class="sortable">Tipo</th>
 		<th data-order="facura__cliente" class="sortable">Cliente</th>
 		<th data-order="factura__total" class="sortable">Monto</th>
 		<th>Porcentaje</th>
@@ -84,6 +85,7 @@
 		    </a>
 		  </td>
 		  <td>{{ object.factura.fecha|date:"d-m-Y" }}</td>
+		  <td>{{ object.factura.tipo }}</td>
 		  <td>{{ object.factura.cliente.razon_social }}</td>
 		  <td><div class="float-right">{{ object.factura.moneda_monto }}</div></td>
 		  <td><div class="float-right">{{ object.factura.porcentaje_fondo }}</div></td>
