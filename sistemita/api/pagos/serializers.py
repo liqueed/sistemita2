@@ -27,6 +27,12 @@ class PagoFacturaPagoSerializer(serializers.ModelSerializer):
         fields = ('id', 'data', 'metodo', 'monto')
         read_only_fields = ('id',)
 
+    def validate(self, attrs):
+        """Valida que el metodo no sea nulo y hay un monto."""
+        if attrs.get('monto') and not attrs.get('metodo'):
+            raise serializers.ValidationError({'metodo': 'Este campo no puede ser nulo.'})
+        return attrs
+
 
 class PagoFacturaSerializer(serializers.ModelSerializer):
     """Factura pago Serializer.
@@ -102,7 +108,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
         try:
             proveedor = Proveedor.objects.get(cuit=attr)
         except Proveedor.DoesNotExist as not_exist:
-            raise serializers.ValidationError('Proveedor does not exist.') from not_exist
+            raise serializers.ValidationError('El proveedor no existe.') from not_exist
         return proveedor
 
     def validate_pago_facturas(self, data):
