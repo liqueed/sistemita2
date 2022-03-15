@@ -231,6 +231,23 @@ var cliente; // global
 $(document).ready(function() {
     let idCobranza = $('#cobranza').val();
 
+    // medios de pago
+    $.ajax({
+	url: '/api/mediopago/',
+	success: function (response) {
+	    var data = $.map(response, function (obj) {
+		obj.id = obj.id;
+		obj.text = obj.nombre
+		return obj;
+	    });
+	    $.each(data, function(key, value) {
+		$('.selector-metodo').append($("<option></option>")
+					     .attr("value", value['id'])
+					     .text(value['nombre']));
+	    });
+	}
+    });
+
     $.get(`/api/cobranza/${idCobranza}/`, function(response) {
 	cliente = response.cliente;
 	let cobranzaFacturas = response.cobranza_facturas
@@ -379,22 +396,6 @@ $(document).ready(function() {
 	alert('Se produjo un error, inténtalo nuevamente.')
     });
 
-    // metodos de pago
-    $.ajax({
-	url: '/api/mediopago/',
-	success: function (response) {
-	    var data = $.map(response, function (obj) {
-		obj.id = obj.id;
-		obj.text = obj.nombre
-		return obj;
-	    });
-	    $.each(data, function(key, value) {
-		$('.selector-metodo').append($("<option></option>")
-					     .attr("value", value['id'])
-					     .text(value['nombre']));
-	    });
-	}
-    });
 });
 
 

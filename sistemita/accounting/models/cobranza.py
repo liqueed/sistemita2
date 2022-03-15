@@ -26,6 +26,10 @@ class Cobranza(TimeStampedModel, models.Model):
         verbose_name = 'cobranza'
         verbose_name_plural = 'cobranzas'
 
+    def __str__(self):
+        """Representación legible del modelo."""
+        return f'{self.fecha} - {self.cliente} - {self.moneda} {self.total}'
+
 
 class CobranzaFactura(TimeStampedModel, models.Model):
     """Modelo Factura Cobranza.
@@ -48,6 +52,10 @@ class CobranzaFactura(TimeStampedModel, models.Model):
         verbose_name = 'factura cobranza'
         verbose_name_plural = 'facturas cobranza'
 
+    def __str__(self):
+        """Representación legible del modelo."""
+        return f'{self.factura.fecha} - {self.factura.cliente} - {self.factura.moneda_monto}'
+
 
 class CobranzaFacturaPago(models.Model):
     """Modelo de pago de facturas cobranza.
@@ -67,3 +75,7 @@ class CobranzaFacturaPago(models.Model):
         db_table = 'accounting_cliente_cobranza_factura_pago'
         verbose_name = 'pago factura cobranza'
         verbose_name_plural = 'pagos factura cobranza'
+
+    def __str__(self):
+        """Representación legible del modelo."""
+        return f'{self.metodo} - {self.cobranza_factura.cobranza.moneda} {self.monto}'

@@ -27,6 +27,10 @@ class Pago(TimeStampedModel, models.Model):
         verbose_name = 'pago'
         verbose_name_plural = 'pagos'
 
+    def __str__(self):
+        """Representación legible del modelo."""
+        return f'{self.fecha} - {self.proveedor} - {self.moneda} {self.total}'
+
 
 class PagoFactura(TimeStampedModel, models.Model):
     """Modelo Factura pago.
@@ -48,6 +52,10 @@ class PagoFactura(TimeStampedModel, models.Model):
         verbose_name = 'factura pago'
         verbose_name_plural = 'facturas pago'
 
+    def __str__(self):
+        """Representación legible del modelo."""
+        return f'{self.factura.fecha} - {self.factura.proveedor} - {self.factura.moneda_monto}'
+
 
 class PagoFacturaPago(models.Model):
     """Modelo de pago de facturas de pago.
@@ -68,3 +76,7 @@ class PagoFacturaPago(models.Model):
         db_table = 'accounting_proveedor_pago_factura_pago'
         verbose_name = 'pago factura pago'
         verbose_name_plural = 'pagos factura pago'
+
+    def __str__(self):
+        """Representación legible del modelo."""
+        return f'{self.metodo} - {self.pago_factura.factura.moneda} {self.monto}'
