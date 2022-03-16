@@ -228,6 +228,62 @@ class PagoCreateViewAPITestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
 
 
+class PagoRetrieveViewAPITestCase(BaseTestCase):
+    """Tests sobre el detalle de la API de pagos."""
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_retrieve_with_user_authenticated(self):
+        """Verifica que el usuario con permisos pueda acceder al detalle de una instancia."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        pago = PagoFactory.create()
+        response = self.client.get(f'/api/pago/{pago.pk}/')
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_warnings
+    def test_list_with_user_anonymous(self):
+        """Verifica que el usuario sin acceso no pueda acceder al detalle de una instancia."""
+        pago = PagoFactory.create()
+        request = self.client.get(f'/api/pago/{pago.pk}/')
+        self.assertEqual(request.status_code, 403)
+
+    def test_retrieve(self):
+        """Verifica los campos devueltos del detalle."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        pago = PagoFactory.create()
+        request = self.client.get(f'/api/pago/{pago.pk}/')
+        self.assertEqual(request.status_code, 200)
+
+    @prevent_request_warnings
+    def test_retrieve_not_found(self):
+        """Verifica los campos devueltos del detalle."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        random = rand_range(1, 100)
+        request = self.client.get(f'/api/pago/{random}/')
+        self.assertEqual(request.status_code, 404)
+
+    def test_retrieve_fields(self):
+        """Verifica los campos devueltos del detalle."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        pago = PagoFactory.create()
+        request = self.client.get(f'/api/pago/{pago.pk}/')
+        fields = [
+            'id',
+            'fecha',
+            'proveedor',
+            'moneda',
+            'total',
+            'pagado',
+            'pago_facturas',
+        ]
+        self.assertHasProps(request.json(), fields)
+
+
 class PagoUpdateViewAPITestCase(BaseTestCase):
     """Tests sobre la vista de actualizar."""
 

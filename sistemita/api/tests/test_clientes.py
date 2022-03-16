@@ -18,14 +18,14 @@ def setUpModule():
     call_command('add_permissions', verbosity=0)
 
 
-class ClienteAPITestCase(BaseTestCase):
-    """Tests sobre la API de clientes."""
+class ClienteListViewAPITestCase(BaseTestCase):
+    """Tests sobre el listado de la API de clientes."""
 
     def setUp(self):
         self.client = APIClient()
 
     def test_cliente_list_with_user_authenticated(self):
-        """Verifica que el usuario sin permisos no pueda acceder al listado."""
+        """Verifica que el usuario con permisos pueda acceder al listado."""
         self.create_user()
         self.client.login(username='user', password='user12345')
         response = self.client.get('/api/cliente/')
@@ -63,7 +63,29 @@ class ClienteAPITestCase(BaseTestCase):
         request = self.client.get(f'/api/cliente/?razon_social__cuit__icontains={cliente.razon_social.upper()}')
         self.assertEqual(len(request.json()), 1)
 
-    def test_cliente_retrieve(self):
+
+class ClienteRetrieveAPITestCase(BaseTestCase):
+    """Tests sobre el detalle de la API de clientes."""
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_retrieve_with_user_authenticated(self):
+        """Verifica que el usuario con permisos pueda acceder al detalle de una instancia."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        cliente = ClienteFactory.create()
+        response = self.client.get(f'/api/cliente/{cliente.pk}/')
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_warnings
+    def test_retrieve_with_user_anonymous(self):
+        """Verifica que el usuario sin acceso no pueda acceder al detalle de una instancia."""
+        cliente = ClienteFactory.create()
+        request = self.client.get(f'/api/cliente/{cliente.pk}/')
+        self.assertEqual(request.status_code, 403)
+
+    def test_retrieve(self):
         """Verifica los campos devueltos del detalle."""
         self.create_user()
         self.client.login(username='user', password='user12345')
@@ -72,15 +94,15 @@ class ClienteAPITestCase(BaseTestCase):
         self.assertEqual(request.status_code, 200)
 
     @prevent_request_warnings
-    def test_cliente_retrieve_not_found(self):
-        """Verifica los campos devueltos del detalle."""
+    def test_retrieve_not_found(self):
+        """Verfica respuesta 404 el buscar una instancia inexistente."""
         self.create_user()
         self.client.login(username='user', password='user12345')
         random = rand_range(1, 100)
         request = self.client.get(f'/api/cliente/{random}/')
         self.assertEqual(request.status_code, 404)
 
-    def test_cliente_retrieve_fields(self):
+    def test_retrieve_fields(self):
         """Verifica los campos devueltos del detalle."""
         self.create_user()
         self.client.login(username='user', password='user12345')

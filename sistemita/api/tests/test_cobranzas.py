@@ -255,6 +255,61 @@ class CobranzaCreateViewAPITestCase(BaseTestCase):
         self.assertEqual(response.status_code, 201)
 
 
+class CobranzaRetrieveAPITestCase(BaseTestCase):
+    """Tests sobre el detalle de la API de cobranzas."""
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_retrieve_with_user_authenticated(self):
+        """Verifica que el usuario con permisos pueda acceder al detalle de una instancia."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        cobranza = CobranzaFactory.create()
+        response = self.client.get(f'/api/cobranza/{cobranza.pk}/')
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_warnings
+    def test_retrieve_with_user_anonymous(self):
+        """Verifica que el usuario sin acceso no pueda acceder al detalle de una instancia."""
+        cobranza = CobranzaFactory.create()
+        request = self.client.get(f'/api/cobranza/{cobranza.pk}/')
+        self.assertEqual(request.status_code, 403)
+
+    def test_retrieve(self):
+        """Verifica los campos devueltos del detalle."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        cobranza = CobranzaFactory.create()
+        request = self.client.get(f'/api/cobranza/{cobranza.pk}/')
+        self.assertEqual(request.status_code, 200)
+
+    @prevent_request_warnings
+    def test_retrieve_not_found(self):
+        """Verfica respuesta 404 el buscar una instancia inexistente."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        random = rand_range(1, 100)
+        request = self.client.get(f'/api/cobranza/{random}/')
+        self.assertEqual(request.status_code, 404)
+
+    def test_retrieve_fields(self):
+        """Verifica los campos devueltos del detalle."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        cobranza = CobranzaFactory.create()
+        request = self.client.get(f'/api/cobranza/{cobranza.pk}/')
+        fields = [
+            'id',
+            'fecha',
+            'cliente',
+            'moneda',
+            'total',
+            'cobranza_facturas',
+        ]
+        self.assertHasProps(request.json(), fields)
+
+
 class CobranzaUpdateViewAPITestCase(BaseTestCase):
     """Tests sobre la vista de actualizar."""
 

@@ -18,7 +18,7 @@ def setUpModule():
     call_command('add_permissions', verbosity=0)
 
 
-class FacturaAPITestCase(BaseTestCase):
+class FacturaListViewAPITestCase(BaseTestCase):
     """Tests sobre la API de facturas a clientes."""
 
     def setUp(self):
@@ -96,7 +96,29 @@ class FacturaAPITestCase(BaseTestCase):
         )
         self.assertEqual(len(request.json()), 1)
 
-    def test_factura_cliente_retrieve(self):
+
+class FacturaRetrieveViewAPITestCase(BaseTestCase):
+    """Tests sobre el detalle de la API de facturas a clientes."""
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_retrieve_with_user_authenticated(self):
+        """Verifica que el usuario con permisos pueda acceder al detalle de una instancia."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        factura = FacturaClienteFactory.create()
+        response = self.client.get(f'/api/factura/{factura.pk}/')
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_warnings
+    def test_retrieve_with_user_anonymous(self):
+        """Verifica que el usuario sin acceso no pueda acceder al detalle de una instancia."""
+        factura = FacturaClienteFactory.create()
+        request = self.client.get(f'/api/factura/{factura.pk}/')
+        self.assertEqual(request.status_code, 403)
+
+    def test_retrieve(self):
         """Verifica los campos devueltos del detalle."""
         self.create_user()
         self.client.login(username='user', password='user12345')
@@ -105,7 +127,7 @@ class FacturaAPITestCase(BaseTestCase):
         self.assertEqual(request.status_code, 200)
 
     @prevent_request_warnings
-    def test_factura_cliente_retrieve_not_found(self):
+    def test_retrieve_not_found(self):
         """Verifica los campos devueltos del detalle."""
         self.create_user()
         self.client.login(username='user', password='user12345')
@@ -113,7 +135,7 @@ class FacturaAPITestCase(BaseTestCase):
         request = self.client.get(f'/api/factura/{random}/')
         self.assertEqual(request.status_code, 404)
 
-    def test_factura_cliente_retrieve_fields(self):
+    def test_retrieve_fields(self):
         """Verifica los campos devueltos del detalle."""
         self.create_user()
         self.client.login(username='user', password='user12345')

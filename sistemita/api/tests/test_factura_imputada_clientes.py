@@ -93,6 +93,24 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         self.assertEqual(response.status_code, 302)
 
     @prevent_request_warnings
+    def test_validate_fields_required(self):
+        """Valida los campos requeridos."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.post('/api/factura-imputada/', {}, format='json')
+        required_fields = [
+            'fecha',
+            'cliente_id',
+            'facturas_list',
+            'nota_de_credito_id',
+            'monto_facturas',
+            'monto_nota_de_credito',
+            'total_factura',
+        ]
+        self.assertHasProps(response.data, required_fields)
+        self.assertEqual(response.status_code, 400)
+
+    @prevent_request_warnings
     def test_validate_id_cliente(self):
         """Valida que el cliente exista."""
         self.create_user()
@@ -286,6 +304,64 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         nota_de_credito.refresh_from_db()
         self.assertEqual(nota_de_credito.total, total_nc)
         self.assertEqual(response.status_code, 201)
+
+
+class FacturaImputadaRetrieveViewAPITestCase(BaseTestCase):
+    """Tests sobre el detalle de la API de facturas imputadas a clientes."""
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_retrieve_with_user_authenticated(self):
+        """Verifica que el usuario con permisos pueda acceder al detalle de una instancia."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        factura = FacturaImputadaClienteFactory.create()
+        response = self.client.get(f'/api/factura-imputada/{factura.pk}/')
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_warnings
+    def test_list_with_user_anonymous(self):
+        """Verifica que el usuario sin acceso no pueda acceder al detalle de una instancia."""
+        factura = FacturaImputadaClienteFactory.create()
+        request = self.client.get(f'/api/factura-imputada/{factura.pk}/')
+        self.assertEqual(request.status_code, 403)
+
+    def test_retrieve(self):
+        """Verifica los campos devueltos del detalle."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        factura = FacturaImputadaClienteFactory.create()
+        request = self.client.get(f'/api/factura-imputada/{factura.pk}/')
+        self.assertEqual(request.status_code, 200)
+
+    @prevent_request_warnings
+    def test_retrieve_not_found(self):
+        """Verifica los campos devueltos del detalle."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        random = rand_range(1, 100)
+        request = self.client.get(f'/api/factura-imputada/{random}/')
+        self.assertEqual(request.status_code, 404)
+
+    def test_retrieve_fields(self):
+        """Verifica los campos devueltos del detalle."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        factura = FacturaImputadaClienteFactory.create()
+        request = self.client.get(f'/api/factura-imputada/{factura.pk}/')
+        fields = [
+            'id',
+            'fecha',
+            'cliente',
+            'facturas',
+            'nota_de_credito',
+            'moneda',
+            'monto_facturas',
+            'monto_nota_de_credito',
+            'total_factura',
+        ]
+        self.assertHasProps(request.json(), fields)
 
 
 class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
