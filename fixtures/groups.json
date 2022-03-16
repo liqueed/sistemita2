@@ -6,7 +6,8 @@
 	"name": "Puede ver módulo de Mis Facturas",
 	"permissions": [
 	    119,
-	    76
+	    76,
+	    152
 	]
     }
 }

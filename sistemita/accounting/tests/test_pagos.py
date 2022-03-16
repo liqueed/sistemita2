@@ -11,7 +11,11 @@ from sistemita.accounting.tests.factories import (
     PagoFacturaFactory,
     PagoFacturaPagoFactory,
 )
-from sistemita.utils.tests import BaseTestCase, prevent_request_warnings
+from sistemita.utils.tests import (
+    BaseTestCase,
+    prevent_request_error,
+    prevent_request_warnings,
+)
 
 fake = Faker('es_ES')
 
@@ -125,6 +129,58 @@ class PagoListViewTest(BaseTestCase):
         response = self.client.get('/pago/')
         self.assertContains(response, 'Sin resultados')
 
+    def test_list_export(self):
+        """Verifica que el usuario con permisos puede exportar el listado."""
+        self.create_user(['list_pago'])
+        self.client.login(username='user', password='user12345')
+        response = self.client.get('/pago/?formato=xls')
+        self.assertEqual(
+            response.get('content-type'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_error
+    @prevent_request_warnings
+    def test_list_export_retencion_ganancia(self):
+        """Verifica que el usuario con permisos puede exportar retenciones de ganancias."""
+        self.create_user(['view_comprobante_retenciones'])
+        self.client.login(username='user', password='user12345')
+        instance = PagoFactory.create()
+        for _ in range(0, 2):
+            pago_factura = PagoFacturaFactory.create(pago=instance)
+            PagoFacturaPagoFactory.create(pago_factura=pago_factura)
+        response = self.client.get(f'/pago/{instance.pk}/comprobante-retencion/?type=ganancia')
+        self.assertEqual(response.get('content-type'), 'application/pdf;')
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_error
+    @prevent_request_warnings
+    def test_list_export_retencion_ingresos(self):
+        """Verifica que el usuario con permisos puede exportar retenciones de ingresos."""
+        self.create_user(['view_comprobante_retenciones'])
+        self.client.login(username='user', password='user12345')
+        instance = PagoFactory.create()
+        for _ in range(0, 2):
+            pago_factura = PagoFacturaFactory.create(pago=instance)
+            PagoFacturaPagoFactory.create(pago_factura=pago_factura)
+        response = self.client.get(f'/pago/{instance.pk}/comprobante-retencion/?type=ingresos')
+        self.assertEqual(response.get('content-type'), 'application/pdf;')
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_error
+    @prevent_request_warnings
+    def test_list_export_retencion_iva(self):
+        """Verifica que el usuario con permisos puede exportar retenciones de iva."""
+        self.create_user(['view_comprobante_retenciones'])
+        self.client.login(username='user', password='user12345')
+        instance = PagoFactory.create()
+        for _ in range(0, 2):
+            pago_factura = PagoFacturaFactory.create(pago=instance)
+            PagoFacturaPagoFactory.create(pago_factura=pago_factura)
+        response = self.client.get(f'/pago/{instance.pk}/comprobante-retencion/?type=iva')
+        self.assertEqual(response.get('content-type'), 'application/pdf;')
+        self.assertEqual(response.status_code, 200)
+
 
 class PagoCreateViewTest(BaseTestCase):
     """Tests sobre la vista de crear."""
@@ -234,7 +290,17 @@ class PagoUpdateViewTest(BaseTestCase):
         """Verifica que redirige al login al usuario sin acceso intenta editar."""
         response = self.client.get(f'/pago/{self.instance.pk}/editar/')
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/')
+
+    def test_comprobante_export(self):
+        """Verifica que el usuario con permisos puede exportar el comprobante del pago."""
+        self.create_user(['view_pago'])
+        self.client.login(username='user', password='user12345')
+        instance = PagoFactory.create()
+        for _ in range(0, 2):
+            PagoFacturaFactory.create(pago=instance)
+        response = self.client.get(f'/pago/{instance.pk}/comprobante/')
+        self.assertEqual(response.get('content-type'), 'application/pdf;')
+        self.assertEqual(response.status_code, 200)
 
 
 class PagoDeleteViewTest(BaseTestCase):

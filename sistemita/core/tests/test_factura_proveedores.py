@@ -92,6 +92,52 @@ class FacturaProveedorListViewTest(BaseTestCase):
         response = self.client.get('/factura-proveedor/')
         self.assertContains(response, 'Sin resultados')
 
+    def test_import_with_superuser(self):
+        """Verifica que el usuario admin puede acceder a importar."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        response = self.client.get('/factura-proveedor/importar/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_import_with_user_in_group(self):
+        """Verifica que el usuario con permisos puede acceder a importar."""
+        self.create_user(['add_facturaproveedor'])
+        self.client.login(username='user', password='user12345')
+        response = self.client.get('/factura-proveedor/importar/')
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_warnings
+    def test_import_user_no_permissions(self):
+        """Verifica que el usuario sin permisos no pueda acceder a importar."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.get('/factura-proveedor/importar/')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, template_name='403.html')
+
+    def test_import_with_anonymous(self):
+        """Verifica que redirige al login al usuario sin acceso intenta importar."""
+        response = self.client.get('/factura-proveedor/importar/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/')
+
+    def test_import(self):
+        """Verifica que el usuario con permisos puede importar facturas."""
+        self.create_user(['add_facturaproveedor'])
+        self.client.login(username='user', password='user12345')
+        response = self.client.get('/factura-proveedor/importar/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_list_export(self):
+        """Verifica que el usuario con permisos puede exportar el listado."""
+        self.create_user(['list_facturaproveedor'])
+        self.client.login(username='user', password='user12345')
+        response = self.client.get('/factura-proveedor/?formato=xls')
+        self.assertEqual(
+            response.get('content-type'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        self.assertEqual(response.status_code, 200)
+
 
 class FacturaProveedorCreateViewTest(BaseTestCase):
     """Tests sobre la vista de crear."""

@@ -81,6 +81,16 @@ class FondoListViewTest(BaseTestCase):
         response = self.client.get('/factura/')
         self.assertContains(response, 'Sin resultados')
 
+    def test_list_export(self):
+        """Verifica que el usuario con permisos puede exportar el listado."""
+        self.create_user(['list_fondo'])
+        self.client.login(username='user', password='user12345')
+        response = self.client.get('/fondo/?formato=xls')
+        self.assertEqual(
+            response.get('content-type'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        self.assertEqual(response.status_code, 200)
+
 
 class FondoDetailViewTest(BaseTestCase):
     """Test sobre la vista de detalle."""
