@@ -32,6 +32,12 @@ class CobranzaFacturaPagoSerializer(serializers.ModelSerializer):
         fields = ('id', 'data', 'metodo', 'monto')
         read_only_fields = ('id',)
 
+    def validate(self, attrs):
+        """Valida que el metodo no sea nulo y hay un monto."""
+        if attrs.get('monto') and not attrs.get('metodo'):
+            raise serializers.ValidationError({'metodo': 'Este campo no puede ser nulo.'})
+        return attrs
+
 
 class CobranzaFacturaSerializer(serializers.ModelSerializer):
     """Factura cobranza Serializer.
@@ -79,10 +85,9 @@ class CobranzaSerializer(serializers.ModelSerializer):
         """Valida datos de cliente."""
         try:
             cliente = Cliente.objects.get(cuit=data['cuit'])
-            self.context['cliente'] = cliente
         except Cliente.DoesNotExist as not_exist:
-            raise serializers.ValidationError('Client does not exist.') from not_exist
-        return data
+            raise serializers.ValidationError('El cliente no existe.') from not_exist
+        return cliente
 
     def validate_cobranza_facturas(self, data):
         """Valida que las facturas sean de la misma moneda y que no haya dos facturas repetidas."""
@@ -110,7 +115,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
         """Genera una cobranza con factura/s y su/s correspondiente/s pago/s."""
         try:
             # Factura
-            cliente = self.context['cliente']
+            cliente = validated_data['cliente']
             fecha = validated_data['fecha']
             moneda = validated_data['moneda']
             total = validated_data['total']
@@ -221,7 +226,7 @@ class CobranzaSerializer(serializers.ModelSerializer):
                     # La facturas asociadas pasan a ser no cobradas y los fondos asociados pasar a no estar disponibles
                     factura_entry = factura['factura']
                     Factura.objects.filter(pk=factura_entry.id).update(cobrado=False)
-                    Fondo.objects.filter(factura=factura_entry.factura).update(disponible=False)
+                    Fondo.objects.filter(factura=factura_entry).update(disponible=False)
                     CobranzaFactura.objects.get(pk=factura['data']['id']).delete()
 
             instance.save()

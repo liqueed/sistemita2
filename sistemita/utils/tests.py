@@ -51,6 +51,16 @@ def randN(length):
     return random.randint(_min, _max)
 
 
+def prevent_request_error(original_function):
+    """Disable loggin ERROR."""
+
+    def new_function(*args, **kwargs):
+        # raise logging level to ERROR
+        logging.disable(logging.ERROR)
+
+    return new_function
+
+
 def prevent_request_warnings(original_function):
     """
     If we need to test for 404s or 405s this decorator can prevent the

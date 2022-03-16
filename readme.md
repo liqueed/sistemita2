@@ -35,19 +35,13 @@
 
 		$ docker-compose run --rm --service-ports django
 
-## Comando útiles
+## Setup Inicial
 
 ### Crear usuario administrador
 
 Para crear un usuario administrador ejecutrar el siguiente comando:
 
-	$ docker-compose run --r django python manage.py createsuperuser
-
-### Fixtures
-
-Para cargar datos iniciales correr el siguiente comando:
-
-	$ docker-compose run --rm django python manage.py loaddata fixtures/*.json
+	$ docker-compose run --rm django python manage.py createsuperuser
 
 ### Permisos
 
@@ -58,6 +52,29 @@ Para traducir los permisos correr los comando:
 Para agregar los permisos:
 
 	$ docker-compose run --rm django python manage.py add_permissions
+
+
+### Fixtures
+
+Para cargar datos iniciales correr el siguiente comando:
+
+	$ docker-compose run --rm django python manage.py loaddata fixtures/*.json
+
+## Test
+
+Para correr los tests de integración correr el comando:
+
+	$ docker-compose run --rm django python manage.py test
+
+## Acceso al módulo de mis facturas
+
+Pasos para que un proveedor pueda ver sus facturas:
+
+1. Ir al módulo de usuario y presionar el botón "Agregar"
+2. Completar los datos
+   * El email del usuario debe coincidir con el email del proveedor
+   * El usuario debe pertenecer al grupo "Puede ver módulo de Mis Facturas"
+3. Dar los accesos al proveedor
 
 ## Documentacion anterior
 

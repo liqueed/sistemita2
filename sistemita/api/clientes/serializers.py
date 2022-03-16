@@ -61,8 +61,11 @@ class ClienteSerializer(serializers.ModelSerializer):
             'link_envio_factura',
             'correo_envio_factura',
         ]
+        # Quito validadores para utilizar en cobranzas/pagos
+        # Este serializer no se usa para crear clientes, por lo cual los validadores no tienen importacia
         extra_kwargs = {
             'cuit': {'validators': []},
+            'correo': {'validators': []},
         }
 
 

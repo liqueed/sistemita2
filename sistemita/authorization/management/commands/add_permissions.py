@@ -198,6 +198,11 @@ class Command(BaseCommand):
                     'codename': 'view_mis_facturasproveedor',
                     'content_type': ContentType.objects.get(model='facturaproveedor'),
                 },
+                {
+                    'name': 'Puede ver comprobantes de retenciones',
+                    'codename': 'view_comprobante_retenciones',
+                    'content_type': ContentType.objects.get(model='pago'),
+                },
             ]
 
             for permission in permissions:

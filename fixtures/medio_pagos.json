@@ -1,0 +1,65 @@
+[
+{
+    "model": "core.mediopago",
+    "pk": 1,
+    "fields": {
+        "creado": "2021-09-28T18:30:13.674Z",
+        "modificado": "2021-09-28T18:30:13.674Z",
+        "nombre": "Transferencia"
+    }
+},
+{
+    "model": "core.mediopago",
+    "pk": 2,
+    "fields": {
+        "creado": "2021-09-28T18:30:25.489Z",
+        "modificado": "2021-09-28T18:30:25.489Z",
+        "nombre": "Paypal"
+    }
+},
+{
+    "model": "core.mediopago",
+    "pk": 3,
+    "fields": {
+        "creado": "2021-09-28T18:30:34.937Z",
+        "modificado": "2021-09-28T18:30:34.937Z",
+        "nombre": "Mercado Pago"
+    }
+},
+{
+    "model": "core.mediopago",
+    "pk": 4,
+    "fields": {
+        "creado": "2021-09-28T18:30:43.666Z",
+        "modificado": "2021-09-28T18:30:43.666Z",
+        "nombre": "Efectivo"
+    }
+},
+{
+    "model": "core.mediopago",
+    "pk": 5,
+    "fields": {
+        "creado": "2021-09-28T18:30:54.622Z",
+        "modificado": "2021-09-28T18:30:54.622Z",
+        "nombre": "Cheque"
+    }
+},
+{
+    "model": "core.mediopago",
+    "pk": 6,
+    "fields": {
+        "creado": "2021-11-18T13:42:41.162Z",
+        "modificado": "2021-11-18T13:42:41.163Z",
+        "nombre": "Tarjeta de credito"
+    }
+},
+{
+    "model": "core.mediopago",
+    "pk": 7,
+    "fields": {
+        "creado": "2021-11-18T13:43:07.683Z",
+        "modificado": "2021-11-18T13:43:07.683Z",
+        "nombre": "Imputacion interna"
+    }
+}
+]

@@ -225,7 +225,7 @@ class PagoFacturaRetencionGeratePDFDetailView(PermissionRequiredMixin, DetailVie
     """Vista que genera un pdf con el detalle de la retenciones por cada factura de un pago."""
 
     model = PagoFactura
-    permission_required = 'accounting.view_pago'
+    permission_required = ('accounting.view_comprobante_retenciones', 'accounting.view_pago')
     raise_exception = True
     template_name = 'accounting/pago_retencion_pdf.html'
 
