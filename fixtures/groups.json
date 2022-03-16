@@ -4,9 +4,8 @@
     "pk": 1,
     "fields": {
 	"name": "Puede ver módulo de Mis Facturas",
-	"permissions": [
-	    119,
-	    76,
+      "permissions": [
+	    151,
 	    152
 	]
     }
