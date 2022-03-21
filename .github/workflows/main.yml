@@ -64,6 +64,7 @@ jobs:
           echo DJANGO_SECURE_SSL_REDIRECT=$DJANGO_SECURE_SSL_REDIRECT >> .envs/.production/.django
           echo WEB_CONCURRENCY=$WEB_CONCURRENCY >> .envs/.production/.django
           echo REDIS_URL=$REDIS_URL >> .envs/.production/.django
+          echo SENTRY_DSN=$SENTRY_DSN >> .envs/.production/.django
           echo POSTGRES_HOST=$POSTGRES_HOST > .envs/.production/.postgres
           echo POSTGRES_PORT=$POSTGRES_PORT >> .envs/.production/.postgres
           echo POSTGRES_DB=$POSTGRES_DB >> .envs/.production/.postgres
