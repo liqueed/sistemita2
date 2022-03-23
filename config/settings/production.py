@@ -1,3 +1,11 @@
+import logging
+
+import sentry_sdk
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.redis import RedisIntegration
+
 from .base import *  # noqa
 from .base import env
 
@@ -78,11 +86,41 @@ LOGGING = {
             'filename': str(ROOT_DIR / "errors.log"), # noqa F405
         },
     },
+    'root': {'level': 'INFO', 'handlers': ['console']},
     'loggers': {
         'django': {
             'handlers': ['file'],
             'level': env('DJANGO_LOG_LEVEL', default='INFO'),
             'propagate': False,
         },
+        # Errors logged by the SDK itself
+        'sentry_sdk': {'level': 'ERROR', 'handlers': ['console'], 'propagate': False},
+        'django.security.DisallowedHost': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
     },
 }
+
+# Sentry
+# ------------------------------------------------------------------------------
+SENTRY_DSN = env("SENTRY_DSN")
+SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
+
+sentry_logging = LoggingIntegration(
+    level=SENTRY_LOG_LEVEL,  # Capture info and above as breadcrumbs
+    event_level=logging.ERROR,  # Send errors as events
+)
+integrations = [
+    sentry_logging,
+    DjangoIntegration(),
+    CeleryIntegration(),
+    RedisIntegration(),
+]
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    integrations=integrations,
+    environment=env("SENTRY_ENVIRONMENT", default="production"),
+    traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
+)
