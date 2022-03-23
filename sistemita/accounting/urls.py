@@ -21,6 +21,7 @@ from sistemita.accounting.views.pagos import (
     PagoUpdateTemplateView,
 )
 
+app_name = 'accounting'
 urlpatterns = [
     # Cobranza cliente
     path('cobranza/', CobranzaListView.as_view(), name='cobranza-list'),

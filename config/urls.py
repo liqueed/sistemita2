@@ -7,17 +7,17 @@ from django.urls import include, path
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    # path('', include('facturacion_clientes.urls'))
     # API
-    path('', include(('api.urls', 'api'), namespace='api')),
+    path('api/', include('sistemita.api.urls')),
     # Account
     path('accounts/', include('django.contrib.auth.urls')),
     # Core
-    path('', include(('core.urls', 'core'), namespace='core')),
+    path('', include('sistemita.core.urls', namespace='core')),
     # Accounting module
-    path('', include(('accounting.urls', 'accounting'), namespace='accounting')),
+    path('', include('sistemita.accounting.urls', namespace='accounting')),
     # Auth module
-    path('', include(('authorization.urls', 'authorization'), namespace='authentication')),
+    path('', include('sistemita.authorization.urls', namespace='authentication')),
     # Expense module
-    path('', include(('expense.urls', 'expense'), namespace='expense')),
+    path('', include('sistemita.expense.urls', namespace='expense')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

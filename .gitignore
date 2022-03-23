@@ -111,3 +111,6 @@ staticfiles/
 .env
 .envs/*
 !.envs/.local/
+
+# celery beat schedule file
+celerybeat-schedule

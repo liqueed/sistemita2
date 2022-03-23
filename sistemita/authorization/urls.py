@@ -27,6 +27,7 @@ from sistemita.authorization.views.users import (
     UserUpdateView,
 )
 
+app_name = 'authorization'
 urlpatterns = [
     # Usuarios
     path('usuario/', UserListView.as_view(), name='user-list'),
