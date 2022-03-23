@@ -66,39 +66,35 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 # ------------------------
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# LOGGING
-# ------------------------------------------------------------------------------
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '[%(levelname)s] %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        }
     },
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'backupCount': 5,
-            'maxBytes': 1024*1024*100,  # 100MB
-            'formatter': 'verbose',
-            'filename': str(ROOT_DIR / "errors.log"), # noqa F405
-        },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
     },
-    'root': {'level': 'INFO', 'handlers': ['console']},
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': env('DJANGO_LOG_LEVEL', default='INFO'),
-            'propagate': False,
+    "root": {"level": "INFO", "handlers": ["console"]},
+    "loggers": {
+        "django.db.backends": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
         },
         # Errors logged by the SDK itself
-        'sentry_sdk': {'level': 'ERROR', 'handlers': ['console'], 'propagate': False},
-        'django.security.DisallowedHost': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
+        "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
+        "django.security.DisallowedHost": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
         },
     },
 }
@@ -112,12 +108,7 @@ sentry_logging = LoggingIntegration(
     level=SENTRY_LOG_LEVEL,  # Capture info and above as breadcrumbs
     event_level=logging.ERROR,  # Send errors as events
 )
-integrations = [
-    sentry_logging,
-    DjangoIntegration(),
-    CeleryIntegration(),
-    RedisIntegration(),
-]
+integrations = [sentry_logging, DjangoIntegration(), CeleryIntegration(), RedisIntegration()]
 sentry_sdk.init(
     dsn=SENTRY_DSN,
     integrations=integrations,
