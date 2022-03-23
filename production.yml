@@ -22,10 +22,6 @@ services:
     command: /start
     volumes:
       - production_media:/app/sistemita/media
-    ports:
-      - "8000:80"
-      - "0.0.0.0:443:443"
-      # - "0.0.0.0:5555:5555"
     restart: unless-stopped
 
   postgres:
