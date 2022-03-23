@@ -7,7 +7,7 @@ volumes:
   production_traefik: {}
 
 services:
-  django:
+  django: &django
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
@@ -22,6 +22,10 @@ services:
     command: /start
     volumes:
       - production_media:/app/sistemita/media
+    ports:
+      - "8000:8000"
+      - "0.0.0.0:443:443"
+      - "0.0.0.0:5555:5555"
     restart: unless-stopped
 
   postgres:
@@ -40,6 +44,27 @@ services:
   redis:
     image: redis:5.0
     container_name: sistemita_production_redis
+    restart: unless-stopped
+
+  celeryworker:
+    <<: *django
+    image: sistemita_production_celeryworker
+    container_name: sistemita_production_celeryworker
+    command: /start-celeryworker
+    restart: unless-stopped
+
+  celerybeat:
+    <<: *django
+    image: sistemita_production_celerybeat
+    container_name: sistemita_production_celerybeat
+    command: /start-celerybeat
+    restart: unless-stopped
+
+  flower:
+    <<: *django
+    image: sistemita_production_flower
+    container_name: sistemita_production_flower
+    command: /start-flower
     restart: unless-stopped
 
   nginx:

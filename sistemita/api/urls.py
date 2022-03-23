@@ -3,8 +3,9 @@
 # Django
 from django.urls import include, path
 
-# Django REST Framework
-from rest_framework import routers
+# Django
+from django.conf import settings
+from rest_framework.routers import DefaultRouter, SimpleRouter
 
 # API
 from sistemita.api.archivos.views import ArchivoViewSet
@@ -23,7 +24,10 @@ from sistemita.api.proveedores.views import (
     ProveedorViewSet,
 )
 
-router = routers.DefaultRouter()
+if settings.DEBUG:
+    router = DefaultRouter()
+else:
+    router = SimpleRouter()
 
 # Core
 router.register(r'archivo', ArchivoViewSet)
@@ -41,6 +45,5 @@ router.register(r'mediopago', MedioPagoViewSet)
 router.register(r'cobranza', CobranzaViewSet)
 router.register(r'pago', PagoViewSet)
 
-urlpatterns = [
-    path(r'api/', include(router.urls)),
-]
+app_name = "api"
+urlpatterns = router.urls

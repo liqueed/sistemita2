@@ -85,6 +85,7 @@ handler400 = error_403
 handler404 = error_404
 handler500 = error_500
 
+app_name = 'core'
 urlpatterns = [
     # Home
     path('', HomeView.as_view(), name='home'),

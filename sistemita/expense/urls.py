@@ -14,6 +14,7 @@ from sistemita.expense.views import (
     FondoListView,
 )
 
+app_name = 'expense'
 urlpatterns = [
     path('fondo/', FondoListView.as_view(), name='fondo-list'),
     path('fondo/<int:pk>/', FondoDetailView.as_view(), name='fondo-detail'),
