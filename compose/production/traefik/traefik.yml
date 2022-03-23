@@ -28,8 +28,7 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
-      rule: "Host(`sistemita.liqueed.org`)"
-
+      rule: "Host(`sistemita.liqueed.org`) || Host(`www.sistemita.liqueed.org`)"
       entryPoints:
         - web-secure
       middlewares:
