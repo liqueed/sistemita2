@@ -14,7 +14,7 @@ from sistemita.core.tests.factories import (
     FacturaImputadaClienteFactory,
     FacturaImputadaClienteFactoryData,
 )
-from sistemita.core.utils.commons import get_total_factura
+from sistemita.utils.commons import get_total_factura
 from sistemita.utils.tests import (
     BaseTestCase,
     prevent_request_warnings,

@@ -19,13 +19,13 @@ from django_filters.views import FilterView
 from sistemita.core.filters import OrdenCompraFilterSet
 from sistemita.core.forms.clientes import OrdenCompraForm
 from sistemita.core.models.cliente import OrdenCompra
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
     _MESSAGE_SUCCESS_DELETE,
     _MESSAGE_SUCCESS_UPDATE,
     MESSAGE_403,
 )
-from sistemita.core.views.home import error_403
 
 
 class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):

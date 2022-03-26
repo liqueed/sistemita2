@@ -15,22 +15,20 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, FormView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Authorization
+# Sistemita
 from sistemita.authorization.forms.users import (
     PasswordResetForm,
     UserCreateForm,
     UserUpdateForm,
 )
-
-# Core
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.strings import (
     _MESSAGE_SUCCESS_UPDATE,
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
     MESSAGE_SUCCESS_DELETE,
     MESSAGE_SUCCESS_UPDATE,
 )
-from sistemita.core.views.home import error_403
 
 User = get_user_model()
 

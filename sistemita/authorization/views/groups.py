@@ -11,17 +11,15 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Authorization
+# Sistemita
 from sistemita.authorization.forms.groups import GroupForm
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.strings import (
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
     MESSAGE_SUCCESS_DELETE,
     MESSAGE_SUCCESS_UPDATE,
 )
-
-# Core
-from sistemita.core.views.home import error_403
 
 
 class GroupListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):

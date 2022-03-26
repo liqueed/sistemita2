@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 # Utils
-from sistemita.core.utils.strings import MESSAGE_ERROR_EMAIL_UNIQUE
+from sistemita.utils.strings import MESSAGE_ERROR_EMAIL_UNIQUE
 
 
 class User(AbstractUser):

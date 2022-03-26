@@ -10,7 +10,7 @@ from sistemita.core.constants import MONEDAS
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.entidad import Distrito, Localidad, Provincia
 from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
-from sistemita.core.utils.commons import get_porcentaje
+from sistemita.utils.commons import get_porcentaje
 
 
 class Cliente(TimeStampedModel, models.Model):

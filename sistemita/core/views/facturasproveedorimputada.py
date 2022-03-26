@@ -14,8 +14,8 @@ from django_filters.views import FilterView
 # Sistemita
 from sistemita.core.filters import FacturaProveedorImputadaFilterSet
 from sistemita.core.models.proveedor import FacturaProveedorImputada
-from sistemita.core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 from sistemita.core.views.home import error_403
+from sistemita.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 
 
 class FacturaProveedorImputadaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):

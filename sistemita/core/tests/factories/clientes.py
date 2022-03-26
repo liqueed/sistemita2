@@ -22,10 +22,7 @@ from sistemita.core.models import (
     Provincia,
 )
 from sistemita.core.tests.factories import ArchivoFactory
-from sistemita.core.utils.commons import (
-    get_porcentaje_agregado,
-    get_total_factura,
-)
+from sistemita.utils.commons import get_porcentaje_agregado, get_total_factura
 from sistemita.utils.tests import generate_dict_factory, rand_range
 
 fake = fake()

@@ -19,9 +19,9 @@ from django_filters.views import FilterView
 from sistemita.accounting.filters import CobranzaFilterSet
 from sistemita.accounting.models.cobranza import Cobranza
 from sistemita.core.models.cliente import Factura
-from sistemita.core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 from sistemita.core.views.home import error_403
 from sistemita.expense.models import Fondo
+from sistemita.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 
 
 class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):

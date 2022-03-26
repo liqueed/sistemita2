@@ -16,13 +16,13 @@ from django.views.generic.edit import CreateView, UpdateView
 # Sistemita
 from sistemita.core.forms.proveedores import FacturaProveedorCategoriaForm
 from sistemita.core.models.proveedor import FacturaProveedorCategoria
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
     _MESSAGE_SUCCESS_DELETE,
     _MESSAGE_SUCCESS_UPDATE,
     MESSAGE_403,
 )
-from sistemita.core.views.home import error_403
 
 
 class FacturaProveedorCategoriaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):

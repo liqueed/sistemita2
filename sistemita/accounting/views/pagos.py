@@ -28,9 +28,9 @@ from sistemita.accounting.models.pago import Pago, PagoFactura
 
 # Core
 from sistemita.core.models.proveedor import FacturaProveedor
-from sistemita.core.utils.export import export_excel
-from sistemita.core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
 from sistemita.core.views.home import error_403
+from sistemita.utils.export import export_excel
+from sistemita.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
 
 
 class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):

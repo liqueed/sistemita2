@@ -17,13 +17,14 @@ from django.views.generic.edit import CreateView, UpdateView
 # Sistemita
 from sistemita.core.forms.clientes import ClienteForm
 from sistemita.core.models.cliente import Cliente
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.strings import (
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
     MESSAGE_SUCCESS_DELETE,
     MESSAGE_SUCCESS_UPDATE,
 )
-from sistemita.core.views.home import error_403
 
 
 class ClienteListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):

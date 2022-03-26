@@ -9,11 +9,9 @@ from crispy_forms.layout import Div, Fieldset, Layout, Reset, Submit
 from django import forms
 from django.contrib.auth.models import Group
 
-# Models
+# Sistemita
 from sistemita.authorization.models import Permission
-
-# Utils
-from sistemita.core.utils.strings import HELP_TEXT_MULTIPLE_CHOICE
+from sistemita.utils.strings import HELP_TEXT_MULTIPLE_CHOICE
 
 
 class GroupForm(forms.ModelForm):
