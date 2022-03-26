@@ -7,33 +7,34 @@
       <h1 class="h3 text-gray-800">Facturación a Proveedores</h1>
       {% if perms.core.list_facturaproveedor %}
       <a href="{% url 'core:facturaproveedor-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
-        <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	<i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
       </a>
       {% endif %}
     </div>
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Eliminar facturación Nro. {{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
+	<h6 class="m-0 font-weight-bold text-primary">Eliminar facturación Nro. {{ object.pk }} - Proveedor: {{ object.proveedor.razon_social }}</h6>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
-          <div class="row">
-            <div class="col">
-            <form method="post" action="{% url 'core:facturaproveedor-delete' object.pk %}">
-              {% csrf_token %}
-              <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la factura <em>Nro. {{ object.pk}}</em>
-                del proveedor <em>{{ object.proveedor.razon_social}}</em> con CUIT <em>{{ object.proveedor.cuit}}</em>.</p>
-              <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
-              <div class="row">
-                <div class="col">
-                  <button class="btn btn-danger" type="submit">Eliminar</button>
-                  <a class="btn" href="{% url 'core:facturaproveedor-list' %}">No eliminar</a>
-                </div>
-              </div>
-            </form>
-            </div>
-          </div>
-        </div>
+	<div class="table-responsive">
+	  <div class="row">
+	    <div class="col">
+	    <form method="post" action="{% url 'core:facturaproveedor-delete' object.pk %}">
+	      {% csrf_token %}
+	      <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la factura <em>Nro. {{ object.pk}}</em>
+		del proveedor <em>{{ object.proveedor.razon_social}}</em> con CUIT <em>{{ object.proveedor.cuit}}</em>.</p>
+	      <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+	      {% include "admin/includes/object_delete_summary.html" %}
+	      <div class="row">
+		<div class="col">
+		  <button class="btn btn-danger" type="submit">Eliminar</button>
+		  <a class="btn" href="{% url 'core:facturaproveedor-list' %}">No eliminar</a>
+		</div>
+	      </div>
+	    </form>
+	    </div>
+	  </div>
+	</div>
       </div>
     </div>
   </div>

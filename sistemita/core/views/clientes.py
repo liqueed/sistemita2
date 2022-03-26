@@ -138,6 +138,15 @@ class ClienteDeleteView(PermissionRequiredMixin, DeleteView):
     success_message = MESSAGE_SUCCESS_DELETE.format('cliente')
     success_url = reverse_lazy('core:cliente-list')
 
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
+
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""
         messages.success(request, self.success_message)

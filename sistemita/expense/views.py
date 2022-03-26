@@ -21,6 +21,7 @@ from sistemita.core.views.home import error_403
 from sistemita.expense.filters import CostoFilterSet, FondoFilterSet
 from sistemita.expense.forms import CostoForm
 from sistemita.expense.models import Costo, Fondo
+from sistemita.utils.commons import get_deleted_objects
 from sistemita.utils.export import export_excel
 from sistemita.utils.strings import (
     MESSAGE_403,
@@ -231,6 +232,15 @@ class CostoDeleteView(PermissionRequiredMixin, DeleteView):
     success_message = MESSAGE_SUCCESS_DELETE.format('costo')
     success_url = reverse_lazy('expense:costo-list')
     template_name = 'expense/costo_confirm_delete.html'
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """

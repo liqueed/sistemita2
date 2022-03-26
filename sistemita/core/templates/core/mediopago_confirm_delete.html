@@ -24,6 +24,7 @@
 	  <form method="post" action="{% url 'core:mediopago-delete' object.pk %}">
 	    {% csrf_token %}
 	    <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el medio de pago <em>{{ object.nombre}}</em>.</p>
+	    {% include "admin/includes/object_delete_summary.html" %}
 	    <div class="row">
 	      <div class="col">
 		<button class="btn btn-danger" type="submit">Eliminar</button>
