@@ -3,6 +3,10 @@
 El modelo Fondo está asociado al modelo de factura de cliente.
 El modelo Costo está asociado al modelo Fondo.
 """
+
+# Datetime
+from datetime import date
+
 # Django
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -71,6 +75,7 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
 
         fondo_peso = 0
         for row in queryset.filter(factura__moneda='P', disponible=True):
@@ -82,6 +87,7 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
 
         context['fondo_dollar'] = round(fondo_dollar, 2)
         context['fondo_peso'] = round(fondo_peso, 2)
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
 
@@ -141,6 +147,7 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
 
         costo_peso = 0
         for row in queryset.filter(moneda='P'):
@@ -152,6 +159,7 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
 
         context['costo_dollar'] = round(costo_dollar, 2)
         context['costo_peso'] = round(costo_peso, 2)
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
 
