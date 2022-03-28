@@ -17,14 +17,14 @@ from sistemita.core.models.cliente import (
     OrdenCompra,
 )
 from sistemita.core.models.entidad import Distrito, Localidad
-from sistemita.core.utils.commons import get_porcentaje_agregado
-from sistemita.core.utils.strings import (
+from sistemita.expense.models import Fondo
+from sistemita.utils.commons import get_porcentaje_agregado
+from sistemita.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_PERMISSION_ERROR,
     MESSAGE_TOTAL_INVALID,
     MESSAGE_TOTAL_ZERO,
 )
-from sistemita.expense.models import Fondo
 
 
 class ClienteForm(forms.ModelForm):

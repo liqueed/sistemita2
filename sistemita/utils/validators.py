@@ -2,7 +2,7 @@
 
 from django.core.exceptions import ValidationError
 
-from sistemita.core.utils.strings import MESSAGE_ONLY_NUMBERS
+from sistemita.utils.strings import MESSAGE_ONLY_NUMBERS
 
 
 def validate_is_number(value):

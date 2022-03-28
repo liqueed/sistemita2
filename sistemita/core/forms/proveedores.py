@@ -21,8 +21,8 @@ from sistemita.core.models.proveedor import (
 )
 
 # Utils
-from sistemita.core.utils.commons import get_porcentaje_agregado
-from sistemita.core.utils.strings import (
+from sistemita.utils.commons import get_porcentaje_agregado
+from sistemita.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_PERMISSION_ERROR,
     MESSAGE_TOTAL_INVALID,

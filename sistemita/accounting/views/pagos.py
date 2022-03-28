@@ -25,12 +25,11 @@ from weasyprint import HTML
 # Accounting
 from sistemita.accounting.filters import PagoFilterSet
 from sistemita.accounting.models.pago import Pago, PagoFactura
-
-# Core
 from sistemita.core.models.proveedor import FacturaProveedor
-from sistemita.core.utils.export import export_excel
-from sistemita.core.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
 from sistemita.core.views.home import error_403
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.export import export_excel
+from sistemita.utils.strings import MESSAGE_403, MESSAGE_SUCCESS_DELETE
 
 
 class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -150,6 +149,15 @@ class PagoDeleteView(PermissionRequiredMixin, DeleteView):
     raise_exception = True
     success_message = MESSAGE_SUCCESS_DELETE.format('pago')
     success_url = reverse_lazy('accounting:pago-list')
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """Modifica el estado de las facturas que son desasociadas del pago al eliminarse."""

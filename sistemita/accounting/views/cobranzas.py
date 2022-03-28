@@ -19,9 +19,10 @@ from django_filters.views import FilterView
 from sistemita.accounting.filters import CobranzaFilterSet
 from sistemita.accounting.models.cobranza import Cobranza
 from sistemita.core.models.cliente import Factura
-from sistemita.core.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 from sistemita.core.views.home import error_403
 from sistemita.expense.models import Fondo
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 
 
 class CobranzaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -125,6 +126,15 @@ class CobranzaDeleteView(PermissionRequiredMixin, DeleteView):
     raise_exception = True
     success_message = _MESSAGE_SUCCESS_DELETE.format('cobranza')
     success_url = reverse_lazy('accounting:cobranza-list')
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """Sobreescribe método para modificar facturas asociadas."""

@@ -14,7 +14,7 @@ from sistemita.core.tests.factories import (
     FacturaImputadaProveedorFactoryData,
     FacturaProveedorFactory,
 )
-from sistemita.core.utils.commons import get_total_factura
+from sistemita.utils.commons import get_total_factura
 from sistemita.utils.tests import (
     BaseTestCase,
     prevent_request_warnings,
@@ -650,6 +650,7 @@ class FacturaImputadaClienteUpdateViewAPITestCase(BaseTestCase):
 
     def test_update_factura_change_validate_facturas_montos_imputados(self):
         """Valida los montos imputados a las facturas."""
+        # TODO: revisar
         self.create_user()
         self.client.login(username='user', password='user12345')
         instance = self.instance

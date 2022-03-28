@@ -15,22 +15,21 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import DeleteView, DetailView, FormView, ListView
 from django.views.generic.edit import CreateView, UpdateView
 
-# Authorization
+# Sistemita
 from sistemita.authorization.forms.users import (
     PasswordResetForm,
     UserCreateForm,
     UserUpdateForm,
 )
-
-# Core
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.strings import (
     _MESSAGE_SUCCESS_UPDATE,
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
     MESSAGE_SUCCESS_DELETE,
     MESSAGE_SUCCESS_UPDATE,
 )
-from sistemita.core.views.home import error_403
 
 User = get_user_model()
 
@@ -149,6 +148,15 @@ class UserDeleteView(PermissionRequiredMixin, DeleteView):
     success_message = MESSAGE_SUCCESS_DELETE.format('usuario')
     success_url = reverse_lazy('authorization:user-list')
     template_name = 'authorization/user_confirm_delete.html'
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

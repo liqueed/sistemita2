@@ -17,7 +17,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
 # Utils
-from sistemita.core.utils.strings import (
+from sistemita.utils.strings import (
     HELP_TEXT_MULTIPLE_CHOICE,
     HELP_TEXT_PASSWORD_CONFIRMATION,
     HELP_TEXT_USERNAME,

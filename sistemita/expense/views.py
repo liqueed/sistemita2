@@ -3,6 +3,10 @@
 El modelo Fondo está asociado al modelo de factura de cliente.
 El modelo Costo está asociado al modelo Fondo.
 """
+
+# Datetime
+from datetime import date
+
 # Django
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -17,17 +21,18 @@ from django_filters.views import FilterView
 
 # Sistemita
 from sistemita.core.models import Factura
-from sistemita.core.utils.export import export_excel
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.expense.filters import CostoFilterSet, FondoFilterSet
+from sistemita.expense.forms import CostoForm
+from sistemita.expense.models import Costo, Fondo
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.export import export_excel
+from sistemita.utils.strings import (
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
     MESSAGE_SUCCESS_DELETE,
     MESSAGE_SUCCESS_UPDATE,
 )
-from sistemita.core.views.home import error_403
-from sistemita.expense.filters import CostoFilterSet, FondoFilterSet
-from sistemita.expense.forms import CostoForm
-from sistemita.expense.models import Costo, Fondo
 
 
 class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -70,6 +75,7 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
 
         fondo_peso = 0
         for row in queryset.filter(factura__moneda='P', disponible=True):
@@ -81,6 +87,7 @@ class FondoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
 
         context['fondo_dollar'] = round(fondo_dollar, 2)
         context['fondo_peso'] = round(fondo_peso, 2)
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
 
@@ -140,6 +147,7 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         """Obtiene datos para incluir en los reportes."""
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
+        current_week = date.today().isocalendar()[1]
 
         costo_peso = 0
         for row in queryset.filter(moneda='P'):
@@ -151,6 +159,7 @@ class CostoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
 
         context['costo_dollar'] = round(costo_dollar, 2)
         context['costo_peso'] = round(costo_peso, 2)
+        context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
 
@@ -231,6 +240,15 @@ class CostoDeleteView(PermissionRequiredMixin, DeleteView):
     success_message = MESSAGE_SUCCESS_DELETE.format('costo')
     success_url = reverse_lazy('expense:costo-list')
     template_name = 'expense/costo_confirm_delete.html'
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """

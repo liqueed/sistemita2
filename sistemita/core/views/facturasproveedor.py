@@ -22,14 +22,15 @@ from sistemita.core.filters import FacturaProveedorFilterSet
 from sistemita.core.forms.proveedores import FacturaProveedorForm
 from sistemita.core.models.cliente import Factura
 from sistemita.core.models.proveedor import FacturaProveedor
-from sistemita.core.utils.export import export_excel
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.export import export_excel
+from sistemita.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
     _MESSAGE_SUCCESS_DELETE,
     _MESSAGE_SUCCESS_UPDATE,
     MESSAGE_403,
 )
-from sistemita.core.views.home import error_403
 
 
 class FacturaProveedorListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -194,6 +195,15 @@ class FacturaProveedorDeleteView(PermissionRequiredMixin, DeleteView):
     raise_exception = True
     success_message = _MESSAGE_SUCCESS_DELETE.format('factura a proveedor')
     success_url = reverse_lazy('core:facturaproveedor-list')
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """Método que elimina los archivos relacionados."""

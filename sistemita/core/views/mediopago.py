@@ -16,13 +16,14 @@ from django.views.generic.edit import CreateView, UpdateView
 # Sistemita
 from sistemita.core.forms.mediospago import MedioPagoForm
 from sistemita.core.models.mediopago import MedioPago
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.strings import (
     MESSAGE_403,
     MESSAGE_SUCCESS_CREATED,
     MESSAGE_SUCCESS_DELETE,
     MESSAGE_SUCCESS_UPDATE,
 )
-from sistemita.core.views.home import error_403
 
 
 class MedioPagoListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
@@ -134,6 +135,15 @@ class MedioPagoDeleteView(PermissionRequiredMixin, DeleteView):
     raise_exception = True
     success_message = MESSAGE_SUCCESS_DELETE.format('medio de pago')
     success_url = reverse_lazy('core:mediopago-list')
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

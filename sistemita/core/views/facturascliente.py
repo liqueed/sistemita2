@@ -24,14 +24,15 @@ from sistemita.core.constants import TIPOS_FACTURA_IMPORT
 from sistemita.core.filters import FacturaFilterSet
 from sistemita.core.forms.clientes import FacturaForm
 from sistemita.core.models.cliente import Factura
-from sistemita.core.utils.export import export_excel
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.export import export_excel
+from sistemita.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
     _MESSAGE_SUCCESS_DELETE,
     _MESSAGE_SUCCESS_UPDATE,
     MESSAGE_403,
 )
-from sistemita.core.views.home import error_403
 
 
 class FacturaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -200,6 +201,15 @@ class FacturaDeleteView(PermissionRequiredMixin, DeleteView):
     success_message = _MESSAGE_SUCCESS_DELETE.format('factura del cliente')
     success_url = reverse_lazy('core:factura-list')
     template_name = 'core/facturacliente_confirm_delete.html'
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """Sobreescribe método para eliminar una factura.

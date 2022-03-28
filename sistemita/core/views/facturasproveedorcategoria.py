@@ -16,13 +16,14 @@ from django.views.generic.edit import CreateView, UpdateView
 # Sistemita
 from sistemita.core.forms.proveedores import FacturaProveedorCategoriaForm
 from sistemita.core.models.proveedor import FacturaProveedorCategoria
-from sistemita.core.utils.strings import (
+from sistemita.core.views.home import error_403
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
     _MESSAGE_SUCCESS_DELETE,
     _MESSAGE_SUCCESS_UPDATE,
     MESSAGE_403,
 )
-from sistemita.core.views.home import error_403
 
 
 class FacturaProveedorCategoriaListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
@@ -134,6 +135,15 @@ class FacturaProveedorCategoriaDeleteView(PermissionRequiredMixin, DeleteView):
     raise_exception = True
     success_message = _MESSAGE_SUCCESS_DELETE.format('categoría de factura')
     success_url = reverse_lazy('core:facturaproveedorcategoria-list')
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
 
     def delete(self, request, *args, **kwargs):
         """Muestra un mensaje sobre el resultado de la acción."""

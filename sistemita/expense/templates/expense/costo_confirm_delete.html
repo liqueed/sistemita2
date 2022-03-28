@@ -23,6 +23,7 @@
 	      {% csrf_token %}
 	      <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar el costo <em>{{ object.descripcion}}</em>.</p>
 	      <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+	      {% include "admin/includes/object_delete_summary.html" %}
 	      <div class="row">
 		<div class="col">
 		  <button class="btn btn-danger" type="submit">Eliminar</button>

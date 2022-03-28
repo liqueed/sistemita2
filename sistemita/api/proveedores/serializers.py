@@ -26,15 +26,15 @@ from sistemita.core.models.proveedor import (
     FacturaProveedorImputada,
     Proveedor,
 )
-from sistemita.core.utils.commons import get_total_factura
-from sistemita.core.utils.strings import (
+from sistemita.utils.commons import get_total_factura
+from sistemita.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_MONEDA_INVALID,
     MESSAGE_NUMERO_EXISTS,
     MESSAGE_TIPO_DOC_IMPORT_INVALID,
     MESSAGE_TIPO_FACTURA_INVALID,
 )
-from sistemita.core.utils.validators import validate_is_number
+from sistemita.utils.validators import validate_is_number
 
 
 class ProveedorSerializer(serializers.ModelSerializer):

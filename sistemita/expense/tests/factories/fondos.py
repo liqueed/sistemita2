@@ -7,8 +7,8 @@ from factory.django import DjangoModelFactory
 
 # Sistemita
 from sistemita.core.tests.factories import FacturaClienteFactory
-from sistemita.core.utils.commons import get_porcentaje
 from sistemita.expense.models import Fondo
+from sistemita.utils.commons import get_porcentaje
 from sistemita.utils.tests import generate_dict_factory
 
 
