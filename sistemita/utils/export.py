@@ -444,6 +444,7 @@ def export_excel(request, queryset):
     app = queryset.model.__name__.lower()
 
     if 'reporte-venta' in request.path:
+        app = 'reporte_ventas'
         app_export = ReporteVentaExport(queryset)
         display_dept = False
     elif app == 'factura':
