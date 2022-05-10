@@ -454,6 +454,7 @@ def export_excel(request, queryset):
         app_export = FacturaProveedorExport(queryset)
         display_dept = True
     elif app == 'pago' and request.GET.get('tipo') == 'retenciones':
+        app = 'retenciones'
         app_export = PagoRetencionExport(queryset)
         display_dept = False
     elif app == 'pago':
