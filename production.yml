@@ -23,6 +23,8 @@ services:
     volumes:
       - production_media:/app/sistemita/media
     restart: unless-stopped
+    networks:
+      - proxy
 
   postgres:
     build:
@@ -36,11 +38,15 @@ services:
     env_file:
       - ./.envs/.production/.postgres
     restart: unless-stopped
+    networks:
+      - proxy
 
   redis:
     image: redis:5.0
     container_name: sistemita_production_redis
     restart: unless-stopped
+    networks:
+      - proxy
 
   nginx:
     build:
@@ -55,6 +61,8 @@ services:
     depends_on:
       - django
     restart: unless-stopped
+    networks:
+      - proxy
 
   traefik:
     build:
@@ -70,3 +78,9 @@ services:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"
     restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: sistemita_proxy_production
