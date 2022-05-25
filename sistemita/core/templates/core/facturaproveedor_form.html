@@ -53,19 +53,22 @@ $('#id_proveedor').select2({
     searchInputPlaceholder: 'Buscar por razón social o cuit',
 });
 $('#id_proveedor').change(function(){
-    updateInfoProveedor();
+    displayInfoProveedor();
 });
 
-function updateInfoProveedor(){
+function displayInfoProveedor(){
     var idProveedor = $('#id_proveedor').val();
     if(idProveedor !== ''){
 	$.get("/api/proveedor/" + idProveedor + "/", function(obj) {
+	    let correo = (obj.correo) ? obj.correo : '-';
+	    let telefono = (obj.telefono) ? obj.telefono : '-';
+	    let dirreccion = (obj.calle) ? `${obj.calle} ${obj.numero} ${obj.piso}` : '-';
 	    var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
 	    data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
 	    data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
-	    data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">{% if obj.correo %}${obj.correo}{% else %}-{% endif %}</dd>`;
-	    data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">{% if obj.telefono %}${obj.telefono}{% else %}-{% endif %}</dd>`;
-	    data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">{% if obj.calle %}${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}{% else %}-{% endif %}</dd>`;
+	    data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${correo}</dd>`;
+	    data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${telefono}</dd>`;
+	    data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${dirreccion}</dd>`;
 	    if (obj.localidad !== null){
 		data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
 		data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
@@ -77,7 +80,7 @@ function updateInfoProveedor(){
 	$('#info_proveedor').html('');
     }
 }
-updateInfoProveedor();
+displayInfoProveedor();
 
 var idFacturaProveedor = $("#id_factura_proveedor").val();
 if (idFacturaProveedor) {

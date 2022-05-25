@@ -710,15 +710,18 @@ function validateFacturas(){
 
 function displayInfoProveedor(obj){
     if(obj !== ''){
+	let correo = (obj.correo) ? obj.correo : '-';
+	let telefono = (obj.telefono) ? obj.telefono : '-';
+	let dirreccion = (obj.calle) ? `${obj.calle} ${obj.numero} ${obj.piso}` : '-';
 	var data = `<div style=" margin-top: 10px; margin-bottom: 20px; margin-left: 12px;" class="card col-11 col-lg-6">`;
 	data += `<div class="card-body"><h5 class="card-title">${obj.razon_social}</h5>`;
 	data += `<dl><dt class="col-sm-2">CUIT</dt><dd class="col-sm-10">${obj.cuit}</dd>`;
-	data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">{% if obj.correo %}${obj.correo}{% else %}-{% endif %}</dd>`;
-	data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">{% if obj.telefono %}${obj.telefono}{% else %}-{% endif %}</dd>`;
-	data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">{% if obj.calle %}${obj.calle} ${obj.numero} ${obj.piso} ${obj.dpto}{% else %}-{% endif %}</dd>`;
+	data += `<dt class="col-sm-3">Correo</dt><dd class="col-sm-10">${correo}</dd>`;
+	data += `<dt class="col-sm-3">Teléfono</dt><dd class="col-sm-10">${telefono}</dd>`;
+	data += `<dt class="col-sm-3">Dirección</dt><dd class="col-sm-10">${dirreccion}</dd>`;
 	if (obj.localidad !== null){
 	    data += `<dt class="col-sm-2"></dt><dd class="col-sm-10">`;
-	    data += `${obj.localidad.nombre}${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
+	    data += `${obj.localidad.nombre} ${obj.distrito.nombre} ${obj.provincia.nombre}</dd>`;
 	}
 	data += `</dl></div></div>`;
 	$('#info_proveedor').html(data);
