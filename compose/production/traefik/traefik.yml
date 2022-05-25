@@ -27,6 +27,10 @@ certificatesResolvers:
 
 http:
   routers:
+
+    #################
+    ### Sistemita ###
+    #################
     web-secure-router:
       rule: "Host(`sistemita.liqueed.org`)"
       entryPoints:
@@ -49,6 +53,31 @@ http:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
+    #############
+    ### Fluid ###
+    #############
+    web-secure-router-fluid:
+      rule: "Host(`sistemita-fluid.liqueed.org`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: django_fluid
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+    nginx-secure-router:
+      rule: "Host(`sistemita-fluid.liqueed.org`) && PathPrefix(`/media`)"
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: nginx_fluid
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
   middlewares:
     csrf:
       # https://docs.traefik.io/master/middlewares/headers/#hostsproxyheaders
@@ -57,6 +86,10 @@ http:
         hostsProxyHeaders: ["X-CSRFToken"]
 
   services:
+
+    #################
+    ### Sistemita ###
+    #################
     django:
       loadBalancer:
         servers:
@@ -66,6 +99,19 @@ http:
       loadBalancer:
         servers:
           - url: http://sistemita.liqueed.org:8080/media/
+
+    #############
+    ### Fluid ###
+    #############
+    django_fluid:
+      loadBalancer:
+        servers:
+          - url: http://django:5001
+
+    nginx_fluid:
+      loadBalancer:
+        servers:
+          - url: http://sistemita-fluid.liqueed.org:8081/media/
 
 providers:
   # https://docs.traefik.io/master/providers/file/
