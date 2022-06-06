@@ -72,8 +72,8 @@ jobs:
           echo POSTGRES_USER=$POSTGRES_USER >> .envs/.production/.postgres
           echo POSTGRES_PASSWORD=$POSTGRES_PASSWORD >> .envs/.production/.postgres
 
-      - name: Down services
-        run:  docker-compose -f production.yml down --remove-orphans
+      # - name: Down services
+      #   run:  docker-compose -f production.yml down --remove-orphans
 
       - name: Build and run the Stack
         run:  docker-compose -f production.yml up -d --build
