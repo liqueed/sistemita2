@@ -146,3 +146,21 @@ class FacturaImputada(TimeStampedModel, models.Model):
         """Valida que el total de la factura no sea negativo."""
         self.total_factura = max(self.total_factura, 0.0)
         return super().save(*args, **kwargs)
+
+
+class FacturaDistribuida(TimeStampedModel):
+    """Modelo de distribución de factura de cliente."""
+
+    factura = models.ForeignKey(Factura, blank=False, on_delete=models.CASCADE)
+    distribuida = models.BooleanField(default=False)
+    monto_total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+
+    def __str__(self):
+        """Representación del modelo."""
+        return f'{self.factura.numero} | {self.cliente} | {self.monto_total}'
+
+    class Meta:
+        """Configuraciones del modelo."""
+
+        verbose_name = 'factura distribuida'
+        verbose_name_plural = 'facturas distribuidas'
