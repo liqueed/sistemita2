@@ -108,6 +108,11 @@ class Command(BaseCommand):
                     'codename': 'list_costo',
                     'content_type': ContentType.objects.get(model='costo'),
                 },
+                {
+                    'name': 'Puede listar facturas distribuidas',
+                    'codename': 'list_facturadistribuida',
+                    'content_type': ContentType.objects.get(model='facturadistribuida'),
+                },
                 # Reportes
                 {
                     'name': 'Puede ver reportes de Facturas A Clientes',
