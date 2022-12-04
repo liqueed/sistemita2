@@ -8,7 +8,7 @@ from sistemita.core.constants import MONEDAS
 
 # Models
 from sistemita.core.models.archivo import Archivo
-from sistemita.core.models.cliente import Factura
+from sistemita.core.models.cliente import Factura, FacturaDistribuida
 from sistemita.core.models.entidad import Distrito, Localidad, Provincia
 from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
 
@@ -116,3 +116,24 @@ class FacturaProveedorImputada(TimeStampedModel, models.Model):
         """Valida que el total de la factura no sea negativo."""
         self.total_factura = max(self.total_factura, 0.0)
         return super().save(*args, **kwargs)
+
+
+class FacturaDistribuidaProveedor(TimeStampedModel):
+    """Modelo de distribución de factura de cliente asignado a cada proveedor."""
+
+    factura_distribucion = models.ForeignKey(FacturaDistribuida, blank=False, on_delete=models.CASCADE)
+    proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
+    monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    factura_proveedor = models.ForeignKey(
+        FacturaProveedor, blank=True, null=True, on_delete=models.CASCADE, related_name='facturas_distribuidas'
+    )
+
+    class Meta:
+        """Configuraciones del modelo."""
+
+        verbose_name = 'factura distribuida a proveedor'
+        verbose_name_plural = 'facturas distribuidas a proveedores'
+
+    def __str__(self):
+        """Representación del modelo."""
+        return f'{self.factura_distribucion.numero} | {self.proveedor} | {self.monto}'
