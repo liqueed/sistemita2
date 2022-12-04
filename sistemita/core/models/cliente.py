@@ -164,3 +164,8 @@ class FacturaDistribuida(TimeStampedModel):
 
         verbose_name = 'factura distribuida'
         verbose_name_plural = 'facturas distribuidas'
+
+    @property
+    def moneda_monto_total(self):
+        """Retorno el monto de la orden de compra."""
+        return f'{self.factura.get_moneda_display()} {self.monto_total}'

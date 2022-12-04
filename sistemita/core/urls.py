@@ -26,6 +26,7 @@ from sistemita.core.views.facturascliente import (
     FacturaListView,
     FacturaUpdateView,
 )
+from sistemita.core.views.facturadistribuida import FacturaDistribuidaListView
 from sistemita.core.views.facturasimputada import (
     FacturaImputadaCreateTemplateView,
     FacturaImputadaDeleteView,
@@ -102,6 +103,8 @@ urlpatterns = [
     path('factura/<int:pk>/editar/', FacturaUpdateView.as_view(), name='factura-update'),
     path('factura/<int:pk>/eliminar/', FacturaDeleteView.as_view(), name='factura-delete'),
     path('factura/importar/', FacturaImportTemplateView.as_view(), name='factura-import'),
+    # Factura Distribuida
+    path('facturadistribuida/', FacturaDistribuidaListView.as_view(), name='facturadistribuida-list'),
     # Factura categoría
     path('facturacategoria/', FacturaCategoriaListView.as_view(), name='facturacategoria-list'),
     path('facturacategoria/agregar/', FacturaCategoriaCreateView.as_view(), name='facturacategoria-create'),
