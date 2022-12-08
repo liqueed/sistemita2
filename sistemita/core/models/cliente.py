@@ -4,6 +4,7 @@
 from django.db import models
 
 # Utils
+from decimal import Decimal
 from sistemita.core.constants import MONEDAS
 
 # Models
@@ -85,6 +86,12 @@ class Factura(FacturaAbstract):
         """Retorno el monto del porcentaje de fondo."""
         return f'{self.get_moneda_display()} {self.porcentaje_fondo_monto}'
 
+    @property
+    def monto_neto_sin_fondo(self):
+        """Retorno el monto neto restado el porcentaje fondo."""
+        monto_fondo = self.neto - Decimal(self.porcentaje_fondo_monto)
+        return self.neto - monto_fondo
+
     class Meta:
         """Configuraciones del modelo."""
 
@@ -151,13 +158,13 @@ class FacturaImputada(TimeStampedModel, models.Model):
 class FacturaDistribuida(TimeStampedModel):
     """Modelo de distribución de factura de cliente."""
 
-    factura = models.ForeignKey(Factura, blank=False, on_delete=models.CASCADE)
+    factura = models.OneToOneField(Factura, blank=False, on_delete=models.CASCADE)
     distribuida = models.BooleanField(default=False)
     monto_total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     def __str__(self):
         """Representación del modelo."""
-        return f'{self.factura.numero} | {self.cliente} | {self.monto_total}'
+        return f'{self.factura.numero} | {self.factura.cliente} | {self.monto_total}'
 
     class Meta:
         """Configuraciones del modelo."""
