@@ -70,7 +70,7 @@
 		      {{ object.factura.numero|default:"-" }}
 		    </a>
 		  </td>
-		  <td>{{ object.cliente.razon_social }}</td>
+		  <td>{{ object.factura.cliente.razon_social }}</td>
 		  <td>
 		    <div class="text-center">
 		      {% if object.factura.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}

@@ -1,10 +1,11 @@
 """Modelo de cliente."""
 
 # Django
-from django.db import models
-
 # Utils
 from decimal import Decimal
+
+from django.db import models
+
 from sistemita.core.constants import MONEDAS
 
 # Models
@@ -89,8 +90,7 @@ class Factura(FacturaAbstract):
     @property
     def monto_neto_sin_fondo(self):
         """Retorno el monto neto restado el porcentaje fondo."""
-        monto_fondo = self.neto - Decimal(self.porcentaje_fondo_monto)
-        return self.neto - monto_fondo
+        return self.neto - Decimal(self.porcentaje_fondo_monto)
 
     class Meta:
         """Configuraciones del modelo."""
