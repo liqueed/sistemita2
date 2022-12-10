@@ -9,6 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.views.generic import TemplateView
 from django_filters.views import FilterView
 
 # Sistemita
@@ -55,6 +56,20 @@ class FacturaDistribuidaListView(PermissionRequiredMixin, SuccessMessageMixin, F
         context['last_created'] = queryset.filter(creado__week=current_week).count()
 
         return context
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class FacturaDistribuidaCreateTemplateView(PermissionRequiredMixin, TemplateView):
+    """Vista para decidir la distribución de una factura de cliente."""
+
+    permission_required = 'core.add_facturadistribuida'
+    raise_exception = True
+    template_name = 'core/facturadistribuida_create.html'
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

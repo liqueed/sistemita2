@@ -92,6 +92,7 @@ class FacturaSerializer(serializers.ModelSerializer):
             'total',
             'archivos',
             'monto_imputado',
+            'monto_neto_sin_fondo',
         ]
 
 

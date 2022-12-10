@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Decidir distribución de factura | Liqueed{% endblock %}
+{% block header %}
+    <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
+    <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
+    <script src="{% static 'js/select2_placeholder.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+	<h1 class="h3 text-gray-800">Distribución Facturas de Clientes</h1>
+	{% if perms.core.list_facturadistribuida %}
+	<a href="{% url 'core:facturadistribuida-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	    <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
+	{% endif %}
+    </div>
+    {% include 'components/messages.html' %}
+
+    <div class="card shadow mb-4">
+	<div class="card-header py-3">
+	    <h6 class="m-0 font-weight-bold text-primary">Agregar distribución</h6>
+	</div>
+	<div class="card-body">
+	    <div class="table-responsive">
+		<form id="facturadistribuida-form">
+		    <fieldset>
+			<legend>Datos</legend>
+
+			<!-- Factura -->
+			<div class="row">
+			    <div class="col-6">
+				<div class="form-group">
+				    <label class="requiredField">
+					Factura
+				    </label>
+				    <div class="">
+					<select class="select form-control" id="factura" name="factura" disabled required>
+					</select>
+					<input id="facturacliente" name="facturacliente" type="hidden" value="{{ pk }}">
+				    </div>
+				</div>
+			    </div>
+			</div>
+			<!--End Factura -->
+
+			<!-- Proveedores -->
+			<div class="card p-4 mb-3" style="width: 55rem;">
+			  <!-- Proveedores y montos -->
+			  <div class="col-11 wrapper-proveedores">
+			    <div class="row group-proveedores">
+			      <!-- Metodo -->
+			      <div class="col-9">
+				<div class="form-group">
+				  <label class="requiredField">
+				    Proveedor<span class="asteriskField">*</span>
+				  </label>
+				  <div>
+				    <div class="wrapper-selector-proveedor">
+				      <select class="selector-proveedor form-control" id="proveedor_1" name="proveedor_1" required>
+					<option value="">---------</option>
+				      </select>
+				    </div>
+				  </div>
+				</div>
+			      </div>
+			      <!-- End Metodo -->
+			      <!-- Monto -->
+			      <div class="col-3">
+				<div class="form-group">
+				  <label class="requiredField">
+				    Monto<span class="asteriskField">*</span>
+				  </label>
+				  <div>
+				    <input class="input-monto numberinput form-control" name="monto_1" type="number" value="0.0" step="0.01" required>
+				  </div>
+				</div>
+			      </div>
+			      <!-- End Monto -->
+			    </div>
+			  </div>
+			  <!-- End Proveedores y montos -->
+
+			  <!-- Agrega proveedor y monto -->
+			  <div class="col-1 pl-0">
+			    <div class="form-group">
+			      <label></label>
+			      <div>
+				<button class="add-proveedor btn btn-success btn-xs mt-3 d-none" title="Agregar proveedor y monto"><i class="fas fa-plus-circle"></i></button>
+			      </div>
+			    </div>
+			  </div>
+			  <!-- End Agrega proveedor y monto -->
+
+			</div>
+			<!-- End Proveedores -->
+
+
+			<!-- Total -->
+			<div class="row wrapper-total mt-2">
+			    <div class="col-2">
+				<div class="form-group">
+				    <label class="requiredField"> Total<span class="asteriskField">*</span> </label>
+				    <div><input class="input-total numberinput form-control" type="number" name="total" value="0.0" step="0.01" required disabled/></div>
+				</div>
+			    </div>
+			</div>
+			<!-- End Total -->
+
+		    </fieldset>
+
+		    <div class="form-group">
+			<div>
+			    <div class="alert-errors alert alert-danger alert-dismissible fade show d-none" role="alert"></div>
+			    <input class="btn btn-primary float-right" id="submit-id-submit" type="submit" name="submit" value="Guardar" />
+			    <input class="btn btn-inverse float-right" id="reset-id-reset" type="reset" name="reset" value="Limpiar" />
+			</div>
+		    </div>
+
+		</form>
+	    </div>
+	</div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+
+// Globales
+var proveedor;
+var proveedores = [];
+var totalFactura;
+
+// Carga datos
+$(document).ready(function() {
+    let idFacturaCliente = $('#facturacliente').val();
+    // factura
+    $.get(`/api/factura/${idFacturaCliente}/`, function(response) {
+	let moneda = response.moneda == 'P' ? '$' : 'USD';
+	totalFactura = response.monto_neto_sin_fondo;
+	$(`#factura`).append(
+	    new Option(`${response.fecha} - ${response.numero} - ${response.cliente.razon_social} - ${moneda} ${response.monto_neto_sin_fondo}`, `${response.id}`, true, true)
+	);
+
+    });
+
+    $('.input-total').val('0.0');
+    $('[name="monto_1"]').val('0.0');
+
+});
+
+$('#proveedor_1').select2({
+    placeholder: 'Selecciona un proveedor',
+    searchInputPlaceholder: 'Buscar por razón social o código fiscal',
+    ajax: {
+	url: '/api/proveedor/',
+	processResults: function (response) {
+	    var data = $.map(response, function (obj) {
+		obj.id = obj.id;
+		obj.text = `${obj.razon_social} - CUIT: ${obj.cuit}`;
+		return obj;
+	    });
+	    return {
+		results: data
+	    };
+	},
+	data: function (params) {
+	    var query = {
+		razon_social__codigo_fiscal__icontains: params.term
+	    }
+	    return query;
+	},
+	cache: true
+    }
+}).on('change', function(){
+    let proveedor = $(this).select2('data')[0];
+    $(this).attr('data-id', proveedor.id);
+    $('.add-proveedor').removeClass('d-none');
+    proveedores.push(proveedor.id);
+});
+
+
+// Clona factura
+$('.add-proveedor').click(function(e){
+    e.preventDefault();
+
+    let cloneProveedor = $('.group-proveedores:first').clone(); // Clono al primer proveedor
+    let countProveedores = $('.group-proveedores').length;
+    let cloneIdProveedor = countProveedores + 1; // Id del proximo elemento clonado
+
+    if (!validateForm()){return;}
+
+
+    cloneProveedor.find(`.wrapper-selector-proveedor`).children().remove();
+    let htmlselector = `<select id="proveedor_${cloneIdProveedor}" class="select form-control selector-proveedor" required>`;
+    htmlselector += `<option value="" selected="">---------</option></select>`;
+    cloneProveedor.find('.wrapper-selector-proveedor').append(htmlselector);
+    cloneProveedor.find('.numberinput').val('0.0');
+    cloneProveedor.find('.numberinput').attr('name', `monto_${cloneIdProveedor}`);
+    cloneProveedor.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
+    $(`.wrapper-proveedores`).append(cloneProveedor);
+
+    // Vuelvo a construir selector
+    cloneProveedor.find('.selector-proveedor').select2({
+	placeholder: 'Selecciona un proveedor',
+	searchInputPlaceholder: 'Buscar por número de factura',
+	ajax: {
+	    url: '/api/proveedor/',
+	    processResults: function (response) {
+		var data = $.map(response, function (obj) {
+		    obj.id = obj.id;
+		    obj.text = `${obj.razon_social} - CUIT: ${obj.cuit}`;
+		    return obj;
+		});
+		return {
+		    results: data
+		};
+	    },
+	    data: function (params) {
+		var query = {
+		    razon_social__codigo_fiscal__icontains: params.term
+		}
+		return query;
+	    },
+	    cache: true
+	}
+    }).on('change', function(){
+	let proveedor = $(this).select2('data')[0];
+	$(this).attr('data-id', proveedor.id);
+	if (proveedores.includes(proveedor.id)){
+	    $('.alert-errors').removeClass('d-none');
+	    $('.error-general').remove();
+	    $('.alert-errors').append('<p class="m-0 error-general">No puede haber proveedores repetidos.</p>');
+	} else {
+	    proveedores.push(proveedor.id)
+	    $('.alert-errors').addClass('d-none');
+	}
+
+    });
+
+});
+
+
+$('.wrapper-proveedores').on('click', '.btn-metodo-remove', function(e){
+    e.preventDefault();
+    $(this).closest(".group-proveedores").remove();
+    getTotal();
+    validProveedores();
+});
+
+$('#facturadistribuida-form').on('change', '.input-monto',function(){
+    getTotal();
+    validTotal();
+});
+
+$('#facturadistribuida-form').on('keyup', '.input-monto', function(){
+    getTotal();
+    validTotal();
+});
+
+
+
+// funciones
+function validateForm(){
+    var validator = $('#facturadistribuida-form').validate({
+	lang: 'es',
+    });
+
+    // Validaciones dinamicas
+    $('[name*="monto"]').each(function () {
+	$(this).rules('add', {
+	    required: true,
+	    notEqual: '0.0',
+	});
+    });
+
+    // Metodos
+    jQuery.validator.addMethod("notEqual", function(value, element, param) {
+	this.optional(element)
+	return this.optional(element) || value !== param;
+    }, "Este campo es obligatorio.");
+
+
+    let result = $("#facturadistribuida-form").valid() && validProveedores() && validTotal();
+
+    // show errors
+    if (result === false) {
+	$('.alert-errors').removeClass('d-none');
+	$('.alert-errors').append('<p class="m-0 error-proveedores-duplicados">Verifique los campos y complete los requeridos para continuar.</p>');
+    } else {
+	if ($('.alert-errors').children().length === 0) {
+	    $('.alert-errors').addClass('d-none');
+	}
+    }
+
+    return result;
+}
+
+
+function getTotal(){
+    let total = 0;
+    $('.input-monto').each(function () {
+	total += Number(parseFloat($(this).val()).toFixed(2));
+    });
+    $('.input-total').val(total);
+    return total;
+}
+
+function validTotal(){
+    if (getTotal() > totalFactura){
+	if ($('.alert-errors .error-total-invalido').length === 0){
+	    $('.alert-errors').removeClass('d-none');
+	    $('.alert-errors').append('<p class="m-0 error-total-invalido">El total distribuido no puede ser mayor al monto de la factura.</p>');
+	}
+	return false;
+    }
+    $('.alert-errors').addClass('d-none');
+    $('.error-total-invalido').remove();
+    return true;
+}
+
+function validProveedores() {
+    var id_proveedores = [];
+    $('.selector-proveedor').each(function(){
+	id_proveedores.push($(this).attr('data-id'));
+    });
+
+    var duplicates = id_proveedores.reduce(function(acc, el, i, arr) {
+	if (arr.indexOf(el) !== i && acc.indexOf(el) < 0) acc.push(el); return acc;
+    }, []);
+
+    if (duplicates.length > 0){
+	return false;
+    }
+    $('.alert-errors').addClass('d-none');
+    $('.error-proveedores-duplicados').remove();
+    return true;
+}
+
+{% endblock %}
