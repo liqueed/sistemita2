@@ -78,7 +78,7 @@
 		  </td>
 		  {% if perms.core.add_facturadistribuida or perms.core.view_facturadistribuida or perms.core.change_facturadistribuida or perms.core.delete_facturadistribuida %}
 		    <td class="text-center">
-		      {% if perms.core.add_facturadistribuida %}
+		      {% if perms.core.add_facturadistribuida and not object.distribuida %}
 			<a class="mr-1 text-decoration-none" href="{% url 'core:facturadistribuida-create' object.factura.pk %}">
 			  <i class="fa fa-share" aria-hidden="true"></i>
 			</a>

@@ -127,13 +127,14 @@
 {% block extra_js %}
 
 // Globales
+var idFacturaCliente;
 var proveedor;
 var proveedores = [];
 var totalFactura;
 
 // Carga datos
 $(document).ready(function() {
-    let idFacturaCliente = $('#facturacliente').val();
+    idFacturaCliente = $('#facturacliente').val();
     // factura
     $.get(`/api/factura/${idFacturaCliente}/`, function(response) {
 	let moneda = response.moneda == 'P' ? '$' : 'USD';
@@ -258,6 +259,55 @@ $('#facturadistribuida-form').on('keyup', '.input-monto', function(){
     validTotal();
 });
 
+
+// Guardar
+$('#submit-id-submit').click(function(e){
+    e.preventDefault();
+    if (!validateForm()){return;}
+
+    let total = $('input[name=total]').val();
+    let proveedores_list = []
+
+    $('.group-proveedores').each(function(){
+	proveedores_list.push({
+	    'id': $(this).find('.selector-proveedor').attr('data-id'),
+	    'monto': $(this).find('.input-monto').val(),
+	    'action': 'add',
+	});
+    });
+
+    let formFacturaDistribuida = {
+	'factura_id': idFacturaCliente,
+	'proveedores_list': proveedores_list,
+    }
+
+    $.ajax({
+	type        : 'POST',
+	url         : '/api/factura-distribuida/',
+	data        : JSON.stringify(formFacturaDistribuida),
+	dataType    : 'json',
+	contentType : 'application/json',
+	encode      : true,
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
+    }).done(function(data) {
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+	if (jqXHR.status == 400) {
+	    let listErrors = jqXHR.responseJSON;
+	    const array = Object.keys(listErrors).map(key => listErrors[key]);
+	    $('.alert-errors').removeClass('d-none');
+	    for (var item in array) {
+		$('.alert-errors').append('<p class="m-0">' + array[item] + '</p>');
+	    }
+	}
+	if (jqXHR.status == 500) {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.alert-errors').append('<p class="m-0">Se produjo un error, revise el formulario e inténtelo nuevamente.</p>');
+	}
+    });
+
+});
 
 
 // funciones

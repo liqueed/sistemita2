@@ -22,6 +22,10 @@ from sistemita.core.constants import (
     TIPOS_FACTURA_IMPORT,
 )
 from sistemita.core.models.cliente import Cliente, Factura, FacturaImputada
+from sistemita.core.models.proveedor import (
+    FacturaDistribuidaProveedor,
+    Proveedor,
+)
 from sistemita.utils.commons import get_total_factura
 from sistemita.utils.strings import (
     MESSAGE_CUIT_INVALID,
@@ -436,3 +440,61 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class FacturaDistribuidaSerializer(serializers.Serializer):
+    """Serializador de distribución de factura cliente."""
+
+    factura_id = serializers.CharField()
+    proveedores_list = serializers.ListField(child=serializers.DictField())
+
+    def validate_factura_id(self, data):
+        """Valida datos de proveedor."""
+        try:
+            factura = Factura.objects.get(pk=data)
+            self.context['factura'] = factura
+        except Factura.DoesNotExist as not_exist:
+            raise serializers.ValidationError('La factura no existe.') from not_exist
+        return factura
+
+    def validate_proveedores_list(self, data):
+        """
+        Valida que los proveedores sean válidos.
+        """
+        proveedores = []
+        montos = 0
+
+        for row in data:
+            try:
+                factura = self.context.get('factura', None)
+                proveedor = Proveedor.objects.get(pk=row.get('id'))
+                proveedores.append({'proveedor': proveedor, 'monto': row.get('monto'), 'action': row.get('action')})
+                montos += float(row.get('monto'))
+            except Proveedor.DoesNotExist:
+                raise serializers.ValidationError('La factura no existe.')
+
+        if factura.monto_neto_sin_fondo > montos:
+            raise serializers.ValidationError('Los montos no pueden superar al total de la factura.')
+
+        return proveedores
+
+    def create(self, validated_data):
+        """Crea instancia"""
+        factura = validated_data.get('factura_id')
+        data = validated_data.get('proveedores_list')
+        monto_total = 0
+        proveedores_list = []
+
+        for item in data:
+            monto = item.get('monto')
+            monto_total += float(monto)
+            FacturaDistribuidaProveedor.objects.create(
+                factura_distribucion=factura.facturadistribuida, proveedor=item.get('proveedor'), monto=monto
+            )
+            proveedores_list.append({'id': item.get('proveedor').pk})
+
+        if monto_total == factura.monto_neto_sin_fondo:
+            factura.facturadistribuida.distribuida = True
+            factura.facturadistribuida.save()
+
+        return {'factura_id': factura.pk, 'proveedores_list': proveedores_list}

@@ -136,4 +136,4 @@ class FacturaDistribuidaProveedor(TimeStampedModel):
 
     def __str__(self):
         """Representación del modelo."""
-        return f'{self.factura_distribucion.numero} | {self.proveedor} | {self.monto}'
+        return f'{self.factura_distribucion.factura.numero} | {self.proveedor} | {self.monto}'
