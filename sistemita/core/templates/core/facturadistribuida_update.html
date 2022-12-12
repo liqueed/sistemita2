@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static crispy_forms_tags %}
-{% block title %}Decidir distribución de factura | Liqueed{% endblock %}
+{% block title %}Editar distribución de factura {{ pk }} | Liqueed{% endblock %}
 {% block header %}
     <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
     <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
@@ -16,17 +16,24 @@
 	</a>
 	{% endif %}
     </div>
-    {% include 'components/messages.html' %}
+    <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create and not request.GET.update %}d-none{% endif %}" role="alert">
+      {% if request.GET.create %}La distribución ha sido creada exitosamente.{% endif %}
+      {% if request.GET.update %}La distribución ha sido modificada exitosamente.{% endif %}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	<span aria-hidden="true">×</span>
+      </button>
+    </div>
 
     <div class="card shadow mb-4">
 	<div class="card-header py-3">
-	    <h6 class="m-0 font-weight-bold text-primary">Agregar distribución</h6>
+	    <h6 class="m-0 font-weight-bold text-primary">Editar distribución</h6>
 	</div>
 	<div class="card-body">
 	    <div class="table-responsive">
 		<form id="facturadistribuida-form">
 		    <fieldset>
-			<legend>Datos</legend>
+		      <legend>Datos</legend>
+		      <input id="facturadistribuida" name="facturadistribuida" type="hidden" value="{{ pk }}">
 
 			<!-- Factura -->
 			<div class="row">
@@ -38,7 +45,7 @@
 				    <div class="">
 					<select class="select form-control" id="factura" name="factura" disabled required>
 					</select>
-					<input id="facturadistribuida" name="facturadistribuida" type="hidden" value="{{ pk }}">
+					<input id="facturacliente" name="facturacliente" type="hidden" value="{{ factura }}">
 				    </div>
 				</div>
 			    </div>
@@ -58,7 +65,7 @@
 				  </label>
 				  <div>
 				    <div class="wrapper-selector-proveedor">
-				      <select class="selector-proveedor form-control" id="proveedor_1" name="proveedor_1" required>
+				      <select class="selector-proveedor form-control" id="proveedor_1" name="proveedor_1" required disabled>
 					<option value="">---------</option>
 				      </select>
 				    </div>
@@ -87,7 +94,7 @@
 			    <div class="form-group">
 			      <label></label>
 			      <div>
-				<button class="add-proveedor btn btn-success btn-xs mt-3 d-none" title="Agregar proveedor y monto"><i class="fas fa-plus-circle"></i></button>
+				<button class="add-proveedor btn btn-success btn-xs mt-3" title="Agregar proveedor y monto"><i class="fas fa-plus-circle"></i></button>
 			      </div>
 			    </div>
 			  </div>
@@ -135,50 +142,45 @@ var totalFactura;
 // Carga datos
 $(document).ready(function() {
     idFacturaDistribuida = $('#facturadistribuida').val();
-    // factura
     $.get(`/api/factura-distribuida/${idFacturaDistribuida}/`, function(response) {
+	// factura
 	let moneda = response.factura.moneda == 'P' ? '$' : 'USD';
+	totalFactura = response.factura.monto_neto_sin_fondo;
 	$(`#factura`).append(
 	    new Option(`${response.factura.fecha} - ${response.factura.numero} - ${response.factura.cliente.razon_social} - ${moneda} ${response.factura.monto_neto_sin_fondo}`, `${response.factura.id}`, true, true)
 	);
 
+	// proveedores y montos
+	response.factura_distribuida_proveedores.forEach(function(distribucion, _index){
+	    let idDistribucion = distribucion.id;
+	    let indexDistribucion = _index + 1;
+	    if (indexDistribucion > 1){ // Si no es el primero previamente tengo que clonar
+		let cloneDistribucion = $('.group-distribucion-proveedores:first').clone(true);
+		cloneDistribucion.attr('data-inline', `{"id": ${idDistribucion}, "action": "update"}`);
+		cloneDistribucion.find('.selector-proveedor').attr('id', `proveedor_${indexDistribucion}`);
+		cloneDistribucion.find('.selector-proveedor').attr('data-id', `${distribucion.proveedor.id}`);
+		cloneDistribucion.find('.selector-proveedor').attr('name', `proveedor_${indexDistribucion}`);
+		cloneDistribucion.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
+		cloneDistribucion.find('.input-monto').attr('name', `monto_${indexDistribucion}`);
+		cloneDistribucion.find('.input-monto').val(distribucion.monto);
+		// cloneDistribucion.attr('data-inline', `{"id": ${idDistribucion}, "action": "update"}`);
+		$('.group-distribucion-proveedores:last').after(cloneDistribucion);
+	    } else {
+		// Defino data line para el elemento existente
+		$(`.group-distribucion-proveedores:first`).attr('data-inline', `{"id": ${idDistribucion}, 'action': "update"}`);
+		$(`.group-distribucion-proveedores:first`).find('.selector-proveedor').attr('data-id', `${distribucion.proveedor.id}`);
+		$(`.group-distribucion-proveedores:first`).find('.input-monto').val(distribucion.monto);
+	    }
+
+	    $(`#proveedor_${indexDistribucion}`).append(
+		new Option(`${distribucion.proveedor.razon_social} - ${distribucion.proveedor.cuit}`, `${distribucion.id}`, true, true)
+	    );
+	});
+
+	$('.input-total').val(response.monto_total);
     });
 
-    $('.input-total').val('0.0');
-    $('[name="monto_1"]').val('0.0');
-
 });
-
-$('#proveedor_1').select2({
-    placeholder: 'Selecciona un proveedor',
-    searchInputPlaceholder: 'Buscar por razón social o código fiscal',
-    ajax: {
-	url: '/api/proveedor/',
-	processResults: function (response) {
-	    var data = $.map(response, function (obj) {
-		obj.id = obj.id;
-		obj.text = `${obj.razon_social} - CUIT: ${obj.cuit}`;
-		return obj;
-	    });
-	    return {
-		results: data
-	    };
-	},
-	data: function (params) {
-	    var query = {
-		razon_social__codigo_fiscal__icontains: params.term
-	    }
-	    return query;
-	},
-	cache: true
-    }
-}).on('change', function(){
-    let proveedor = $(this).select2('data')[0];
-    $(this).attr('data-id', proveedor.id);
-    $('.add-proveedor').removeClass('d-none');
-    proveedores.push(proveedor.id);
-});
-
 
 // Clona factura
 $('.add-proveedor').click(function(e){
@@ -194,6 +196,7 @@ $('.add-proveedor').click(function(e){
     cloneProveedor.find(`.wrapper-selector-proveedor`).children().remove();
     let htmlselector = `<select id="proveedor_${cloneIdProveedor}" class="select form-control selector-proveedor" required>`;
     htmlselector += `<option value="" selected="">---------</option></select>`;
+    cloneProveedor.attr('data-inline', `{"action": "add"}`);
     cloneProveedor.find('.wrapper-selector-proveedor').append(htmlselector);
     cloneProveedor.find('.numberinput').val('0.0');
     cloneProveedor.find('.numberinput').attr('name', `monto_${cloneIdProveedor}`);
@@ -243,7 +246,11 @@ $('.add-proveedor').click(function(e){
 
 $('.wrapper-distribucion-proveedores').on('click', '.btn-metodo-remove', function(e){
     e.preventDefault();
-    $(this).closest(".group-distribucion-proveedores").remove();
+    let data = $(this).closest('.group-distribucion-proveedores').attr('data-inline');
+    data = JSON.parse(data);
+    let idDistribucion = data.id;
+    $(this).closest('.group-distribucion-proveedores').attr('data-inline', `{"id": ${idDistribucion}, "action": "delete"}`);
+    $(this).closest(".group-distribucion-proveedores").addClass('d-none');
     getTotal();
     validProveedores();
 });
@@ -268,10 +275,11 @@ $('#submit-id-submit').click(function(e){
     let proveedores_list = []
 
     $('.group-distribucion-proveedores').each(function(){
+	let data = $(this).attr('data-inline');
 	proveedores_list.push({
 	    'id': $(this).find('.selector-proveedor').attr('data-id'),
 	    'monto': $(this).find('.input-monto').val(),
-	    'action': 'add',
+	    'action': JSON.parse(data.replace(/'/g, '"')),
 	});
     });
 
@@ -281,8 +289,8 @@ $('#submit-id-submit').click(function(e){
     }
 
     $.ajax({
-	type        : 'POST',
-	url         : '/api/factura-distribuida/',
+	type        : 'PUT',
+	url         : `/api/factura-distribuida/${idFacturaDistribuida}/`,
 	data        : JSON.stringify(formFacturaDistribuida),
 	dataType    : 'json',
 	contentType : 'application/json',
@@ -291,7 +299,6 @@ $('#submit-id-submit').click(function(e){
 	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
 	}
     }).done(function(data) {
-	window.location.href = '{% url 'core:facturadistribuida-update' pk=0 %}?update=1'.replace('0', idFacturaDistribuida);
     }).fail(function(jqXHR, textStatus, errorThrown) {
 	if (jqXHR.status == 400) {
 	    let listErrors = jqXHR.responseJSON;
@@ -350,7 +357,9 @@ function validateForm(){
 function getTotal(){
     let total = 0;
     $('.input-monto').each(function () {
-	total += Number(parseFloat($(this).val()).toFixed(2));
+	if (!$(this).closest('.group-distribucion-proveedores').hasClass('d-none')){
+	    total += Number(parseFloat($(this).val()).toFixed(2));
+	}
     });
     $('.input-total').val(total);
     return total;

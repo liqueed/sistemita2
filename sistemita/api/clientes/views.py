@@ -148,5 +148,6 @@ class FacturaDistribuidaViewSet(
         """Devuelve un serializador en base a una acción."""
         action_mappings = {
             'create': FacturaDistribuidaSerializer,
+            'update': FacturaDistribuidaSerializer,
         }
         return action_mappings.get(self.action, FacturaDistribuidaModelSerializer)

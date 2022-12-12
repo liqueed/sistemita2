@@ -76,3 +76,17 @@ class FacturaDistribuidaCreateTemplateView(PermissionRequiredMixin, TemplateView
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
         return redirect('login')
+
+
+class FacturaDistribuidaUpdateTemplateView(PermissionRequiredMixin, TemplateView):
+    """Vista para editar la distribución de una factura de cliente."""
+
+    permission_required = 'core.change_facturadistribuida'
+    raise_exception = True
+    template_name = 'core/facturadistribuida_update.html'
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')

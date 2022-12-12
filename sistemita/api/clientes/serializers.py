@@ -468,17 +468,17 @@ class FacturaDistribuidaModelSerializer(serializers.ModelSerializer):
 class FacturaDistribuidaSerializer(serializers.Serializer):
     """Serializador de distribución de factura cliente."""
 
-    factura_id = serializers.CharField()
+    factura_distribuida_id = serializers.CharField()
     proveedores_list = serializers.ListField(child=serializers.DictField())
 
-    def validate_factura_id(self, data):
+    def validate_factura_distribuida_id(self, data):
         """Valida datos de proveedor."""
         try:
-            factura = Factura.objects.get(pk=data)
-            self.context['factura'] = factura
-        except Factura.DoesNotExist as not_exist:
-            raise serializers.ValidationError('La factura no existe.') from not_exist
-        return factura
+            factura_distribuida = FacturaDistribuida.objects.get(pk=data)
+            self.context['factura_distribuida'] = factura_distribuida
+        except FacturaDistribuida.DoesNotExist as not_exist:
+            raise serializers.ValidationError('La factura distribuida no existe.') from not_exist
+        return factura_distribuida
 
     def validate_proveedores_list(self, data):
         """
@@ -489,21 +489,21 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
 
         for row in data:
             try:
-                factura = self.context.get('factura', None)
+                factura_distribuida = self.context.get('factura_distribuida', None)
                 proveedor = Proveedor.objects.get(pk=row.get('id'))
                 proveedores.append({'proveedor': proveedor, 'monto': row.get('monto'), 'action': row.get('action')})
                 montos += float(row.get('monto'))
             except Proveedor.DoesNotExist:
                 raise serializers.ValidationError('La factura no existe.')
 
-        if factura.monto_neto_sin_fondo > montos:
+        if factura_distribuida.factura.monto_neto_sin_fondo > montos:
             raise serializers.ValidationError('Los montos no pueden superar al total de la factura.')
 
         return proveedores
 
     def create(self, validated_data):
         """Crea instancia"""
-        factura = validated_data.get('factura_id')
+        facturadistribuida = validated_data.get('factura_distribuida_id')
         data = validated_data.get('proveedores_list')
         monto_total = 0
         proveedores_list = []
@@ -512,12 +512,16 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             monto = item.get('monto')
             monto_total += float(monto)
             FacturaDistribuidaProveedor.objects.create(
-                factura_distribucion=factura.facturadistribuida, proveedor=item.get('proveedor'), monto=monto
+                factura_distribucion=facturadistribuida, proveedor=item.get('proveedor'), monto=monto
             )
             proveedores_list.append({'id': item.get('proveedor').pk})
 
-        if monto_total == factura.monto_neto_sin_fondo:
-            factura.facturadistribuida.distribuida = True
-            factura.facturadistribuida.save()
+        if monto_total == facturadistribuida.factura.monto_neto_sin_fondo:
+            facturadistribuida.distribuida = True
+            facturadistribuida.save()
 
-        return {'factura_id': factura.pk, 'proveedores_list': proveedores_list}
+        return {'distribuida_id': facturadistribuida.pk, 'proveedores_list': proveedores_list}
+
+    def update(self, instance, validated_data):
+        """Edita la instancia."""
+        pass
