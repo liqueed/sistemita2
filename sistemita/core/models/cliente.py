@@ -158,7 +158,7 @@ class FacturaImputada(TimeStampedModel, models.Model):
 class FacturaDistribuida(TimeStampedModel):
     """Modelo de distribución de factura de cliente."""
 
-    factura = models.OneToOneField(Factura, blank=False, on_delete=models.CASCADE)
+    factura = models.OneToOneField(Factura, blank=False, on_delete=models.CASCADE, related_name='factura_distribuida')
     distribuida = models.BooleanField(default=False)
     monto_total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
