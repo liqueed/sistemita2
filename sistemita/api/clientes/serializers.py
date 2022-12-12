@@ -15,13 +15,21 @@ from sistemita.api.entidades.serializers import (
     LocalidadSerializer,
     ProvinciaSerializer,
 )
+from sistemita.api.proveedores.serializers import (
+    FacturaDistribuidaProveedorModelSerializer,
+)
 from sistemita.core.constants import (
     MONEDAS,
     TIPOS_DOC_IMPORT,
     TIPOS_FACTURA,
     TIPOS_FACTURA_IMPORT,
 )
-from sistemita.core.models.cliente import Cliente, Factura, FacturaImputada
+from sistemita.core.models.cliente import (
+    Cliente,
+    Factura,
+    FacturaDistribuida,
+    FacturaImputada,
+)
 from sistemita.core.models.proveedor import (
     FacturaDistribuidaProveedor,
     Proveedor,
@@ -97,6 +105,7 @@ class FacturaSerializer(serializers.ModelSerializer):
             'archivos',
             'monto_imputado',
             'monto_neto_sin_fondo',
+            'factura_distribuida',
         ]
 
 
@@ -440,6 +449,20 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class FacturaDistribuidaModelSerializer(serializers.ModelSerializer):
+    """Serializar del modelo Factura distribuida"""
+
+    factura = FacturaSerializer()
+    factura_distribuida_proveedores = FacturaDistribuidaProveedorModelSerializer(many=True)
+
+    class Meta:
+        """Clase meta."""
+
+        model = FacturaDistribuida
+        fields = ('id', 'factura', 'monto_total', 'factura_distribuida_proveedores')
+        read_only_fields = ('id', 'factura', 'monto_total', 'factura_distribuida_proveedores')
 
 
 class FacturaDistribuidaSerializer(serializers.Serializer):

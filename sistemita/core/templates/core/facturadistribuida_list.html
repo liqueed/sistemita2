@@ -79,17 +79,17 @@
 		  {% if perms.core.add_facturadistribuida or perms.core.view_facturadistribuida or perms.core.change_facturadistribuida or perms.core.delete_facturadistribuida %}
 		    <td class="text-center">
 		      {% if perms.core.add_facturadistribuida and not object.distribuida %}
-			<a class="mr-1 text-decoration-none" href="{% url 'core:facturadistribuida-create' object.factura.pk %}">
+			<a class="mr-1 text-decoration-none" href="{% url 'core:facturadistribuida-distribute' object.pk %}">
 			  <i class="fa fa-share" aria-hidden="true"></i>
 			</a>
 		      {% endif %}
 		      {% if perms.core.change_facturadistribuida %}
-			<a class="mr-1 text-decoration-none" href="{% url 'core:facturacategoria-update' object.pk %}">
+			<a class="mr-1 text-decoration-none" href="{% url 'core:facturadistribuida-update' object.pk %}">
 			  <i class="fas fa-wrench"></i>
 			</a>
 		      {% endif %}
 		      {% if perms.core.view_facturadistribuida %}
-			<a class="mr-1 text-decoration-none" href="{% url 'core:factura-detail' object.factura.pk %}">
+			<a class="mr-1 text-decoration-none" href="{% url 'core:factura-detail' object.pk %}">
 			  <i class="far fa-eye"></i>
 			</a>
 		      {% endif %}

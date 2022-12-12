@@ -38,7 +38,7 @@
 				    <div class="">
 					<select class="select form-control" id="factura" name="factura" disabled required>
 					</select>
-					<input id="facturacliente" name="facturacliente" type="hidden" value="{{ pk }}">
+					<input id="facturadistribuida" name="facturadistribuida" type="hidden" value="{{ pk }}">
 				    </div>
 				</div>
 			    </div>
@@ -127,20 +127,19 @@
 {% block extra_js %}
 
 // Globales
-var idFacturaCliente;
+var idFacturaDistribuida;
 var proveedor;
 var proveedores = [];
 var totalFactura;
 
 // Carga datos
 $(document).ready(function() {
-    idFacturaCliente = $('#facturacliente').val();
+    idFacturaDistribuida = $('#facturadistribuida').val();
     // factura
-    $.get(`/api/factura/${idFacturaCliente}/`, function(response) {
-	let moneda = response.moneda == 'P' ? '$' : 'USD';
-	totalFactura = response.monto_neto_sin_fondo;
+    $.get(`/api/factura-distribuida/${idFacturaDistribuida}/`, function(response) {
+	let moneda = response.factura.moneda == 'P' ? '$' : 'USD';
 	$(`#factura`).append(
-	    new Option(`${response.fecha} - ${response.numero} - ${response.cliente.razon_social} - ${moneda} ${response.monto_neto_sin_fondo}`, `${response.id}`, true, true)
+	    new Option(`${response.factura.fecha} - ${response.factura.numero} - ${response.factura.cliente.razon_social} - ${moneda} ${response.factura.monto_neto_sin_fondo}`, `${response.factura.id}`, true, true)
 	);
 
     });
@@ -292,6 +291,7 @@ $('#submit-id-submit').click(function(e){
 	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
 	}
     }).done(function(data) {
+	window.location.href = '{% url 'core:facturadistribuida-update' pk=0 %}?update=1'.replace('0', idFacturaDistribuida);
     }).fail(function(jqXHR, textStatus, errorThrown) {
 	if (jqXHR.status == 400) {
 	    let listErrors = jqXHR.responseJSON;

@@ -15,6 +15,7 @@ from sistemita.api.clientes.filters import ClienteFilterSet, FacturaFilterSet
 from sistemita.api.clientes.serializers import (
     ClienteSerializer,
     FacturaBeforeImportSerializer,
+    FacturaDistribuidaModelSerializer,
     FacturaDistribuidaSerializer,
     FacturaImportSerializer,
     FacturaImputadaModelSerializer,
@@ -142,3 +143,10 @@ class FacturaDistribuidaViewSet(
     queryset = FacturaDistribuida.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = FacturaDistribuidaSerializer
+
+    def get_serializer_class(self):
+        """Devuelve un serializador en base a una acción."""
+        action_mappings = {
+            'create': FacturaDistribuidaSerializer,
+        }
+        return action_mappings.get(self.action, FacturaDistribuidaModelSerializer)
