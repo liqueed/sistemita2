@@ -83,6 +83,11 @@ class Factura(FacturaAbstract):
         return get_porcentaje(self.total, self.porcentaje_fondo)
 
     @property
+    def porcentaje_fondo_neto(self):
+        """Retorno el monto del porcentaje de fondo desde el monto neto."""
+        return get_porcentaje(self.neto, self.porcentaje_fondo)
+
+    @property
     def moneda_porcentaje_fondo_monto(self):
         """Retorno el monto del porcentaje de fondo."""
         return f'{self.get_moneda_display()} {self.porcentaje_fondo_monto}'
@@ -90,7 +95,7 @@ class Factura(FacturaAbstract):
     @property
     def monto_neto_sin_fondo(self):
         """Retorno el monto neto restado el porcentaje fondo."""
-        return self.neto - Decimal(self.porcentaje_fondo_monto)
+        return self.neto - round(Decimal(self.porcentaje_fondo_neto), 2)
 
     @property
     def moneda_monto_neto_sin_fondo(self):

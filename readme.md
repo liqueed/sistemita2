@@ -53,12 +53,19 @@ Para agregar los permisos:
 
 	$ docker-compose run --rm django python manage.py add_permissions
 
-
 ### Fixtures
 
 Para cargar datos iniciales correr el siguiente comando:
 
 	$ docker-compose run --rm django python manage.py loaddata fixtures/*.json
+
+
+### Facturas distribuidas
+
+En caso de que las facturas ya estén cargadas:
+
+	$ docker-compose run --rm django python manage.py load_facturas_distribuidas
+
 
 ## Test
 
