@@ -66,6 +66,18 @@ Para correr los tests de integración correr el comando:
 
 	$ docker-compose run --rm django python manage.py test
 
+
+## Restaurar un backup de db
+
+- Copiar backup
+
+		$ docker cp backup.sql.gz <container>:/backups/backup.sql.gz
+
+- Restore
+
+		$ docker-compose exec postgres restore backup.sql.gz
+
+
 ## Acceso al módulo de mis facturas
 
 Pasos para que un proveedor pueda ver sus facturas:
