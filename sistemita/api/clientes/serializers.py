@@ -521,8 +521,9 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
 
         if monto_distribuido == facturadistribuida.factura.monto_neto_sin_fondo:
             facturadistribuida.distribuida = True
-            facturadistribuida.monto_distribiuido = monto_distribuido
-            facturadistribuida.save()
+
+        facturadistribuida.monto_distribuido = monto_distribuido
+        facturadistribuida.save()
 
         return {'factura_distribuida_id': facturadistribuida.pk, 'distribucion_list': proveedores_list}
 
@@ -548,7 +549,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             elif data.get('action') == 'delete':
                 FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).delete()
 
-        facturadistribuida.monto_distribiuido = monto_distribuido
+        facturadistribuida.monto_distribuido = monto_distribuido
         if monto_distribuido == facturadistribuida.factura.monto_neto_sin_fondo:
             facturadistribuida.distribuida = True
         facturadistribuida.save()
