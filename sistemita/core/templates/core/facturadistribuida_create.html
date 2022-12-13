@@ -176,7 +176,7 @@ $('#proveedor_1').select2({
     let proveedor = $(this).select2('data')[0];
     $(this).attr('data-id', proveedor.id);
     $('.add-proveedor').removeClass('d-none');
-    proveedores.push(proveedor.id);
+    proveedores.push(proveedor.id.toString());
 });
 
 
@@ -232,7 +232,7 @@ $('.add-proveedor').click(function(e){
 	    $('.error-general').remove();
 	    $('.alert-errors').append('<p class="m-0 error-general">No puede haber proveedores repetidos.</p>');
 	} else {
-	    proveedores.push(proveedor.id)
+	    proveedores.push(proveedor.id.toString())
 	    $('.alert-errors').addClass('d-none');
 	}
 
@@ -372,7 +372,7 @@ function validTotal(){
 function validProveedores() {
     var id_proveedores = [];
     $('.selector-proveedor').each(function(){
-	id_proveedores.push($(this).attr('data-id'));
+	id_proveedores.push($(this).attr('data-id').toString());
     });
 
     var duplicates = id_proveedores.reduce(function(acc, el, i, arr) {

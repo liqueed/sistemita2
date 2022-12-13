@@ -175,6 +175,7 @@ $(document).ready(function() {
 	    $(`#proveedor_${indexDistribucion}`).append(
 		new Option(`${distribucion.proveedor.razon_social} - ${distribucion.proveedor.cuit}`, `${distribucion.id}`, true, true)
 	    );
+	    proveedores.push(distribucion.proveedor.id.toString())
 	});
 
 	$('.input-total').val(response.monto_total);
@@ -235,7 +236,7 @@ $('.add-proveedor').click(function(e){
 	    $('.error-general').remove();
 	    $('.alert-errors').append('<p class="m-0 error-general">No puede haber proveedores repetidos.</p>');
 	} else {
-	    proveedores.push(proveedor.id)
+	    proveedores.push(proveedor.id.toString())
 	    $('.alert-errors').addClass('d-none');
 	}
 
@@ -381,7 +382,7 @@ function validTotal(){
 function validProveedores() {
     var id_proveedores = [];
     $('.selector-proveedor').each(function(){
-	id_proveedores.push($(this).attr('data-id'));
+	id_proveedores.push($(this).attr('data-id').toString());
     });
 
     var duplicates = id_proveedores.reduce(function(acc, el, i, arr) {
