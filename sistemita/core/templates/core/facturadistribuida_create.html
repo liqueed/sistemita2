@@ -265,19 +265,20 @@ $('#submit-id-submit').click(function(e){
     if (!validateForm()){return;}
 
     let total = $('input[name=total]').val();
-    let proveedores_list = []
+    let distribucion_list = []
+    let data = '{"action": "add"}';
 
     $('.group-distribucion-proveedores').each(function(){
-	proveedores_list.push({
+	distribucion_list.push({
 	    'id': $(this).find('.selector-proveedor').attr('data-id'),
 	    'monto': $(this).find('.input-monto').val(),
-	    'action': 'add',
+	    'data': JSON.parse(data.replace(/'/g, '"')),
 	});
     });
 
     let formFacturaDistribuida = {
 	'factura_distribuida_id': idFacturaDistribuida,
-	'proveedores_list': proveedores_list,
+	'distribucion_list': distribucion_list,
     }
 
     $.ajax({

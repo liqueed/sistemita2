@@ -469,7 +469,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
     """Serializador de distribución de factura cliente."""
 
     factura_distribuida_id = serializers.CharField()
-    proveedores_list = serializers.ListField(child=serializers.DictField())
+    distribucion_list = serializers.ListField(child=serializers.DictField())
 
     def validate_factura_distribuida_id(self, data):
         """Valida datos de proveedor."""
@@ -480,48 +480,75 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             raise serializers.ValidationError('La factura distribuida no existe.') from not_exist
         return factura_distribuida
 
-    def validate_proveedores_list(self, data):
+    def validate_distribucion_list(self, data):
         """
         Valida que los proveedores sean válidos.
         """
-        proveedores = []
+        distribucion = []
         montos = 0
+        factura_distribuida = self.context.get('factura_distribuida', None)
 
         for row in data:
             try:
-                factura_distribuida = self.context.get('factura_distribuida', None)
                 proveedor = Proveedor.objects.get(pk=row.get('id'))
-                proveedores.append({'proveedor': proveedor, 'monto': row.get('monto'), 'action': row.get('action')})
-                montos += float(row.get('monto'))
+                data = row.get('data')
+                distribucion.append({'proveedor': proveedor, 'monto': row.get('monto'), 'data': data})
+                if data.get('action') in ['add', 'update']:
+                    montos += float(row.get('monto'))
             except Proveedor.DoesNotExist:
                 raise serializers.ValidationError('La factura no existe.')
 
-        if factura_distribuida.factura.monto_neto_sin_fondo > montos:
+        if montos > factura_distribuida.factura.monto_neto_sin_fondo:
             raise serializers.ValidationError('Los montos no pueden superar al total de la factura.')
 
-        return proveedores
+        return distribucion
 
     def create(self, validated_data):
         """Crea instancia"""
         facturadistribuida = validated_data.get('factura_distribuida_id')
-        data = validated_data.get('proveedores_list')
+        distribucion_list = validated_data.get('distribucion_list')
         monto_total = 0
         proveedores_list = []
 
-        for item in data:
+        for item in distribucion_list:
             monto = item.get('monto')
             monto_total += float(monto)
             FacturaDistribuidaProveedor.objects.create(
                 factura_distribucion=facturadistribuida, proveedor=item.get('proveedor'), monto=monto
             )
+            # TODO: enviar email al proveedor
             proveedores_list.append({'id': item.get('proveedor').pk})
 
         if monto_total == facturadistribuida.factura.monto_neto_sin_fondo:
             facturadistribuida.distribuida = True
             facturadistribuida.save()
 
-        return {'distribuida_id': facturadistribuida.pk, 'proveedores_list': proveedores_list}
+        return {'factura_distribuida_id': facturadistribuida.pk, 'distribucion_list': proveedores_list}
 
     def update(self, instance, validated_data):
         """Edita la instancia."""
-        pass
+        facturadistribuida = validated_data.get('factura_distribuida_id')
+        distribucion_list = validated_data.get('distribucion_list')
+        monto_total = 0
+        proveedores_list = []
+
+        for item in distribucion_list:
+            monto = item.get('monto')
+            data = item.get('data')
+            if data.get('action') == 'add':
+                monto_total += float(monto)
+                FacturaDistribuidaProveedor.objects.create(
+                    factura_distribucion=facturadistribuida, proveedor=item.get('proveedor'), monto=monto
+                )
+                proveedores_list.append({'id': item.get('proveedor').pk})
+            elif data.get('action') == 'update':
+                monto_total += float(monto)
+                FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).update(monto=monto)
+            elif data.get('action') == 'delete':
+                FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).delete()
+
+        if monto_total == facturadistribuida.factura.monto_neto_sin_fondo:
+            facturadistribuida.distribuida = True
+            facturadistribuida.save()
+
+        return {'factura_distribuida_id': facturadistribuida.pk, 'distribucion_list': proveedores_list}

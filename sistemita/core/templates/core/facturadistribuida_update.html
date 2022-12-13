@@ -273,20 +273,20 @@ $('#submit-id-submit').click(function(e){
     if (!validateForm()){return;}
 
     let total = $('input[name=total]').val();
-    let proveedores_list = []
+    let distribucion_list = []
 
     $('.group-distribucion-proveedores').each(function(){
 	let data = $(this).attr('data-inline');
-	proveedores_list.push({
+	distribucion_list.push({
 	    'id': $(this).find('.selector-proveedor').attr('data-id'),
 	    'monto': $(this).find('.input-monto').val(),
-	    'action': JSON.parse(data.replace(/'/g, '"')),
+	    'data': JSON.parse(data.replace(/'/g, '"')),
 	});
     });
 
     let formFacturaDistribuida = {
 	'factura_distribuida_id': idFacturaDistribuida,
-	'proveedores_list': proveedores_list,
+	'distribucion_list': distribucion_list,
     }
 
     $.ajax({
@@ -300,6 +300,21 @@ $('#submit-id-submit').click(function(e){
 	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
 	}
     }).done(function(data) {
+	console.log(data)
+	if ('{{ perms.core.change_facturadistribuida }}' === 'True'){
+	    window.location.href = '{% url 'core:facturadistribuida-update' pk=0 %}?update=1'.replace('0', data.factura_distribuida_id);
+	} else {
+	    // TODO
+	    if ('{{ perms.core.view_facturaimputada }}' === 'True'){
+		window.location.href = '{% url 'core:facturaimputada-detail' pk=0 %}?update=1'.replace('0', data.factura_distribuida_id);
+	    } else {
+		if ('{{ perms.core.list_facturadistribuida }}' === 'True'){
+		    window.location.href = '{% url 'core:facturadistribuida-list' %}?update=1';
+		} else {
+		    window.location.href = '{% url 'core:home' %}?create=1&type=facturadistribuida';
+		}
+	    }
+	}
     }).fail(function(jqXHR, textStatus, errorThrown) {
 	if (jqXHR.status == 400) {
 	    let listErrors = jqXHR.responseJSON;
