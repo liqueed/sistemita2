@@ -461,8 +461,8 @@ class FacturaDistribuidaModelSerializer(serializers.ModelSerializer):
         """Clase meta."""
 
         model = FacturaDistribuida
-        fields = ('id', 'factura', 'monto_total', 'factura_distribuida_proveedores')
-        read_only_fields = ('id', 'factura', 'monto_total', 'factura_distribuida_proveedores')
+        fields = ('id', 'factura', 'monto_distribuido', 'factura_distribuida_proveedores')
+        read_only_fields = ('id', 'factura', 'monto_distribuido', 'factura_distribuida_proveedores')
 
 
 class FacturaDistribuidaSerializer(serializers.Serializer):
@@ -507,20 +507,21 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
         """Crea instancia"""
         facturadistribuida = validated_data.get('factura_distribuida_id')
         distribucion_list = validated_data.get('distribucion_list')
-        monto_total = 0
+        monto_distribuido = 0
         proveedores_list = []
 
         for item in distribucion_list:
             monto = item.get('monto')
-            monto_total += float(monto)
+            monto_distribuido += float(monto)
             FacturaDistribuidaProveedor.objects.create(
                 factura_distribucion=facturadistribuida, proveedor=item.get('proveedor'), monto=monto
             )
             # TODO: enviar email al proveedor
             proveedores_list.append({'id': item.get('proveedor').pk})
 
-        if monto_total == facturadistribuida.factura.monto_neto_sin_fondo:
+        if monto_distribuido == facturadistribuida.factura.monto_neto_sin_fondo:
             facturadistribuida.distribuida = True
+            facturadistribuida.monto_distribiuido = monto_distribuido
             facturadistribuida.save()
 
         return {'factura_distribuida_id': facturadistribuida.pk, 'distribucion_list': proveedores_list}
@@ -529,26 +530,27 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
         """Edita la instancia."""
         facturadistribuida = validated_data.get('factura_distribuida_id')
         distribucion_list = validated_data.get('distribucion_list')
-        monto_total = 0
+        monto_distribuido = 0
         proveedores_list = []
 
         for item in distribucion_list:
             monto = item.get('monto')
             data = item.get('data')
             if data.get('action') == 'add':
-                monto_total += float(monto)
+                monto_distribuido += float(monto)
                 FacturaDistribuidaProveedor.objects.create(
                     factura_distribucion=facturadistribuida, proveedor=item.get('proveedor'), monto=monto
                 )
                 proveedores_list.append({'id': item.get('proveedor').pk})
             elif data.get('action') == 'update':
-                monto_total += float(monto)
+                monto_distribuido += float(monto)
                 FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).update(monto=monto)
             elif data.get('action') == 'delete':
                 FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).delete()
 
-        if monto_total == facturadistribuida.factura.monto_neto_sin_fondo:
+        facturadistribuida.monto_distribiuido = monto_distribuido
+        if monto_distribuido == facturadistribuida.factura.monto_neto_sin_fondo:
             facturadistribuida.distribuida = True
-            facturadistribuida.save()
+        facturadistribuida.save()
 
         return {'factura_distribuida_id': facturadistribuida.pk, 'distribucion_list': proveedores_list}

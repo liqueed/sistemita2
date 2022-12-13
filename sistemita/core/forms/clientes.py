@@ -276,10 +276,7 @@ class FacturaForm(forms.ModelForm):
                 disponible=instance.cobrado,
                 moneda=instance.moneda,
             )
-            FacturaDistribuida.objects.create(
-                factura=instance,
-                monto_total=instance.monto_neto_sin_fondo,
-            )
+            FacturaDistribuida.objects.create(factura=instance)
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
             instance.factura_fondo.update_or_create(
@@ -287,10 +284,6 @@ class FacturaForm(forms.ModelForm):
                 monto=instance.porcentaje_fondo_monto,
                 monto_disponible=instance.porcentaje_fondo_monto,
                 disponible=instance.cobrado,
-            )
-            FacturaDistribuida.objects.filter(pk=instance.facturadistribuida.pk).update(
-                distribuida=instance.cobrado,
-                monto_total=instance.monto_neto_sin_fondo,
             )
 
         for f in self.files.getlist('archivos'):

@@ -92,6 +92,11 @@ class Factura(FacturaAbstract):
         """Retorno el monto neto restado el porcentaje fondo."""
         return self.neto - Decimal(self.porcentaje_fondo_monto)
 
+    @property
+    def moneda_monto_neto_sin_fondo(self):
+        """Retorno el monto neto restado el porcentaje fondo."""
+        return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo}'
+
     class Meta:
         """Configuraciones del modelo."""
 
@@ -160,11 +165,11 @@ class FacturaDistribuida(TimeStampedModel):
 
     factura = models.OneToOneField(Factura, blank=False, on_delete=models.CASCADE, related_name='factura_distribuida')
     distribuida = models.BooleanField(default=False)
-    monto_total = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+    monto_distribuido = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
 
     def __str__(self):
         """Representación del modelo."""
-        return f'{self.factura.numero} | {self.factura.cliente} | {self.monto_total}'
+        return f'{self.factura.numero} | {self.factura.cliente} | {self.monto_distribuido}'
 
     class Meta:
         """Configuraciones del modelo."""
@@ -173,6 +178,6 @@ class FacturaDistribuida(TimeStampedModel):
         verbose_name_plural = 'facturas distribuidas'
 
     @property
-    def moneda_monto_total(self):
+    def moneda_monto_distribuido(self):
         """Retorno el monto de la orden de compra."""
-        return f'{self.factura.get_moneda_display()} {self.monto_total}'
+        return f'{self.factura.get_moneda_display()} {self.monto_distribuido}'
