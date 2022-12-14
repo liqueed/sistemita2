@@ -9,7 +9,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
 from django.shortcuts import redirect
-from django.views.generic import TemplateView
+from django.views.generic import DetailView, TemplateView
 from django_filters.views import FilterView
 
 # Sistemita
@@ -84,6 +84,20 @@ class FacturaDistribuidaUpdateTemplateView(PermissionRequiredMixin, TemplateView
     permission_required = 'core.change_facturadistribuida'
     raise_exception = True
     template_name = 'core/facturadistribuida_update.html'
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class FacturaDistribuidaDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
+    """Vista que muestra el detalle de una factura distribuida."""
+
+    model = FacturaDistribuida
+    permission_required = 'core.view_facturadistribuida'
+    raise_exception = True
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
