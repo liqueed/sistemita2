@@ -208,6 +208,11 @@ class Command(BaseCommand):
                     'codename': 'view_comprobante_retenciones',
                     'content_type': ContentType.objects.get(model='pago'),
                 },
+                {
+                    'name': 'Puede ver módulo Mis facturas pendientes',
+                    'codename': 'view_mis_facturasproveedor_pendientes',
+                    'content_type': ContentType.objects.get(model='facturaproveedor'),
+                },
             ]
 
             for permission in permissions:
