@@ -6,6 +6,8 @@ from datetime import datetime
 from re import match
 
 # Django Rest Framework
+from django.conf import settings
+from django.template.loader import render_to_string
 from rest_framework import serializers
 
 # Sistemita
@@ -42,6 +44,7 @@ from sistemita.utils.strings import (
     MESSAGE_TIPO_DOC_IMPORT_INVALID,
     MESSAGE_TIPO_FACTURA_INVALID,
 )
+from sistemita.utils.emails import send_mail
 from sistemita.utils.validators import validate_is_number
 
 
@@ -513,10 +516,26 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
         for item in distribucion_list:
             monto = item.get('monto')
             monto_distribuido += float(monto)
+            proveedor = item.get('proveedor')
             FacturaDistribuidaProveedor.objects.create(
-                factura_distribucion=facturadistribuida, proveedor=item.get('proveedor'), monto=monto
+                factura_distribucion=facturadistribuida, proveedor=proveedor, monto=monto
             )
-            # TODO: enviar email al proveedor
+            html_content = render_to_string(
+                'emails/facturas_pendientes.html',
+                {
+                    'factura_numero': facturadistribuida.factura.numero,
+                    'cliente_razon_social': facturadistribuida.factura.cliente.razon_social,
+                    'url': '/',
+                },
+            )
+            if proveedor.correo:
+                send_mail(
+                    'Liqueed - Autorización facturas pendientes',
+                    '',
+                    settings.EMAIL_FROM,
+                    [proveedor.correo],
+                    html=html_content,
+                )
             proveedores_list.append({'id': item.get('proveedor').pk})
 
         if monto_distribuido == facturadistribuida.factura.monto_neto_sin_fondo:

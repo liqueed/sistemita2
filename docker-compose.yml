@@ -24,6 +24,12 @@ services:
       - "8000:8000"
     command: /start
 
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    container_name: sistemita_local_mailhog
+    ports:
+      - "8025:8025"
+
   redis:
     image: redis:5.0
     container_name: sistemita_local_redis
