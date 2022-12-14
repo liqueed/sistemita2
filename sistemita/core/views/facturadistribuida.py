@@ -42,10 +42,11 @@ class FacturaDistribuidaListView(PermissionRequiredMixin, SuccessMessageMixin, F
         order_by = self.request.GET.get('order_by', None)
         try:
             if search:
+                search = search.strip()
                 queryset = queryset.filter(
-                    Q(numero__icontains=search)
-                    | Q(cliente__razon_social__icontains=search)
-                    | Q(cliente__cuit__icontains=search)
+                    Q(factura__numero__icontains=search)
+                    | Q(factura__cliente__razon_social__icontains=search)
+                    | Q(factura__cliente__cuit__icontains=search)
                 )
             if order_by:
                 queryset = queryset.order_by(order_by)
