@@ -81,7 +81,7 @@
 
   <!-- Distribución -->
   {% if perms.core.list_facturadistribuida or perms.core.add_facturadistribuida %}
-    <li class="nav-item{% if request.resolver_match.url_name == 'facturadistribuida-list' %} active{% endif %}">
+    <li class="nav-item{% if 'facturadistribuida' in request.resolver_match.url_name %} active{% endif %}">
       {% if perms.core.list_facturadistribuida %}
 	<a class="nav-link" href="{% url 'core:facturadistribuida-list' %}">
 	  <i class="fas fa-sticky-note"></i>
