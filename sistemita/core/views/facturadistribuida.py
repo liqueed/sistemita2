@@ -4,18 +4,23 @@
 from datetime import date
 
 # Django
+from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import FieldError
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import DetailView, TemplateView
+from django.views.generic.edit import DeleteView
 from django_filters.views import FilterView
 
 # Sistemita
 from sistemita.core.models.cliente import FacturaDistribuida
 from sistemita.core.views.home import error_403
-from sistemita.utils.strings import MESSAGE_403
+from sistemita.utils.commons import get_deleted_objects
+from sistemita.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
 
 
 class FacturaDistribuidaListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
@@ -104,3 +109,37 @@ class FacturaDistribuidaDetailView(PermissionRequiredMixin, SuccessMessageMixin,
         if self.raise_exception and self.request.user.is_authenticated:
             return error_403(self.request, MESSAGE_403)
         return redirect('login')
+
+
+class FacturaDistribuidaDeleteView(PermissionRequiredMixin, DeleteView):
+    """Vista que elimina o resetea la distribución de una factura."""
+
+    model = FacturaDistribuida
+    permission_required = 'core.delete_facturadistribuida'
+    raise_exception = True
+    success_message = _MESSAGE_SUCCESS_DELETE.format('factura imputada')
+    success_url = reverse_lazy('core:facturadistribuida-list')
+    template_name = 'core/facturadistribuida_confirm_delete.html'
+
+    def get_context_data(self, **kwargs):
+        """Agrega datos al contexto."""
+        context = super().get_context_data(**kwargs)
+        deletable_objects, model_count, protected = get_deleted_objects([self.object])
+        context['deletable_objects'] = deletable_objects
+        context['model_count'] = dict(model_count).items()
+        context['protected'] = protected
+        return context
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Al eliminar la distribución la factura, la misma se resetea.
+        """
+        self.object = self.get_object()
+        self.object.distribuida = False
+        self.object.monto_distribuido = 0
+        self.object.save()
+        self.object.factura_distribuida_proveedores.all().delete()
+
+        success_url = self.get_success_url()
+        messages.success(request, self.success_message)
+        return HttpResponseRedirect(success_url)

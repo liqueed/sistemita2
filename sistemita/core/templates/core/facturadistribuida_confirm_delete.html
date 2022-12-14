@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Eliminar distribución | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">Distribución de facturas de Clientes</h1>
+      {% if perms.core.list_facturadistribuida %}
+	<a href="{% url 'core:facturadistribuida-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	  <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
+      {% endif %}
+    </div>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+	<h6 class="m-0 font-weight-bold text-primary">Eliminar distribución</h6>
+      </div>
+      <div class="card-body">
+	<div class="table-responsive">
+	  <div class="row">
+	    <div class="col">
+	    <form method="post" action="{% url 'core:facturadistribuida-delete' object.pk %}">
+	      {% csrf_token %}
+	      <p><strong>Atenci&oacute;n!</strong> Est&aacute; por eliminar la distribución.</p>
+	      <p>Si se elimina, tambi&eacute;n se eliminar sus datos asociados</p>
+	      {% include "admin/includes/object_delete_summary.html" %}
+	      <div class="row">
+		<div class="col">
+		  <button class="btn btn-danger" type="submit">Eliminar</button>
+		  <a class="btn" href="{% url 'core:facturadistribuida-list' %}">No eliminar</a>
+		</div>
+	      </div>
+	    </form>
+	    </div>
+	  </div>
+	</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
