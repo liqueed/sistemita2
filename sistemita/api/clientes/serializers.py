@@ -539,7 +539,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
                 )
             proveedores_list.append({'id': item.get('proveedor').pk})
 
-        if monto_distribuido == facturadistribuida.factura.monto_neto_sin_fondo:
+        if round(Decimal(monto_distribuido), 2) == facturadistribuida.factura.monto_neto_sin_fondo:
             facturadistribuida.distribuida = True
 
         facturadistribuida.monto_distribuido = monto_distribuido
@@ -570,7 +570,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
                 FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).delete()
 
         facturadistribuida.monto_distribuido = monto_distribuido
-        if monto_distribuido == facturadistribuida.factura.monto_neto_sin_fondo:
+        if round(Decimal(monto_distribuido), 2) == facturadistribuida.factura.monto_neto_sin_fondo:
             facturadistribuida.distribuida = True
         facturadistribuida.save()
 

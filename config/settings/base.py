@@ -37,8 +37,6 @@ USE_L10N = False
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
 
-SITE_URL = 'https://sistemita.liqueed.org'
-
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases

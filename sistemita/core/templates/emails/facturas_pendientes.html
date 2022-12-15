@@ -5,5 +5,5 @@
   Ya se cargo en el Banco el pago de la factura cliente nro. <strong>{{ factura_numero }}</strong>
   del cliente: <strong>{{ cliente_razon_social }}</strong>, y está pendiente de su autorización.
 </p>
-<p><a href="{% get_setting 'SITE_URL' %}{{ url }}" target="_blank">Ver mis facturas pendientes</a></p>
+<p><a href="{% get_setting 'SITE_URL' %}{% url 'core:facturaproveedor-list-by-user-pendientes' %}" target="_blank">Ver mis facturas pendientes</a></p>
 {% endblock %}

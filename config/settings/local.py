@@ -49,3 +49,7 @@ FIXTURE_DIRS = ["features/fixtures/"]
 EMAIL_HOST = env("EMAIL_HOST", default="mailhog")
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-port
 EMAIL_PORT = 1025
+
+# SITE
+# ------------------------------------------------------------------------------
+SITE_URL = 'http://127.0.0.1:8000'

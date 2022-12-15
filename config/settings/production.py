@@ -115,3 +115,7 @@ sentry_sdk.init(
     traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
 )
 ignore_logger("django.security.DisallowedHost")
+
+# SITE
+# ------------------------------------------------------------------------------
+SITE_URL = 'https://sistemita.liqueed.org'
