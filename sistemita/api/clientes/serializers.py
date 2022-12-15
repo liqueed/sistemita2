@@ -3,6 +3,7 @@
 # Imports
 import json
 from datetime import datetime
+from decimal import Decimal
 from re import match
 
 # Django Rest Framework
@@ -37,6 +38,7 @@ from sistemita.core.models.proveedor import (
     Proveedor,
 )
 from sistemita.utils.commons import get_total_factura
+from sistemita.utils.emails import send_mail
 from sistemita.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_MONEDA_INVALID,
@@ -44,7 +46,6 @@ from sistemita.utils.strings import (
     MESSAGE_TIPO_DOC_IMPORT_INVALID,
     MESSAGE_TIPO_FACTURA_INVALID,
 )
-from sistemita.utils.emails import send_mail
 from sistemita.utils.validators import validate_is_number
 
 
@@ -501,7 +502,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             except Proveedor.DoesNotExist:
                 raise serializers.ValidationError('La factura no existe.')
 
-        if montos > factura_distribuida.factura.monto_neto_sin_fondo:
+        if round(Decimal(montos), 2) > factura_distribuida.factura.monto_neto_sin_fondo:
             raise serializers.ValidationError('Los montos no pueden superar al total de la factura.')
 
         return distribucion

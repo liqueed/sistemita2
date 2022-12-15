@@ -30,7 +30,7 @@
 
 			<!-- Factura -->
 			<div class="row">
-			    <div class="col-6">
+			    <div class="col-7">
 				<div class="form-group">
 				    <label class="requiredField">
 					Factura
@@ -166,7 +166,7 @@ $('#proveedor_1').select2({
 	},
 	data: function (params) {
 	    var query = {
-		razon_social__codigo_fiscal__icontains: params.term
+		razon_social__cuit__icontains: params.term
 	    }
 	    return query;
 	},
@@ -218,7 +218,7 @@ $('.add-proveedor').click(function(e){
 	    },
 	    data: function (params) {
 		var query = {
-		    razon_social__codigo_fiscal__icontains: params.term
+		    razon_social__cuit__icontains: params.term
 		}
 		return query;
 	    },
