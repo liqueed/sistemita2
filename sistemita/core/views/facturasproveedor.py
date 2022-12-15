@@ -21,7 +21,10 @@ from sistemita.core.constants import TIPOS_FACTURA_IMPORT
 from sistemita.core.filters import FacturaProveedorFilterSet
 from sistemita.core.forms.proveedores import FacturaProveedorForm
 from sistemita.core.models.cliente import Factura
-from sistemita.core.models.proveedor import FacturaProveedor
+from sistemita.core.models.proveedor import (
+    FacturaDistribuidaProveedor,
+    FacturaProveedor,
+)
 from sistemita.core.views.home import error_403
 from sistemita.utils.commons import get_deleted_objects
 from sistemita.utils.export import export_excel
@@ -128,6 +131,7 @@ class FacturaProveedorCreateView(PermissionRequiredMixin, SuccessMessageMixin, C
         """Envía parámetros extras al formulario."""
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['params'] = self.request.GET or None
         return kwargs
 
     def get_success_url(self):
@@ -322,6 +326,42 @@ class FacturaProveedorByUserDetailView(PermissionRequiredMixin, SuccessMessageMi
 
         user_email = self.request.user.email
         return get_object_or_404(FacturaProveedor, pk=self.kwargs.get('pk'), proveedor__correo=user_email)
+
+    def handle_no_permission(self):
+        """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
+        if self.raise_exception and self.request.user.is_authenticated:
+            return error_403(self.request, MESSAGE_403)
+        return redirect('login')
+
+
+class FacturaProveedorByUserPendientesListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
+    """Vista que retorna un lista de facturas pendientes a facturar."""
+
+    model = FacturaDistribuidaProveedor
+    paginate_by = 10
+    permission_required = 'core.view_mis_facturasproveedor_pendientes'
+    raise_exception = True
+    template_name = 'core/facturaproveedor_misfacturas_pendientes.html'
+
+    def get_queryset(self):
+        """
+        Sobreescribe queryset.
+        Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
+        """
+        user_email = self.request.user.email
+        queryset = FacturaDistribuidaProveedor.objects.filter(
+            proveedor__correo=user_email, factura_proveedor__isnull=True
+        )
+        search = self.request.GET.get('search', None)
+        order_by = self.request.GET.get('order_by', None)
+        try:
+            if search:
+                queryset = queryset.filter(Q(numero__icontains=search) | Q(total__icontains=search))
+            if order_by:
+                queryset = queryset.order_by(order_by)
+        except FieldError:
+            pass
+        return queryset
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""

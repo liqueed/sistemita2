@@ -43,6 +43,7 @@ from sistemita.core.views.facturasimputada import (
 from sistemita.core.views.facturasproveedor import (
     FacturaProveedorByUserDetailView,
     FacturaProveedorByUserListView,
+    FacturaProveedorByUserPendientesListView,
     FacturaProveedorCreateView,
     FacturaProveedorDeleteView,
     FacturaProveedorDetailView,
@@ -164,6 +165,11 @@ urlpatterns = [
         'factura-proveedor/mis-facturas/<int:pk>/',
         FacturaProveedorByUserDetailView.as_view(),
         name='facturaproveedor-detail-by-user',
+    ),
+    path(
+        'factura-proveedor/mis-facturas-pendientes/',
+        FacturaProveedorByUserPendientesListView.as_view(),
+        name='facturaproveedor-list-by-user-pendientes',
     ),
     path('factura-proveedor/agregar/', FacturaProveedorCreateView.as_view(), name='facturaproveedor-create'),
     path('factura-proveedor/<int:pk>/', FacturaProveedorDetailView.as_view(), name='facturaproveedor-detail'),

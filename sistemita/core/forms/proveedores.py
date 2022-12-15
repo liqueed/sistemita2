@@ -15,6 +15,7 @@ from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.cliente import Factura
 from sistemita.core.models.entidad import Distrito, Localidad
 from sistemita.core.models.proveedor import (
+    FacturaDistribuidaProveedor,
     FacturaProveedor,
     FacturaProveedorCategoria,
     Proveedor,
@@ -124,7 +125,27 @@ class FacturaProveedorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""
         self.user = kwargs.pop('user')
+        params = kwargs.pop('params', None)
         super().__init__(*args, **kwargs)
+
+        # Precarga de datos
+        if params:
+            self.factura_distribucion_proveedor = params.get('distribucion_proveedor', None)
+            if self.factura_distribucion_proveedor:
+                self.factura_distribucion_proveedor = FacturaDistribuidaProveedor.objects.filter(
+                    pk=self.factura_distribucion_proveedor
+                ).first()
+
+            if params.get('proveedor_id', None):
+                self.fields['proveedor'].initial = Proveedor.objects.filter(pk=params.get('proveedor_id')).first()
+            if params.get('factura_id', None):
+                self.fields['factura'].initial = Factura.objects.filter(pk=params.get('factura_id')).first()
+            if params.get('neto', None):
+                self.fields['neto'].initial = params.get('neto')
+                self.fields['total'].initial = get_porcentaje_agregado(
+                    amount=float(params.get('neto')), percentage=self.fields['iva'].initial
+                )
+
         self.fields['fecha'].label = 'Fecha de pago'
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
@@ -273,6 +294,10 @@ class FacturaProveedorForm(forms.ModelForm):
         for f in self.files.getlist('archivos'):
             document = Archivo.objects.create(documento=f)
             instance.archivos.add(document)
+
+        if self.factura_distribucion_proveedor:
+            self.factura_distribucion_proveedor.factura_proveedor = instance
+            self.factura_distribucion_proveedor.save()
 
         return instance
 

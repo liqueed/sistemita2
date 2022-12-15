@@ -139,3 +139,8 @@ class FacturaDistribuidaProveedor(TimeStampedModel):
     def __str__(self):
         """Representación del modelo."""
         return f'{self.factura_distribucion.factura.numero} | {self.proveedor} | {self.monto}'
+
+    @property
+    def moneda_monto(self):
+        """Retorna el total con su moneda."""
+        return f'{self.factura_distribucion.factura.get_moneda_display()} {self.monto}'

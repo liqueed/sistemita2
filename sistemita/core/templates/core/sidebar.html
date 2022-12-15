@@ -304,6 +304,17 @@
   {% endif %}
   <!-- End Mis facturas -->
 
+  <!-- Mis facturas pendientes -->
+  {% if perms.core.view_mis_facturasproveedor_pendientes %}
+    <li class="nav-item{% if request.resolver_match.url_name == 'facturaproveedor-list-by-user-pendientes' or request.resolver_match.url_name == 'facturaproveedor-detail-by-user' %} active{% endif %}">
+      <a class="nav-link" href="{% url 'core:facturaproveedor-list-by-user-pendientes' %}">
+	<i class="fas fa-user-alt"></i>
+	<span>Mis facturas Pendientes</span>
+      </a>
+    </li>
+  {% endif %}
+  <!-- End Mis facturas -->
+
   <!-- End Sección Proveedores -->
 
   <!-- Sección Medio de Pago -->
