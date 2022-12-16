@@ -138,15 +138,13 @@ $(document).ready(function() {
     // factura
     $.get(`/api/factura-distribuida/${idFacturaDistribuida}/`, function(response) {
 	let moneda = response.factura.moneda == 'P' ? '$' : 'USD';
+	totalFactura = response.factura.monto_neto_sin_fondo;
 	$(`#factura`).append(
 	    new Option(`${response.factura.fecha} - ${response.factura.numero} - ${response.factura.cliente.razon_social} - ${moneda} ${response.factura.monto_neto_sin_fondo}`, `${response.factura.id}`, true, true)
 	);
-
     });
-
     $('.input-total').val('0.0');
     $('[name="monto_1"]').val('0.0');
-
 });
 
 $('#proveedor_1').select2({
