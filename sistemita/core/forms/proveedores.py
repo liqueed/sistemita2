@@ -146,7 +146,6 @@ class FacturaProveedorForm(forms.ModelForm):
                     amount=float(params.get('neto')), percentage=self.fields['iva'].initial
                 )
 
-        self.fields['fecha'].label = 'Fecha de pago'
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
 
