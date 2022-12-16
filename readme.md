@@ -92,7 +92,19 @@ Pasos para que un proveedor pueda ver sus facturas:
 1. Ir al módulo de usuario y presionar el botón "Agregar"
 2. Completar los datos
    * El email del usuario debe coincidir con el email del proveedor
-   * El usuario debe pertenecer al grupo "Puede ver módulo de Mis Facturas"
+   * El usuario debe pertenecer al grupo "Puede ver módulo de Mis Facturas"(Puede ver comprobantes de retenciones, Puede
+	 ver Pagos, Puede ver módulo Mis facturas)
+3. Dar los accesos al proveedor
+
+## Acceso al módulo de mis facturas pendientes
+
+Pasos para que un proveedor pueda ver sus facturas pendientes:
+
+1. Ir al módulo de usuario y presionar el botón "Agregar"
+2. Completar los datos
+   * El email del usuario debe coincidir con el email del proveedor
+   * El usuario debe pertenecer al grupo "Puede ver módulo de Mis Facturas Pendientes"(Puede agregar Facturas A
+	 Proveedores, Puede editar número de Facturas A Proveedores, Puede ver módulo Mis facturas pendientes)
 3. Dar los accesos al proveedor
 
 ## Documentacion anterior

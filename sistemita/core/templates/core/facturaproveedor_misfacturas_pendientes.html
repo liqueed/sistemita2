@@ -25,7 +25,7 @@
 		<th data-order="factura_distribucion__factura__cliente__razon_social" class="sortable">Cliente</th>
 		<th>Detalle</th>
 		<th data-order="monto" class="sortable">Monto</th>
-		{% if perms.core.change_facturaproveedor or perms.core.delete_facturaproveedor or perms.core.view_mis_facturasproveedor %}
+		{% if perms.core.add_facturaproveedor %}
 		  <th></th>
 		{% endif %}
 	      </tr>
@@ -41,19 +41,15 @@
 		  <td>{{ object.factura_distribucion.factura.cliente.razon_social }}</td>
 		  <td>{{ object.factura_distribucion.factura.detalle }}</td>
 		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
-		  {% if not 'facturaproveedor-list-by-user' == request.resolver_match.url_name %}
+		  {% if perms.core.add_facturaproveedor %}
 		     <td class="text-center">
-			{% if perms.core.add_facturaproveedor %}
 			  <a class="mr-1 text-decoration-none"
 			     href="{% url 'core:facturaproveedor-create' %}?distribucion_proveedor={{ object.pk }}&proveedor_id={{ object.proveedor.pk }}&factura_id={{ object.factura_distribucion.factura.pk }}&neto={{ object.monto }}"
 			  >
 			    <i class="fa fa-plus-circle" aria-hidden="true"></i>
 			  </a>
-			{% endif %}
 		      </td>
-		   {% else %}
-		      <td class="text-center"></td>
-		   {% endif %}
+		  {% endif %}
 		</tr>
 		{% empty %}
 		<tr>
