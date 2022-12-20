@@ -145,6 +145,9 @@ class FacturaProveedorForm(forms.ModelForm):
                 self.fields['total'].initial = get_porcentaje_agregado(
                     amount=float(params.get('neto')), percentage=self.fields['iva'].initial
                 )
+            categoria = FacturaProveedorCategoria.objects.filter(nombre__icontains='coach').first()
+            if categoria:
+                self.fields['categoria'].initial = categoria
 
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
