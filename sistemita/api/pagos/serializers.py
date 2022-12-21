@@ -1,5 +1,9 @@
 """Serializers de los modelos Pago, PagoFactura y PagoFacturaPago."""
 
+# Django
+from django.conf import settings
+from django.template.loader import render_to_string
+
 # Django REST Framework
 from rest_framework import serializers
 
@@ -7,6 +11,7 @@ from rest_framework import serializers
 from sistemita.accounting.models.pago import Pago, PagoFactura, PagoFacturaPago
 from sistemita.api.proveedores.serializers import ProveedorSerializer
 from sistemita.core.models.proveedor import FacturaProveedor, Proveedor
+from sistemita.utils.emails import send_mail
 
 
 class PagoFacturaPagoSerializer(serializers.ModelSerializer):
@@ -146,7 +151,7 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
 
             # Factura pago
             facturas = validated_data['pago_facturas']
-            for factura in facturas:
+            for index, factura in enumerate(facturas):
                 # La factura pasa a estar cobrada
                 factura_entry = factura['factura']
                 FacturaProveedor.objects.filter(pk=factura_entry.id).update(cobrado=True)
@@ -163,8 +168,27 @@ class CreateUpdatePagoModelSerializer(serializers.ModelSerializer):
                 pagos = factura['pago_factura_pagos']
                 for row in pagos:
                     PagoFacturaPago.objects.create(pago_factura=pago_factura, metodo=row['metodo'], monto=row['monto'])
+
+                if index == 0 and hasattr(factura_entry.factura, 'cliente'):
+                    # Send Email
+                    html_content = render_to_string(
+                        'emails/pago_cargado.html',
+                        {
+                            'factura_numero': factura_entry.numero,
+                            'cliente_razon_social': factura_entry.factura.cliente.razon_social,
+                        },
+                    )
+                    send_mail(
+                        'Liqueed - Pago cargado',
+                        '',
+                        settings.EMAIL_FROM,
+                        [proveedor.correo],
+                        html=html_content,
+                    )
+
         except Exception as error:
             raise serializers.ValidationError(error)
+
         return pago
 
     def update(self, instance, validated_data):

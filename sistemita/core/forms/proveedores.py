@@ -125,6 +125,7 @@ class FacturaProveedorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""
         self.user = kwargs.pop('user')
+        self.factura_distribucion_proveedor = None
         params = kwargs.pop('params', None)
         super().__init__(*args, **kwargs)
 
