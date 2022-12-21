@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Detalle de la Distribución | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">Distribución de facturas de Clientes</h1>
+      {% if perms.core.list_facturaimputada %}
+      <a href="{% url 'core:facturadistribuida-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	<i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+      </a>
+      {% endif %}
+    </div>
+    {% include 'components/messages.html' %}
+
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+	<h6 class="m-0 font-weight-bold text-primary">Distribución de la factura Nro. {{ object.factura.numero }}</h6>
+      </div>
+      <div class="card-body">
+	<div class="table-responsive">
+	  <dl class="row">
+	    <dt class="col-sm-2">Factura: </dt><dd class="col-sm-10">{{ object.factura }}</dd>
+	    <dt class="col-sm-2">Monto a distribuir: </dt><dd class="col-sm-10">{{ object.factura.moneda_monto_neto_sin_fondo }}</dd>
+	    <dt class="col-sm-2 mt-4 mb-2">Distribución</dt>
+	    <dd class="col-sm-10"></dd>
+	    {% for distribucion in object.factura_distribuida_proveedores.all %}
+	       <dt class="col-sm-2 mt-2">Proveedor</dt>
+	       <dd class="col-sm-10 mt-2">{{ distribucion.proveedor }}</dd>
+	       <dt class="col-sm-2">Monto</dt>
+	       <dd class="col-sm-10">{{ object.factura.get_moneda_display }} {{ distribucion.monto }}</dd>
+	    {% endfor %}
+	    <dt class="col-sm-2 mt-4">Total Distribuido</dt>
+	    <dd class="col-sm-10 mt-4">{{ object.factura.get_moneda_display }} {{ object.monto_distribuido }}</dd>
+	  </dl>
+	  {% if perms.core.list_facturaimputada %}
+	    <a href="{% url 'core:facturadistribuida-list' %}" class="btn btn-primary float-right">Volver</a>
+	  {% endif %}
+	</div>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

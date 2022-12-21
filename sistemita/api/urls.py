@@ -1,8 +1,6 @@
 """URLs API."""
 
 # Django
-from django.urls import include, path
-
 # Django
 from django.conf import settings
 from rest_framework.routers import DefaultRouter, SimpleRouter
@@ -11,6 +9,7 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from sistemita.api.archivos.views import ArchivoViewSet
 from sistemita.api.clientes.views import (
     ClienteViewSet,
+    FacturaDistribuidaViewSet,
     FacturaImputadaViewSet,
     FacturaViewSet,
 )
@@ -34,6 +33,7 @@ router.register(r'archivo', ArchivoViewSet)
 router.register(r'cliente', ClienteViewSet)
 router.register(r'distrito', DistritoViewSet)
 router.register(r'factura', FacturaViewSet)
+router.register(r'factura-distribuida', FacturaDistribuidaViewSet)
 router.register(r'factura-imputada', FacturaImputadaViewSet)
 router.register(r'factura-proveedor', FacturaProveedorViewSet)
 router.register(r'localidad', LocalidadViewSet)

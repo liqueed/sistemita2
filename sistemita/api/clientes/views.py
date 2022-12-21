@@ -15,11 +15,18 @@ from sistemita.api.clientes.filters import ClienteFilterSet, FacturaFilterSet
 from sistemita.api.clientes.serializers import (
     ClienteSerializer,
     FacturaBeforeImportSerializer,
+    FacturaDistribuidaModelSerializer,
+    FacturaDistribuidaSerializer,
     FacturaImportSerializer,
     FacturaImputadaModelSerializer,
     FacturaSerializer,
 )
-from sistemita.core.models.cliente import Cliente, Factura, FacturaImputada
+from sistemita.core.models.cliente import (
+    Cliente,
+    Factura,
+    FacturaDistribuida,
+    FacturaImputada,
+)
 
 
 class ClienteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
@@ -117,8 +124,30 @@ class FacturaImputadaViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
-    """Factura Imputada view set."""
+    """Factura Imputada viewset."""
 
     queryset = FacturaImputada.objects.all()
     permission_classes = (permissions.IsAuthenticated,)
     serializer_class = FacturaImputadaModelSerializer
+
+
+class FacturaDistribuidaViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    """Factura Distribuida viewset."""
+
+    queryset = FacturaDistribuida.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = FacturaDistribuidaSerializer
+
+    def get_serializer_class(self):
+        """Devuelve un serializador en base a una acción."""
+        action_mappings = {
+            'create': FacturaDistribuidaSerializer,
+            'update': FacturaDistribuidaSerializer,
+        }
+        return action_mappings.get(self.action, FacturaDistribuidaModelSerializer)

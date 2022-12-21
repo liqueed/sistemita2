@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Distribución de facturas de Clientes | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <h1 class="h3 mb-0 text-gray-800">Distribución de facturas de Clientes</h1>
+    </div>
+    {% include 'components/messages.html' %}
+
+    <!-- Cards -->
+    {% if perms.core.view_reports_factura %}
+      <div class="row">
+
+	<div class="col-xl-3 col-md-6 mb-4">
+	  <div class="card border-left-success shadow h-100 py-2">
+	    <div class="card-body" role="button">
+	      <div class="row no-gutters align-items-center">
+		<div class="col mr-2">
+		  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Nuevas (semanal)</div>
+		  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ last_created }}</div>
+		</div>
+		<div class="col-auto">
+		  <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+		</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+      </div>
+    {% endif %}
+    <!-- End of Cards -->
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+	<h6 class="m-0 font-weight-bold text-primary">Listado de facturas a Clientes</h6>
+      </div>
+      <div class="card-body">
+	<div class="table-responsive">
+	  <div class="row float-right">
+	    {% include 'components/search_form.html' %}
+	  </div>
+	  <table class="table table-bordered table-hover table-sortable" cellspacing="0" width="100%">
+	    <thead>
+	      <tr>
+		<th data-order="factura__numero" class="sortable">Número</th>
+		<th data-order="factira__cliente" class="sortable">Cliente</th>
+		<th data-order="factura__cobrado" class="sortable">Pagó el cliente?</th>
+		<th data-order="distribuida" class="sortable">Decidida distribución?</th>
+		<th data-order="monto" class="sortable">Monto distribuido</th>
+		<th data-order="factura__monto_neto_sin_fondo" class="sortable">Monto total</th>
+		{% if perms.core.change_facturadistribuida or perms.core.delete_facturadistribuida %}
+		  <th></th>
+		{% endif %}
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% for object in object_list %}
+		<tr>
+		  <td>
+		    <a {% if perms.core.view_factura %}href="{% url 'core:factura-detail' object.factura.pk %}"{% endif %}>
+		      {{ object.factura.numero|default:"-" }}
+		    </a>
+		  </td>
+		  <td>{{ object.factura.cliente.razon_social }}</td>
+		  <td>
+		    <div class="text-center">
+		      {% if object.factura.cobrado %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
+		    </div>
+		  </td>
+		  <td>
+		    <div class="text-center">
+		      {% if object.distribuida %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="fas fa-minus-square"></i>{% endif %}
+		    </div>
+		  </td>
+		  <td>
+		    <div class="float-right">{{ object.moneda_monto_distribuido }}</div>
+		  </td>
+		  <td>
+		    <div class="float-right">{{ object.factura.moneda_monto_neto_sin_fondo }}</div>
+		  </td>
+		  {% if perms.core.add_facturadistribuida or perms.core.view_facturadistribuida or perms.core.change_facturadistribuida or perms.core.delete_facturadistribuida %}
+		    <td class="text-center">
+		      {% if perms.core.add_facturadistribuida and object.monto_distribuido|stringformat:'s' == "0.00" %}
+			<a class="mr-1 text-decoration-none" href="{% url 'core:facturadistribuida-distribute' object.pk %}">
+			  <i class="fa fa-share" aria-hidden="true"></i>
+			</a>
+		      {% endif %}
+		      {% if perms.core.change_facturadistribuida and  object.monto_distribuido|stringformat:'s' != "0.00" %}
+			<a class="mr-1 text-decoration-none" href="{% url 'core:facturadistribuida-update' object.pk %}">
+			  <i class="fas fa-wrench"></i>
+			</a>
+		      {% endif %}
+		      {% if perms.core.view_facturadistribuida %}
+			<a class="mr-1 text-decoration-none" href="{% url 'core:facturadistribuida-detail' object.pk %}">
+			  <i class="far fa-eye"></i>
+			</a>
+		      {% endif %}
+		      {% if perms.core.delete_facturadistribuida %}
+			<a class="text-decoration-none" href="{% url 'core:facturadistribuida-delete' object.pk %}">
+			  <i class="fas fa-trash"></i>
+			</a>
+		      {% endif %}
+		    </td>
+		  {% endif %}
+		</tr>
+		{% empty %}
+		<tr>
+		  <td colspan="8">Sin resultados</td>
+		</tr>
+	      {% endfor %}
+	    </tbody>
+	  </table>
+	  {% include 'components/pagination.html' %}
+	</div>
+      </div>
+    </div>
+  </div>
+<script src="{% static 'js/tableSort.js' %}"></script>
+
+{% endblock %}

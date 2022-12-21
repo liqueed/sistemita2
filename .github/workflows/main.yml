@@ -71,6 +71,8 @@ jobs:
           echo POSTGRES_DB=$POSTGRES_DB >> .envs/.production/.postgres
           echo POSTGRES_USER=$POSTGRES_USER >> .envs/.production/.postgres
           echo POSTGRES_PASSWORD=$POSTGRES_PASSWORD >> .envs/.production/.postgres
+          echo EMAIL_HOST_USER=$EMAIL_HOST_USER >> .envs/.production/.postgres
+          echo EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD >> .envs/.production/.postgres
 
       # - name: Down services
       #   run:  docker-compose -f production.yml down --remove-orphans

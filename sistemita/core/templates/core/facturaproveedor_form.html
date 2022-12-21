@@ -152,6 +152,14 @@ $('#id_neto').keyup(function(){getTotal()});
 
 $('#id_iva').change(function(){getTotal()});
 
+$('#id_tipo').change(function(){
+    let tipo = $(this).val();
+    if (tipo === 'C'){
+	$('#id_iva').val(0);
+    }
+    getTotal();
+});
+
 function getTotal(){
     let neto = parseFloat($('#id_neto').val());
     let iva = parseInt($('#id_iva').val());

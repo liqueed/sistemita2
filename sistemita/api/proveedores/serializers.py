@@ -22,6 +22,7 @@ from sistemita.core.constants import (
     TIPOS_FACTURA_IMPORT,
 )
 from sistemita.core.models.proveedor import (
+    FacturaDistribuidaProveedor,
     FacturaProveedor,
     FacturaProveedorImputada,
     Proveedor,
@@ -435,3 +436,19 @@ class FacturaProveedorImputadaModelSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class FacturaDistribuidaProveedorModelSerializer(serializers.ModelSerializer):
+    """Serializador del modelo Factura Distribuida Proveedor."""
+
+    proveedor = ProveedorSerializer()
+
+    class Meta:
+        """Configuraciones del serializer."""
+
+        model = FacturaDistribuidaProveedor
+        fields = [
+            'id',
+            'proveedor',
+            'monto',
+        ]

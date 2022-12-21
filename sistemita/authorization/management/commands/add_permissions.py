@@ -108,6 +108,11 @@ class Command(BaseCommand):
                     'codename': 'list_costo',
                     'content_type': ContentType.objects.get(model='costo'),
                 },
+                {
+                    'name': 'Puede listar facturas distribuidas',
+                    'codename': 'list_facturadistribuida',
+                    'content_type': ContentType.objects.get(model='facturadistribuida'),
+                },
                 # Reportes
                 {
                     'name': 'Puede ver reportes de Facturas A Clientes',
@@ -202,6 +207,11 @@ class Command(BaseCommand):
                     'name': 'Puede ver comprobantes de retenciones',
                     'codename': 'view_comprobante_retenciones',
                     'content_type': ContentType.objects.get(model='pago'),
+                },
+                {
+                    'name': 'Puede ver módulo Mis facturas pendientes',
+                    'codename': 'view_mis_facturasproveedor_pendientes',
+                    'content_type': ContentType.objects.get(model='facturaproveedor'),
                 },
             ]
 

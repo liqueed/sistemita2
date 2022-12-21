@@ -1,9 +1,11 @@
 """Modelo de cliente."""
 
 # Django
+# Utils
+from decimal import Decimal
+
 from django.db import models
 
-# Utils
 from sistemita.core.constants import MONEDAS
 
 # Models
@@ -81,9 +83,24 @@ class Factura(FacturaAbstract):
         return get_porcentaje(self.total, self.porcentaje_fondo)
 
     @property
+    def porcentaje_fondo_neto(self):
+        """Retorno el monto del porcentaje de fondo desde el monto neto."""
+        return get_porcentaje(self.neto, self.porcentaje_fondo)
+
+    @property
     def moneda_porcentaje_fondo_monto(self):
         """Retorno el monto del porcentaje de fondo."""
         return f'{self.get_moneda_display()} {self.porcentaje_fondo_monto}'
+
+    @property
+    def monto_neto_sin_fondo(self):
+        """Retorno el monto neto restado el porcentaje fondo."""
+        return self.neto - round(Decimal(self.porcentaje_fondo_neto), 2)
+
+    @property
+    def moneda_monto_neto_sin_fondo(self):
+        """Retorno el monto neto restado el porcentaje fondo."""
+        return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo}'
 
     class Meta:
         """Configuraciones del modelo."""
@@ -146,3 +163,26 @@ class FacturaImputada(TimeStampedModel, models.Model):
         """Valida que el total de la factura no sea negativo."""
         self.total_factura = max(self.total_factura, 0.0)
         return super().save(*args, **kwargs)
+
+
+class FacturaDistribuida(TimeStampedModel):
+    """Modelo de distribución de factura de cliente."""
+
+    factura = models.OneToOneField(Factura, blank=False, on_delete=models.CASCADE, related_name='factura_distribuida')
+    distribuida = models.BooleanField(default=False)
+    monto_distribuido = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+
+    def __str__(self):
+        """Representación del modelo."""
+        return f'{self.factura.numero} | {self.factura.cliente} | {self.monto_distribuido}'
+
+    class Meta:
+        """Configuraciones del modelo."""
+
+        verbose_name = 'factura distribuida'
+        verbose_name_plural = 'facturas distribuidas'
+
+    @property
+    def moneda_monto_distribuido(self):
+        """Retorno el monto de la orden de compra."""
+        return f'{self.factura.get_moneda_display()} {self.monto_distribuido}'

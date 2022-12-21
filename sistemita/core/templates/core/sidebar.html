@@ -79,6 +79,30 @@
   {% endif %}
   <!-- End Facturación -->
 
+  <!-- Distribución -->
+  {% if perms.core.list_facturadistribuida or perms.core.add_facturadistribuida %}
+    <li class="nav-item{% if 'facturadistribuida' in request.resolver_match.url_name %} active{% endif %}">
+      {% if perms.core.list_facturadistribuida %}
+	<a class="nav-link" href="{% url 'core:facturadistribuida-list' %}">
+	  <i class="fas fa-sticky-note"></i>
+	  <span>Distribuci&oacute;n</span>
+	</a>
+      {% endif %}
+      {% if not perms.core.list_facturadistribuida and perms.core.add_facturadistribuida %}
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturas" aria-expanded="true">
+	  <i class="fas fa-sticky-note"></i>
+	  <span>Distribuci&oacute;n</span>
+	</a>
+	<div id="collapseFacturas" class="collapse">
+	  <div class="bg-white py-2 collapse-inner rounded">
+	    <a href="{% url 'core:facturadistribuida-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	  </div>
+	</div>
+      {% endif %}
+    </li>
+  {% endif %}
+  <!-- End Distribución -->
+
   <!-- Categoria -->
   {% if perms.core.list_facturacategoria or perms.core.add_facturacategoria %}
     <li class="nav-item{% if request.resolver_match.url_name in 'facturacategoria-list, facturacategoria-update, facturacategoria-create, facturacategoria-detail, facturacategoria-delete' %} active{% endif %}">
@@ -275,6 +299,17 @@
       <a class="nav-link" href="{% url 'core:facturaproveedor-list-by-user' %}">
 	<i class="fas fa-user-alt"></i>
 	<span>Mis facturas</span>
+      </a>
+    </li>
+  {% endif %}
+  <!-- End Mis facturas -->
+
+  <!-- Mis facturas pendientes -->
+  {% if perms.core.view_mis_facturasproveedor_pendientes %}
+    <li class="nav-item{% if request.resolver_match.url_name == 'facturaproveedor-list-by-user-pendientes' or request.resolver_match.url_name == 'facturaproveedor-detail-by-user' %} active{% endif %}">
+      <a class="nav-link" href="{% url 'core:facturaproveedor-list-by-user-pendientes' %}">
+	<i class="fas fa-user-alt"></i>
+	<span>Mis facturas Pendientes</span>
       </a>
     </li>
   {% endif %}

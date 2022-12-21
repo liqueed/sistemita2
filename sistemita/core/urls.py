@@ -11,6 +11,13 @@ from sistemita.core.views.clientes import (
     ClienteListView,
     ClienteUpdateView,
 )
+from sistemita.core.views.facturadistribuida import (
+    FacturaDistribuidaCreateTemplateView,
+    FacturaDistribuidaDeleteView,
+    FacturaDistribuidaDetailView,
+    FacturaDistribuidaListView,
+    FacturaDistribuidaUpdateTemplateView,
+)
 from sistemita.core.views.facturascategoria import (
     FacturaCategoriaCreateView,
     FacturaCategoriaDeleteView,
@@ -36,6 +43,7 @@ from sistemita.core.views.facturasimputada import (
 from sistemita.core.views.facturasproveedor import (
     FacturaProveedorByUserDetailView,
     FacturaProveedorByUserListView,
+    FacturaProveedorByUserPendientesListView,
     FacturaProveedorCreateView,
     FacturaProveedorDeleteView,
     FacturaProveedorDetailView,
@@ -102,6 +110,24 @@ urlpatterns = [
     path('factura/<int:pk>/editar/', FacturaUpdateView.as_view(), name='factura-update'),
     path('factura/<int:pk>/eliminar/', FacturaDeleteView.as_view(), name='factura-delete'),
     path('factura/importar/', FacturaImportTemplateView.as_view(), name='factura-import'),
+    # Factura Distribuida
+    path('facturadistribuida/', FacturaDistribuidaListView.as_view(), name='facturadistribuida-list'),
+    path(
+        'facturadistribuida/distribuir/<int:pk>/',
+        FacturaDistribuidaCreateTemplateView.as_view(),
+        name='facturadistribuida-distribute',
+    ),
+    path(
+        'facturadistribuida/distribuir/<int:pk>/editar/',
+        FacturaDistribuidaUpdateTemplateView.as_view(),
+        name='facturadistribuida-update',
+    ),
+    path('facturadistribuida/<int:pk>/', FacturaDistribuidaDetailView.as_view(), name='facturadistribuida-detail'),
+    path(
+        'facturadistribuida/<int:pk>/eliminar/',
+        FacturaDistribuidaDeleteView.as_view(),
+        name='facturadistribuida-delete',
+    ),
     # Factura categoría
     path('facturacategoria/', FacturaCategoriaListView.as_view(), name='facturacategoria-list'),
     path('facturacategoria/agregar/', FacturaCategoriaCreateView.as_view(), name='facturacategoria-create'),
@@ -139,6 +165,11 @@ urlpatterns = [
         'factura-proveedor/mis-facturas/<int:pk>/',
         FacturaProveedorByUserDetailView.as_view(),
         name='facturaproveedor-detail-by-user',
+    ),
+    path(
+        'factura-proveedor/mis-facturas-pendientes/',
+        FacturaProveedorByUserPendientesListView.as_view(),
+        name='facturaproveedor-list-by-user-pendientes',
     ),
     path('factura-proveedor/agregar/', FacturaProveedorCreateView.as_view(), name='facturaproveedor-create'),
     path('factura-proveedor/<int:pk>/', FacturaProveedorDetailView.as_view(), name='facturaproveedor-detail'),

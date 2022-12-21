@@ -14,6 +14,7 @@ from sistemita.core.models.cliente import (
     Cliente,
     Factura,
     FacturaCategoria,
+    FacturaDistribuida,
     OrdenCompra,
 )
 from sistemita.core.models.entidad import Distrito, Localidad
@@ -275,6 +276,7 @@ class FacturaForm(forms.ModelForm):
                 disponible=instance.cobrado,
                 moneda=instance.moneda,
             )
+            FacturaDistribuida.objects.create(factura=instance)
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
             instance.factura_fondo.update_or_create(
