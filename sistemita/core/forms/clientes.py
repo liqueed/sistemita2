@@ -276,7 +276,6 @@ class FacturaForm(forms.ModelForm):
                 disponible=instance.cobrado,
                 moneda=instance.moneda,
             )
-            FacturaDistribuida.objects.create(factura=instance)
         else:
             Factura.objects.filter(pk=instance.pk).update(**data)
             instance.factura_fondo.update_or_create(
@@ -289,6 +288,9 @@ class FacturaForm(forms.ModelForm):
         for f in self.files.getlist('archivos'):
             document = Archivo.objects.create(documento=f)
             instance.archivos.add(document)
+
+        if not hasattr(instance, 'factura_distribuida'):
+            FacturaDistribuida.objects.create(factura=instance)
 
         return instance
 
