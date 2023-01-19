@@ -27,6 +27,8 @@
 	    {% for distribucion in object.factura_distribuida_proveedores.all %}
 	       <dt class="col-sm-2 mt-2">Proveedor</dt>
 	       <dd class="col-sm-10 mt-2">{{ distribucion.proveedor }}</dd>
+	       <dt class="col-sm-2 mt-2">Detalle</dt>
+	       <dd class="col-sm-10 mt-2">{{ distribucion.detalle }}</dd>
 	       <dt class="col-sm-2">Monto</dt>
 	       <dd class="col-sm-10">{{ object.factura.get_moneda_display }} {{ distribucion.monto }}</dd>
 	    {% endfor %}

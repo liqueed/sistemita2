@@ -496,7 +496,9 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             try:
                 proveedor = Proveedor.objects.get(pk=row.get('id'))
                 data = row.get('data')
-                distribucion.append({'proveedor': proveedor, 'monto': row.get('monto'), 'data': data})
+                distribucion.append(
+                    {'proveedor': proveedor, 'detalle': row.get('detalle'), 'monto': row.get('monto'), 'data': data}
+                )
                 if data.get('action') in ['add', 'update']:
                     montos += float(row.get('monto'))
             except Proveedor.DoesNotExist:
@@ -518,8 +520,9 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             monto = item.get('monto')
             monto_distribuido += float(monto)
             proveedor = item.get('proveedor')
+            detalle = item.get('detalle', '')
             FacturaDistribuidaProveedor.objects.create(
-                factura_distribucion=facturadistribuida, proveedor=proveedor, monto=monto
+                factura_distribucion=facturadistribuida, detalle=detalle, proveedor=proveedor, monto=monto
             )
             html_content = render_to_string(
                 'emails/facturas_pendientes.html',
@@ -555,17 +558,21 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
         proveedores_list = []
 
         for item in distribucion_list:
+            detalle = item.get('detalle', '')
             monto = item.get('monto')
             data = item.get('data')
             if data.get('action') == 'add':
                 monto_distribuido += float(monto)
                 FacturaDistribuidaProveedor.objects.create(
-                    factura_distribucion=facturadistribuida, proveedor=item.get('proveedor'), monto=monto
+                    factura_distribucion=facturadistribuida,
+                    proveedor=item.get('proveedor'),
+                    detalle=detalle,
+                    monto=monto,
                 )
                 proveedores_list.append({'id': item.get('proveedor').pk})
             elif data.get('action') == 'update':
                 monto_distribuido += float(monto)
-                FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).update(monto=monto)
+                FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).update(monto=monto, detalle=detalle)
             elif data.get('action') == 'delete':
                 FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).delete()
 

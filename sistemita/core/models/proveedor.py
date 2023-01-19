@@ -125,6 +125,7 @@ class FacturaDistribuidaProveedor(TimeStampedModel):
         FacturaDistribuida, blank=False, on_delete=models.CASCADE, related_name='factura_distribuida_proveedores'
     )
     proveedor = models.ForeignKey(Proveedor, blank=False, on_delete=models.CASCADE)
+    detalle = models.CharField(max_length=255, blank=True)
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
     factura_proveedor = models.ForeignKey(
         FacturaProveedor, blank=True, null=True, on_delete=models.CASCADE, related_name='facturas_distribuidas'
