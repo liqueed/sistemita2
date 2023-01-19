@@ -289,7 +289,7 @@ class FacturaForm(forms.ModelForm):
             document = Archivo.objects.create(documento=f)
             instance.archivos.add(document)
 
-        if not instance.factura_distribuida:
+        if not hasattr(instance, 'factura_distribuida'):
             FacturaDistribuida.objects.create(factura=instance)
 
         return instance
