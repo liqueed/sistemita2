@@ -37,7 +37,7 @@ class FacturaDistribuidaListView(PermissionRequiredMixin, SuccessMessageMixin, F
         Sobreescribe queryset.
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = FacturaDistribuida.objects.order_by('-creado')
+        queryset = FacturaDistribuida.objects.order_by('-factura__creado')
         search = self.request.GET.get('search', None)
         order_by = self.request.GET.get('order_by', None)
         try:

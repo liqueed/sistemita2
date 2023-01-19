@@ -48,6 +48,7 @@
 	    <thead>
 	      <tr>
 		<th data-order="factura__numero" class="sortable">Número</th>
+		<th data-order="factura__creado" class="sortable">Fecha</th>
 		<th data-order="factira__cliente" class="sortable">Cliente</th>
 		<th data-order="factura__cobrado" class="sortable">Pagó el cliente?</th>
 		<th data-order="distribuida" class="sortable">Decidida distribución?</th>
@@ -66,6 +67,7 @@
 		      {{ object.factura.numero|default:"-" }}
 		    </a>
 		  </td>
+		  <td>{{ object.factura.creado|date:"d-m-Y" }}</td>
 		  <td>{{ object.factura.cliente.razon_social }}</td>
 		  <td>
 		    <div class="text-center">
