@@ -53,12 +53,12 @@
 			<!--End Factura -->
 
 			<!-- Proveedores -->
-			<div class="card p-4 mb-3" style="width: 55rem;">
+			<div class="card p-4 mb-3" style="width: 80rem;">
 			  <!-- Proveedores y montos -->
-			  <div class="col-11 wrapper-distribucion-proveedores">
+			  <div class="col-12 wrapper-distribucion-proveedores">
 			    <div class="row group-distribucion-proveedores">
-			      <!-- Metodo -->
-			      <div class="col-9">
+			      <!-- Proveedor -->
+			      <div class="col-6">
 				<div class="form-group">
 				  <label class="requiredField">
 				    Proveedor<span class="asteriskField">*</span>
@@ -72,9 +72,21 @@
 				  </div>
 				</div>
 			      </div>
-			      <!-- End Metodo -->
+			      <!-- End Proveedor -->
+			      <!-- Detalle -->
+			      <div class="col-4">
+				<div class="form-group">
+				  <label class="requiredField">
+				    Detalle<span class="asteriskField">*</span>
+				  </label>
+				  <div>
+				    <input class="input-detalle form-control" name="detalle_1">
+				  </div>
+				</div>
+			      </div>
+			      <!-- End Detalle -->
 			      <!-- Monto -->
-			      <div class="col-3">
+			      <div class="col-2">
 				<div class="form-group">
 				  <label class="requiredField">
 				    Monto<span class="asteriskField">*</span>
@@ -157,18 +169,24 @@ $(document).ready(function() {
 	    if (indexDistribucion > 1){ // Si no es el primero previamente tengo que clonar
 		let cloneDistribucion = $('.group-distribucion-proveedores:first').clone(true);
 		cloneDistribucion.attr('data-inline', `{"id": ${idDistribucion}, "action": "update"}`);
+		// proveedor
 		cloneDistribucion.find('.selector-proveedor').attr('id', `proveedor_${indexDistribucion}`);
 		cloneDistribucion.find('.selector-proveedor').attr('data-id', `${distribucion.proveedor.id}`);
 		cloneDistribucion.find('.selector-proveedor').attr('name', `proveedor_${indexDistribucion}`);
-		cloneDistribucion.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
+		// detalle
+		cloneDistribucion.find('.input-detalle').attr('name', `detalle_${indexDistribucion}`);
+		cloneDistribucion.find('.input-detalle').val(distribucion.detalle);
+		// monto
 		cloneDistribucion.find('.input-monto').attr('name', `monto_${indexDistribucion}`);
 		cloneDistribucion.find('.input-monto').val(distribucion.monto);
+		cloneDistribucion.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
 		// cloneDistribucion.attr('data-inline', `{"id": ${idDistribucion}, "action": "update"}`);
 		$('.group-distribucion-proveedores:last').after(cloneDistribucion);
 	    } else {
 		// Defino data line para el elemento existente
 		$(`.group-distribucion-proveedores:first`).attr('data-inline', `{"id": ${idDistribucion}, 'action': "update"}`);
 		$(`.group-distribucion-proveedores:first`).find('.selector-proveedor').attr('data-id', `${distribucion.proveedor.id}`);
+		$(`.group-distribucion-proveedores:first`).find('.input-detalle').val(distribucion.detalle);
 		$(`.group-distribucion-proveedores:first`).find('.input-monto').val(distribucion.monto);
 	    }
 
@@ -193,12 +211,16 @@ $('.add-proveedor').click(function(e){
 
     if (!validateForm()){return;}
 
-
+    // proveedor
     cloneProveedor.find(`.wrapper-selector-proveedor`).children().remove();
     let htmlselector = `<select id="proveedor_${cloneIdProveedor}" class="select form-control selector-proveedor" required>`;
     htmlselector += `<option value="" selected="">---------</option></select>`;
     cloneProveedor.attr('data-inline', `{"action": "add"}`);
     cloneProveedor.find('.wrapper-selector-proveedor').append(htmlselector);
+    // detalle
+    cloneProveedor.find('.input-detalle').attr('name', `detalle_${cloneIdProveedor}`);
+    cloneProveedor.find('.input-detalle').val('');
+    // monto
     cloneProveedor.find('.numberinput').val('0.0');
     cloneProveedor.find('.numberinput').attr('name', `monto_${cloneIdProveedor}`);
     cloneProveedor.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
@@ -279,6 +301,7 @@ $('#submit-id-submit').click(function(e){
 	let data = $(this).attr('data-inline');
 	distribucion_list.push({
 	    'id': $(this).find('.selector-proveedor').attr('data-id'),
+	    'detalle': $(this).find('.input-detalle').val(),
 	    'monto': $(this).find('.input-monto').val(),
 	    'data': JSON.parse(data.replace(/'/g, '"')),
 	});

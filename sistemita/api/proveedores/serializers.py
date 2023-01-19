@@ -450,5 +450,6 @@ class FacturaDistribuidaProveedorModelSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'proveedor',
+            'detalle',
             'monto',
         ]
