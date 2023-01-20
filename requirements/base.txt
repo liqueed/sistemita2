@@ -28,6 +28,7 @@ openpyxl==3.0.7  # https://openpyxl.readthedocs.io/
 xlsxwriter==1.4.3  # https://github.com/jmcnamara/XlsxWriter
 xlrd2==1.2.6  # https://github.com/python-excel/xlrd
 unidecode==1.2.0 # https://libraries.io/pypi/Unidecode
+django-select2==8.0.0  # https://github.com/codingjoe/django-select2
 
 # Django REST Framework
 # ------------------------------------------------------------------------------

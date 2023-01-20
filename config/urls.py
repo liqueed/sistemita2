@@ -19,5 +19,5 @@ urlpatterns = [
     path('', include('sistemita.authorization.urls', namespace='authentication')),
     # Expense module
     path('', include('sistemita.expense.urls', namespace='expense')),
-
+    path("select2/", include("django_select2.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
