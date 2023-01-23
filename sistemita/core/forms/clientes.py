@@ -173,6 +173,8 @@ class FacturaForm(forms.ModelForm):
                 Div(Div('archivos', template='components/input_files.html'), css_class='row'),
                 Div(css_id='adjuntos', css_class='row'),
                 Div(Div('porcentaje_fondo', css_class='col-2'), css_class='row'),
+                Div(Div('porcentaje_socio_alan', css_class='col-2'), css_class='row'),
+                Div(Div('porcentaje_socio_ariel', css_class='col-2'), css_class='row'),
                 Div(Div('monto_imputado', css_class='col-2'), css_class='row'),
             ),
             FormActions(
@@ -214,6 +216,8 @@ class FacturaForm(forms.ModelForm):
             'cobrado',
             'archivos',
             'porcentaje_fondo',
+            'porcentaje_socio_alan',
+            'porcentaje_socio_ariel',
             'monto_imputado',
             'categoria',
         )

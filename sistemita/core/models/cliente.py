@@ -1,14 +1,14 @@
 """Modelo de cliente."""
 
-# Django
 # Utils
 from decimal import Decimal
 
+# Django
+from django.core.validators import MaxValueValidator
 from django.db import models
 
-from sistemita.core.constants import MONEDAS
-
 # Models
+from sistemita.core.constants import MONEDAS
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.entidad import Distrito, Localidad, Provincia
 from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
@@ -73,6 +73,12 @@ class Factura(FacturaAbstract):
     porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
     categoria = models.ForeignKey(FacturaCategoria, blank=True, null=True, on_delete=models.SET_NULL)
     proveedores = models.ManyToManyField('Proveedor', blank=True)
+    porcentaje_socio_alan = models.DecimalField(
+        blank=False, decimal_places=2, max_digits=5, default=2.5, validators=[MaxValueValidator(100)]
+    )
+    porcentaje_socio_ariel = models.DecimalField(
+        blank=False, decimal_places=2, max_digits=5, default=2.5, validators=[MaxValueValidator(100)]
+    )
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
