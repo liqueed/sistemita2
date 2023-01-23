@@ -18,6 +18,7 @@ from django_filters.views import FilterView
 
 # Sistemita
 from sistemita.core.models.cliente import FacturaDistribuida
+from sistemita.core.models.proveedor import Proveedor
 from sistemita.core.views.home import error_403
 from sistemita.utils.commons import get_deleted_objects
 from sistemita.utils.strings import _MESSAGE_SUCCESS_DELETE, MESSAGE_403
@@ -38,6 +39,12 @@ class FacturaDistribuidaListView(PermissionRequiredMixin, SuccessMessageMixin, F
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
         queryset = FacturaDistribuida.objects.order_by('-factura__creado')
+        user = self.request.user
+
+        if not user.is_superuser:
+            proveedor = Proveedor.objects.filter(correo=user.email).first()
+            queryset = queryset.filter(factura__proveedores__in=[proveedor])
+
         search = self.request.GET.get('search', None)
         order_by = self.request.GET.get('order_by', None)
         try:
