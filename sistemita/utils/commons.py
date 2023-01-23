@@ -16,6 +16,8 @@ def get_porcentaje(total, percentage):
     """
     Devuelve un monto que corresponde al porcentaje de un total.
     """
+    if isinstance(percentage, Decimal):
+        percentage = float(percentage)
     return round(float(total) * percentage / 100, 2)
 
 

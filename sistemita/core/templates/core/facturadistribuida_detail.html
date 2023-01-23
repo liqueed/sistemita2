@@ -23,14 +23,18 @@
 	    <dt class="col-sm-2">Factura: </dt><dd class="col-sm-10">{{ object.factura }}</dd>
 	    <dt class="col-sm-2">Monto a distribuir: </dt><dd class="col-sm-10">{{ object.factura.moneda_monto_neto_sin_fondo }}</dd>
 	    <dt class="col-sm-2 mt-4 mb-2">Distribución</dt>
-	    <dd class="col-sm-10"></dd>
 	    {% for distribucion in object.factura_distribuida_proveedores.all %}
+	      {% if forloop.first %}
+		<dd class="col-sm-10"></dd>
+	      {% endif %}
 	       <dt class="col-sm-2 mt-2">Proveedor</dt>
 	       <dd class="col-sm-10 mt-2">{{ distribucion.proveedor }}</dd>
 	       <dt class="col-sm-2 mt-2">Detalle</dt>
 	       <dd class="col-sm-10 mt-2">{{ distribucion.detalle }}</dd>
 	       <dt class="col-sm-2">Monto</dt>
 	       <dd class="col-sm-10">{{ object.factura.get_moneda_display }} {{ distribucion.monto }}</dd>
+	    {% empty %}
+	       <dd class="col-sm-10 mt-4 mb-2">-</dd>
 	    {% endfor %}
 	    <dt class="col-sm-2 mt-4">Total Distribuido</dt>
 	    <dd class="col-sm-10 mt-4">{{ object.factura.get_moneda_display }} {{ object.monto_distribuido }}</dd>

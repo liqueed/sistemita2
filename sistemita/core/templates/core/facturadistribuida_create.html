@@ -30,7 +30,7 @@
 
 			<!-- Factura -->
 			<div class="row">
-			    <div class="col-7">
+			    <div class="col-9">
 				<div class="form-group">
 				    <label class="requiredField">
 					Factura
@@ -152,7 +152,7 @@ $(document).ready(function() {
 	let moneda = response.factura.moneda == 'P' ? '$' : 'USD';
 	totalFactura = response.factura.monto_neto_sin_fondo;
 	$(`#factura`).append(
-	    new Option(`${response.factura.fecha} - ${response.factura.numero} - ${response.factura.cliente.razon_social} - ${moneda} ${response.factura.monto_neto_sin_fondo}`, `${response.factura.id}`, true, true)
+	    new Option(`${response.factura.fecha} - ${response.factura.numero} - ${response.factura.cliente.razon_social} - ${moneda} ${response.factura.monto_neto_sin_fondo_porcentaje_socios}`, `${response.factura.id}`, true, true)
 	);
     });
     $('.input-total').val('0.0');

@@ -95,6 +95,12 @@ class Factura(FacturaAbstract):
         return get_porcentaje(self.neto, self.porcentaje_fondo)
 
     @property
+    def porcentaje_socios_neto(self):
+        """Retorno el monto del porcentaje de socios desde el monto neto."""
+        porcentaje_socios = self.porcentaje_socio_alan + self.porcentaje_socio_ariel
+        return get_porcentaje(self.neto, porcentaje_socios)
+
+    @property
     def moneda_porcentaje_fondo_monto(self):
         """Retorno el monto del porcentaje de fondo."""
         return f'{self.get_moneda_display()} {self.porcentaje_fondo_monto}'
@@ -108,6 +114,17 @@ class Factura(FacturaAbstract):
     def moneda_monto_neto_sin_fondo(self):
         """Retorno el monto neto restado el porcentaje fondo."""
         return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo}'
+
+    @property
+    def monto_neto_sin_fondo_porcentaje_socios(self):
+        """Retorno el monto neto restado el porcentaje fondo y el porcentaje de socios."""
+        fondo_porcentaje_socios = round(Decimal(self.porcentaje_fondo_neto) + Decimal(self.porcentaje_socios_neto), 2)
+        return self.neto - fondo_porcentaje_socios
+
+    @property
+    def moneda_monto_neto_sin_fondo_porcentaje_socios(self):
+        """Retorno el monto neto restado el porcentaje fondo y el porcentaje de socios."""
+        return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo_porcentaje_socios}'
 
     class Meta:
         """Configuraciones del modelo."""
