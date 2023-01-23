@@ -1,14 +1,14 @@
 """Modelo de cliente."""
 
-# Django
 # Utils
 from decimal import Decimal
 
+# Django
+from django.core.validators import MaxValueValidator
 from django.db import models
 
-from sistemita.core.constants import MONEDAS
-
 # Models
+from sistemita.core.constants import MONEDAS
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.entidad import Distrito, Localidad, Provincia
 from sistemita.core.models.utils import FacturaAbstract, TimeStampedModel
@@ -73,6 +73,12 @@ class Factura(FacturaAbstract):
     porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
     categoria = models.ForeignKey(FacturaCategoria, blank=True, null=True, on_delete=models.SET_NULL)
     proveedores = models.ManyToManyField('Proveedor', blank=True)
+    porcentaje_socio_alan = models.DecimalField(
+        blank=False, decimal_places=2, max_digits=5, default=2.5, validators=[MaxValueValidator(100)]
+    )
+    porcentaje_socio_ariel = models.DecimalField(
+        blank=False, decimal_places=2, max_digits=5, default=2.5, validators=[MaxValueValidator(100)]
+    )
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""
@@ -89,6 +95,12 @@ class Factura(FacturaAbstract):
         return get_porcentaje(self.neto, self.porcentaje_fondo)
 
     @property
+    def porcentaje_socios_neto(self):
+        """Retorno el monto del porcentaje de socios desde el monto neto."""
+        porcentaje_socios = self.porcentaje_socio_alan + self.porcentaje_socio_ariel
+        return get_porcentaje(self.neto, porcentaje_socios)
+
+    @property
     def moneda_porcentaje_fondo_monto(self):
         """Retorno el monto del porcentaje de fondo."""
         return f'{self.get_moneda_display()} {self.porcentaje_fondo_monto}'
@@ -102,6 +114,17 @@ class Factura(FacturaAbstract):
     def moneda_monto_neto_sin_fondo(self):
         """Retorno el monto neto restado el porcentaje fondo."""
         return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo}'
+
+    @property
+    def monto_neto_sin_fondo_porcentaje_socios(self):
+        """Retorno el monto neto restado el porcentaje fondo y el porcentaje de socios."""
+        fondo_porcentaje_socios = round(Decimal(self.porcentaje_fondo_neto) + Decimal(self.porcentaje_socios_neto), 2)
+        return self.neto - fondo_porcentaje_socios
+
+    @property
+    def moneda_monto_neto_sin_fondo_porcentaje_socios(self):
+        """Retorno el monto neto restado el porcentaje fondo y el porcentaje de socios."""
+        return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo_porcentaje_socios}'
 
     class Meta:
         """Configuraciones del modelo."""

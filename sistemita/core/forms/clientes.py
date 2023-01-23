@@ -1,5 +1,7 @@
 """Formularios de clientes."""
 
+# Utils
+from decimal import Decimal
 from re import match
 
 # Django
@@ -173,6 +175,8 @@ class FacturaForm(forms.ModelForm):
                 Div(Div('archivos', template='components/input_files.html'), css_class='row'),
                 Div(css_id='adjuntos', css_class='row'),
                 Div(Div('porcentaje_fondo', css_class='col-2'), css_class='row'),
+                Div(Div('porcentaje_socio_alan', css_class='col-2'), css_class='row'),
+                Div(Div('porcentaje_socio_ariel', css_class='col-2'), css_class='row'),
                 Div(Div('monto_imputado', css_class='col-2'), css_class='row'),
             ),
             FormActions(
@@ -214,6 +218,8 @@ class FacturaForm(forms.ModelForm):
             'cobrado',
             'archivos',
             'porcentaje_fondo',
+            'porcentaje_socio_alan',
+            'porcentaje_socio_ariel',
             'monto_imputado',
             'categoria',
         )
@@ -317,6 +323,14 @@ class FacturaForm(forms.ModelForm):
 
         if not hasattr(instance, 'factura_distribuida'):
             FacturaDistribuida.objects.create(factura=instance)
+        else:
+            facturadistribuida = FacturaDistribuida.objects.get(factura=instance)
+            if (
+                round(Decimal(facturadistribuida.monto_distribuido), 2)
+                == instance.monto_neto_sin_fondo_porcentaje_socios
+            ):
+                facturadistribuida.distribuida = True
+                facturadistribuida.save()
 
         return instance
 
