@@ -9,7 +9,7 @@ whitenoise==5.2.0  # https://github.com/evansd/whitenoise
 # Django
 # ------------------------------------------------------------------------------
 behave-django==1.4.0 # https://github.com/behave/behave-django
-django==3.1.7  # pyup: < 3.2  # https://www.djangoproject.com/
+django==3.2  # pyup: < 3.2  # https://www.djangoproject.com/
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-redis==4.12.1  # https://github.com/jazzband/django-redis
 
@@ -28,6 +28,7 @@ openpyxl==3.0.7  # https://openpyxl.readthedocs.io/
 xlsxwriter==1.4.3  # https://github.com/jmcnamara/XlsxWriter
 xlrd2==1.2.6  # https://github.com/python-excel/xlrd
 unidecode==1.2.0 # https://libraries.io/pypi/Unidecode
+django-select2==8.0.0  # https://github.com/codingjoe/django-select2
 
 # Django REST Framework
 # ------------------------------------------------------------------------------

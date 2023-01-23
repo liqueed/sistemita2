@@ -72,6 +72,7 @@ class Factura(FacturaAbstract):
     archivos = models.ManyToManyField(Archivo, blank=True)
     porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
     categoria = models.ForeignKey(FacturaCategoria, blank=True, null=True, on_delete=models.SET_NULL)
+    proveedores = models.ManyToManyField('Proveedor', blank=True)
 
     def __str__(self):
         """Devuelve una represetación legible del modelo."""

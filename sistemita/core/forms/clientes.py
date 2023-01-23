@@ -7,6 +7,8 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Div, Fieldset, Layout, Reset, Submit
 from django import forms
+from django.contrib import admin
+from django_select2 import forms as ds2_forms
 
 # Sistemita
 from sistemita.core.models.archivo import Archivo
@@ -18,6 +20,7 @@ from sistemita.core.models.cliente import (
     OrdenCompra,
 )
 from sistemita.core.models.entidad import Distrito, Localidad
+from sistemita.core.models.proveedor import Proveedor
 from sistemita.expense.models import Fondo
 from sistemita.utils.commons import get_porcentaje_agregado
 from sistemita.utils.strings import (
@@ -26,6 +29,8 @@ from sistemita.utils.strings import (
     MESSAGE_TOTAL_INVALID,
     MESSAGE_TOTAL_ZERO,
 )
+
+admin.autodiscover()
 
 
 class ClienteForm(forms.ModelForm):
@@ -157,6 +162,7 @@ class FacturaForm(forms.ModelForm):
                 Div(Div('numero', css_class='col-4'), Div('tipo', css_class='col-2'), css_class='row'),
                 Div(Div('categoria', css_class='col-4'), css_class='row'),
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
+                Div(Div('proveedores', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_cliente', css_class='row'),
                 Div(Div('detalle', css_class='col-6'), css_class='row'),
@@ -177,15 +183,29 @@ class FacturaForm(forms.ModelForm):
     neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
     archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
+    proveedores = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Proveedor.objects.all(),
+        widget=ds2_forms.ModelSelect2MultipleWidget(
+            model=Proveedor,
+            search_fields=['razon_social__icontains'],
+            # dependent_fields={'territories': 'continent_name__icontains'},
+            max_results=500,
+            attrs={"class": "form-control"},
+        ),
+    )
+
     class Meta:
         """Configuraciones del formulario."""
 
         model = Factura
+        widgets = {'name_of_manytomanyfield': forms.widgets.CheckboxSelectMultiple()}
         fields = (
             'numero',
             'tipo',
             'fecha',
             'cliente',
+            'proveedores',
             'detalle',
             'moneda',
             'iva',
@@ -265,6 +285,7 @@ class FacturaForm(forms.ModelForm):
         """Guarda los datos recibidos del formulario."""
         data = self.cleaned_data
         data.pop('archivos')
+        proveedores = data.pop('proveedores')
         instance = self.instance
 
         if instance.pk is None:
@@ -284,6 +305,11 @@ class FacturaForm(forms.ModelForm):
                 monto_disponible=instance.porcentaje_fondo_monto,
                 disponible=instance.cobrado,
             )
+
+        if proveedores:
+            instance.proveedores.clear()
+            for proveedor in proveedores:
+                instance.proveedores.add(proveedor)
 
         for f in self.files.getlist('archivos'):
             document = Archivo.objects.create(documento=f)
