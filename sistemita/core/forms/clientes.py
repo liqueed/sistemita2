@@ -156,6 +156,7 @@ class FacturaForm(forms.ModelForm):
             self.fields['total'].widget.attrs['readonly'] = True
 
         self.fields['numero'].label = 'Número de factura'
+        self.fields['proveedores'].label = 'Coach de la iniciativa'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
