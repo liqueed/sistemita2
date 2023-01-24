@@ -63,6 +63,8 @@ jobs:
           echo DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY >> .envs/.production/.django
           echo DJANGO_ALLOWED_HOSTS=$DJANGO_ALLOWED_HOSTS >> .envs/.production/.django
           echo DJANGO_SECURE_SSL_REDIRECT=$DJANGO_SECURE_SSL_REDIRECT >> .envs/.production/.django
+          echo EMAIL_HOST_USER=$EMAIL_HOST_USER >> .envs/.production/.django
+          echo EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD >> .envs/.production/.django
           echo WEB_CONCURRENCY=$WEB_CONCURRENCY >> .envs/.production/.django
           echo REDIS_URL=$REDIS_URL >> .envs/.production/.django
           echo SENTRY_DSN=$SENTRY_DSN >> .envs/.production/.django
@@ -71,8 +73,6 @@ jobs:
           echo POSTGRES_DB=$POSTGRES_DB >> .envs/.production/.postgres
           echo POSTGRES_USER=$POSTGRES_USER >> .envs/.production/.postgres
           echo POSTGRES_PASSWORD=$POSTGRES_PASSWORD >> .envs/.production/.postgres
-          echo EMAIL_HOST_USER=$EMAIL_HOST_USER >> .envs/.production/.postgres
-          echo EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD >> .envs/.production/.postgres
 
       # - name: Down services
       #   run:  docker-compose -f production.yml down --remove-orphans
