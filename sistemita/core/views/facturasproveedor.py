@@ -1,7 +1,7 @@
 """Vistas del modelo FacturaProveedor."""
 
 # Datetime
-from datetime import date
+from datetime import date, datetime
 
 # Django
 from django.contrib import messages
@@ -288,6 +288,15 @@ class FacturaProveedorByUserListView(PermissionRequiredMixin, SuccessMessageMixi
     raise_exception = True
     template_name = 'core/facturaproveedor_misfacturas.html'
 
+    def get(self, request, *args, **kwargs):
+        """Genera reporte en formato excel."""
+        format_list = request.GET.get('formato', False)
+
+        if format_list == 'xls':
+            return export_excel(self.request, self.get_queryset())
+
+        return super().get(request, *args, **kwargs)
+
     def get_queryset(self):
         """
         Sobreescribe queryset.
@@ -295,11 +304,20 @@ class FacturaProveedorByUserListView(PermissionRequiredMixin, SuccessMessageMixi
         """
         user_email = self.request.user.email
         queryset = FacturaProveedor.objects.filter(proveedor__correo=user_email).order_by('-creado')
+
         search = self.request.GET.get('search', None)
+        desde = self.request.GET.get('desde', None)
+        hasta = self.request.GET.get('hasta', None)
         order_by = self.request.GET.get('order_by', None)
         try:
             if search:
                 queryset = queryset.filter(Q(numero__icontains=search) | Q(total__icontains=search))
+            if desde:
+                desde = datetime.strptime(desde, '%d/%m/%Y')
+                queryset = queryset.filter(fecha__gte=desde)
+            if hasta:
+                hasta = datetime.strptime(hasta, '%d/%m/%Y')
+                queryset = queryset.filter(fecha__lte=hasta)
             if order_by:
                 queryset = queryset.order_by(order_by)
         except FieldError:
