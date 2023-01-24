@@ -50,8 +50,8 @@ jobs:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
           DJANGO_SECURE_SSL_REDIRECT: ${{ secrets.DJANGO_SECURE_SSL_REDIRECT }}
-          DJANGO_EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
-          DJANGO_EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
+          EMAIL_HOST_USER: ${{ secrets.EMAIL_HOST_USER }}
+          EMAIL_HOST_PASSWORD: ${{ secrets.EMAIL_HOST_PASSWORD }}
           WEB_CONCURRENCY: ${{ secrets.WEB_CONCURRENCY }}
           REDIS_URL: ${{ secrets.REDIS_URL }}
           POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
