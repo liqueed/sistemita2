@@ -4,7 +4,7 @@
 import tempfile
 
 # Datetime
-from datetime import date
+from datetime import date, datetime
 
 # Django
 from django.contrib import messages
@@ -46,6 +46,8 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
         queryset = Pago.objects.order_by('-creado')
 
         search = self.request.GET.get('search', None)
+        desde = self.request.GET.get('desde', None)
+        hasta = self.request.GET.get('hasta', None)
         order_by = self.request.GET.get('order_by', None)
         try:
             if search:
@@ -54,6 +56,12 @@ class PagoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
                     | Q(proveedor__correo__icontains=search)
                     | Q(proveedor__cuit__icontains=search)
                 )
+            if desde:
+                desde = datetime.strptime(desde, '%d/%m/%Y')
+                queryset = queryset.filter(fecha__gte=desde)
+            if hasta:
+                hasta = datetime.strptime(hasta, '%d/%m/%Y')
+                queryset = queryset.filter(fecha__lte=hasta)
             if order_by:
                 queryset = queryset.order_by(order_by)
         except FieldError:

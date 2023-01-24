@@ -13,18 +13,14 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      {% if 'facturaproveedor-list-by-user' == request.resolver_match.url_name %}
-	<h1 class="h3 mb-0 text-gray-800">Mis Facturas</h1>
-      {% else %}
-	<h1 class="h3 mb-0 text-gray-800">Facturación a Proveedores</h1>
-      {% endif %}
+      <h1 class="h3 mb-0 text-gray-800">Facturación a Proveedores</h1>
       <div>
-	{% if perms.core.view_reports_factura and not 'facturaproveedor-list-by-user' == request.resolver_match.url_name %}
+	{% if perms.core.view_reports_factura %}
 	  <a href="{% url 'core:facturaproveedor-list' %}?formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
 	    <i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar
 	  </a>
 	{% endif %}
-	{% if perms.core.add_facturaproveedor and not 'facturaproveedor-list-by-user' == request.resolver_match.url_name %}
+	{% if perms.core.add_facturaproveedor %}
 	  <a href="{% url 'core:facturaproveedor-import' %}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
 	    <i class="fas fa-file-import fa-sm text-white-50"></i> Importar
 	  </a>
