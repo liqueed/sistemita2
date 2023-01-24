@@ -8,11 +8,11 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <h1 class="h3 mb-0 text-gray-800">Pagos a Proveedores</h1>
 	<div>
-	  <a href="{% url 'accounting:pago-list' %}?formato=xls" class="btn btn-sm btn-primary shadow-sm">
+	  <a id="exportar-retenciones" href="{% url 'accounting:pago-list' %}?formato=xls" class="btn btn-sm btn-primary shadow-sm">
 	    <i class="fas fa-file-excel fa-sm text-white-50"></i> Exportar
 	  </a>
 	  {% if perms.accounting.view_report_retencion_pago %}
-	    <a href="{% url 'accounting:pago-list' %}?tipo=retenciones&formato=xls" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+	    <a id="informe-retenciones" href="{% url 'accounting:pago-list' %}?tipo=retenciones&formato=xls" class="d-sm-inline-block btn btn-sm btn-primary shadow-sm">
 	      <i class="fas fa-file-excel fa-sm text-white-50"></i> Informe Retenciones
 	    </a>
 	  {% endif %}
@@ -178,4 +178,29 @@
     </div>
   </div>
 <script src="{% static 'js/tableSort.js' %}"></script>
+{% endblock %}
+{% block extra_js %}
+var search = location.search.split('search=')[1];
+var desde = location.search.split('desde=')[1];
+var hasta = location.search.split('hasta=')[1];
+
+var urlExportarRetenciones = document.getElementById("exportar-retenciones").getAttribute("href");
+var urlInformeRetenciones = document.getElementById("informe-retenciones").getAttribute("href");
+
+if (search){
+    urlExportarRetenciones += '&search=' + search;
+    urlInformeRetenciones += '&search=' + search;
+}
+if (desde){
+    urlExportarRetenciones += '&desde=' + desde;
+    urlInformeRetenciones += '&desde=' + desde;
+} else{
+    if (hasta){
+	urlExportarRetenciones += '&hasta=' + hasta;
+	urlInformeRetenciones += '&hasta=' + hasta;
+    }
+}
+
+document.getElementById("exportar-retenciones").setAttribute('href', urlExportarRetenciones);
+document.getElementById("informe-retenciones").setAttribute('href', urlInformeRetenciones);
 {% endblock %}
