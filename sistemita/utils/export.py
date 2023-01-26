@@ -3,18 +3,22 @@
 # Imports
 import csv
 import io
+import os
+import zipfile
 
-# Datetime
+# Utils
 from datetime import datetime
 
-# writers
 import xlsxwriter
 
 # Django
+from django.conf import settings
 from django.db.models import Sum
 from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
-# Utils
+# Sistemita
 from sistemita.core.constants import MONEDAS
 from sistemita.core.models.mediopago import MedioPago
 
@@ -508,3 +512,67 @@ def export_csv(queryset):
         writer.writerow(item)
 
     return response
+
+
+def export_retenciones_to_zip(request, queryset):
+    """Exporta retenciones en un archivo .zip."""
+    zip_name = f'retenciones_{queryset.first().proveedor.cuit}.zip'
+    retenciones_type = ['ganancias', 'ingresos_brutos', 'iva']
+    files = []
+
+    for factura_proveedor in queryset:
+        for pago_factura in factura_proveedor.pagofactura_set.all():
+            for retencion_type in retenciones_type:
+                if pago_factura.__dict__[retencion_type] > 0:
+                    retencion = generate_retenciones_pdf(request, pago_factura, retencion_type)
+                    files.append(retencion)
+
+    # Si no retenciones mayores a cero no procede a crear un archivo zip
+    if not files:
+        return False, False
+
+    return generate_retenciones_zip(zip_name, files)
+
+
+def generate_retenciones_zip(zip_name, files):
+    """Adjunta las retenciones un zip."""
+    # Compress files
+    zf = zipfile.ZipFile(f'{zip_name}', 'w', zipfile.ZIP_DEFLATED)
+    try:
+        for file_name in files:
+            zf.write(file_name, file_name)
+            os.remove(file_name)
+    except FileNotFoundError:
+        print("An error occurred")
+    finally:
+        zf.close()
+
+    zip_path = f'{settings.ROOT_DIR}/{zip_name}'
+
+    zip_file = open(zip_path, 'rb')
+    response = HttpResponse(zip_file, content_type='application/force-download')
+    response['Content-Disposition'] = f'attachment; filename={zip_name}'
+    return response, zip_path
+
+
+def generate_retenciones_pdf(request, pago_factura, retencion_type):
+    """Genera comprobantes en formato pdf."""
+    factura_numero = pago_factura.factura.numero or 'SN'
+
+    # Rendered
+    html_string = render_to_string(
+        'accounting/pago_retencion_pdf.html',
+        {
+            'object': pago_factura,
+            'retencion_type': retencion_type,
+        },
+    )
+    html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
+    result = html.write_pdf(presentational_hints=True)
+
+    file_name = 'COMPROBANTE DE RETENCION {} DE FACTURA NRO {}.pdf'.format(retencion_type.upper(), factura_numero)
+
+    with open(file_name, 'wb') as f:
+        f.write(result)
+
+    return file_name
