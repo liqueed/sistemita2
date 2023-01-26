@@ -10,7 +10,13 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
 	<h1 class="h3 mb-0 text-gray-800">Mis Facturas</h1>
-      <div>
+	<div>
+	<a href="{% url 'core:facturaproveedor-list-by-user' %}?formato=pdf&seleccionados=todos" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+	  <i class="fas fa-file-pdf fa-sm text-white-50"></i> Descargar retenciones
+	</a>
+	<a id="descargar-retenciones-seleccionados" href="{% url 'core:facturaproveedor-list-by-user' %}?formato=pdf&seleccionados=todos" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+	  <i class="fas fa-file-pdf fa-sm text-white-50"></i> Descargar retenciones seleccionadas
+	</a>
 	<a id="descargar-informe" href="{% url 'core:facturaproveedor-list-by-user' %}?formato=xls" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
 	  <i class="fas fa-file-excel fa-sm text-white-50"></i> Descargar informe
 	</a>
@@ -27,6 +33,7 @@
 	<div class="table-responsive">
 	  <div class="row float-right">
 	    {% include 'components/filter_facturas.html' %}
+	    {% include 'components/search_form.html' %}
 	    {% if perms.core.add_facturaproveedor %}
 	      <div class="btn-group btn-group-sm mb-2" role="group" aria-label="Third group">
 		<a class="btn btn-primary" role="button" href="{% url 'core:facturaproveedor-create' %}">Agregar</a>
@@ -36,6 +43,7 @@
 	  <table class="table table-bordered table-hover" width="100%" cellspacing="0">
 	    <thead>
 	      <tr>
+		<th><input class="todos-seleccionados" type="checkbox"></th>
 		<th data-order="numero" class="sortable">Número</th>
 		<th data-order="fecha" class="sortable">Fecha de pago</th>
 		<th data-order="tipo" class="sortable">Tipo</th>
@@ -51,7 +59,8 @@
 	    </thead>
 	    <tbody>
 	      {% for object in object_list %}
-		<tr>
+	      <tr>
+		  <td><input class="seleccionados" type="checkbox" value="{{ object.pk }}"></td>
 		  <td>
 		    {% if not 'facturaproveedor-list-by-user' == request.resolver_match.url_name %}
 		      <a {% if perms.core.view_facturaproveedor %}href="{% url 'core:facturaproveedor-detail' object.pk %}"{% endif %}>
@@ -119,15 +128,68 @@
 {% block extra_js %}
 var desde = location.search.split('desde=')[1];
 var hasta = location.search.split('hasta=')[1];
+var search = location.search.split('search=')[1];
 
 var urlDescargarInforme = document.getElementById("descargar-informe").getAttribute("href");
+var urlDescargarRetenciones = document.getElementById("descargar-retenciones-seleccionados").getAttribute("href");
+
 if (desde){
      urlDescargarInforme += '&desde=' + desde;
+     urlDescargarRetenciones += '&desde=' + desde;
 } else{
     if (hasta){
 	urlDescargarInforme += '&hasta=' + hasta;
+	urlDescargarRetenciones += '&hasta=' + hasta;
     }
 }
-console.log(urlDescargarInforme);
+
+getSeleccionados();
+
+$('.todos-seleccionados').change(function(){
+    isCheckedTodosSeleccionados();
+});
+
+$('.seleccionados').change(function(){
+    getSeleccionados();
+});
+
+
+function isCheckedTodosSeleccionados(){
+    var hasFilters = false;
+    if (desde === undefined && hasta == undefined && search && undefined){
+	hasFilters = true;
+    }
+
+    if ($('.todos-seleccionados').is(':checked') && hasFilters === 0){
+	urlDescargarRetenciones = urlDescargarRetenciones.split('&seleccionados', 1)[0];
+	urlDescargarRetenciones = urlDescargarRetenciones + '&seleccionados=todos';
+	document.getElementById("descargar-retenciones-seleccionados").setAttribute('href', urlDescargarRetenciones);
+	$("input[type=checkbox]").prop('checked', true);
+    } else{
+	$("input[type=checkbox]").prop('checked', true);
+	getSeleccionados();
+    }
+}
+
+function getSeleccionados(){
+    var seleccionados = '';
+    $('.seleccionados').each(function(index, element) {
+	if ($(this).is(':checked')){
+	    if (seleccionados === ''){
+		seleccionados += $(this).val();
+	    } else {
+		seleccionados += ',' + $(this).val();
+	    }
+	}
+    });
+
+    if (seleccionados){
+	urlDescargarRetenciones = urlDescargarRetenciones.split('&seleccionados', 1)[0];
+	urlDescargarRetenciones = urlDescargarRetenciones + '&seleccionados=' + seleccionados;
+	document.getElementById("descargar-retenciones-seleccionados").setAttribute('href', urlDescargarRetenciones);
+    }
+}
+
 document.getElementById("descargar-informe").setAttribute('href', urlDescargarInforme);
+
 {% endblock %}

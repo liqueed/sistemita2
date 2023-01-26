@@ -1,5 +1,8 @@
 """Vistas del modelo FacturaProveedor."""
 
+# Imports
+import os
+
 # Datetime
 from datetime import date, datetime
 
@@ -27,7 +30,7 @@ from sistemita.core.models.proveedor import (
 )
 from sistemita.core.views.home import error_403
 from sistemita.utils.commons import get_deleted_objects
-from sistemita.utils.export import export_excel
+from sistemita.utils.export import export_excel, export_retenciones_to_zip
 from sistemita.utils.strings import (
     _MESSAGE_SUCCESS_CREATED,
     _MESSAGE_SUCCESS_DELETE,
@@ -294,6 +297,24 @@ class FacturaProveedorByUserListView(PermissionRequiredMixin, SuccessMessageMixi
 
         if format_list == 'xls':
             return export_excel(self.request, self.get_queryset())
+
+        if format_list == 'pdf':
+            seleccionados = self.request.GET.get('seleccionados', None)
+
+            if seleccionados == 'todos':
+                response, zip_path = export_retenciones_to_zip(self.request, self.get_queryset())
+            else:
+                queryset = self.get_queryset().filter(pk__in=seleccionados.split(','))
+                response, zip_path = export_retenciones_to_zip(self.request, queryset)
+
+            # Si no hay response es porque no hay retenciones que descargar
+            if not response:
+                messages.warning(request, 'No hay retenciones disponibles para las facturas seleccionadas.')
+                return super().get(request, *args, **kwargs)
+
+            # Remuevo el zip creado
+            os.remove(zip_path)
+            return response
 
         return super().get(request, *args, **kwargs)
 
