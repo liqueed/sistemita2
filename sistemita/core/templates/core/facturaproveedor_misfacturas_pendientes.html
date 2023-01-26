@@ -39,7 +39,7 @@
 		      </a>
 		  </td>
 		  <td>{{ object.factura_distribucion.factura.cliente.razon_social }}</td>
-		  <td>{{ object.factura_distribucion.factura.detalle }}</td>
+		  <td>{{ object.detalle }}</td>
 		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
 		  {% if perms.core.add_facturaproveedor %}
 		     <td class="text-center">
