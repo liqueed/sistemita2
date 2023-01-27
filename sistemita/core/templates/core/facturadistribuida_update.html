@@ -65,7 +65,7 @@
 				  </label>
 				  <div>
 				    <div class="wrapper-selector-proveedor">
-				      <select class="selector-proveedor form-control" id="proveedor_1" name="proveedor_1" required disabled>
+				      <select class="selector-proveedor form-control" id="proveedor_1" name="proveedor_1" required>
 					<option value="">---------</option>
 				      </select>
 				    </div>
@@ -170,16 +170,21 @@ $(document).ready(function() {
 		let cloneDistribucion = $('.group-distribucion-proveedores:first').clone(true);
 		cloneDistribucion.attr('data-inline', `{"id": ${idDistribucion}, "action": "update"}`);
 		// proveedor
+		cloneDistribucion.find(`.wrapper-selector-proveedor`).children().remove();
+		let htmlselector = `<select id="proveedor_${indexDistribucion}" name="proveedor_${indexDistribucion}" class="selector-proveedor form-control" required>`;
+		htmlselector += `<option value="" selected="">---------</option></select>`;
+		cloneDistribucion.find('.wrapper-selector-proveedor').append(htmlselector);
+		cloneDistribucion.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
 		cloneDistribucion.find('.selector-proveedor').attr('id', `proveedor_${indexDistribucion}`);
 		cloneDistribucion.find('.selector-proveedor').attr('data-id', `${distribucion.proveedor.id}`);
 		cloneDistribucion.find('.selector-proveedor').attr('name', `proveedor_${indexDistribucion}`);
+
 		// detalle
 		cloneDistribucion.find('.input-detalle').attr('name', `detalle_${indexDistribucion}`);
 		cloneDistribucion.find('.input-detalle').val(distribucion.detalle);
 		// monto
 		cloneDistribucion.find('.input-monto').attr('name', `monto_${indexDistribucion}`);
 		cloneDistribucion.find('.input-monto').val(distribucion.monto);
-		cloneDistribucion.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
 		// cloneDistribucion.attr('data-inline', `{"id": ${idDistribucion}, "action": "update"}`);
 		$('.group-distribucion-proveedores:last').after(cloneDistribucion);
 	    } else {
@@ -190,10 +195,53 @@ $(document).ready(function() {
 		$(`.group-distribucion-proveedores:first`).find('.input-monto').val(distribucion.monto);
 	    }
 
-	    $(`#proveedor_${indexDistribucion}`).append(
-		new Option(`${distribucion.proveedor.razon_social} - ${distribucion.proveedor.cuit}`, `${distribucion.id}`, true, true)
-	    );
+	    $(`#proveedor_${indexDistribucion}`).select2({
+		placeholder: 'Selecciona un proveedor',
+		searchInputPlaceholder: 'Buscar por número de factura',
+		ajax: {
+		    url: '/api/proveedor/',
+		    processResults: function (response) {
+			var data = $.map(response, function (obj) {
+			    obj.id = obj.id;
+			    obj.text = `${obj.razon_social} - CUIT: ${obj.cuit}`;
+			    return obj;
+			});
+			return {
+			    results: data
+			};
+		    },
+		    data: function (params) {
+			var query = {
+			    razon_social__cuit__icontains: params.term
+			}
+			return query;
+		    },
+		    cache: true
+		}
+	    }).on('change', function(){
+		let proveedor = $(this).select2('data')[0];
+
+		// remuevo del array proveedores el anterior proveedor
+		let previousProveedor = $(this)[0].dataset['id'];
+		if (proveedor.id != previousProveedor){
+		    proveedores.indexOf(previousProveedor);
+		    $(this).attr('data-id', proveedor.id);
+		}
+		if (proveedores.includes(proveedor.id)){
+		    $('.alert-errors').removeClass('d-none');
+		    $('.error-general').remove();
+		    $('.alert-errors').append('<p class="m-0 error-general">No puede haber proveedores repetidos.</p>');
+		} else {
+		    proveedores.push(proveedor.id.toString())
+		    $('.alert-errors').addClass('d-none');
+		}
+	    });
+
+	    $(`#proveedor_${indexDistribucion}`).select2('trigger', 'select', {
+		data: {id: distribucion.proveedor.id, text: `${distribucion.proveedor.razon_social} - CUIT: ${distribucion.proveedor.cuit}`}
+	    })
 	    proveedores.push(distribucion.proveedor.id.toString())
+
 	});
 
 	$('.input-total').val(response.monto_distribuido);
@@ -253,6 +301,12 @@ $('.add-proveedor').click(function(e){
     }).on('change', function(){
 	let proveedor = $(this).select2('data')[0];
 	$(this).attr('data-id', proveedor.id);
+	// remuevo del array proveedores el anterior proveedor
+	let previousProveedor = $(this)[0].dataset['id'];
+	if (proveedor.id != previousProveedor){
+	    proveedores.indexOf(previousProveedor);
+	    $(this).attr('data-id', proveedor.id);
+	}
 	if (proveedores.includes(proveedor.id)){
 	    $('.alert-errors').removeClass('d-none');
 	    $('.error-general').remove();
@@ -323,7 +377,6 @@ $('#submit-id-submit').click(function(e){
 	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
 	}
     }).done(function(data) {
-	console.log(data)
 	if ('{{ perms.core.change_facturadistribuida }}' === 'True'){
 	    window.location.href = '{% url 'core:facturadistribuida-update' pk=0 %}?update=1'.replace('0', data.factura_distribuida_id);
 	} else {
