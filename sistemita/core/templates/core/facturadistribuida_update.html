@@ -148,7 +148,6 @@
 // Globales
 var idFacturaDistribuida;
 var proveedor;
-var proveedores = [];
 var totalFactura;
 
 // Carga datos
@@ -220,27 +219,12 @@ $(document).ready(function() {
 		}
 	    }).on('change', function(){
 		let proveedor = $(this).select2('data')[0];
-
-		// remuevo del array proveedores el anterior proveedor
-		let previousProveedor = $(this)[0].dataset['id'];
-		if (proveedor.id != previousProveedor){
-		    proveedores.indexOf(previousProveedor);
-		    $(this).attr('data-id', proveedor.id);
-		}
-		if (proveedores.includes(proveedor.id)){
-		    $('.alert-errors').removeClass('d-none');
-		    $('.error-general').remove();
-		    $('.alert-errors').append('<p class="m-0 error-general">No puede haber proveedores repetidos.</p>');
-		} else {
-		    proveedores.push(proveedor.id.toString())
-		    $('.alert-errors').addClass('d-none');
-		}
+		$(this).attr('data-id', proveedor.id);
 	    });
 
 	    $(`#proveedor_${indexDistribucion}`).select2('trigger', 'select', {
 		data: {id: distribucion.proveedor.id, text: `${distribucion.proveedor.razon_social} - CUIT: ${distribucion.proveedor.cuit}`}
 	    })
-	    proveedores.push(distribucion.proveedor.id.toString())
 
 	});
 
@@ -301,21 +285,6 @@ $('.add-proveedor').click(function(e){
     }).on('change', function(){
 	let proveedor = $(this).select2('data')[0];
 	$(this).attr('data-id', proveedor.id);
-	// remuevo del array proveedores el anterior proveedor
-	let previousProveedor = $(this)[0].dataset['id'];
-	if (proveedor.id != previousProveedor){
-	    proveedores.indexOf(previousProveedor);
-	    $(this).attr('data-id', proveedor.id);
-	}
-	if (proveedores.includes(proveedor.id)){
-	    $('.alert-errors').removeClass('d-none');
-	    $('.error-general').remove();
-	    $('.alert-errors').append('<p class="m-0 error-general">No puede haber proveedores repetidos.</p>');
-	} else {
-	    proveedores.push(proveedor.id.toString())
-	    $('.alert-errors').addClass('d-none');
-	}
-
     });
 
 });
@@ -329,7 +298,6 @@ $('.wrapper-distribucion-proveedores').on('click', '.btn-metodo-remove', functio
     $(this).closest('.group-distribucion-proveedores').attr('data-inline', `{"id": ${idDistribucion}, "action": "delete"}`);
     $(this).closest(".group-distribucion-proveedores").addClass('d-none');
     getTotal();
-    validProveedores();
 });
 
 $('#facturadistribuida-form').on('change', '.input-monto',function(){
@@ -430,7 +398,7 @@ function validateForm(){
     }, "Este campo es obligatorio.");
 
 
-    let result = $("#facturadistribuida-form").valid() && validProveedores() && validTotal();
+    let result = $("#facturadistribuida-form").valid() && validTotal();
 
     // show errors
     if (result === false) {
@@ -467,24 +435,6 @@ function validTotal(){
     }
     $('.alert-errors').addClass('d-none');
     $('.error-total-invalido').remove();
-    return true;
-}
-
-function validProveedores() {
-    var id_proveedores = [];
-    $('.selector-proveedor').each(function(){
-	id_proveedores.push($(this).attr('data-id').toString());
-    });
-
-    var duplicates = id_proveedores.reduce(function(acc, el, i, arr) {
-	if (arr.indexOf(el) !== i && acc.indexOf(el) < 0) acc.push(el); return acc;
-    }, []);
-
-    if (duplicates.length > 0){
-	return false;
-    }
-    $('.alert-errors').addClass('d-none');
-    $('.error-proveedores-duplicados').remove();
     return true;
 }
 
