@@ -141,7 +141,6 @@
 // Globales
 var idFacturaDistribuida;
 var proveedor;
-var proveedores = [];
 var totalFactura;
 
 // Carga datos
@@ -186,7 +185,6 @@ $('#proveedor_1').select2({
     let proveedor = $(this).select2('data')[0];
     $(this).attr('data-id', proveedor.id);
     $('.add-proveedor').removeClass('d-none');
-    proveedores.push(proveedor.id.toString());
 });
 
 
@@ -199,7 +197,6 @@ $('.add-proveedor').click(function(e){
     let cloneIdProveedor = countProveedores + 1; // Id del proximo elemento clonado
 
     if (!validateForm()){return;}
-
 
     // proveedor
     cloneProveedor.find(`.wrapper-selector-proveedor`).children().remove();
@@ -242,17 +239,7 @@ $('.add-proveedor').click(function(e){
     }).on('change', function(){
 	let proveedor = $(this).select2('data')[0];
 	$(this).attr('data-id', proveedor.id);
-	if (proveedores.includes(proveedor.id)){
-	    $('.alert-errors').removeClass('d-none');
-	    $('.error-general').remove();
-	    $('.alert-errors').append('<p class="m-0 error-general">No puede haber proveedores repetidos.</p>');
-	} else {
-	    proveedores.push(proveedor.id.toString())
-	    $('.alert-errors').addClass('d-none');
-	}
-
     });
-
 });
 
 
@@ -260,7 +247,6 @@ $('.wrapper-distribucion-proveedores').on('click', '.btn-metodo-remove', functio
     e.preventDefault();
     $(this).closest(".group-distribucion-proveedores").remove();
     getTotal();
-    validProveedores();
 });
 
 $('#facturadistribuida-form').on('change', '.input-monto',function(){
@@ -348,7 +334,7 @@ function validateForm(){
     }, "Este campo es obligatorio.");
 
 
-    let result = $("#facturadistribuida-form").valid() && validProveedores() && validTotal();
+    let result = $("#facturadistribuida-form").valid() && validTotal();
 
     // show errors
     if (result === false) {
@@ -383,24 +369,6 @@ function validTotal(){
     }
     $('.alert-errors').addClass('d-none');
     $('.error-total-invalido').remove();
-    return true;
-}
-
-function validProveedores() {
-    var id_proveedores = [];
-    $('.selector-proveedor').each(function(){
-	id_proveedores.push($(this).attr('data-id').toString());
-    });
-
-    var duplicates = id_proveedores.reduce(function(acc, el, i, arr) {
-	if (arr.indexOf(el) !== i && acc.indexOf(el) < 0) acc.push(el); return acc;
-    }, []);
-
-    if (duplicates.length > 0){
-	return false;
-    }
-    $('.alert-errors').addClass('d-none');
-    $('.error-proveedores-duplicados').remove();
     return true;
 }
 
