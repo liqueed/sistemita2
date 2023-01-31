@@ -46,6 +46,7 @@ class GroupForm(forms.ModelForm):
                 'ordencompra',
                 'cobranza',
                 'proveedor',
+                'facturadistribuida',
                 'facturaproveedor',
                 'pago',
                 'mediopago',
