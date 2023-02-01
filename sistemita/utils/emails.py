@@ -1,9 +1,12 @@
 """Utils Email."""
 
 import threading
-
-from django.core.mail import EmailMultiAlternatives
 from email.mime.image import MIMEImage
+
+# Django
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 class EmailThread(threading.Thread):
@@ -45,3 +48,25 @@ def send_mail(
     Send email
     """
     EmailThread(subject, body, from_email, recipient_list, fail_silently, html, attach, file).start()
+
+
+def send_notification_factura_distribuida(proveedor, facturadistribuida):
+    """Envia notificación a proveedor de factura distribuida."""
+
+    html_content = render_to_string(
+        'emails/facturas_pendientes.html',
+        {
+            'factura_numero': facturadistribuida.factura.numero,
+            'cliente_razon_social': facturadistribuida.factura.cliente.razon_social,
+            'url': '/',
+        },
+    )
+
+    if proveedor.correo:
+        send_mail(
+            'Liqueed - Autorización facturas pendientes',
+            '',
+            settings.EMAIL_FROM,
+            [proveedor.correo],
+            html=html_content,
+        )
