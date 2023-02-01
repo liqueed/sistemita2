@@ -7,8 +7,6 @@ from decimal import Decimal
 from re import match
 
 # Django Rest Framework
-from django.conf import settings
-from django.template.loader import render_to_string
 from rest_framework import serializers
 
 # Sistemita
@@ -38,7 +36,7 @@ from sistemita.core.models.proveedor import (
     Proveedor,
 )
 from sistemita.utils.commons import get_total_factura
-from sistemita.utils.emails import send_mail
+from sistemita.utils.emails import send_notification_factura_distribuida
 from sistemita.utils.strings import (
     MESSAGE_CUIT_INVALID,
     MESSAGE_MONEDA_INVALID,
@@ -525,22 +523,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             FacturaDistribuidaProveedor.objects.create(
                 factura_distribucion=facturadistribuida, detalle=detalle, proveedor=proveedor, monto=monto
             )
-            html_content = render_to_string(
-                'emails/facturas_pendientes.html',
-                {
-                    'factura_numero': facturadistribuida.factura.numero,
-                    'cliente_razon_social': facturadistribuida.factura.cliente.razon_social,
-                    'url': '/',
-                },
-            )
-            if proveedor.correo:
-                send_mail(
-                    'Liqueed - Autorización facturas pendientes',
-                    '',
-                    settings.EMAIL_FROM,
-                    [proveedor.correo],
-                    html=html_content,
-                )
+            send_notification_factura_distribuida(proveedor, facturadistribuida)
             proveedores_list.append({'id': item.get('proveedor').pk})
 
         if round(Decimal(monto_distribuido), 2) == facturadistribuida.factura.monto_neto_sin_fondo_porcentaje_socios:
@@ -564,12 +547,14 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             data = item.get('data')
             if data.get('action') == 'add':
                 monto_distribuido += float(monto)
+                proveedor = item.get('proveedor')
                 FacturaDistribuidaProveedor.objects.create(
                     factura_distribucion=facturadistribuida,
-                    proveedor=item.get('proveedor'),
+                    proveedor=proveedor,
                     detalle=detalle,
                     monto=monto,
                 )
+                send_notification_factura_distribuida(proveedor, facturadistribuida)
                 proveedores_list.append({'id': item.get('proveedor').pk})
             elif data.get('action') == 'update':
                 proveedor = item.get('proveedor')
@@ -588,3 +573,33 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
         facturadistribuida.save()
 
         return {'factura_distribuida_id': facturadistribuida.pk, 'distribucion_list': proveedores_list}
+
+
+class FacturaDistribuidaSendNotificationSerializer(serializers.Serializer):
+    """Serializadorr para enviar notificaciones de factura distribuida a un proveedor."""
+
+    proveedor_id = serializers.CharField()
+    factura_distribuida_id = serializers.CharField()
+
+    def validate_proveedor_id(self, data):
+        """Valida proveedor."""
+        try:
+            proveedor = Proveedor.objects.get(pk=data)
+        except Proveedor.DoesNotExist:
+            raise serializers.ValidationError('El proveedor no existe.')
+        return proveedor
+
+    def validate_factura_distribuida_id(self, data):
+        """Valida la factura distribuida."""
+        try:
+            facturadistribuida = FacturaDistribuida.objects.get(pk=data)
+        except FacturaDistribuida.DoesNotExist:
+            raise serializers.ValidationError('La factura distribuida no existe.')
+        return facturadistribuida
+
+    def create(self, validated_data):
+        """Envía notificación."""
+        proveedor = validated_data.get('proveedor_id')
+        facturadistribuida = validated_data.get('factura_distribuida_id')
+        send_notification_factura_distribuida(proveedor, facturadistribuida)
+        return True

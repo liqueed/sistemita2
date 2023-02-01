@@ -16,9 +16,10 @@
 	</a>
 	{% endif %}
     </div>
-    <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create and not request.GET.update %}d-none{% endif %}" role="alert">
+    <div class="alert alert-success alert-dismissible fade show {% if not request.GET.create and not request.GET.update and not request.GET.send %}d-none{% endif %}" role="alert">
       {% if request.GET.create %}La distribución ha sido creada exitosamente.{% endif %}
       {% if request.GET.update %}La distribución ha sido modificada exitosamente.{% endif %}
+      {% if request.GET.send %}El email ha sido enviado exitosamente.{% endif %}
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 	<span aria-hidden="true">×</span>
       </button>
@@ -58,7 +59,7 @@
 			  <div class="col-12 wrapper-distribucion-proveedores">
 			    <div class="row group-distribucion-proveedores">
 			      <!-- Proveedor -->
-			      <div class="col-6">
+			      <div class="col-5">
 				<div class="form-group">
 				  <label class="requiredField">
 				    Proveedor<span class="asteriskField">*</span>
@@ -97,6 +98,18 @@
 				</div>
 			      </div>
 			      <!-- End Monto -->
+			      <!-- Reenviar email -->
+			      <div class="wrapper-send-notification col-1">
+				<div class="form-group">
+				  <label class="requiredField">
+				    Reenviar
+				  </label>
+				  <div>
+				    <button type="button" class="send-notification btn btn-info" title="Reenviar email"><i class="fa fa-envelope" aria-hidden="true"></i></button>
+				  </div>
+				</div>
+			      </div>
+			    <!-- End Reenviar email -->
 			    </div>
 			  </div>
 			  <!-- End Proveedores y montos -->
@@ -106,7 +119,7 @@
 			    <div class="form-group">
 			      <label></label>
 			      <div>
-				<button class="add-proveedor btn btn-success btn-xs mt-3" title="Agregar proveedor y monto"><i class="fas fa-plus-circle"></i></button>
+				<button class="add-proveedor btn btn-success btn-xs" title="Agregar proveedor y monto"><i class="fas fa-plus-circle"></i></button>
 			      </div>
 			    </div>
 			  </div>
@@ -240,6 +253,7 @@ $('.add-proveedor').click(function(e){
     let cloneProveedor = $('.group-distribucion-proveedores:first').clone(); // Clono al primer proveedor
     let countProveedores = $('.group-distribucion-proveedores').length;
     let cloneIdProveedor = countProveedores + 1; // Id del proximo elemento clonado
+    cloneProveedor.find('.wrapper-send-notification').addClass('d-none');
 
     if (!validateForm()){return;}
 
@@ -437,5 +451,42 @@ function validTotal(){
     $('.error-total-invalido').remove();
     return true;
 }
+
+$('.send-notification').click(function(e){
+    var proveedor_id = $(this).closest('.group-distribucion-proveedores').find('.selector-proveedor').attr('data-id');
+    var formSendNotification = {
+	'proveedor_id': proveedor_id,
+	'factura_distribuida_id': idFacturaDistribuida,
+    }
+
+    $.ajax({
+	type        : 'POST',
+	url         : `/api/factura-distribuida/send-notification/`,
+	data        : JSON.stringify(formSendNotification),
+	dataType    : 'json',
+	contentType : 'application/json',
+	encode      : true,
+	beforeSend: function (xhr) {
+	    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+	}
+    }).done(function(data) {
+	if ('{{ perms.core.change_facturadistribuida }}' === 'True'){
+	    window.location.href = '{% url 'core:facturadistribuida-update' pk=0 %}?send=1'.replace('0', idFacturaDistribuida);
+	}
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+	if (jqXHR.status == 400) {
+	    let listErrors = jqXHR.responseJSON;
+	    const array = Object.keys(listErrors).map(key => listErrors[key]);
+	    $('.alert-errors').removeClass('d-none');
+	    for (var item in array) {
+		$('.alert-errors').append('<p class="m-0">' + array[item] + '</p>');
+	    }
+	}
+	if (jqXHR.status == 500) {
+	    $('.alert-errors').removeClass('d-none');
+	    $('.alert-errors').append('<p class="m-0">Se produjo un error, revise el formulario e inténtelo nuevamente.</p>');
+	}
+    });
+});
 
 {% endblock %}

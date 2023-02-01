@@ -16,6 +16,7 @@ from sistemita.api.clientes.serializers import (
     ClienteSerializer,
     FacturaBeforeImportSerializer,
     FacturaDistribuidaModelSerializer,
+    FacturaDistribuidaSendNotificationSerializer,
     FacturaDistribuidaSerializer,
     FacturaImportSerializer,
     FacturaImputadaModelSerializer,
@@ -149,5 +150,19 @@ class FacturaDistribuidaViewSet(
         action_mappings = {
             'create': FacturaDistribuidaSerializer,
             'update': FacturaDistribuidaSerializer,
+            'send_notification': FacturaDistribuidaSendNotificationSerializer,
         }
         return action_mappings.get(self.action, FacturaDistribuidaModelSerializer)
+
+    @action(detail=False, methods=['post'], url_path='send-notification')
+    def send_notification(self, request):
+        """Envía notificación al proveedor."""
+        proveedor_id = request.data.get('proveedor_id', None)
+        factura_distribuida_id = request.data.get('factura_distribuida_id', None)
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(
+            data={'proveedor_id': proveedor_id, 'factura_distribuida_id': factura_distribuida_id},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({}, status=status.HTTP_201_CREATED)
