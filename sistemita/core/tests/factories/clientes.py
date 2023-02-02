@@ -16,6 +16,7 @@ from sistemita.core.models import (
     Distrito,
     Factura,
     FacturaCategoria,
+    FacturaDistribuida,
     FacturaImputada,
     Localidad,
     OrdenCompra,
@@ -280,3 +281,68 @@ class FacturaImputadaClienteFactoryData:
             'total_factura': total_factura,
             'facturas_list': facturas_list,
         }
+
+
+class FacturaDistribuidaFactory(DjangoModelFactory):
+    """Fabrica de instancias del modelo de facturas distribuidas de clientes."""
+
+    class Meta:
+        """Factory settings."""
+
+        model = FacturaDistribuida
+
+    factura = SubFactory(FacturaClienteFactory)
+    distribuida = True
+    monto_distribuido = factory.LazyAttribute(lambda o: o.factura.total)
+
+
+class FacturaDistribuidaFactoryData:
+    """Creación de datos para el modelo de factura distribuida a proveedores."""
+
+    def __init__(self):
+        from sistemita.core.tests.factories import (  # noqa
+            FacturaDistribuidaProveedorFactory,
+        )
+
+        factura_distribuida = FacturaDistribuidaFactory.create()
+        # factura_distribuida.cobrado = True
+        factura_distribuida.save()
+
+        distribucion_list = []
+        range_aux = rand_range(2, 5)
+        monto = factura_distribuida.factura.total / range_aux
+
+        for _ in range(0, range_aux):
+            factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
+            distribucion_list.append(
+                {
+                    'proveedor': factura_distribuida_proveedor.proveedor,
+                    'detalle': factura_distribuida_proveedor.detalle,
+                    'monto': monto,
+                }
+            )
+
+        self.data_create = {'factura_distribuida_id': factura_distribuida.pk, 'distribucion_list': distribucion_list}
+
+    def build(self):
+        """Devuelve un diccionario con datos."""
+        return self.data_create
+
+    def create(self):
+        """Devuelve un diccionario con datos."""
+        return self.data_create
+
+    @staticmethod
+    def update(instance):
+        """Devuelve un diccionario con datos para editar"""
+        distribucion_list = []
+        for factura_distribuida_proveedor in instance.factura_distribuida_proveedores.all():
+            distribucion_list.append(
+                {
+                    'proveedor': factura_distribuida_proveedor.proveedor,
+                    'detalle': factura_distribuida_proveedor.detalle,
+                    'monto': factura_distribuida_proveedor.monto,
+                }
+            )
+
+        return {'factura_distribuida_id': instance.pk, 'distribucion_list': distribucion_list}

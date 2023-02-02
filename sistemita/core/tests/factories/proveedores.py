@@ -1,5 +1,3 @@
-"""Proveedor factories."""
-
 from decimal import Decimal
 
 # Fake
@@ -12,6 +10,7 @@ from faker import Faker as fake
 from sistemita.core.constants import MONEDAS, TIPOS_FACTURA, ZERO_DECIMAL
 from sistemita.core.models import (
     Distrito,
+    FacturaDistribuidaProveedor,
     FacturaProveedor,
     FacturaProveedorCategoria,
     FacturaProveedorImputada,
@@ -22,6 +21,7 @@ from sistemita.core.models import (
 from sistemita.core.tests.factories import (
     ArchivoFactory,
     FacturaClienteFactory,
+    FacturaDistribuidaFactory,
 )
 from sistemita.utils.commons import get_porcentaje_agregado, get_total_factura
 from sistemita.utils.tests import generate_dict_factory, rand_range
@@ -256,3 +256,16 @@ class FacturaImputadaProveedorFactoryData:
             'total_factura': total_factura,
             'facturas_list': facturas_list,
         }
+
+
+class FacturaDistribuidaProveedorFactory(DjangoModelFactory):
+    """Fabrica de instancias del modelo de facturas distribuidas a proveedor."""
+
+    class Meta:
+        """Factory settings."""
+
+        model = FacturaDistribuidaProveedor
+
+    factura_distribucion = SubFactory(FacturaDistribuidaFactory)
+    proveedor = SubFactory(ProveedorFactory)
+    detalle = Faker('text', max_nb_chars=255)

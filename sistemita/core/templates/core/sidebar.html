@@ -88,17 +88,6 @@
 	  <span>Distribuci&oacute;n</span>
 	</a>
       {% endif %}
-      {% if not perms.core.list_facturadistribuida and perms.core.add_facturadistribuida %}
-	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFacturas" aria-expanded="true">
-	  <i class="fas fa-sticky-note"></i>
-	  <span>Distribuci&oacute;n</span>
-	</a>
-	<div id="collapseFacturas" class="collapse">
-	  <div class="bg-white py-2 collapse-inner rounded">
-	    <a href="{% url 'core:facturadistribuida-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
-	  </div>
-	</div>
-      {% endif %}
     </li>
   {% endif %}
   <!-- End Distribución -->
