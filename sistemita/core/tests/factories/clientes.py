@@ -310,15 +310,16 @@ class FacturaDistribuidaFactoryData:
 
         distribucion_list = []
         range_aux = rand_range(2, 5)
-        monto = factura_distribuida.factura.total / range_aux
+        monto = factura_distribuida.factura.monto_neto_sin_fondo_porcentaje_socios / range_aux
 
         for _ in range(0, range_aux):
             factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
             distribucion_list.append(
                 {
-                    'proveedor': factura_distribuida_proveedor.proveedor,
+                    'id': factura_distribuida_proveedor.proveedor.pk,
                     'detalle': factura_distribuida_proveedor.detalle,
                     'monto': monto,
+                    'data': {'action': 'add'},
                 }
             )
 

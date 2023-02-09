@@ -5,7 +5,10 @@ from django.core.management import call_command
 from rest_framework.test import APIClient
 
 # Sistemita
-from sistemita.core.tests.factories import FacturaDistribuidaFactory
+from sistemita.core.tests.factories import (
+    FacturaDistribuidaFactory,
+    FacturaDistribuidaFactoryData,
+)
 from sistemita.utils.tests import (
     BaseTestCase,
     prevent_request_warnings,
@@ -100,3 +103,18 @@ class FacturaDistribuidaRetrieveViewAPITestCase(BaseTestCase):
         request = self.client.get(f'/api/factura-distribuida/{factura.pk}/')
         fields = ['id', 'factura', 'monto_distribuido', 'factura_distribuida_proveedores']
         self.assertHasProps(request.json(), fields)
+
+
+class FacturaDistribuidaCreateViewAPITestCase(BaseTestCase):
+    """Tests sobre la vista de crear."""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.data_create = FacturaDistribuidaFactoryData().create()
+
+    def test_validate_data(self):
+        """Valida que si los datos son correcto agregue la instancia."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.post('/api/factura-distribuida/', self.data_create, format='json')
+        self.assertEqual(response.status_code, 201)
