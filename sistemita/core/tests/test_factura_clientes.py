@@ -1,12 +1,15 @@
 """Factura de Cliente tests."""
 
+# Utils
+from decimal import Decimal
+
 # Django
 from django.core.management import call_command
 from faker import Faker
 
 # Sistemita
 from sistemita.core.forms.clientes import FacturaForm
-from sistemita.core.models import Factura
+from sistemita.core.models import Factura, FacturaDistribuida
 from sistemita.core.tests.factories import (
     FacturaClienteFactory,
     FacturaClienteFactoryData,
@@ -272,6 +275,17 @@ class FacturaClienteCreateViewTest(BaseTestCase):
         )
         self.assertTrue(fondo.exists())
 
+    def test_form_factura_distribuida_create(self):
+        """Valida que se crea una factura distribuida al generar una factura."""
+        user = self.create_superuser()
+        form = FacturaForm(data=self.data, user=user)
+        form.is_valid()
+        instance = form.save()
+        factura_distribuida = FacturaDistribuida.objects.filter(
+            factura=instance,
+        )
+        self.assertTrue(factura_distribuida.exists())
+
 
 class FacturaClienteDetailViewTest(BaseTestCase):
     """Test sobre la vista de detalle."""
@@ -424,6 +438,42 @@ class FacturaClienteUpdateViewTest(BaseTestCase):
             disponible=instance.cobrado,
         )
         self.assertTrue(fondo.exists())
+
+    def test_form_factura_distribuida_update(self):
+        """Valida que existe la factura distribuida al editar una factura."""
+        user = self.create_superuser()
+        # crea
+        form = FacturaForm(data=self.data, user=user)
+        form.is_valid()
+        instance = form.save()
+        # Edita
+        form = FacturaForm(data=self.data, instance=instance, user=user)
+        form.is_valid()
+        instance = form.save()
+        factura_distribuida = FacturaDistribuida.objects.filter(
+            factura=instance,
+        )
+        self.assertTrue(factura_distribuida.exists())
+
+    def test_form_factura_distribuida_update_distribuicion_realizada(self):
+        """Valida que la factura distribuida esté distribuida si el monto es igual al monto a distribuir."""
+        user = self.create_superuser()
+        # crea
+        form = FacturaForm(data=self.data, user=user)
+        form.is_valid()
+        instance = form.save()
+        # Edita
+        form = FacturaForm(data=self.data, instance=instance, user=user)
+        form.is_valid()
+        instance = form.save()
+        factura_distribuida = FacturaDistribuida.objects.filter(
+            factura=instance,
+        ).first()
+
+        if round(Decimal(factura_distribuida.monto_distribuido), 2) == instance.monto_neto_sin_fondo_porcentaje_socios:
+            self.assertTrue(factura_distribuida.distribuida)
+        else:
+            self.assertFalse(factura_distribuida.distribuida)
 
 
 class FacturaClienteDeleteViewTest(BaseTestCase):
