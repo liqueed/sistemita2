@@ -243,7 +243,19 @@ class FacturaClienteCreateViewTest(BaseTestCase):
         """Valida los campos requeridos."""
         user = self.create_superuser()
         form = FacturaForm(data={}, user=user)
-        required_fields = ['fecha', 'numero', 'tipo', 'cliente', 'moneda', 'neto', 'iva', 'total', 'porcentaje_fondo']
+        required_fields = [
+            'fecha',
+            'numero',
+            'tipo',
+            'cliente',
+            'moneda',
+            'neto',
+            'iva',
+            'total',
+            'porcentaje_fondo',
+            'porcentaje_socio_ariel',
+            'porcentaje_socio_alan',
+        ]
         self.assertHasProps(form.errors, required_fields)
 
     def test_form_total_zero(self):
@@ -259,6 +271,14 @@ class FacturaClienteCreateViewTest(BaseTestCase):
         self.data['total'] = self.data.get('total') + 1
         form = FacturaForm(data=self.data, user=user)
         self.assertHasErrorDetail(form.errors.get('total'), 'El total ingresado no es el correcto.')
+
+    def test_form_porcentajes_invalid(self):
+        """Valida que el total corresponda a la suma del porcentaje sobre el valor neto."""
+        user = self.create_superuser()
+        self.data['porcentaje_socio_ariel'] = 50
+        self.data['porcentaje_socio_alan'] = 51
+        form = FacturaForm(data=self.data, user=user)
+        self.assertHasErrorDetail(form.errors.get('__all__'), 'Los porcentaje de socios no pueden superar el 100%.')
 
     def test_form_fondo_create(self):
         """Valida que se crea un fondo al generar una factura."""
@@ -474,6 +494,20 @@ class FacturaClienteUpdateViewTest(BaseTestCase):
             self.assertTrue(factura_distribuida.distribuida)
         else:
             self.assertFalse(factura_distribuida.distribuida)
+
+    def test_form_update_porcentajes_invalid(self):
+        """Valida que el total corresponda a la suma del porcentaje sobre el valor neto."""
+        user = self.create_superuser()
+        # crea
+        form = FacturaForm(data=self.data, user=user)
+        form.is_valid()
+        instance = form.save()
+        # Edita
+        self.data['porcentaje_socio_ariel'] = 50
+        self.data['porcentaje_socio_alan'] = 51
+        form = FacturaForm(data=self.data, instance=instance, user=user)
+        form = FacturaForm(data=self.data, user=user)
+        self.assertHasErrorDetail(form.errors.get('__all__'), 'Los porcentaje de socios no pueden superar el 100%.')
 
 
 class FacturaClienteDeleteViewTest(BaseTestCase):

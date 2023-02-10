@@ -288,6 +288,16 @@ class FacturaForm(forms.ModelForm):
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
         return archivos
 
+    def clean(self):
+        """Valida los porcentajes de los socios."""
+        data = super().clean()
+        porcentajes = data.get('porcentaje_socio_ariel', 0) + data.get('porcentaje_socio_alan', 0)
+
+        if porcentajes > 100:
+            raise forms.ValidationError('Los porcentaje de socios no pueden superar el 100%.')
+
+        return self.cleaned_data
+
     def save(self, commit=True):
         """Guarda los datos recibidos del formulario."""
         data = self.cleaned_data
