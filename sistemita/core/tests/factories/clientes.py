@@ -292,7 +292,7 @@ class FacturaDistribuidaFactory(DjangoModelFactory):
         model = FacturaDistribuida
 
     factura = SubFactory(FacturaClienteFactory)
-    distribuida = True
+    distribuida = False
     monto_distribuido = factory.LazyAttribute(lambda o: o.factura.total)
 
 
