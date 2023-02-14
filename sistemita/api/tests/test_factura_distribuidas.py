@@ -10,6 +10,7 @@ from sistemita.core.models.cliente import FacturaDistribuida
 from sistemita.core.tests.factories import (
     FacturaDistribuidaFactory,
     FacturaDistribuidaFactoryData,
+    FacturaDistribuidaProveedorFactory,
 )
 from sistemita.utils.tests import (
     BaseTestCase,
@@ -193,3 +194,160 @@ class FacturaDistribuidaCreateViewAPITestCase(BaseTestCase):
         factura_distribuida_id = response.data.get('factura_distribuida_id')
         factura_distribuida = FacturaDistribuida.objects.get(pk=factura_distribuida_id)
         self.assertFalse(factura_distribuida.distribuida)
+
+
+class FacturaDistribuidaUpdateViewAPITestCase(BaseTestCase):
+    """Tests sobre la vista de editar."""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.data_update = FacturaDistribuidaFactoryData().update()
+
+    def test_validate_data(self):
+        """Valida que si los datos son correcto agregue edita la instancia."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.put(
+            f'/api/factura-distribuida/{self.data_update.get("factura_distribuida_id")}/',
+            self.data_update,
+            format='json',
+        )
+        self.assertEqual(response.status_code, 200)
+
+    @prevent_request_warnings
+    def test_validate_fields_required(self):
+        """Valida los campos requeridos."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.put(
+            f'/api/factura-distribuida/{self.data_update.get("factura_distribuida_id")}/', {}, format='json'
+        )
+        required_fields = ['factura_distribuida_id', 'distribucion_list']
+        self.assertHasProps(response.data, required_fields)
+        self.assertEqual(response.status_code, 400)
+
+    @prevent_request_warnings
+    def test_validate_invalid_field_proveedores(self):
+        """Valida el id de proveedores."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        self.data_update['distribucion_list'][0]['id'] = 1000
+        response = self.client.put(
+            f'/api/factura-distribuida/{self.data_update.get("factura_distribuida_id")}/',
+            self.data_update,
+            format='json',
+        )
+        self.assertHasErrorDetail(response.data.get('distribucion_list'), 'El proveedor no existe.')
+        self.assertEqual(response.status_code, 400)
+
+    @prevent_request_warnings
+    def test_validate_invalid_field_montos(self):
+        """Valida el mensaje de error en caso de que los montos superen el monto de la factura."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        self.data_update['distribucion_list'][0]['monto'] += 1
+        response = self.client.put(
+            f'/api/factura-distribuida/{self.data_update.get("factura_distribuida_id")}/',
+            self.data_update,
+            format='json',
+        )
+        self.assertHasErrorDetail(
+            response.data.get('distribucion_list'), 'Los montos no pueden superar al total de la factura.'
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_lenght_factura_distribuida_proveedor(self):
+        """Valida la cantidad de instancia FacturaDistribuidaProveedor."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        len_distribucion_factura = len(self.data_update['distribucion_list'])
+        response = self.client.put(
+            f'/api/factura-distribuida/{self.data_update.get("factura_distribuida_id")}/',
+            self.data_update,
+            format='json',
+        )
+        factura_distribuida_id = response.data.get('factura_distribuida_id')
+        factura_distribuida = FacturaDistribuida.objects.get(pk=factura_distribuida_id)
+        self.assertEqual(factura_distribuida.factura_distribuida_proveedores.count(), len_distribucion_factura)
+
+    def test_update_send_notification_to_proveedores(self):
+        """Valida la cantidad de notificaciones enviadas al agregar una nueva distribución."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        distribucion_list = self.data_update['distribucion_list']
+        monto = 0
+
+        # Obtiene el monto total
+        for item in distribucion_list:
+            monto += item.get('monto')
+
+        # Setea el nuevo monto
+        new_monto = monto / (len(distribucion_list) + 1)
+        for item in distribucion_list:
+            item['monto'] = new_monto
+
+        # Agrega un nuevo item
+        self.data_update['distribucion_list'].append(
+            {
+                'id': self.data_update['distribucion_list'][0]['id'],
+                'detalle': self.data_update['distribucion_list'][0]['detalle'],
+                'monto': new_monto,
+                'data': {'action': 'add'},
+            }
+        )
+        self.client.put(
+            f'/api/factura-distribuida/{self.data_update.get("factura_distribuida_id")}/',
+            self.data_update,
+            format='json',
+        )
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_factura_distribuida(self):
+        """
+        Valida que la factura quede marcada como distribuida si el monto distribuida es igual a la cant a distribuir.
+        """
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        response = self.client.put(
+            f'/api/factura-distribuida/{self.data_update.get("factura_distribuida_id")}/',
+            self.data_update,
+            format='json',
+        )
+        factura_distribuida_id = response.data.get('factura_distribuida_id')
+        factura_distribuida = FacturaDistribuida.objects.get(pk=factura_distribuida_id)
+        self.assertTrue(factura_distribuida.distribuida)
+
+    def test_factura_no_distribuida(self):
+        """
+        Valida que la factura quede marcada como no distribuida si el monto distribuidp es menor a la cant a distribuir.
+        """
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        self.data_update['distribucion_list'][0]['monto'] -= 1
+        response = self.client.put(
+            f'/api/factura-distribuida/{self.data_update.get("factura_distribuida_id")}/',
+            self.data_update,
+            format='json',
+        )
+        factura_distribuida_id = response.data.get('factura_distribuida_id')
+        factura_distribuida = FacturaDistribuida.objects.get(pk=factura_distribuida_id)
+        self.assertFalse(factura_distribuida.distribuida)
+
+
+class FacturaDistribuidaSendNotificationAPITestCase(BaseTestCase):
+    """Test sobre el serializador que envía notificaciones."""
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_re_send_notification(self):
+        """Test reenvío de notificaciones a proveedores."""
+        self.create_user()
+        self.client.login(username='user', password='user12345')
+        factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
+        data = {
+            'proveedor_id': factura_distribuida_proveedor.proveedor.pk,
+            'factura_distribuida_id': factura_distribuida_proveedor.factura_distribucion.pk,
+        }
+        self.client.post('/api/factura-distribuida/send-notification/', data, format='json')
+        self.assertEqual(len(mail.outbox), 1)

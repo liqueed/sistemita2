@@ -304,16 +304,16 @@ class FacturaDistribuidaFactoryData:
             FacturaDistribuidaProveedorFactory,
         )
 
-        factura_distribuida = FacturaDistribuidaFactory.create()
-        # factura_distribuida.cobrado = True
-        factura_distribuida.save()
+        self.instance = FacturaDistribuidaFactory.create()
+        self.instance.save()
 
         distribucion_list = []
         range_aux = rand_range(2, 5)
-        monto = factura_distribuida.factura.monto_neto_sin_fondo_porcentaje_socios / range_aux
+        monto = self.instance.factura.monto_neto_sin_fondo_porcentaje_socios / range_aux
 
         for _ in range(0, range_aux):
             factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
+
             distribucion_list.append(
                 {
                     'id': factura_distribuida_proveedor.proveedor.pk,
@@ -323,7 +323,7 @@ class FacturaDistribuidaFactoryData:
                 }
             )
 
-        self.data_create = {'factura_distribuida_id': factura_distribuida.pk, 'distribucion_list': distribucion_list}
+        self.data_create = {'factura_distribuida_id': self.instance.pk, 'distribucion_list': distribucion_list}
 
     def build(self):
         """Devuelve un diccionario con datos."""
@@ -333,17 +333,28 @@ class FacturaDistribuidaFactoryData:
         """Devuelve un diccionario con datos."""
         return self.data_create
 
-    @staticmethod
-    def update(instance):
+    def update(self):
         """Devuelve un diccionario con datos para editar"""
+        from sistemita.core.tests.factories import (  # noqa
+            FacturaDistribuidaProveedorFactory,
+        )
+
         distribucion_list = []
-        for factura_distribuida_proveedor in instance.factura_distribuida_proveedores.all():
+        range_aux = rand_range(2, 5)
+        monto = self.instance.factura.monto_neto_sin_fondo_porcentaje_socios / range_aux
+
+        for _ in range(0, range_aux):
+            factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
+            factura_distribuida_proveedor.factura_distribucion = self.instance
+            factura_distribuida_proveedor.save()
+
             distribucion_list.append(
                 {
-                    'proveedor': factura_distribuida_proveedor.proveedor,
+                    'id': factura_distribuida_proveedor.proveedor.pk,
                     'detalle': factura_distribuida_proveedor.detalle,
-                    'monto': factura_distribuida_proveedor.monto,
+                    'monto': monto,
+                    'data': {'action': 'update', 'id': factura_distribuida_proveedor.pk},
                 }
             )
 
-        return {'factura_distribuida_id': instance.pk, 'distribucion_list': distribucion_list}
+        return {'factura_distribuida_id': self.instance.pk, 'distribucion_list': distribucion_list}
