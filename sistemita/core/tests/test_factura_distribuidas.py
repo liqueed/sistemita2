@@ -92,6 +92,22 @@ class FacturaDistribuidaListViewTest(BaseTestCase):
         response = self.client.get('/facturadistribuida/')
         self.assertContains(response, 'Sin resultados')
 
+    def test_factura_distribuida_list_search_by_razon_social(self):
+        """Verifica que devuelva resultados al filtra por razón social de cliente."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        factura_distribuida = FacturaDistribuidaFactory.create()
+        response = self.client.get(f'/facturadistribuida/?search={factura_distribuida.factura.cliente.razon_social}')
+        self.assertEqual(len(response.context['object_list']), 1)
+
+    def test_factura_distribuida_list_search_by_cuit(self):
+        """Verifica que devuelva resultados al filtra por cuit de cliente."""
+        self.create_superuser()
+        self.client.login(username='admin', password='admin123')  # login super user
+        factura_distribuida = FacturaDistribuidaFactory.create()
+        response = self.client.get(f'/facturadistribuida/?search={factura_distribuida.factura.cliente.cuit}')
+        self.assertEqual(len(response.context['object_list']), 1)
+
 
 class FacturaDistribuidaCreateViewTest(BaseTestCase):
     """Tests sobre la vista de crear."""
@@ -261,3 +277,13 @@ class FacturaDistribuidaDeleteViewTest(BaseTestCase):
         response = self.client.delete(f'/facturadistribuida/{self.instance.pk}/eliminar/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
+
+    def test_destroy_reset_distribucion(self):
+        """Verifica que elimina las distribución de facturas a proveedores."""
+        self.create_user(['delete_facturadistribuida'])
+        self.client.login(username='user', password='user12345')
+        self.client.delete(f'/facturadistribuida/{self.instance.pk}/eliminar/')
+        self.instance.refresh_from_db()
+        self.assertFalse(self.instance.distribuida)
+        self.assertEqual(self.instance.monto_distribuido, 0)
+        self.assertEqual(self.instance.factura_distribuida_proveedores.count(), 0)

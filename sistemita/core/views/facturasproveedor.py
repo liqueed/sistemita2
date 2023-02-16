@@ -373,10 +373,9 @@ class FacturaProveedorByUserDetailView(PermissionRequiredMixin, SuccessMessageMi
         return redirect('login')
 
 
-class FacturaProveedorByUserPendientesListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
+class FacturaProveedorByUserPendientesListView(PermissionRequiredMixin, SuccessMessageMixin, ListView):
     """Vista que retorna un lista de facturas pendientes a facturar."""
 
-    model = FacturaDistribuidaProveedor
     paginate_by = 10
     permission_required = 'core.view_mis_facturasproveedor_pendientes'
     raise_exception = True
@@ -392,7 +391,7 @@ class FacturaProveedorByUserPendientesListView(PermissionRequiredMixin, SuccessM
             proveedor__correo=user_email, factura_proveedor__isnull=True
         )
         search = self.request.GET.get('search', None)
-        order_by = self.request.GET.get('order_by', None)
+        order_by = self.request.GET.get('order_by', 'factura_distribucion__factura__numero')
         try:
             if search:
                 queryset = queryset.filter(Q(numero__icontains=search) | Q(total__icontains=search))

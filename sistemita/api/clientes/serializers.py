@@ -501,7 +501,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
                 if data.get('action') in ['add', 'update']:
                     montos += float(row.get('monto'))
             except Proveedor.DoesNotExist:
-                raise serializers.ValidationError('La factura no existe.')
+                raise serializers.ValidationError('El proveedor no existe.')
 
         if round(Decimal(montos), 2) > factura_distribuida.factura.monto_neto_sin_fondo_porcentaje_socios:
             raise serializers.ValidationError('Los montos no pueden superar al total de la factura.')

@@ -1,12 +1,15 @@
 """Factura de Cliente tests."""
 
+# Utils
+from decimal import Decimal
+
 # Django
 from django.core.management import call_command
 from faker import Faker
 
 # Sistemita
 from sistemita.core.forms.clientes import FacturaForm
-from sistemita.core.models import Factura
+from sistemita.core.models import Factura, FacturaDistribuida
 from sistemita.core.tests.factories import (
     FacturaClienteFactory,
     FacturaClienteFactoryData,
@@ -240,7 +243,19 @@ class FacturaClienteCreateViewTest(BaseTestCase):
         """Valida los campos requeridos."""
         user = self.create_superuser()
         form = FacturaForm(data={}, user=user)
-        required_fields = ['fecha', 'numero', 'tipo', 'cliente', 'moneda', 'neto', 'iva', 'total', 'porcentaje_fondo']
+        required_fields = [
+            'fecha',
+            'numero',
+            'tipo',
+            'cliente',
+            'moneda',
+            'neto',
+            'iva',
+            'total',
+            'porcentaje_fondo',
+            'porcentaje_socio_ariel',
+            'porcentaje_socio_alan',
+        ]
         self.assertHasProps(form.errors, required_fields)
 
     def test_form_total_zero(self):
@@ -257,6 +272,14 @@ class FacturaClienteCreateViewTest(BaseTestCase):
         form = FacturaForm(data=self.data, user=user)
         self.assertHasErrorDetail(form.errors.get('total'), 'El total ingresado no es el correcto.')
 
+    def test_form_porcentajes_invalid(self):
+        """Valida que el total corresponda a la suma del porcentaje sobre el valor neto."""
+        user = self.create_superuser()
+        self.data['porcentaje_socio_ariel'] = 50
+        self.data['porcentaje_socio_alan'] = 51
+        form = FacturaForm(data=self.data, user=user)
+        self.assertHasErrorDetail(form.errors.get('__all__'), 'Los porcentaje de socios no pueden superar el 100%.')
+
     def test_form_fondo_create(self):
         """Valida que se crea un fondo al generar una factura."""
         user = self.create_superuser()
@@ -271,6 +294,17 @@ class FacturaClienteCreateViewTest(BaseTestCase):
             disponible=instance.cobrado,
         )
         self.assertTrue(fondo.exists())
+
+    def test_form_factura_distribuida_create(self):
+        """Valida que se crea una factura distribuida al generar una factura."""
+        user = self.create_superuser()
+        form = FacturaForm(data=self.data, user=user)
+        form.is_valid()
+        instance = form.save()
+        factura_distribuida = FacturaDistribuida.objects.filter(
+            factura=instance,
+        )
+        self.assertTrue(factura_distribuida.exists())
 
 
 class FacturaClienteDetailViewTest(BaseTestCase):
@@ -424,6 +458,56 @@ class FacturaClienteUpdateViewTest(BaseTestCase):
             disponible=instance.cobrado,
         )
         self.assertTrue(fondo.exists())
+
+    def test_form_factura_distribuida_update(self):
+        """Valida que existe la factura distribuida al editar una factura."""
+        user = self.create_superuser()
+        # crea
+        form = FacturaForm(data=self.data, user=user)
+        form.is_valid()
+        instance = form.save()
+        # Edita
+        form = FacturaForm(data=self.data, instance=instance, user=user)
+        form.is_valid()
+        instance = form.save()
+        factura_distribuida = FacturaDistribuida.objects.filter(
+            factura=instance,
+        )
+        self.assertTrue(factura_distribuida.exists())
+
+    def test_form_factura_distribuida_update_distribuicion_realizada(self):
+        """Valida que la factura distribuida esté distribuida si el monto es igual al monto a distribuir."""
+        user = self.create_superuser()
+        # crea
+        form = FacturaForm(data=self.data, user=user)
+        form.is_valid()
+        instance = form.save()
+        # Edita
+        form = FacturaForm(data=self.data, instance=instance, user=user)
+        form.is_valid()
+        instance = form.save()
+        factura_distribuida = FacturaDistribuida.objects.filter(
+            factura=instance,
+        ).first()
+
+        if round(Decimal(factura_distribuida.monto_distribuido), 2) == instance.monto_neto_sin_fondo_porcentaje_socios:
+            self.assertTrue(factura_distribuida.distribuida)
+        else:
+            self.assertFalse(factura_distribuida.distribuida)
+
+    def test_form_update_porcentajes_invalid(self):
+        """Valida que el total corresponda a la suma del porcentaje sobre el valor neto."""
+        user = self.create_superuser()
+        # crea
+        form = FacturaForm(data=self.data, user=user)
+        form.is_valid()
+        instance = form.save()
+        # Edita
+        self.data['porcentaje_socio_ariel'] = 50
+        self.data['porcentaje_socio_alan'] = 51
+        form = FacturaForm(data=self.data, instance=instance, user=user)
+        form = FacturaForm(data=self.data, user=user)
+        self.assertHasErrorDetail(form.errors.get('__all__'), 'Los porcentaje de socios no pueden superar el 100%.')
 
 
 class FacturaClienteDeleteViewTest(BaseTestCase):

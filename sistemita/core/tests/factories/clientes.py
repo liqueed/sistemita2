@@ -142,8 +142,8 @@ class FacturaClienteFactory(DjangoModelFactory):
     iva = Faker('random_number', digits=2)
     total = factory.LazyAttribute(lambda o: get_porcentaje_agregado(amount=o.neto, percentage=o.iva))
     cobrado = Faker('pybool')
-    porcentaje_socio_alan = Faker('pydecimal', max_value=100, positive=True, right_digits=2)
-    porcentaje_socio_ariel = Faker('pydecimal', max_value=100, positive=True, right_digits=2)
+    porcentaje_socio_alan = Faker('pydecimal', max_value=20, positive=True, right_digits=2)
+    porcentaje_socio_ariel = Faker('pydecimal', max_value=20, positive=True, right_digits=2)
 
     porcentaje_fondo = Faker('random_number', digits=2)
     monto_imputado = ZERO_DECIMAL
@@ -155,17 +155,32 @@ class FacturaClienteFactory(DjangoModelFactory):
             return
         self.archivos.add(*extracted)
 
+    @factory.post_generation
+    def proveedores(self, create, extracted, **kwargs):
+        """Asigna proveedores a la factory."""
+        if not create or not extracted:
+            return
+        self.proveedores.add(*extracted)
+
 
 class FacturaClienteFactoryData:
     """Creación de datos para el modelo de factura de clientes."""
 
     def __init__(self):
+        from sistemita.core.tests.factories import ProveedorFactory
+
+        proveedores = []
         FacturaClienteDictFactory = generate_dict_factory(FacturaClienteFactory)
         cliente = ClienteFactory.create()
         categoria = FacturaClienteCategoriaFactory.create()
         archivo = ArchivoFactory.build()
+
+        for _ in range(0, rand_range(2, 5)):
+            proveedores.append(ProveedorFactory.create().pk)
+
         self.data = FacturaClienteDictFactory()
         self.data.update({'cliente': cliente.pk})
+        self.data.update({'proveedores': proveedores})
         self.data.update({'categoria': categoria.pk})
         self.data.update({'archivos': archivo.documento.file})
         self.data.update({'monto_imputado': 0.0})
@@ -292,7 +307,7 @@ class FacturaDistribuidaFactory(DjangoModelFactory):
         model = FacturaDistribuida
 
     factura = SubFactory(FacturaClienteFactory)
-    distribuida = True
+    distribuida = False
     monto_distribuido = factory.LazyAttribute(lambda o: o.factura.total)
 
 
@@ -304,25 +319,26 @@ class FacturaDistribuidaFactoryData:
             FacturaDistribuidaProveedorFactory,
         )
 
-        factura_distribuida = FacturaDistribuidaFactory.create()
-        # factura_distribuida.cobrado = True
-        factura_distribuida.save()
+        self.instance = FacturaDistribuidaFactory.create()
+        self.instance.save()
 
         distribucion_list = []
         range_aux = rand_range(2, 5)
-        monto = factura_distribuida.factura.total / range_aux
+        monto = self.instance.factura.monto_neto_sin_fondo_porcentaje_socios / range_aux
 
         for _ in range(0, range_aux):
             factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
+
             distribucion_list.append(
                 {
-                    'proveedor': factura_distribuida_proveedor.proveedor,
+                    'id': factura_distribuida_proveedor.proveedor.pk,
                     'detalle': factura_distribuida_proveedor.detalle,
                     'monto': monto,
+                    'data': {'action': 'add'},
                 }
             )
 
-        self.data_create = {'factura_distribuida_id': factura_distribuida.pk, 'distribucion_list': distribucion_list}
+        self.data_create = {'factura_distribuida_id': self.instance.pk, 'distribucion_list': distribucion_list}
 
     def build(self):
         """Devuelve un diccionario con datos."""
@@ -332,17 +348,28 @@ class FacturaDistribuidaFactoryData:
         """Devuelve un diccionario con datos."""
         return self.data_create
 
-    @staticmethod
-    def update(instance):
+    def update(self):
         """Devuelve un diccionario con datos para editar"""
+        from sistemita.core.tests.factories import (  # noqa
+            FacturaDistribuidaProveedorFactory,
+        )
+
         distribucion_list = []
-        for factura_distribuida_proveedor in instance.factura_distribuida_proveedores.all():
+        range_aux = rand_range(2, 5)
+        monto = self.instance.factura.monto_neto_sin_fondo_porcentaje_socios / range_aux
+
+        for _ in range(0, range_aux):
+            factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
+            factura_distribuida_proveedor.factura_distribucion = self.instance
+            factura_distribuida_proveedor.save()
+
             distribucion_list.append(
                 {
-                    'proveedor': factura_distribuida_proveedor.proveedor,
+                    'id': factura_distribuida_proveedor.proveedor.pk,
                     'detalle': factura_distribuida_proveedor.detalle,
-                    'monto': factura_distribuida_proveedor.monto,
+                    'monto': monto,
+                    'data': {'action': 'update', 'id': factura_distribuida_proveedor.pk},
                 }
             )
 
-        return {'factura_distribuida_id': instance.pk, 'distribucion_list': distribucion_list}
+        return {'factura_distribuida_id': self.instance.pk, 'distribucion_list': distribucion_list}
