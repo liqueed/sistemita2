@@ -155,17 +155,32 @@ class FacturaClienteFactory(DjangoModelFactory):
             return
         self.archivos.add(*extracted)
 
+    @factory.post_generation
+    def proveedores(self, create, extracted, **kwargs):
+        """Asigna proveedores a la factory."""
+        if not create or not extracted:
+            return
+        self.proveedores.add(*extracted)
+
 
 class FacturaClienteFactoryData:
     """Creación de datos para el modelo de factura de clientes."""
 
     def __init__(self):
+        from sistemita.core.tests.factories import ProveedorFactory
+
+        proveedores = []
         FacturaClienteDictFactory = generate_dict_factory(FacturaClienteFactory)
         cliente = ClienteFactory.create()
         categoria = FacturaClienteCategoriaFactory.create()
         archivo = ArchivoFactory.build()
+
+        for _ in range(0, rand_range(2, 5)):
+            proveedores.append(ProveedorFactory.create().pk)
+
         self.data = FacturaClienteDictFactory()
         self.data.update({'cliente': cliente.pk})
+        self.data.update({'proveedores': proveedores})
         self.data.update({'categoria': categoria.pk})
         self.data.update({'archivos': archivo.documento.file})
         self.data.update({'monto_imputado': 0.0})
