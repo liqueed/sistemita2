@@ -277,3 +277,13 @@ class FacturaDistribuidaDeleteViewTest(BaseTestCase):
         response = self.client.delete(f'/facturadistribuida/{self.instance.pk}/eliminar/')
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/accounts/login/')
+
+    def test_destroy_reset_distribucion(self):
+        """Verifica que elimina las distribución de facturas a proveedores."""
+        self.create_user(['delete_facturadistribuida'])
+        self.client.login(username='user', password='user12345')
+        self.client.delete(f'/facturadistribuida/{self.instance.pk}/eliminar/')
+        self.instance.refresh_from_db()
+        self.assertFalse(self.instance.distribuida)
+        self.assertEqual(self.instance.monto_distribuido, 0)
+        self.assertEqual(self.instance.factura_distribuida_proveedores.count(), 0)
