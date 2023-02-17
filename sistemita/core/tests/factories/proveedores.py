@@ -105,7 +105,7 @@ class FacturaProveedorFactory(DjangoModelFactory):
     factura = SubFactory(FacturaClienteFactory)
 
     fecha = Faker('date_this_month')
-    numero = Faker('random_number', digits=10)
+    numero = Faker('random_number', digits=13)
     tipo = Faker('random_element', elements=[row[0] for row in TIPOS_FACTURA])
     categoria = SubFactory(FacturaProveedorCategoriaFactory)
 

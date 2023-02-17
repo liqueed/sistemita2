@@ -122,6 +122,8 @@ class ProveedorForm(forms.ModelForm):
 class FacturaProveedorForm(forms.ModelForm):
     """Formulario de factura de proveedor."""
 
+    numero = forms.CharField(initial='0000000000000', max_length=13)
+
     def __init__(self, *args, **kwargs):
         """Inicialización de formulario."""
         self.user = kwargs.pop('user')
