@@ -44,7 +44,7 @@ class PermissionForm(forms.ModelForm):
                     'factura',
                     'facturaimputada',
                     'facturacategoria',
-                    'ordencompra',
+                    'contrato',
                     'cobranza',
                     'proveedor',
                     'facturaproveedor',

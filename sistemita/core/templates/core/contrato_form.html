@@ -2,9 +2,9 @@
 {% load static crispy_forms_tags %}
 {% block title %}
   {% if object.pk %}
-    Editar orden de compra Nro. {{ object.pk }} - Cliente: {{ object.cliente.razon_social }}
+    Editar Contrato Nro. {{ object.pk }} - Cliente: {{ object.cliente.razon_social }}
   {% else %}
-    Agregar orden de compra
+    Agregar Contrato
   {% endif %} | Liqueed
 {% endblock %}
 {% block header %}
@@ -14,8 +14,8 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between">
       <h1 class="h3 text-gray-800">&Oacute;rdenes de compra</h1>
-      {% if perms.core.list_ordencompra %}
-	<a href="{% url 'core:ordencompra-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+      {% if perms.core.list_contrato %}
+	<a href="{% url 'core:contrato-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
 	  <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
 	</a>
       {% endif %}
@@ -26,9 +26,9 @@
       <div class="card-header py-3">
 	<h6 class="m-0 font-weight-bold text-primary">
 	  {% if not object.pk %}
-	    Agregar Orden de compra
+	    Agregar Contrato
 	  {% else %}
-	    Editar Orden de compra Nro. {{ ordencompra.pk}} - Cliente: {{ ordencompra.cliente.razon_social }}
+	    Editar Contrato Nro. {{ contrato.pk}} - Cliente: {{ contrato.cliente.razon_social }}
 	  {% endif %}
 	</h6>
       </div>

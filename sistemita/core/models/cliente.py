@@ -134,8 +134,8 @@ class Factura(FacturaAbstract):
         verbose_name_plural = 'facturas'
 
 
-class OrdenCompra(TimeStampedModel, models.Model):
-    """Modelo orden de compra del cliente."""
+class Contrato(TimeStampedModel, models.Model):
+    """Modelo contrato de cliente."""
 
     fecha = models.DateField(blank=False)
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
@@ -144,7 +144,7 @@ class OrdenCompra(TimeStampedModel, models.Model):
 
     @property
     def moneda_monto(self):
-        """Retorno el monto de la orden de compra."""
+        """Retorno el monto del contrato."""
         return f'{self.get_moneda_display()} {self.monto}'
 
     def __str__(self):
@@ -154,8 +154,8 @@ class OrdenCompra(TimeStampedModel, models.Model):
         """Configuraciones del modelo."""
 
         ordering = ('fecha',)
-        verbose_name = 'orden de compra'
-        verbose_name_plural = 'ordenes de compras'
+        verbose_name = 'contrato'
+        verbose_name_plural = 'contratos'
 
 
 class FacturaImputada(TimeStampedModel, models.Model):

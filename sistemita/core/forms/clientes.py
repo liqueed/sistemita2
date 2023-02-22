@@ -16,10 +16,10 @@ from django_select2 import forms as ds2_forms
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.cliente import (
     Cliente,
+    Contrato,
     Factura,
     FacturaCategoria,
     FacturaDistribuida,
-    OrdenCompra,
 )
 from sistemita.core.models.entidad import Distrito, Localidad
 from sistemita.core.models.proveedor import Proveedor
@@ -346,8 +346,8 @@ class FacturaForm(forms.ModelForm):
         return instance
 
 
-class OrdenCompraForm(forms.ModelForm):
-    """Formulario de orden de compra."""
+class ContratoForm(forms.ModelForm):
+    """Formulario del modelo Contrato."""
 
     monto = forms.DecimalField(decimal_places=2, max_digits=12, min_value=0, initial=0.0)
 
@@ -374,7 +374,7 @@ class OrdenCompraForm(forms.ModelForm):
     class Meta:
         """Configuraciones del formulario."""
 
-        model = OrdenCompra
+        model = Contrato
         fields = ('fecha', 'cliente', 'moneda', 'monto')
 
 

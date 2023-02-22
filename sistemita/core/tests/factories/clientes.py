@@ -13,13 +13,13 @@ from faker import Faker as fake
 from sistemita.core.constants import MONEDAS, TIPOS_FACTURA, ZERO_DECIMAL
 from sistemita.core.models import (
     Cliente,
+    Contrato,
     Distrito,
     Factura,
     FacturaCategoria,
     FacturaDistribuida,
     FacturaImputada,
     Localidad,
-    OrdenCompra,
     Provincia,
 )
 from sistemita.core.tests.factories import ArchivoFactory
@@ -92,13 +92,13 @@ class FacturaClienteCategoriaFactoryData:
         return self.data
 
 
-class OrdenCompraFactory(DjangoModelFactory):
-    """Fabrica de instancias del modelo orden compra de clientes."""
+class ContratoFactory(DjangoModelFactory):
+    """Fabrica de instancias del modelo Contrato de clientes."""
 
     class Meta:
         """Factory settings."""
 
-        model = OrdenCompra
+        model = Contrato
 
     cliente = SubFactory(ClienteFactory)
     fecha = Faker('date_this_month')
@@ -106,12 +106,12 @@ class OrdenCompraFactory(DjangoModelFactory):
     monto = Faker('pydecimal', max_value=10000000, positive=True)
 
 
-class OrdenCompraFactoryData:
+class ContratoFactoryData:
     """Creación de datos para el modelo de orden de compra de clientes."""
 
     def __init__(self):
-        OrdenCompraDictFactory = generate_dict_factory(OrdenCompraFactory)
-        self.data = OrdenCompraDictFactory()
+        ContratoDictFactory = generate_dict_factory(ContratoFactory)
+        self.data = ContratoDictFactory()
         self.data.update({'fecha': timezone.datetime.strptime(fake.date(), '%Y-%m-%d').strftime('%d/%m/%Y')})
         self.data.update({'cliente': ClienteFactory.create().pk})
         self.data.update({'monto': str(fake.pydecimal(2, 2, True))})

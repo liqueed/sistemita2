@@ -69,9 +69,9 @@ class Command(BaseCommand):
                     'content_type': ContentType.objects.get(model='mediopago'),
                 },
                 {
-                    'name': 'Puede listar Órdenes De Compras',
-                    'codename': 'list_ordencompra',
-                    'content_type': ContentType.objects.get(model='ordencompra'),
+                    'name': 'Puede listar Contratos',
+                    'codename': 'list_contrato',
+                    'content_type': ContentType.objects.get(model='contrato'),
                 },
                 {
                     'name': 'Puede listar Pagos',

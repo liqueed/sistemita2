@@ -1,4 +1,4 @@
-"""Vistas del modelo OrdenCompra."""
+"""Vistas del modelo Contrato."""
 
 # Datetime
 from datetime import date
@@ -16,34 +16,34 @@ from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 
 # Sistemita
-from sistemita.core.filters import OrdenCompraFilterSet
-from sistemita.core.forms.clientes import OrdenCompraForm
-from sistemita.core.models.cliente import OrdenCompra
+from sistemita.core.filters import ContratoFilterSet
+from sistemita.core.forms.clientes import ContratoForm
+from sistemita.core.models.cliente import Contrato
 from sistemita.core.views.home import error_403
 from sistemita.utils.commons import get_deleted_objects
 from sistemita.utils.strings import (
-    _MESSAGE_SUCCESS_CREATED,
-    _MESSAGE_SUCCESS_DELETE,
-    _MESSAGE_SUCCESS_UPDATE,
     MESSAGE_403,
+    MESSAGE_SUCCESS_CREATED,
+    MESSAGE_SUCCESS_DELETE,
+    MESSAGE_SUCCESS_UPDATE,
 )
 
 
-class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
+class ContratoListView(PermissionRequiredMixin, SuccessMessageMixin, FilterView):
     """Vista que retorna un listado de órdenes de compras."""
 
-    filterset_class = OrdenCompraFilterSet
+    filterset_class = ContratoFilterSet
     paginate_by = 10
-    permission_required = 'core.list_ordencompra'
+    permission_required = 'core.list_contrato'
     raise_exception = True
-    template_name = 'core/ordencompra_list.html'
+    template_name = 'core/contrato_list.html'
 
     def get_queryset(self):
         """
         Sobreescribe queryset.
         Devuelve un conjunto de resultados si el usuario realiza un búsqueda.
         """
-        queryset = OrdenCompra.objects.order_by('-creado')
+        queryset = Contrato.objects.order_by('-creado')
         search = self.request.GET.get('search', None)
         order_by = self.request.GET.get('order_by', None)
         try:
@@ -74,24 +74,24 @@ class OrdenCompraListView(PermissionRequiredMixin, SuccessMessageMixin, FilterVi
         return redirect('login')
 
 
-class OrdenCompraCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
-    """Vista que agrega una orden de compra."""
+class ContratoCreateView(PermissionRequiredMixin, SuccessMessageMixin, CreateView):
+    """Vista que agrega un contrato."""
 
-    form_class = OrdenCompraForm
-    model = OrdenCompra
-    permission_required = 'core.add_ordencompra'
+    form_class = ContratoForm
+    model = Contrato
+    permission_required = 'core.add_contrato'
     raise_exception = True
-    success_message = _MESSAGE_SUCCESS_CREATED.format('orden de compra')
-    success_url = reverse_lazy('core:ordencompra-list')
+    success_message = MESSAGE_SUCCESS_CREATED.format('contrato')
+    success_url = reverse_lazy('core:contrato-list')
 
     def get_success_url(self):
         """Luego de agregar al objecto redirecciono a la vista que tiene permiso."""
-        if self.request.user.has_perm('core.change_ordencompra'):
-            return reverse('core:ordencompra-update', args=(self.object.id,))
-        if self.request.user.has_perm('core.view_ordencompra'):
-            return reverse('core:ordencompra-detail', args=(self.object.id,))
-        if self.request.user.has_perm('core.list_ordencompra'):
-            return reverse('core:ordencompra-list')
+        if self.request.user.has_perm('core.change_contrato'):
+            return reverse('core:contrato-update', args=(self.object.id,))
+        if self.request.user.has_perm('core.view_contrato'):
+            return reverse('core:contrato-detail', args=(self.object.id,))
+        if self.request.user.has_perm('core.list_contrato'):
+            return reverse('core:contrato-list')
         return reverse('core:home')
 
     def handle_no_permission(self):
@@ -101,11 +101,11 @@ class OrdenCompraCreateView(PermissionRequiredMixin, SuccessMessageMixin, Create
         return redirect('login')
 
 
-class OrdenCompraDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
-    """Vista que muestra el detalle de una orden de compra."""
+class ContratoDetailView(PermissionRequiredMixin, SuccessMessageMixin, DetailView):
+    """Vista que muestra el detalle de un contrato."""
 
-    model = OrdenCompra
-    permission_required = 'core.view_ordencompra'
+    model = Contrato
+    permission_required = 'core.view_contrato'
     raise_exception = True
 
     def handle_no_permission(self):
@@ -115,18 +115,18 @@ class OrdenCompraDetailView(PermissionRequiredMixin, SuccessMessageMixin, Detail
         return redirect('login')
 
 
-class OrdenCompraUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
-    """Vista que actualiza una orden de compra."""
+class ContratoUpdateView(PermissionRequiredMixin, SuccessMessageMixin, UpdateView):
+    """Vista que actualiza un contrato."""
 
-    form_class = OrdenCompraForm
-    model = OrdenCompra
-    permission_required = 'core.change_ordencompra'
+    form_class = ContratoForm
+    model = Contrato
+    permission_required = 'core.change_contrato'
     raise_exception = True
-    success_message = _MESSAGE_SUCCESS_UPDATE.format('orden de compra')
+    success_message = MESSAGE_SUCCESS_UPDATE.format('contrato')
 
     def get_success_url(self):
         """Luego de editar al objecto muestra la misma vista."""
-        return reverse('core:ordencompra-update', args=(self.object.id,))
+        return reverse('core:contrato-update', args=(self.object.id,))
 
     def handle_no_permission(self):
         """Redirige a la página de error 403 si no tiene los permisos y está autenticado."""
@@ -135,14 +135,14 @@ class OrdenCompraUpdateView(PermissionRequiredMixin, SuccessMessageMixin, Update
         return redirect('login')
 
 
-class OrdenCompraDeleteView(PermissionRequiredMixin, DeleteView):
-    """Vista que elimina una orden de compra."""
+class ContratoDeleteView(PermissionRequiredMixin, DeleteView):
+    """Vista que elimina un contrato."""
 
-    model = OrdenCompra
-    permission_required = 'core.delete_ordencompra'
+    model = Contrato
+    permission_required = 'core.delete_contrato'
     raise_exception = True
-    success_message = _MESSAGE_SUCCESS_DELETE.format('orden compra')
-    success_url = reverse_lazy('core:ordencompra-list')
+    success_message = MESSAGE_SUCCESS_DELETE.format('contrato')
+    success_url = reverse_lazy('core:contrato-list')
 
     def get_context_data(self, **kwargs):
         """Agrega datos al contexto."""
