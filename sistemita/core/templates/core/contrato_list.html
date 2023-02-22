@@ -69,7 +69,7 @@
 	    <thead>
 	      <tr>
 		<th>ID</th>
-		<th data-order="fecha" class="sortable">Fecha</th>
+		<th data-order="fecha_desde" class="sortable">Fecha desde</th>
 		<th data-order="cliente__razon_social" class="sortable">Cliente</th>
 		<th data-order="cliente__cuit" class="sortable">CUIT</th>
 		<th data-order="monto" class="sortable">Monto</th>
@@ -87,7 +87,7 @@
 		      {{ object.pk }}
 		    </a>
 		  </td>
-		  <td>{{ object.fecha }}</td>
+		  <td>{{ object.fecha_desde }}</td>
 		  <td>{{ object.cliente.razon_social }}</td>
 		  <td>{{ object.cliente.cuit }}</td>
 		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>

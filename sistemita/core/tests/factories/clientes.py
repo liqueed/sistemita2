@@ -101,7 +101,7 @@ class ContratoFactory(DjangoModelFactory):
         model = Contrato
 
     cliente = SubFactory(ClienteFactory)
-    fecha = Faker('date_this_month')
+    fecha_desde = Faker('date_this_month')
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
     monto = Faker('pydecimal', max_value=10000000, positive=True)
 

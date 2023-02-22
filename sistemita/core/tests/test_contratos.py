@@ -30,8 +30,8 @@ class ContratoModelTest(BaseTestCase):
 
     def test_string_representation(self):
         """Representación legible del modelo."""
-        orden_compra = self.instance
-        self.assertEqual(str(orden_compra), f'{orden_compra.fecha} | {orden_compra.cliente}')
+        contrato = self.instance
+        self.assertEqual(str(contrato), f'{contrato.fecha_desde} | {contrato.cliente}')
 
 
 class ContratoListViewTest(BaseTestCase):
@@ -149,16 +149,16 @@ class ContratoCreateViewTest(BaseTestCase):
     def test_form_fields_required(self):
         """Valida los campos requeridos."""
         form = ContratoForm(data={})
-        required_fields = ['fecha', 'cliente', 'moneda', 'monto']
+        required_fields = ['fecha_desde', 'cliente', 'moneda', 'monto']
         self.assertHasProps(form.errors, required_fields)
 
-    def test_fecha_format_valid(self):
+    def test_fecha_desde_format_valid(self):
         """Valida el formato de fecha."""
         data_invalid = ['03/28/2022', '03/02/22', 'Text', '11/08', '']
-        self.data['fecha'] = rand_element_from_array(data_invalid)
+        self.data['fecha_desde'] = rand_element_from_array(data_invalid)
         form = ContratoForm(data=self.data)
         self.assertFalse(form.is_valid())
-        self.assertHasProps(form.errors, ['fecha'])
+        self.assertHasProps(form.errors, ['fecha_desde'])
 
     def test_monto_format_valid(self):
         """Valida el formato del monto."""

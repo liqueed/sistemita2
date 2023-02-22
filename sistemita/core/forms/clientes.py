@@ -360,7 +360,7 @@ class ContratoForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Datos generales',
-                Div(Div('fecha', css_class='col-4'), css_class='row'),
+                Div(Div('fecha_desde', css_class='col-4'), css_class='row'),
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_cliente', css_class='row'),
@@ -375,7 +375,7 @@ class ContratoForm(forms.ModelForm):
         """Configuraciones del formulario."""
 
         model = Contrato
-        fields = ('fecha', 'cliente', 'moneda', 'monto')
+        fields = ('fecha_desde', 'cliente', 'moneda', 'monto')
 
 
 class FacturaCategoriaForm(forms.ModelForm):

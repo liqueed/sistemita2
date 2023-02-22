@@ -137,7 +137,7 @@ class Factura(FacturaAbstract):
 class Contrato(TimeStampedModel, models.Model):
     """Modelo contrato de cliente."""
 
-    fecha = models.DateField(blank=False)
+    fecha_desde = models.DateField(blank=False)
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
@@ -148,12 +148,12 @@ class Contrato(TimeStampedModel, models.Model):
         return f'{self.get_moneda_display()} {self.monto}'
 
     def __str__(self):
-        return f'{self.fecha} | {self.cliente}'
+        return f'{self.fecha_desde} | {self.cliente}'
 
     class Meta:
         """Configuraciones del modelo."""
 
-        ordering = ('fecha',)
+        ordering = ('fecha_desde',)
         verbose_name = 'contrato'
         verbose_name_plural = 'contratos'
 
