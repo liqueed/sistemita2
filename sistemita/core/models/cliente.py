@@ -138,6 +138,7 @@ class Contrato(TimeStampedModel, models.Model):
     """Modelo contrato de cliente."""
 
     fecha_desde = models.DateField(blank=False)
+    fecha_hasta = models.DateField(blank=False, null=True)
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     moneda = models.CharField(blank=False, max_length=1, choices=MONEDAS, default='P')
     monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)

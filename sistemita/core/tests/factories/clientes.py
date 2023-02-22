@@ -1,10 +1,11 @@
 """Cliente factories."""
 
+# Utils
+import datetime
 from decimal import Decimal
 
 # Fake
 import factory
-from django.utils import timezone
 from factory import Faker, SubFactory
 from factory.django import DjangoModelFactory
 from faker import Faker as fake
@@ -102,6 +103,8 @@ class ContratoFactory(DjangoModelFactory):
 
     cliente = SubFactory(ClienteFactory)
     fecha_desde = Faker('date_this_month')
+    # fecha_hasta = Faker('date_this_month')
+    fecha_hasta = factory.LazyAttribute(lambda o: o.fecha_desde + datetime.timedelta(days=1))
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
     monto = Faker('pydecimal', max_value=10000000, positive=True)
 
@@ -112,7 +115,8 @@ class ContratoFactoryData:
     def __init__(self):
         ContratoDictFactory = generate_dict_factory(ContratoFactory)
         self.data = ContratoDictFactory()
-        self.data.update({'fecha': timezone.datetime.strptime(fake.date(), '%Y-%m-%d').strftime('%d/%m/%Y')})
+        self.data.update({'fecha_desde': self.data.get('fecha_desde').strftime('%d/%m/%Y')})
+        self.data.update({'fecha_hasta': self.data.get('fecha_hasta').strftime('%d/%m/%Y')})
         self.data.update({'cliente': ClienteFactory.create().pk})
         self.data.update({'monto': str(fake.pydecimal(2, 2, True))})
 

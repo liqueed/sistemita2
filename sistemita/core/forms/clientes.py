@@ -361,6 +361,7 @@ class ContratoForm(forms.ModelForm):
             Fieldset(
                 'Datos generales',
                 Div(Div('fecha_desde', css_class='col-4'), css_class='row'),
+                Div(Div('fecha_hasta', css_class='col-4'), css_class='row'),
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_cliente', css_class='row'),
@@ -371,11 +372,21 @@ class ContratoForm(forms.ModelForm):
             ),
         )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_desde = cleaned_data.get('fecha_desde')
+        fecha_hasta = cleaned_data.get('fecha_hasta')
+        if fecha_desde and fecha_hasta:
+            if fecha_desde > fecha_hasta:
+                raise forms.ValidationError('La fecha desde no puede ser mayor que la fecha hasta')
+
+        return cleaned_data
+
     class Meta:
         """Configuraciones del formulario."""
 
         model = Contrato
-        fields = ('fecha_desde', 'cliente', 'moneda', 'monto')
+        fields = ('fecha_desde', 'fecha_hasta', 'cliente', 'moneda', 'monto')
 
 
 class FacturaCategoriaForm(forms.ModelForm):

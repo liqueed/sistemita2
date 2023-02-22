@@ -45,6 +45,8 @@
 
 {% block extra_js %}
 $('#id_fecha_desde').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+$('#id_fecha_hasta').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+
 $('#id_cliente').select2({
     allowClear: true,
     language: 'es',

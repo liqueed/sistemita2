@@ -1,5 +1,8 @@
 """Test orden de compras de clientes."""
 
+# Utils
+from datetime import datetime, timedelta
+
 # Django
 from django.core.management import call_command
 from faker import Faker
@@ -149,7 +152,7 @@ class ContratoCreateViewTest(BaseTestCase):
     def test_form_fields_required(self):
         """Valida los campos requeridos."""
         form = ContratoForm(data={})
-        required_fields = ['fecha_desde', 'cliente', 'moneda', 'monto']
+        required_fields = ['fecha_desde', 'fecha_hasta', 'cliente', 'moneda', 'monto']
         self.assertHasProps(form.errors, required_fields)
 
     def test_fecha_desde_format_valid(self):
@@ -159,6 +162,23 @@ class ContratoCreateViewTest(BaseTestCase):
         form = ContratoForm(data=self.data)
         self.assertFalse(form.is_valid())
         self.assertHasProps(form.errors, ['fecha_desde'])
+
+    def test_fecha_hasta_format_valid(self):
+        """Valida el formato de fecha."""
+        data_invalid = ['03/28/2022', '18/03/22', 'Text', '11/08', '']
+        self.data['fecha_hasta'] = rand_element_from_array(data_invalid)
+        form = ContratoForm(data=self.data)
+        self.assertFalse(form.is_valid())
+        self.assertHasProps(form.errors, ['fecha_hasta'])
+
+    def test_fecha_desde_fecha_hasta_invalid(self):
+        """Valida el formato de fecha."""
+        fecha_desde_date = datetime.strptime(self.data.get('fecha_desde'), '%d/%m/%Y')
+        fecha_hasta = fecha_desde_date - timedelta(days=2)
+        self.data.update({'fecha_hasta': fecha_hasta.strftime('%d/%m/%Y')})
+        form = ContratoForm(data=self.data)
+        self.assertFalse(form.is_valid())
+        self.assertHasProps(form.errors['__all__'], ['La fecha desde no puede ser mayor que la fecha hasta'])
 
     def test_monto_format_valid(self):
         """Valida el formato del monto."""
