@@ -27,6 +27,7 @@ from sistemita.core.constants import (
 )
 from sistemita.core.models.cliente import (
     Cliente,
+    Contrato,
     Factura,
     FacturaDistribuida,
     FacturaImputada,
@@ -603,3 +604,14 @@ class FacturaDistribuidaSendNotificationSerializer(serializers.Serializer):
         facturadistribuida = validated_data.get('factura_distribuida_id')
         send_notification_factura_distribuida(proveedor, facturadistribuida)
         return True
+
+
+class ContratoModelSerializer(serializers.ModelSerializer):
+    """Serializador del modelo Contrato"""
+
+    class Meta:
+        """Clase meta."""
+
+        model = Contrato
+        fields = ('id', 'categoria')
+        read_only_fields = ('id', 'categoria')

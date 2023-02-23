@@ -14,6 +14,7 @@ from unidecode import unidecode
 from sistemita.api.clientes.filters import ClienteFilterSet, FacturaFilterSet
 from sistemita.api.clientes.serializers import (
     ClienteSerializer,
+    ContratoModelSerializer,
     FacturaBeforeImportSerializer,
     FacturaDistribuidaModelSerializer,
     FacturaDistribuidaSendNotificationSerializer,
@@ -24,6 +25,7 @@ from sistemita.api.clientes.serializers import (
 )
 from sistemita.core.models.cliente import (
     Cliente,
+    Contrato,
     Factura,
     FacturaDistribuida,
     FacturaImputada,
@@ -166,3 +168,11 @@ class FacturaDistribuidaViewSet(
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({}, status=status.HTTP_201_CREATED)
+
+
+class ContratoViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+    """Contrato viewset."""
+
+    queryset = Contrato.objects.all()
+    permission_classes = (permissions.IsAuthenticated,)
+    serializer_class = ContratoModelSerializer

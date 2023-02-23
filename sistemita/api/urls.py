@@ -9,6 +9,7 @@ from rest_framework.routers import DefaultRouter, SimpleRouter
 from sistemita.api.archivos.views import ArchivoViewSet
 from sistemita.api.clientes.views import (
     ClienteViewSet,
+    ContratoViewSet,
     FacturaDistribuidaViewSet,
     FacturaImputadaViewSet,
     FacturaViewSet,
@@ -31,6 +32,7 @@ else:
 # Core
 router.register(r'archivo', ArchivoViewSet)
 router.register(r'cliente', ClienteViewSet)
+router.register(r'contrato', ContratoViewSet)
 router.register(r'distrito', DistritoViewSet)
 router.register(r'factura', FacturaViewSet)
 router.register(r'factura-distribuida', FacturaDistribuidaViewSet)

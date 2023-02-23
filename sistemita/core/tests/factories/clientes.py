@@ -153,6 +153,7 @@ class FacturaClienteFactory(DjangoModelFactory):
     fecha = Faker('date_this_month')
     numero = Faker('random_number', digits=10)
     tipo = Faker('random_element', elements=[row[0] for row in TIPOS_FACTURA])
+    contrato = SubFactory(ContratoFactory)
     categoria = SubFactory(FacturaClienteCategoriaFactory)
 
     cliente = SubFactory(ClienteFactory)
@@ -193,6 +194,7 @@ class FacturaClienteFactoryData:
         proveedores = []
         FacturaClienteDictFactory = generate_dict_factory(FacturaClienteFactory)
         cliente = ClienteFactory.create()
+        contrato = ContratoFactory.create()
         categoria = FacturaClienteCategoriaFactory.create()
         archivo = ArchivoFactory.build()
 
@@ -202,6 +204,7 @@ class FacturaClienteFactoryData:
         self.data = FacturaClienteDictFactory()
         self.data.update({'cliente': cliente.pk})
         self.data.update({'proveedores': proveedores})
+        self.data.update({'contrato': contrato.pk})
         self.data.update({'categoria': categoria.pk})
         self.data.update({'archivos': archivo.documento.file})
         self.data.update({'monto_imputado': 0.0})

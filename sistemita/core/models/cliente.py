@@ -71,6 +71,7 @@ class Factura(FacturaAbstract):
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
     porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
+    contrato = models.ForeignKey('Contrato', blank=True, null=True, on_delete=models.SET_NULL)
     categoria = models.ForeignKey(FacturaCategoria, blank=True, null=True, on_delete=models.SET_NULL)
     proveedores = models.ManyToManyField('Proveedor', blank=True)
     porcentaje_socio_alan = models.DecimalField(

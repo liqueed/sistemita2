@@ -163,6 +163,7 @@ class FacturaForm(forms.ModelForm):
                 'Datos generales',
                 Div(Div('fecha', css_class='col-4'), css_class='row'),
                 Div(Div('numero', css_class='col-4'), Div('tipo', css_class='col-2'), css_class='row'),
+                Div(Div('contrato', css_class='col-4'), css_class='row'),
                 Div(Div('categoria', css_class='col-4'), css_class='row'),
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 Div(Div('proveedores', css_class='col-6'), css_class='row'),
@@ -223,6 +224,7 @@ class FacturaForm(forms.ModelForm):
             'porcentaje_socio_ariel',
             'monto_imputado',
             'categoria',
+            'contrato',
         )
 
     def clean_numero(self):
@@ -403,7 +405,7 @@ class ContratoForm(forms.ModelForm):
         """Configuraciones del formulario."""
 
         model = Contrato
-        fields = ('fecha_desde', 'fecha_hasta',  'categoria', 'cliente', 'detalle', 'proveedores', 'moneda', 'monto')
+        fields = ('fecha_desde', 'fecha_hasta', 'categoria', 'cliente', 'detalle', 'proveedores', 'moneda', 'monto')
 
 
 class FacturaCategoriaForm(forms.ModelForm):
