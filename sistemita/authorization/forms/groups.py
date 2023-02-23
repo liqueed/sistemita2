@@ -43,7 +43,7 @@ class GroupForm(forms.ModelForm):
                 'archivo',
                 'cliente',
                 'factura',
-                'ordencompra',
+                'contrato',
                 'cobranza',
                 'proveedor',
                 'facturadistribuida',

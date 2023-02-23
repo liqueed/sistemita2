@@ -15,7 +15,7 @@ content_type = (
             'archivo',
             'cliente',
             'factura',
-            'ordencompra',
+            'contrato',
             'cobranza',
             'proveedor',
             'facturaproveedor',

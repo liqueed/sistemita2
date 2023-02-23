@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static crispy_forms_tags %}
+{% block title %}Detalle Contrato Nro. {{ object.pk }} - Cliente: {{ object.cliente.razon_social }} | Liqueed{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between">
+      <h1 class="h3 text-gray-800">&Oacute;rdenes de compra</h1>
+      {% if perms.core.list_contrato %}
+	<a href="{% url 'core:contrato-list' %}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm mb-2">
+	  <i class="fas fa-bars fa-sm text-white-50"></i> Volver al listado
+	</a>
+      {% endif %}
+    </div>
+    {% include 'components/messages.html' %}
+
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+	<h6 class="m-0 font-weight-bold text-primary">Detalle Contrato Nro. {{ object.pk }} - Cliente: {{ object.cliente.razon_social }}</h6>
+      </div>
+      <div class="card-body">
+	<div class="table-responsive">
+	  <dl class="row">
+	    <dt class="col-sm-2">Fecha desde</dt>
+	    <dd class="col-sm-10">{{ object.fecha_desde }}</dd>
+	    <dt class="col-sm-2">Fecha hasta</dt>
+	    <dd class="col-sm-10">{{ object.fecha_hasta }}</dd>
+	    <dt class="col-sm-2">Categoría</dt>
+	    <dd class="col-sm-10">{{ object.categoria }}</dd>
+	    <dt class="col-sm-2">Cliente</dt>
+	    <dd class="col-sm-10">{{ object.cliente }}</dd>
+	    <dt class="col-sm-2">Coach que interactúan</dt>
+	    {% if object.proveedores.all|length %}
+	      {% for item in object.proveedores.all %}
+		{% if forloop.counter != 1  %}
+		  <dt class="col-sm-2"><dt>
+		{% endif %}
+		<dd class="col-sm-10">{{ item }} </dd>
+	      {% endfor %}
+	    {% else %}
+	      <dd class="col-sm-10">-</dd>
+	    {% endif %}
+	    <dt class="col-sm-2">Detalle</dt>
+	    <dd class="col-sm-10">{{ object.detalle }}</dd>
+	    <dt class="col-sm-2">Valor</dt>
+	    <dd class="col-sm-10">{{ object.get_moneda_display }} {{ object.monto }}</dd>
+	  </dl>
+	  {% if perms.core.list_contrato %}
+	    <a href="{% url 'core:contrato-list' %}" class="btn btn-primary float-right">Volver</a>
+	  {% endif %}
+	</div>
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

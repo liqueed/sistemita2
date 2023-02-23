@@ -44,7 +44,7 @@ class PermissionListView(PermissionRequiredMixin, SuccessMessageMixin, ListView)
                     'facturadistribuida',
                     'facturaimputada',
                     'facturacategoria',
-                    'ordencompra',
+                    'contrato',
                     'cobranza',
                     'proveedor',
                     'facturaproveedor',

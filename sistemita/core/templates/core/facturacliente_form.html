@@ -58,6 +58,13 @@ $('#id_cliente').change(function(){
     displayInfoCliente();
 });
 
+$('#id_contrato').change(function(){
+    var idContrato = $('#id_contrato').val();
+    $.get(`/api/contrato/${idContrato}/`, function(data) {
+	$('#id_categoria').val(data.categoria);
+    });
+});
+
 function displayInfoCliente(){
     var idCliente = $('#id_cliente').val();
     if(idCliente !== ''){

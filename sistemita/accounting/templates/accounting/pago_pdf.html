@@ -25,8 +25,8 @@
        size: A4;
        margin: 2.5cm;
        @top-right{
-         font: 8pt sans-serif;
-         content: "Página " counter(page) " de " counter(pages);
+	 font: 8pt sans-serif;
+	 content: "Página " counter(page) " de " counter(pages);
        }
      }
      .border {
@@ -62,144 +62,144 @@
   <body>
     <table cell>
       <thead>
-        <tr>
-          <td class="text-center pb-10" colspan="2">
-            <strong>ORDEN DE PAGO</strong>
-          </td>
-        </tr>
-        <tr>
-          <td class="pb-30 text-center" width="50%">
-            <img width='134px' height='50px' src="{% static 'images/logo-top-dark.png' %}" />
-          </td>
-          <td class="pb-30 vertical-top" width="50%">
-            <ul>
-              <li>Fecha: {% now 'd.m.Y' %}</li>
-              <li><strong>LIQUEED S.A</strong></li>
-              <li>RAVIGNANI EMILIO DR 2330 Piso:1 Dpt</li>
-              <li>CUIT: 30-71528100-3</li>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td class="border-bottom" colspan="2"><strong>Beneficiario del pago</strong></td>
-        </tr>
-        <tr>
-          <td class="border" width="50%">
-            <ul>
-              <li><strong>Razón social:</strong> {{ object.proveedor.razon_social }}</li>
-              <li>{{ object.calle}} {{ object.numero}} {{ object.piso}} {{ object.dpto}}</li>
-              <li>
-                {% if object.localidad %}{{ object.localidad}},{% endif %}
-                {% if object.distrito %}{{ object.distrito}},{% endif %}
-                {% if object.provincia %}{{ object.provincia}}{% endif %}
-              </li>
-              <li><strong>CUIT:</strong> {{ object.proveedor.cuit|default:"-" }}</li>
-              <li><strong>CBU:</strong> {{ object.proveedor.cbu|default:"-" }}</li>
-            </ul>
-          </td>
-          <td class="border vertical-top" width="50%">
-            <ul>
-              <li><strong>Nro. de Orden de pago:</strong> {{ object.pk }}</li>
-              <li><strong>Fecha de pago:</strong> {{ object.fecha|date:'d.m.Y' }}</li>
-            </ul>
-          </td>
-        </tr>
+	<tr>
+	  <td class="text-center pb-10" colspan="2">
+	    <strong>ORDEN DE PAGO</strong>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="pb-30 text-center" width="50%">
+	    <img width='134px' height='50px' src="{% static 'images/logo-top-dark.png' %}" />
+	  </td>
+	  <td class="pb-30 vertical-top" width="50%">
+	    <ul>
+	      <li>Fecha: {% now 'd.m.Y' %}</li>
+	      <li><strong>LIQUEED S.A</strong></li>
+	      <li>RAVIGNANI EMILIO DR 2330 Piso:1 Dpt</li>
+	      <li>CUIT: 30-71528100-3</li>
+	    </ul>
+	  </td>
+	</tr>
+	<tr>
+	  <td class="border-bottom" colspan="2"><strong>Beneficiario del pago</strong></td>
+	</tr>
+	<tr>
+	  <td class="border" width="50%">
+	    <ul>
+	      <li><strong>Razón social:</strong> {{ object.proveedor.razon_social }}</li>
+	      <li>{{ object.calle}} {{ object.numero}} {{ object.piso}} {{ object.dpto}}</li>
+	      <li>
+		{% if object.localidad %}{{ object.localidad}},{% endif %}
+		{% if object.distrito %}{{ object.distrito}},{% endif %}
+		{% if object.provincia %}{{ object.provincia}}{% endif %}
+	      </li>
+	      <li><strong>CUIT:</strong> {{ object.proveedor.cuit|default:"-" }}</li>
+	      <li><strong>CBU:</strong> {{ object.proveedor.cbu|default:"-" }}</li>
+	    </ul>
+	  </td>
+	  <td class="border vertical-top" width="50%">
+	    <ul>
+	      <li><strong>Nro. de Orden de pago:</strong> {{ object.pk }}</li>
+	      <li><strong>Fecha de pago:</strong> {{ object.fecha|date:'d.m.Y' }}</li>
+	    </ul>
+	  </td>
+	</tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="border-bottom pt-30" colspan="2"><strong>Detalle de comprobantes pagados</strong></td>
-        </tr>
-        <tr>
-          <td class="pd-30" colspan="2">
-            <table>
-              <tr>
-                <td><strong>Fecha</strong></td>
-                <td><strong>Nro. Factura</strong></td>
-                <td><strong>Tipo</strong></td>
-                <td><strong>MD</strong></td>
-                <td><strong>Neto</strong></td>
-                <td><strong>IVA</strong></td>
-                <td><strong>Total</strong></td>
-                {% comment %}
-                <td>Método de pago</td>
-                <td>Monto</td>
-                {% endcomment %}
-              </tr>
-            {% for pago_factura in object.pago_facturas.all %}
-              <tr>
-                <td class="vertical-top">{{ pago_factura.factura.fecha|date:'d.m.Y' }}</td>
-                <td class="vertical-top">{{ pago_factura.factura.numero|default:'-' }}</td>
-                <td class="vertical-top">{{ pago_factura.factura.tipo }}</td>
-                <td class="vertical-top">{% if pago_factura.factura.moneda == 'P'%}ARS{% else %}U$D{% endif %}</td>
-                <td class="vertical-top">{{ pago_factura.factura.neto }}</td>
-                <td class="vertical-top">{{ pago_factura.factura.iva }}</td>
-                <td class="vertical-top">{{ pago_factura.factura.total }}</td>
-                {% comment %}
-                <td>
-                  {% for pago in pago_factura.pago_factura_pagos.all %}
-                    <div>{{ pago.metodo }}</div>
-                  {% endfor %}
-                </td>
-                <td>
-                {% for pago in pago_factura.pago_factura_pagos.all %}
-                  <div>{{ pago.monto }}</div>
-                {% endfor %}
-                </td>
-                {% endcomment %}
-              </tr>
-            {% endfor %}
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td class="pb-30"><i>Subtotal comprobantes {{ subtotal_comprobantes.total__sum }}</i></td>
-        </tr>
-        <tr>
-          <td class="border-bottom" colspan="2"><strong>Detalle de retenciones</strong></td>
-        </tr>
-        <tr>
-          <td class="pb-30" colspan="2">
-            <table>
-              <tr>
-                <td><strong>Fecha</strong></td>
-                <td><strong>Nro. Factura</strong></td>
-                <td><strong>Ganancias</strong></td>
-                <td><strong>Ingresos brutos</strong></td>
-                <td><strong>Iva</strong></td>
-              </tr>
-              {% for pago_factura in object.pago_facturas.all %}
-              <tr>
-                <td>{{ pago_factura.factura.fecha|date:'d.m.Y' }}</td>
-                <td>{{ pago_factura.factura.numero|default:'-' }}</td>
-                <td>{{ pago_factura.factura.get_moneda_display }}{{ pago_factura.ganancias }}</td>
-                <td>{{ pago_factura.factura.get_moneda_display }}{{ pago_factura.ingresos_brutos }}</td>
-                <td>{{ pago_factura.factura.get_moneda_display }}{{ pago_factura.iva }}</td>
-              </tr>
-              {% endfor %}
-            </table>
-          </td>
-        </tr>
-        <tr>
-          <td><i></i></td>
-          <td><i>Subtotal retenciones {{ subtotal_retenciones.0.sub }}</i></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td class="neto"><strong>Importe Neto a pagar {{ neto_a_pagar }}</strong></td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>
-            <table>
-              <tr>
-                <td class="border" style="width: 40%;">PAGÓ</td>
-                <td></td>
-                <td class="border" style="width: 40%;">AUTORIZÓ</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
+	<tr>
+	  <td class="border-bottom pt-30" colspan="2"><strong>Detalle de comprobantes pagados</strong></td>
+	</tr>
+	<tr>
+	  <td class="pd-30" colspan="2">
+	    <table>
+	      <tr>
+		<td><strong>Fecha</strong></td>
+		<td><strong>Nro. Factura</strong></td>
+		<td><strong>Tipo</strong></td>
+		<td><strong>MD</strong></td>
+		<td><strong>Neto</strong></td>
+		<td><strong>IVA</strong></td>
+		<td><strong>Total</strong></td>
+		{% comment %}
+		<td>Método de pago</td>
+		<td>Monto</td>
+		{% endcomment %}
+	      </tr>
+	    {% for pago_factura in object.pago_facturas.all %}
+	      <tr>
+		<td class="vertical-top">{{ pago_factura.factura.fecha|date:'d.m.Y' }}</td>
+		<td class="vertical-top">{{ pago_factura.factura.numero|default:'-' }}</td>
+		<td class="vertical-top">{{ pago_factura.factura.tipo }}</td>
+		<td class="vertical-top">{% if pago_factura.factura.moneda == 'P'%}ARS{% else %}U$D{% endif %}</td>
+		<td class="vertical-top">{{ pago_factura.factura.neto }}</td>
+		<td class="vertical-top">{{ pago_factura.factura.iva }}</td>
+		<td class="vertical-top">{{ pago_factura.factura.total }}</td>
+		{% comment %}
+		<td>
+		  {% for pago in pago_factura.pago_factura_pagos.all %}
+		    <div>{{ pago.metodo }}</div>
+		  {% endfor %}
+		</td>
+		<td>
+		{% for pago in pago_factura.pago_factura_pagos.all %}
+		  <div>{{ pago.monto }}</div>
+		{% endfor %}
+		</td>
+		{% endcomment %}
+	      </tr>
+	    {% endfor %}
+	    </table>
+	  </td>
+	</tr>
+	<tr>
+	  <td></td>
+	  <td class="pb-30"><i>Subtotal comprobantes {{ subtotal_comprobantes.total__sum }}</i></td>
+	</tr>
+	<tr>
+	  <td class="border-bottom" colspan="2"><strong>Detalle de retenciones</strong></td>
+	</tr>
+	<tr>
+	  <td class="pb-30" colspan="2">
+	    <table>
+	      <tr>
+		<td><strong>Fecha</strong></td>
+		<td><strong>Nro. Factura</strong></td>
+		<td><strong>Ganancias</strong></td>
+		<td><strong>Ingresos brutos</strong></td>
+		<td><strong>Iva</strong></td>
+	      </tr>
+	      {% for pago_factura in object.pago_facturas.all %}
+	      <tr>
+		<td>{{ pago_factura.factura.fecha|date:'d.m.Y' }}</td>
+		<td>{{ pago_factura.factura.numero|default:'-' }}</td>
+		<td>{{ pago_factura.factura.get_moneda_display }}{{ pago_factura.ganancias }}</td>
+		<td>{{ pago_factura.factura.get_moneda_display }}{{ pago_factura.ingresos_brutos }}</td>
+		<td>{{ pago_factura.factura.get_moneda_display }}{{ pago_factura.iva }}</td>
+	      </tr>
+	      {% endfor %}
+	    </table>
+	  </td>
+	</tr>
+	<tr>
+	  <td><i></i></td>
+	  <td><i>Subtotal retenciones {{ subtotal_retenciones.0.sub }}</i></td>
+	</tr>
+	<tr>
+	  <td></td>
+	  <td class="neto"><strong>Importe Neto a pagar {{ neto_a_pagar }}</strong></td>
+	</tr>
+	<tr>
+	  <td></td>
+	  <td>
+	    <table>
+	      <tr>
+		<td class="border" style="width: 40%;">PAGÓ</td>
+		<td></td>
+		<td class="border" style="width: 40%;">AUTORIZÓ</td>
+	      </tr>
+	    </table>
+	  </td>
+	</tr>
       </tbody>
     </table>
   </body>

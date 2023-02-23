@@ -4,7 +4,7 @@
 from django_filters.rest_framework import BooleanFilter, DateFilter, FilterSet
 
 # Models
-from sistemita.core.models.cliente import Factura, FacturaImputada, OrdenCompra
+from sistemita.core.models.cliente import Contrato, Factura, FacturaImputada
 from sistemita.core.models.proveedor import (
     FacturaProveedor,
     FacturaProveedorImputada,
@@ -25,7 +25,7 @@ class FacturaFilterSet(FilterSet):
         fields = ['cobrado', 'desde', 'hasta']
 
 
-class OrdenCompraFilterSet(FilterSet):
+class ContratoFilterSet(FilterSet):
     """Filters de orden de compra."""
 
     desde = DateFilter(input_formats=['%d/%m/%Y'], field_name='fecha', lookup_expr=('gte'))
@@ -34,7 +34,7 @@ class OrdenCompraFilterSet(FilterSet):
     class Meta:
         """Configuraciones del filter."""
 
-        model = OrdenCompra
+        model = Contrato
         fields = ['desde', 'hasta']
 
 

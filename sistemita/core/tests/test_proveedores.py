@@ -92,7 +92,7 @@ class ProveedorListViewTest(BaseTestCase):
         """Verifica un listado vacío cuando no hay instancias."""
         self.create_superuser()
         self.client.login(username='admin', password='admin123')  # login super user
-        response = self.client.get('/ordencompra/')
+        response = self.client.get('/proveedor/')
         self.assertContains(response, 'Sin resultados')
 
 

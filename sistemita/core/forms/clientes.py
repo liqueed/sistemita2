@@ -16,10 +16,10 @@ from django_select2 import forms as ds2_forms
 from sistemita.core.models.archivo import Archivo
 from sistemita.core.models.cliente import (
     Cliente,
+    Contrato,
     Factura,
     FacturaCategoria,
     FacturaDistribuida,
-    OrdenCompra,
 )
 from sistemita.core.models.entidad import Distrito, Localidad
 from sistemita.core.models.proveedor import Proveedor
@@ -156,13 +156,14 @@ class FacturaForm(forms.ModelForm):
             self.fields['total'].widget.attrs['readonly'] = True
 
         self.fields['numero'].label = 'Número de factura'
-        self.fields['proveedores'].label = 'Coach de la iniciativa'
+        self.fields['proveedores'].label = 'Coachs de la iniciativa'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
                 'Datos generales',
                 Div(Div('fecha', css_class='col-4'), css_class='row'),
                 Div(Div('numero', css_class='col-4'), Div('tipo', css_class='col-2'), css_class='row'),
+                Div(Div('contrato', css_class='col-4'), css_class='row'),
                 Div(Div('categoria', css_class='col-4'), css_class='row'),
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 Div(Div('proveedores', css_class='col-6'), css_class='row'),
@@ -223,6 +224,7 @@ class FacturaForm(forms.ModelForm):
             'porcentaje_socio_ariel',
             'monto_imputado',
             'categoria',
+            'contrato',
         )
 
     def clean_numero(self):
@@ -346,24 +348,42 @@ class FacturaForm(forms.ModelForm):
         return instance
 
 
-class OrdenCompraForm(forms.ModelForm):
-    """Formulario de orden de compra."""
+class ContratoForm(forms.ModelForm):
+    """Formulario del modelo Contrato."""
 
     monto = forms.DecimalField(decimal_places=2, max_digits=12, min_value=0, initial=0.0)
+    proveedores = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Proveedor.objects.all(),
+        widget=ds2_forms.ModelSelect2MultipleWidget(
+            model=Proveedor,
+            search_fields=['razon_social__icontains'],
+            # dependent_fields={'territories': 'continent_name__icontains'},
+            max_results=500,
+            attrs={"class": "form-control"},
+        ),
+    )
 
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
+        self.fields['proveedores'].label = 'Coachs que interactúan'
+        self.fields['categoria'].label = 'Categoría'
+
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
                 'Datos generales',
-                Div(Div('fecha', css_class='col-4'), css_class='row'),
+                Div(Div('fecha_desde', css_class='col-4'), css_class='row'),
+                Div(Div('fecha_hasta', css_class='col-4'), css_class='row'),
+                Div(Div('categoria', css_class='col-6'), css_class='row'),
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_cliente', css_class='row'),
+                Div(Div('proveedores', css_class='col-6'), css_class='row'),
+                Div(Div('detalle', css_class='col-4'), css_class='row'),
                 Div(Div('moneda', css_class='col-2'), Div('monto', css_class='col-4'), css_class='row'),
             ),
             FormActions(
@@ -371,11 +391,21 @@ class OrdenCompraForm(forms.ModelForm):
             ),
         )
 
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_desde = cleaned_data.get('fecha_desde')
+        fecha_hasta = cleaned_data.get('fecha_hasta')
+        if fecha_desde and fecha_hasta:
+            if fecha_desde > fecha_hasta:
+                raise forms.ValidationError('La fecha desde no puede ser mayor que la fecha hasta')
+
+        return cleaned_data
+
     class Meta:
         """Configuraciones del formulario."""
 
-        model = OrdenCompra
-        fields = ('fecha', 'cliente', 'moneda', 'monto')
+        model = Contrato
+        fields = ('fecha_desde', 'fecha_hasta', 'categoria', 'cliente', 'detalle', 'proveedores', 'moneda', 'monto')
 
 
 class FacturaCategoriaForm(forms.ModelForm):

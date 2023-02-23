@@ -1,10 +1,11 @@
 """Cliente factories."""
 
+# Utils
+import datetime
 from decimal import Decimal
 
 # Fake
 import factory
-from django.utils import timezone
 from factory import Faker, SubFactory
 from factory.django import DjangoModelFactory
 from faker import Faker as fake
@@ -13,13 +14,13 @@ from faker import Faker as fake
 from sistemita.core.constants import MONEDAS, TIPOS_FACTURA, ZERO_DECIMAL
 from sistemita.core.models import (
     Cliente,
+    Contrato,
     Distrito,
     Factura,
     FacturaCategoria,
     FacturaDistribuida,
     FacturaImputada,
     Localidad,
-    OrdenCompra,
     Provincia,
 )
 from sistemita.core.tests.factories import ArchivoFactory
@@ -92,27 +93,47 @@ class FacturaClienteCategoriaFactoryData:
         return self.data
 
 
-class OrdenCompraFactory(DjangoModelFactory):
-    """Fabrica de instancias del modelo orden compra de clientes."""
+class ContratoFactory(DjangoModelFactory):
+    """Fabrica de instancias del modelo Contrato de clientes."""
 
     class Meta:
         """Factory settings."""
 
-        model = OrdenCompra
+        model = Contrato
 
+    fecha_desde = Faker('date_this_month')
+    fecha_hasta = factory.LazyAttribute(lambda o: o.fecha_desde + datetime.timedelta(days=1))
+    categoria = SubFactory(FacturaClienteCategoriaFactory)
     cliente = SubFactory(ClienteFactory)
-    fecha = Faker('date_this_month')
+    detalle = Faker('text', max_nb_chars=255)
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
     monto = Faker('pydecimal', max_value=10000000, positive=True)
 
+    @factory.post_generation
+    def proveedores(self, create, extracted, **kwargs):
+        """Asigna proveedores a la factory."""
+        if not create or not extracted:
+            return
+        self.proveedores.add(*extracted)
 
-class OrdenCompraFactoryData:
+
+class ContratoFactoryData:
     """Creación de datos para el modelo de orden de compra de clientes."""
 
     def __init__(self):
-        OrdenCompraDictFactory = generate_dict_factory(OrdenCompraFactory)
-        self.data = OrdenCompraDictFactory()
-        self.data.update({'fecha': timezone.datetime.strptime(fake.date(), '%Y-%m-%d').strftime('%d/%m/%Y')})
+        from sistemita.core.tests.factories import ProveedorFactory
+
+        proveedores = []
+        ContratoDictFactory = generate_dict_factory(ContratoFactory)
+        categoria = FacturaClienteCategoriaFactory.create()
+
+        for _ in range(0, rand_range(2, 5)):
+            proveedores.append(ProveedorFactory.create().pk)
+
+        self.data = ContratoDictFactory()
+        self.data.update({'fecha_desde': self.data.get('fecha_desde').strftime('%d/%m/%Y')})
+        self.data.update({'fecha_hasta': self.data.get('fecha_hasta').strftime('%d/%m/%Y')})
+        self.data.update({'categoria': categoria.pk})
         self.data.update({'cliente': ClienteFactory.create().pk})
         self.data.update({'monto': str(fake.pydecimal(2, 2, True))})
 
@@ -132,6 +153,7 @@ class FacturaClienteFactory(DjangoModelFactory):
     fecha = Faker('date_this_month')
     numero = Faker('random_number', digits=10)
     tipo = Faker('random_element', elements=[row[0] for row in TIPOS_FACTURA])
+    contrato = SubFactory(ContratoFactory)
     categoria = SubFactory(FacturaClienteCategoriaFactory)
 
     cliente = SubFactory(ClienteFactory)
@@ -172,6 +194,7 @@ class FacturaClienteFactoryData:
         proveedores = []
         FacturaClienteDictFactory = generate_dict_factory(FacturaClienteFactory)
         cliente = ClienteFactory.create()
+        contrato = ContratoFactory.create()
         categoria = FacturaClienteCategoriaFactory.create()
         archivo = ArchivoFactory.build()
 
@@ -181,6 +204,7 @@ class FacturaClienteFactoryData:
         self.data = FacturaClienteDictFactory()
         self.data.update({'cliente': cliente.pk})
         self.data.update({'proveedores': proveedores})
+        self.data.update({'contrato': contrato.pk})
         self.data.update({'categoria': categoria.pk})
         self.data.update({'archivos': archivo.documento.file})
         self.data.update({'monto_imputado': 0.0})

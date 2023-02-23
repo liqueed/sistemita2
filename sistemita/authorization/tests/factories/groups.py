@@ -36,7 +36,7 @@ class GroupFactoryData:
                     'archivo',
                     'cliente',
                     'factura',
-                    'ordencompra',
+                    'contrato',
                     'cobranza',
                     'proveedor',
                     'facturaproveedor',

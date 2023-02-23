@@ -11,6 +11,13 @@ from sistemita.core.views.clientes import (
     ClienteListView,
     ClienteUpdateView,
 )
+from sistemita.core.views.contratos import (
+    ContratoCreateView,
+    ContratoDeleteView,
+    ContratoDetailView,
+    ContratoListView,
+    ContratoUpdateView,
+)
 from sistemita.core.views.facturadistribuida import (
     FacturaDistribuidaCreateTemplateView,
     FacturaDistribuidaDeleteView,
@@ -74,13 +81,6 @@ from sistemita.core.views.mediopago import (
     MedioPagoListView,
     MedioPagoUpdateView,
 )
-from sistemita.core.views.ordencompra import (
-    OrdenCompraCreateView,
-    OrdenCompraDeleteView,
-    OrdenCompraDetailView,
-    OrdenCompraListView,
-    OrdenCompraUpdateView,
-)
 from sistemita.core.views.proveedores import (
     ProveedorCreateView,
     ProveedorDeleteView,
@@ -142,12 +142,12 @@ urlpatterns = [
         'facturaimputada/<int:pk>/editar/', FacturaImputadaUpdateTemplateView.as_view(), name='facturaimputada-update'
     ),
     path('facturaimputada/<int:pk>/eliminar/', FacturaImputadaDeleteView.as_view(), name='facturaimputada-delete'),
-    # Orden de compra
-    path('ordencompra/', OrdenCompraListView.as_view(), name='ordencompra-list'),
-    path('ordencompra/agregar/', OrdenCompraCreateView.as_view(), name='ordencompra-create'),
-    path('ordencompra/<int:pk>/', OrdenCompraDetailView.as_view(), name='ordencompra-detail'),
-    path('ordencompra/<int:pk>/editar/', OrdenCompraUpdateView.as_view(), name='ordencompra-update'),
-    path('ordencompra/<int:pk>/eliminar/', OrdenCompraDeleteView.as_view(), name='ordencompra-delete'),
+    # Contrato
+    path('contrato/', ContratoListView.as_view(), name='contrato-list'),
+    path('contrato/agregar/', ContratoCreateView.as_view(), name='contrato-create'),
+    path('contrato/<int:pk>/', ContratoDetailView.as_view(), name='contrato-detail'),
+    path('contrato/<int:pk>/editar/', ContratoUpdateView.as_view(), name='contrato-update'),
+    path('contrato/<int:pk>/eliminar/', ContratoDeleteView.as_view(), name='contrato-delete'),
     # Proveedores
     path('proveedor/', ProveedorListView.as_view(), name='proveedor-list'),
     path('proveedor/agregar/', ProveedorCreateView.as_view(), name='proveedor-create'),

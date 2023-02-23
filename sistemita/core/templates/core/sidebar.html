@@ -21,7 +21,7 @@
   </li>
 
   <!-- Sección Clientes -->
-  {% if perms.core.add_cliente or perms.core.list_cliente or perms.core.add_factura or perms.core.list_factura or perms.core.add_ordencompra or perms.core.list_ordencompra or perms.accounting.add_cobranza or perms.accounting.list_cobranza %}
+  {% if perms.core.add_cliente or perms.core.list_cliente or perms.core.add_factura or perms.core.list_factura or perms.core.add_contrato or perms.core.list_contrato or perms.accounting.add_cobranza or perms.accounting.list_cobranza %}
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -115,29 +115,29 @@
   {% endif %}
   <!-- End Imputaciones -->
 
-  <!-- Órdenes de compra -->
-  {% if perms.core.list_ordencompra or perms.core.add_ordencompra %}
-    <li class="nav-item{% if 'ordencompra' in request.resolver_match.url_name %} active{% endif %}">
-      {% if perms.core.list_ordencompra %}
-	<a class="nav-link" href="{% url 'core:ordencompra-list' %}">
+  <!-- Contratos -->
+  {% if perms.core.list_contrato or perms.core.add_contrato %}
+    <li class="nav-item{% if 'contrato' in request.resolver_match.url_name %} active{% endif %}">
+      {% if perms.core.list_contrato %}
+	<a class="nav-link" href="{% url 'core:contrato-list' %}">
 	  <i class="fas fa-fw fa-chart-area"></i>
-	  <span>&Oacute;rdenes de compra</span>
+	  <span>Contratos</span>
 	</a>
       {% endif %}
-      {% if not perms.core.list_ordencompra and perms.core.add_ordencompra %}
-	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrdenescompra" aria-expanded="true">
+      {% if not perms.core.list_contrato and perms.core.add_contrato %}
+	<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseContrato" aria-expanded="true">
 	  <i class="fas fa-fw fa-chart-area"></i>
-	  <span>&Oacute;rdenes de compra</span>
+	  <span>Contratos</span>
 	</a>
-	<div id="collapseOrdenescompra" class="collapse">
+	<div id="collapseContrato" class="collapse">
 	  <div class="bg-white py-2 collapse-inner rounded">
-	    <a href="{% url 'core:ordencompra-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
+	    <a href="{% url 'core:contrato-create' %}" class="collapse-item" href="utilities-color.html">Agregar</a>
 	  </div>
 	</div>
       {% endif %}
     </li>
   {% endif %}
-  <!-- End Órdenes de compra -->
+  <!-- End contratos -->
 
   <!-- Cobranza -->
   {% if perms.accounting.add_cobranza or perms.accounting.list_cobranza %}
