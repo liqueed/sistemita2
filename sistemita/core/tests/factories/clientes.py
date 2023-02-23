@@ -101,10 +101,10 @@ class ContratoFactory(DjangoModelFactory):
 
         model = Contrato
 
-    cliente = SubFactory(ClienteFactory)
     fecha_desde = Faker('date_this_month')
-    # fecha_hasta = Faker('date_this_month')
     fecha_hasta = factory.LazyAttribute(lambda o: o.fecha_desde + datetime.timedelta(days=1))
+    cliente = SubFactory(ClienteFactory)
+    detalle = Faker('text', max_nb_chars=255)
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
     monto = Faker('pydecimal', max_value=10000000, positive=True)
 

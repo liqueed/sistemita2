@@ -188,6 +188,13 @@ class ContratoCreateViewTest(BaseTestCase):
         self.assertFalse(form.is_valid())
         self.assertHasProps(form.errors, ['monto'])
 
+    def test_detalle_invalid(self):
+        """Valida el máximo de caracteres del campo detalle."""
+        detalle = self.data['detalle'] * 3
+        self.data['detalle'] = detalle
+        form = ContratoForm(data=self.data)
+        self.assertIn('Asegúrese de que este valor tenga como máximo 255 caracteres', form.errors['detalle'][0])
+
 
 class ContratoDetailViewTest(BaseTestCase):
     """Test sobre la vista de detalle."""

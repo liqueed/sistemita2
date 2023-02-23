@@ -365,6 +365,7 @@ class ContratoForm(forms.ModelForm):
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_cliente', css_class='row'),
+                Div(Div('detalle', css_class='col-4'), css_class='row'),
                 Div(Div('moneda', css_class='col-2'), Div('monto', css_class='col-4'), css_class='row'),
             ),
             FormActions(
@@ -386,7 +387,7 @@ class ContratoForm(forms.ModelForm):
         """Configuraciones del formulario."""
 
         model = Contrato
-        fields = ('fecha_desde', 'fecha_hasta', 'cliente', 'moneda', 'monto')
+        fields = ('fecha_desde', 'fecha_hasta', 'cliente', 'detalle', 'moneda', 'monto')
 
 
 class FacturaCategoriaForm(forms.ModelForm):
