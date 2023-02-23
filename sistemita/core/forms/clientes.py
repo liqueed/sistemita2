@@ -156,7 +156,7 @@ class FacturaForm(forms.ModelForm):
             self.fields['total'].widget.attrs['readonly'] = True
 
         self.fields['numero'].label = 'Número de factura'
-        self.fields['proveedores'].label = 'Coach de la iniciativa'
+        self.fields['proveedores'].label = 'Coachs de la iniciativa'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
@@ -350,10 +350,23 @@ class ContratoForm(forms.ModelForm):
     """Formulario del modelo Contrato."""
 
     monto = forms.DecimalField(decimal_places=2, max_digits=12, min_value=0, initial=0.0)
+    proveedores = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Proveedor.objects.all(),
+        widget=ds2_forms.ModelSelect2MultipleWidget(
+            model=Proveedor,
+            search_fields=['razon_social__icontains'],
+            # dependent_fields={'territories': 'continent_name__icontains'},
+            max_results=500,
+            attrs={"class": "form-control"},
+        ),
+    )
 
     def __init__(self, *args, **kwargs):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
+        self.fields['proveedores'].label = 'Coachs que interactúan'
+
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
         self.helper = FormHelper()
@@ -365,6 +378,7 @@ class ContratoForm(forms.ModelForm):
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_cliente', css_class='row'),
+                Div(Div('proveedores', css_class='col-6'), css_class='row'),
                 Div(Div('detalle', css_class='col-4'), css_class='row'),
                 Div(Div('moneda', css_class='col-2'), Div('monto', css_class='col-4'), css_class='row'),
             ),
@@ -387,7 +401,7 @@ class ContratoForm(forms.ModelForm):
         """Configuraciones del formulario."""
 
         model = Contrato
-        fields = ('fecha_desde', 'fecha_hasta', 'cliente', 'detalle', 'moneda', 'monto')
+        fields = ('fecha_desde', 'fecha_hasta', 'cliente', 'detalle', 'proveedores', 'moneda', 'monto')
 
 
 class FacturaCategoriaForm(forms.ModelForm):

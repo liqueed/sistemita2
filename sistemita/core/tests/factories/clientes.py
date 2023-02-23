@@ -108,12 +108,26 @@ class ContratoFactory(DjangoModelFactory):
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
     monto = Faker('pydecimal', max_value=10000000, positive=True)
 
+    @factory.post_generation
+    def proveedores(self, create, extracted, **kwargs):
+        """Asigna proveedores a la factory."""
+        if not create or not extracted:
+            return
+        self.proveedores.add(*extracted)
+
 
 class ContratoFactoryData:
     """Creación de datos para el modelo de orden de compra de clientes."""
 
     def __init__(self):
+        from sistemita.core.tests.factories import ProveedorFactory
+
+        proveedores = []
         ContratoDictFactory = generate_dict_factory(ContratoFactory)
+
+        for _ in range(0, rand_range(2, 5)):
+            proveedores.append(ProveedorFactory.create().pk)
+
         self.data = ContratoDictFactory()
         self.data.update({'fecha_desde': self.data.get('fecha_desde').strftime('%d/%m/%Y')})
         self.data.update({'fecha_hasta': self.data.get('fecha_hasta').strftime('%d/%m/%Y')})
