@@ -103,6 +103,7 @@ class ContratoFactory(DjangoModelFactory):
 
     fecha_desde = Faker('date_this_month')
     fecha_hasta = factory.LazyAttribute(lambda o: o.fecha_desde + datetime.timedelta(days=1))
+    categoria = SubFactory(FacturaClienteCategoriaFactory)
     cliente = SubFactory(ClienteFactory)
     detalle = Faker('text', max_nb_chars=255)
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
@@ -124,6 +125,7 @@ class ContratoFactoryData:
 
         proveedores = []
         ContratoDictFactory = generate_dict_factory(ContratoFactory)
+        categoria = FacturaClienteCategoriaFactory.create()
 
         for _ in range(0, rand_range(2, 5)):
             proveedores.append(ProveedorFactory.create().pk)
@@ -131,6 +133,7 @@ class ContratoFactoryData:
         self.data = ContratoDictFactory()
         self.data.update({'fecha_desde': self.data.get('fecha_desde').strftime('%d/%m/%Y')})
         self.data.update({'fecha_hasta': self.data.get('fecha_hasta').strftime('%d/%m/%Y')})
+        self.data.update({'categoria': categoria.pk})
         self.data.update({'cliente': ClienteFactory.create().pk})
         self.data.update({'monto': str(fake.pydecimal(2, 2, True))})
 

@@ -366,6 +366,7 @@ class ContratoForm(forms.ModelForm):
         """Inicialización del formulario."""
         super().__init__(*args, **kwargs)
         self.fields['proveedores'].label = 'Coachs que interactúan'
+        self.fields['categoria'].label = 'Categoría'
 
         for field in self.fields.values():
             field.widget.attrs['autocomplete'] = 'off'
@@ -375,6 +376,7 @@ class ContratoForm(forms.ModelForm):
                 'Datos generales',
                 Div(Div('fecha_desde', css_class='col-4'), css_class='row'),
                 Div(Div('fecha_hasta', css_class='col-4'), css_class='row'),
+                Div(Div('categoria', css_class='col-6'), css_class='row'),
                 Div(Div('cliente', css_class='col-6'), css_class='row'),
                 # Aca va la data extra del cliente por JS
                 Div(css_id='info_cliente', css_class='row'),
@@ -401,7 +403,7 @@ class ContratoForm(forms.ModelForm):
         """Configuraciones del formulario."""
 
         model = Contrato
-        fields = ('fecha_desde', 'fecha_hasta', 'cliente', 'detalle', 'proveedores', 'moneda', 'monto')
+        fields = ('fecha_desde', 'fecha_hasta',  'categoria', 'cliente', 'detalle', 'proveedores', 'moneda', 'monto')
 
 
 class FacturaCategoriaForm(forms.ModelForm):
