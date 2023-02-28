@@ -442,6 +442,7 @@ class FacturaDistribuidaProveedorModelSerializer(serializers.ModelSerializer):
     """Serializador del modelo Factura Distribuida Proveedor."""
 
     proveedor = ProveedorSerializer()
+    factura_proveedor = FacturaProveedorSerializer()
 
     class Meta:
         """Configuraciones del serializer."""
@@ -452,4 +453,5 @@ class FacturaDistribuidaProveedorModelSerializer(serializers.ModelSerializer):
             'proveedor',
             'detalle',
             'monto',
+            'factura_proveedor',
         ]

@@ -54,12 +54,12 @@
 			<!--End Factura -->
 
 			<!-- Proveedores -->
-			<div class="card p-4 mb-3" style="width: 80rem;">
+			<div class="card p-4 mb-3" style="width: 95rem;">
 			  <!-- Proveedores y montos -->
 			  <div class="col-12 wrapper-distribucion-proveedores">
 			    <div class="row group-distribucion-proveedores">
 			      <!-- Proveedor -->
-			      <div class="col-5">
+			      <div class="col-4">
 				<div class="form-group">
 				  <label class="requiredField">
 				    Proveedor<span class="asteriskField">*</span>
@@ -75,13 +75,13 @@
 			      </div>
 			      <!-- End Proveedor -->
 			      <!-- Detalle -->
-			      <div class="col-4">
+			      <div class="col-3">
 				<div class="form-group">
 				  <label class="requiredField">
 				    Detalle<span class="asteriskField">*</span>
 				  </label>
 				  <div>
-				    <input class="input-detalle form-control" name="detalle_1">
+				    <input class="input-detalle form-control" name="detalle_1" autocomplete="off">
 				  </div>
 				</div>
 			      </div>
@@ -109,7 +109,17 @@
 				  </div>
 				</div>
 			      </div>
-			    <!-- End Reenviar email -->
+			      <!-- End Reenviar email -->
+
+			      <div class="col-2 mt-4">
+				<div>
+				  <small><i id="factura-recibida_1" class="check-factura-recibida fa fa-times-circle" aria-hidden="true"></i> Factura recibida</small>
+				</div>
+				<div>
+				  <small><i id="pagado-a-proveedor_1" class="check-pagado fa fa-times-circle" aria-hidden="true"></i> Pagado al proveedor</small>
+				</div>
+			      </div>
+
 			    </div>
 			  </div>
 			  <!-- End Proveedores y montos -->
@@ -198,6 +208,20 @@ $(document).ready(function() {
 		cloneDistribucion.find('.input-monto').attr('name', `monto_${indexDistribucion}`);
 		cloneDistribucion.find('.input-monto').val(distribucion.monto);
 		// cloneDistribucion.attr('data-inline', `{"id": ${idDistribucion}, "action": "update"}`);
+		// checks
+		cloneDistribucion.find('.check-pagado').attr('id', `pagado-a-proveedor_${indexDistribucion}`);
+		cloneDistribucion.find('.check-factura-recibida').attr('id', `factura_recibida_${indexDistribucion}`);
+
+		// factura recibida y pago al proveedor
+		if (distribucion.factura_proveedor) {
+		    cloneDistribucion.find('.check-factura-recibida').removeClass('fa-times-circle');
+		    cloneDistribucion.find('.check-factura-recibida').addClass('fa-check-circle');
+		    if (distribucion.factura_proveedor.cobrado){
+			cloneDistribucion.find('.check-pagado').removeClass('fa-times-circle');
+			cloneDistribucion.find('.check-pagado').addClass('fa-check-circle');
+		    }
+		}
+
 		$('.group-distribucion-proveedores:last').after(cloneDistribucion);
 	    } else {
 		// Defino data line para el elemento existente
@@ -205,6 +229,17 @@ $(document).ready(function() {
 		$(`.group-distribucion-proveedores:first`).find('.selector-proveedor').attr('data-id', `${distribucion.proveedor.id}`);
 		$(`.group-distribucion-proveedores:first`).find('.input-detalle').val(distribucion.detalle);
 		$(`.group-distribucion-proveedores:first`).find('.input-monto').val(distribucion.monto);
+
+		// factura recibida y pago al proveedor
+		if (distribucion.factura_proveedor) {
+		    $(`.group-distribucion-proveedores:first`).find('.check-factura-recibida').removeClass('fa-times-circle');
+		    $(`.group-distribucion-proveedores:first`).find('.check-factura-recibida').addClass('fa-check-circle');
+		    if (distribucion.factura_proveedor.cobrado){
+			$(`.group-distribucion-proveedores:first`).find('.check-pagado').removeClass('fa-times-circle');
+			$(`.group-distribucion-proveedores:first`).find('.check-pagado').addClass('fa-check-circle');
+		    }
+		}
+
 	    }
 
 	    $(`#proveedor_${indexDistribucion}`).select2({
