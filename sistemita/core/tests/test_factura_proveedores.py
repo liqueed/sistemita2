@@ -8,6 +8,7 @@ from faker import Faker
 from sistemita.core.forms.proveedores import FacturaProveedorForm
 from sistemita.core.models import FacturaProveedor
 from sistemita.core.tests.factories import (
+    FacturaDistribuidaProveedorFactory,
     FacturaProveedorFactory,
     FacturaProveedorFactoryData,
 )
@@ -249,6 +250,18 @@ class FacturaProveedorCreateViewTest(BaseTestCase):
         self.data['total'] = self.data.get('total') + 1
         form = FacturaProveedorForm(data=self.data, user=user)
         self.assertHasErrorDetail(form.errors.get('total'), 'El total ingresado no es el correcto.')
+
+    def test_form_factura_distribuida_proveedor(self):
+        """Valida que factura distribuida quede asociada si es que el proveedor tiene la factura pendiente."""
+        user = self.create_superuser()
+        factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
+        self.data['proveedor'] = factura_distribuida_proveedor.proveedor.pk
+        self.data['factura'] = factura_distribuida_proveedor.factura_distribucion.factura.pk
+        self.data['neto'] = factura_distribuida_proveedor.monto
+        form = FacturaProveedorForm(data=self.data, user=user)
+        form.is_valid()
+        form.save()
+        self.assertEqual(form.instance.proveedor, factura_distribuida_proveedor.proveedor)
 
 
 class FacturaProveedorDetailViewTest(BaseTestCase):

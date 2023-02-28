@@ -303,6 +303,16 @@ class FacturaProveedorForm(forms.ModelForm):
         if self.factura_distribucion_proveedor:
             self.factura_distribucion_proveedor.factura_proveedor = instance
             self.factura_distribucion_proveedor.save()
+        else:
+            factura_distribucion_proveedor = FacturaDistribuidaProveedor.objects.filter(
+                proveedor=instance.proveedor,
+                factura_distribucion__factura=instance.factura,
+                factura_proveedor__isnull=True,
+                monto=instance.neto,
+            ).first()
+            if factura_distribucion_proveedor:
+                factura_distribucion_proveedor.factura_proveedor = instance
+                factura_distribucion_proveedor.save()
 
         return instance
 
