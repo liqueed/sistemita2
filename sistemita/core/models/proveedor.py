@@ -75,6 +75,11 @@ class FacturaProveedor(FacturaAbstract):
         return f'{self.fecha} - {self.numero} - {self.proveedor.razon_social} - {self.moneda_monto}'
 
     @property
+    def moneda_neto(self):
+        """Retorna el total con su moneda."""
+        return f'{self.get_moneda_display()} {self.neto}'
+
+    @property
     def moneda_monto(self):
         """Retorna el total con su moneda."""
         return f'{self.get_moneda_display()} {self.total}'

@@ -113,10 +113,10 @@
 
 			      <div class="col-2 mt-4">
 				<div>
-				  <small><i id="factura-recibida_1" class="check-factura-recibida fa fa-times-circle" aria-hidden="true"></i> Factura recibida</small>
+				  <small><i id="factura-recibida_1" class="check-factura-recibida fa" aria-hidden="true"></i> Factura recibida</small>
 				</div>
 				<div>
-				  <small><i id="pagado-a-proveedor_1" class="check-pagado fa fa-times-circle" aria-hidden="true"></i> Pagado al proveedor</small>
+				  <small><i id="pagado-a-proveedor_1" class="check-pagado fa" aria-hidden="true"></i> Pagado al proveedor</small>
 				</div>
 			      </div>
 
@@ -213,13 +213,18 @@ $(document).ready(function() {
 		cloneDistribucion.find('.check-factura-recibida').attr('id', `factura_recibida_${indexDistribucion}`);
 
 		// factura recibida y pago al proveedor
+		cloneDistribucion.find('.check-factura-recibida').removeClass('fa-*');
+		cloneDistribucion.find('.check-pagado').removeClass('fa-*');
+
 		if (distribucion.factura_proveedor) {
-		    cloneDistribucion.find('.check-factura-recibida').removeClass('fa-times-circle');
 		    cloneDistribucion.find('.check-factura-recibida').addClass('fa-check-circle');
 		    if (distribucion.factura_proveedor.cobrado){
-			cloneDistribucion.find('.check-pagado').removeClass('fa-times-circle');
 			cloneDistribucion.find('.check-pagado').addClass('fa-check-circle');
+		    } else {
+			cloneDistribucion.find('.check-pagado').addClass('fa-times-circle');
 		    }
+		} else {
+		    cloneDistribucion.find('.check-factura-recibida').addClass('fa-times-circle');
 		}
 
 		$('.group-distribucion-proveedores:last').after(cloneDistribucion);
@@ -232,12 +237,14 @@ $(document).ready(function() {
 
 		// factura recibida y pago al proveedor
 		if (distribucion.factura_proveedor) {
-		    $(`.group-distribucion-proveedores:first`).find('.check-factura-recibida').removeClass('fa-times-circle');
 		    $(`.group-distribucion-proveedores:first`).find('.check-factura-recibida').addClass('fa-check-circle');
 		    if (distribucion.factura_proveedor.cobrado){
-			$(`.group-distribucion-proveedores:first`).find('.check-pagado').removeClass('fa-times-circle');
 			$(`.group-distribucion-proveedores:first`).find('.check-pagado').addClass('fa-check-circle');
+		    } else {
+			$(`.group-distribucion-proveedores:first`).find('.check-pagado').addClass('fa-times-circle');
 		    }
+		} else {
+		    $(`.group-distribucion-proveedores:first`).find('.check-factura-recibida').addClass('fa-times-circle');
 		}
 
 	    }
