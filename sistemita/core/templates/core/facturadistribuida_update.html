@@ -225,6 +225,7 @@ $(document).ready(function() {
 		    }
 		} else {
 		    cloneDistribucion.find('.check-factura-recibida').addClass('fa-times-circle');
+		    cloneDistribucion.find('.check-pagado').addClass('fa-times-circle');
 		}
 
 		$('.group-distribucion-proveedores:last').after(cloneDistribucion);
@@ -244,6 +245,7 @@ $(document).ready(function() {
 			$(`.group-distribucion-proveedores:first`).find('.check-pagado').addClass('fa-times-circle');
 		    }
 		} else {
+		    $(`.group-distribucion-proveedores:first`).find('.check-pagado').addClass('fa-times-circle');
 		    $(`.group-distribucion-proveedores:first`).find('.check-factura-recibida').addClass('fa-times-circle');
 		}
 
