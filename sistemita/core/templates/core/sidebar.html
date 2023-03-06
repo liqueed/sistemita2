@@ -20,6 +20,12 @@
       <span>Inicio</span></a>
   </li>
 
+  <li class="nav-item{% if request.resolver_match.url_name == 'paneldecontrol' %} active{% endif %}">
+    <a class="nav-link" href="{% url 'core:paneldecontrol' %}">
+      <i class="fa fa-table" aria-hidden="true"></i>
+      <span>Panel del control</span></a>
+  </li>
+
   <!-- Sección Clientes -->
   {% if perms.core.add_cliente or perms.core.list_cliente or perms.core.add_factura or perms.core.list_factura or perms.core.add_contrato or perms.core.list_contrato or perms.accounting.add_cobranza or perms.accounting.list_cobranza %}
     <!-- Divider -->
