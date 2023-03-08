@@ -60,60 +60,10 @@
 	      </thead>
 	      <tbody>
 		<tr>
-		  <td>
-		    <!-- Card -->
-		    <div class="card" style="width: 18rem;">
-		      <div class="card-body">
-			<h5 class="card-title">Cliente</h5>
-			<h6 class="card-title">Detalle</h5>
-			<h6 class="card-title">USD 1000</h5>
-			  <div class="step">
-			    <div>
-			      <div class="circle circle-check"><i class="fa fa-check"></i></div>
-			    </div>
-			    <div>
-			      <div class="title">First Step</div>
-			    </div>
-			   </div>
-			  <div class="step">
-			    <div>
-			      <div class="circle"><i class="fa fa-times fa-lg"></i></div>
-			    </div>
-			    <div>
-			      <div class="title">Second Step</div>
-			    </div>
-			   </div>
-			  <div class="step">
-			    <div>
-			      <div class="circle"><i class="fa fa-times fa-lg"></i></div>
-			    </div>
-			    <div>
-			      <div class="title">Third Step</div>
-			    </div>
-			  </div>
-			  <div class="step">
-			    <div>
-			      <div class="circle"><i class="fa fa-times fa-lg"></i></div>
-			    </div>
-			    <div>
-			      <div class="title">Four Step</div>
-			    </div>
-			  </div>
-			  <div class="step">
-			    <div>
-			      <div class="circle"><i class="fa fa-times fa-lg"></i></div>
-			    </div>
-			    <div>
-			      <div class="title">Finish</div>
-			    </div>
-			  </div>
-		      </div>
-		    </div>
-		    <!-- End Card -->
-		  </td>
-		  <td></td>
-		  <td></td>
-		  <td></td>
+		  <td>{% include 'components/card_enviada.html' %}</td>
+		  <td>{% include 'components/card_cobrada.html' %}</td>
+		  <td>{% include 'components/card_demorada.html' %}</td>
+		  <td>{% include 'components/card_lista.html' %}</td>
 		</tr>
 	      </tbody>
 	    </table>
