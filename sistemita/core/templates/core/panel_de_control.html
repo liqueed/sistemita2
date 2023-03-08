@@ -17,6 +17,21 @@
 
 	<div class="card-body">
 	  <div class="table-responsive">
+	    <table style="min-width: 1030px;" class="table table-bordered table-hover" width="100%" cellspacing="0">
+	      <tbody>
+		{% for contrato in contratos %}
+		<tr>
+		  <td style="min-width: 300px;">{{ contrato.cliente }}</td>
+		  <td style="min-width: 300px;">{{ contrato.detalle }}</td>
+		  <td>{{ contrato.moneda_monto }}</td>
+		</tr>
+		{% empty %}
+		<tr>
+		  <td colspan="3">Sin contratos pendientes a facturar</td>
+		</tr>
+		{% endfor %}
+	      </tbody>
+	    </table>
 	  </div>
 	</div>
 
