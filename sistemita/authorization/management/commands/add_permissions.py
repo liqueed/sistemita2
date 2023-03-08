@@ -213,6 +213,12 @@ class Command(BaseCommand):
                     'codename': 'view_mis_facturasproveedor_pendientes',
                     'content_type': ContentType.objects.get(model='facturaproveedor'),
                 },
+                # Panel de control
+                {
+                    'name': 'Puede ver módulo Pal del control',
+                    'codename': 'view_paneldecontrol',
+                    'content_type': ContentType.objects.get(model='factura'),
+                },
             ]
 
             for permission in permissions:
