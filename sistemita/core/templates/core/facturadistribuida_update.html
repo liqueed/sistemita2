@@ -213,8 +213,10 @@ $(document).ready(function() {
 		cloneDistribucion.find('.check-factura-recibida').attr('id', `factura_recibida_${indexDistribucion}`);
 
 		// factura recibida y pago al proveedor
-		cloneDistribucion.find('.check-factura-recibida').removeClass('fa-*');
-		cloneDistribucion.find('.check-pagado').removeClass('fa-*');
+		cloneDistribucion.find('.check-factura-recibida').removeClass('fa-times-circle');
+		cloneDistribucion.find('.check-factura-recibida').removeClass('fa-check-circle');
+		cloneDistribucion.find('.check-pagado').removeClass('fa-times-circle');
+		cloneDistribucion.find('.check-pagado').removeClass('fa-check-circle');
 
 		if (distribucion.factura_proveedor) {
 		    cloneDistribucion.find('.check-factura-recibida').addClass('fa-check-circle');

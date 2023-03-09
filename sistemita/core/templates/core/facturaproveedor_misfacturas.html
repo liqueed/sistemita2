@@ -49,6 +49,7 @@
 		<th data-order="tipo" class="sortable">Tipo</th>
 		<th data-order="proveedor" class="sortable">Proveedor</th>
 		<th data-order="detalle" class="sortable">Detalle</th>
+		<th data-order="neto" class="sortable">Neto</th>
 		<th data-order="total" class="sortable">Monto</th>
 		<th data-order="cobrado" class="sortable">Pagado</th>
 		<th data-order="factura" class="sortable">Factura Cliente</th>
@@ -76,6 +77,7 @@
 		  <td>{{ object.get_tipo_display }}</td>
 		  <td>{{ object.proveedor.razon_social }}</td>
 		  <td>{{ object.detalle }}</td>
+		  <td><div class="float-right">{{ object.moneda_neto }}</div></td>
 		  <td><div class="float-right">{{ object.moneda_monto }}</div></td>
 		  <td>
 		    <div class="text-center">
