@@ -127,6 +127,45 @@ class Factura(FacturaAbstract):
         """Retorno el monto neto restado el porcentaje fondo y el porcentaje de socios."""
         return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo_porcentaje_socios}'
 
+    @property
+    def status(self):
+        """Retorna en el estado que está la factura para mostrar en el panel de control"""
+        # send: 1
+        # paid: 2
+        # delayed: 3
+        # done: 4
+        status = 1
+
+        # Verifica si se hizo la recepcion de todas la fc de proveedores y si fueron pagadas
+        recepcion_fc_proveedores = False
+        pago_a_proveedores = False
+        fc_proveedores = self.factura_distribuida.factura_distribuida_proveedores.all()
+        if fc_proveedores:
+            fc_proveedor_realizadas = 0
+            fc_proveedor_pagadas = 0
+
+            for fc in fc_proveedores:
+                if fc.factura_proveedor:
+                    fc_proveedor_realizadas += 1
+                    if fc.factura_proveedor.cobrado:
+                        fc_proveedor_pagadas += 1
+
+            if fc_proveedores.count() == fc_proveedor_realizadas:
+                recepcion_fc_proveedores = True
+
+            if fc_proveedores.count() == fc_proveedor_pagadas:
+                pago_a_proveedores = True
+
+        # Set de estado
+        if self.factura_distribuida.distribuida and self.cobrado and recepcion_fc_proveedores and pago_a_proveedores:
+            status = 4
+        elif self.factura_distribuida.distribuida and not self.cobrado and recepcion_fc_proveedores:
+            status = 3
+        elif self.factura_distribuida.distribuida and self.cobrado and recepcion_fc_proveedores:
+            status = 2
+
+        return status
+
     class Meta:
         """Configuraciones del modelo."""
 

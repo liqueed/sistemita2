@@ -59,12 +59,23 @@
 		</tr>
 	      </thead>
 	      <tbody>
-		<tr>
-		  <td>{% include 'components/card_enviada.html' %}</td>
-		  <td>{% include 'components/card_cobrada.html' %}</td>
-		  <td>{% include 'components/card_demorada.html' %}</td>
-		  <td>{% include 'components/card_lista.html' %}</td>
-		</tr>
+		{% for group in groups %}
+		  <tr>
+		    {% for factura in group %}
+		      {% if factura.status == 1 %}
+			<td>{% include 'components/card_enviada.html' %}</td>
+		      {% elif factura.status == 2 %}
+			<td>{% include 'components/card_cobrada.html' %}</td>
+		      {% elif factura.status == 3 %}
+			<td>{% include 'components/card_demorada.html' %}</td>
+		      {% elif factura.status == 4 %}
+			<td>{% include 'components/card_lista.html' %}</td>
+		      {% else %}
+			<td></td>
+		      {% endif %}
+		    {% endfor %}
+		  </tr>
+		{% endfor %}
 	      </tbody>
 	    </table>
 	  </div>

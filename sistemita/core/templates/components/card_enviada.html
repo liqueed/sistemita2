@@ -1,19 +1,23 @@
 <div class="card" style="width: 18rem;">
   <div class="card-body">
-    <h5 class="card-title">Cliente</h5>
-    <h6 class="card-title">Detalle</h5>
-      <h6 class="card-title">USD 1000</h5>
+    <h5 class="card-title">{{ factura.cliente.razon_social }}</h5>
+    <h6 class="card-title">{{ factura.detalle }}</h5>
+      <h6 class="card-title">{{ factura.moneda_monto }}</h5>
 	<div class="step">
 	  <div>
 	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
 	  </div>
 	  <div>
-	    <div class="title">Factura enviada el </div>
+	    <div class="title">Factura enviada el {{ factura.fecha|date:"d/m/Y" }}</div>
 	  </div>
 	</div>
 	<div class="step">
 	  <div>
-	    <div class="circle"><i class="fa fa-times fa-lg"></i></div>
+	    {% if factura.factura_distribuida.distribuida %}
+	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	    {% else %}
+	      <div class="circle"><i class="fa fa-times fa-lg"></i></div>
+	    {% endif %}
 	  </div>
 	  <div>
 	    <div class="title">Distribución</div>

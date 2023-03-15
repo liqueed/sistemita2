@@ -10,6 +10,7 @@ from django.views.generic import TemplateView
 from sistemita.core.models.cliente import Contrato, Factura
 from sistemita.core.models.proveedor import Proveedor
 from sistemita.core.views.home import error_403
+from sistemita.utils.commons import get_groups_to_panel
 from sistemita.utils.strings import MESSAGE_403
 
 
@@ -35,7 +36,17 @@ class PanelDeControlTemplateView(LoginRequiredMixin, SuccessMessageMixin, Templa
         user_email = self.request.user.email
         proveedor = Proveedor.objects.filter(correo=user_email).first()
         context['contratos'] = Contrato.objects.filter(proveedores__in=[proveedor.pk], factura__isnull=True)
-        context['facturas'] = Factura.objects.filter(proveedores__in=[proveedor.pk])
+
+        # Define cards para el panel
+        facturas = sorted(Factura.objects.filter(proveedores__in=[proveedor.pk]), key=lambda f: f.status)
+        groups = []
+        while len(facturas):
+            facturas, sub_group = get_groups_to_panel(facturas)
+            if sub_group:
+                groups.append(sub_group)
+
+        context['groups'] = groups
+
         response_kwargs.setdefault('content_type', self.content_type)
         return self.response_class(
             request=self.request,
