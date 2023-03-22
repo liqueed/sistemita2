@@ -151,6 +151,7 @@ class FacturaClienteFactory(DjangoModelFactory):
         model = Factura
 
     fecha = Faker('date_this_month')
+    fecha_estimada_pago = Faker('date_this_month')
     numero = Faker('random_number', digits=10)
     tipo = Faker('random_element', elements=[row[0] for row in TIPOS_FACTURA])
     contrato = SubFactory(ContratoFactory)

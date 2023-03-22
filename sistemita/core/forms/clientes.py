@@ -157,11 +157,13 @@ class FacturaForm(forms.ModelForm):
 
         self.fields['numero'].label = 'Número de factura'
         self.fields['proveedores'].label = 'Coachs de la iniciativa'
+        self.fields['fecha_estimada_pago'].label = 'Fecha estimada de pago'
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
                 'Datos generales',
                 Div(Div('fecha', css_class='col-4'), css_class='row'),
+                Div(Div('fecha_estimada_pago', css_class='col-4'), css_class='row'),
                 Div(Div('numero', css_class='col-4'), Div('tipo', css_class='col-2'), css_class='row'),
                 Div(Div('contrato', css_class='col-4'), css_class='row'),
                 Div(Div('categoria', css_class='col-4'), css_class='row'),
@@ -210,6 +212,7 @@ class FacturaForm(forms.ModelForm):
             'numero',
             'tipo',
             'fecha',
+            'fecha_estimada_pago',
             'cliente',
             'proveedores',
             'detalle',

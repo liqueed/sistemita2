@@ -68,6 +68,7 @@ class FacturaCategoria(TimeStampedModel):
 class Factura(FacturaAbstract):
     """Modelo factura de cliente."""
 
+    fecha_estimada_pago = models.DateField(blank=True, null=True)
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
     porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
