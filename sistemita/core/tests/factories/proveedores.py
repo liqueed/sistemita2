@@ -267,5 +267,6 @@ class FacturaDistribuidaProveedorFactory(DjangoModelFactory):
         model = FacturaDistribuidaProveedor
 
     factura_distribucion = SubFactory(FacturaDistribuidaFactory)
+    factura_proveedor = SubFactory(FacturaProveedorFactory)
     proveedor = SubFactory(ProveedorFactory)
     detalle = Faker('text', max_nb_chars=255)

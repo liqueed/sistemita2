@@ -1,7 +1,10 @@
 """Vista del panel de control."""
 
 # Django
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
@@ -14,7 +17,7 @@ from sistemita.utils.commons import get_groups_to_panel
 from sistemita.utils.strings import MESSAGE_403
 
 
-class PanelDeControlTemplateView(LoginRequiredMixin, SuccessMessageMixin, TemplateView):
+class PanelDeControlTemplateView(LoginRequiredMixin, PermissionRequiredMixin, SuccessMessageMixin, TemplateView):
     """Vista que devuelve un template con la página principal del sitio."""
 
     permission_required = 'core.view_paneldecontrol'
