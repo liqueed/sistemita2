@@ -38,17 +38,19 @@ class PanelDeControlTemplateView(LoginRequiredMixin, PermissionRequiredMixin, Su
         """
         user_email = self.request.user.email
         proveedor = Proveedor.objects.filter(correo=user_email).first()
-        context['contratos'] = Contrato.objects.filter(proveedores__in=[proveedor.pk], factura__isnull=True)
 
-        # Define cards para el panel
-        facturas = sorted(Factura.objects.filter(proveedores__in=[proveedor.pk]), key=lambda f: f.status)
-        groups = []
-        while len(facturas):
-            facturas, sub_group = get_groups_to_panel(facturas)
-            if sub_group:
-                groups.append(sub_group)
+        if proveedor:
+            context['contratos'] = Contrato.objects.filter(proveedores__in=[proveedor.pk], factura__isnull=True)
 
-        context['groups'] = groups
+            # Define cards para el panel
+            facturas = sorted(Factura.objects.filter(proveedores__in=[proveedor.pk]), key=lambda f: f.status)
+            groups = []
+            while len(facturas):
+                facturas, sub_group = get_groups_to_panel(facturas)
+                if sub_group:
+                    groups.append(sub_group)
+
+                context['groups'] = groups
 
         response_kwargs.setdefault('content_type', self.content_type)
         return self.response_class(
