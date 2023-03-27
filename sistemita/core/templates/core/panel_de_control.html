@@ -75,6 +75,10 @@
 		      {% endif %}
 		    {% endfor %}
 		  </tr>
+		{% empty %}
+		<tr>
+		  <td colspan="4">No hay facturas asociadas o el usuario no está asociado con un proveedor.</td>
+		</tr>
 		{% endfor %}
 	      </tbody>
 	    </table>
