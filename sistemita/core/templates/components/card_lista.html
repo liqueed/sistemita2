@@ -1,0 +1,47 @@
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title">{{ factura.cliente.razon_social }}</h5>
+    <h6 class="card-title">{{ factura.detalle }}</h5>
+      <h6 class="card-title">{{ factura.moneda_monto }}</h5>
+	<div class="step">
+	  <div>
+	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	  </div>
+	  <div>
+	    <div class="title">Factura enviada el {{ factura.fecha|date:"d/m/Y" }}</div>
+	  </div>
+	</div>
+	<div class="step">
+	  <div>
+	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	  </div>
+	  <div>
+	    <div class="title">Distribución</div>
+	  </div>
+	</div>
+	<div class="step">
+	  <div>
+	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	  </div>
+	  <div>
+	    <div class="title">Cobrada</div>
+	  </div>
+	</div>
+	<div class="step">
+	  <div>
+	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	  </div>
+	  <div>
+	    <div class="title">Recepción Fc Proveedores</div>
+	  </div>
+	</div>
+	<div class="step">
+	  <div>
+	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	  </div>
+	  <div>
+	    <div class="title">Pago a proveedores</div>
+	  </div>
+	</div>
+  </div>
+</div>

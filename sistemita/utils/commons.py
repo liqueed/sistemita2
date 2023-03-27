@@ -54,3 +54,28 @@ def get_deleted_objects(objs):
     model_count = {model._meta.verbose_name_plural: len(objs) for model, objs in collector.model_objs.items()}
 
     return to_delete, model_count, protected
+
+
+def get_groups_to_panel(facturas):
+    """Ordena las facturas para el panel de control."""
+
+    status = [1, 2, 3, 4]
+    # groups = []
+
+    for _ in facturas:
+        sub_group = []
+        for st in status:
+            match = None
+            for index, item in enumerate(facturas):
+                if item.status == st:
+                    match = (index, item)
+                    break
+
+            if match:
+                sub_group.append(match[1])
+                del facturas[match[0]]
+            else:
+                sub_group.append(0)
+        # groups.append(sub_group)
+
+    return facturas, sub_group

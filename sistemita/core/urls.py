@@ -81,6 +81,7 @@ from sistemita.core.views.mediopago import (
     MedioPagoListView,
     MedioPagoUpdateView,
 )
+from sistemita.core.views.panel import PanelDeControlTemplateView
 from sistemita.core.views.proveedores import (
     ProveedorCreateView,
     ProveedorDeleteView,
@@ -229,4 +230,6 @@ urlpatterns = [
     path('mediopago/<int:pk>/', MedioPagoDetailView.as_view(), name='mediopago-detail'),
     path('mediopago/<int:pk>/editar/', MedioPagoUpdateView.as_view(), name='mediopago-update'),
     path('mediopago/<int:pk>/eliminar/', MedioPagoDeleteView.as_view(), name='mediopago-delete'),
+    # Panel de control
+    path('paneldecontrol/', PanelDeControlTemplateView.as_view(), name='paneldecontrol'),
 ]

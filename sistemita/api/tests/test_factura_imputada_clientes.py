@@ -118,7 +118,8 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         data = self.data_create
         data['cliente_id'] = self.data_create.get('cliente_id') + 1
         response = self.client.post('/api/factura-imputada/', data, format='json')
-        self.assertHasErrorDetail(response.data.get('cliente_id'), 'El cliente no existe.')
+        self.assertHasErrorDetail(response.data.get('facturas_list'), 'La factura o el cliente no existe.')
+        self.assertHasErrorDetail(response.data.get('nota_de_credito_id'), 'La nota de crédito no existe.')
         self.assertEqual(response.status_code, 400)
 
     @prevent_request_warnings
@@ -129,7 +130,7 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         data = self.data_create
         data.get('facturas_list')[0]['factura'] = 0
         response = self.client.post('/api/factura-imputada/', data, format='json')
-        self.assertHasErrorDetail(response.data.get('facturas_list'), 'La factura no existe.')
+        self.assertHasErrorDetail(response.data.get('facturas_list'), 'La factura o el cliente no existe.')
         self.assertEqual(response.status_code, 400)
 
     @prevent_request_warnings
@@ -167,7 +168,7 @@ class FacturaImputadaClienteCreateViewAPITestCase(BaseTestCase):
         data = self.data_create
         data['nota_de_credito_id'] = 0
         response = self.client.post('/api/factura-imputada/', data, format='json')
-        self.assertHasErrorDetail(response.data.get('nota_de_credito_id'), 'La factura no existe.')
+        self.assertHasErrorDetail(response.data.get('nota_de_credito_id'), 'La nota de crédito no existe.')
         self.assertEqual(response.status_code, 400)
 
     def test_validate_monto_facturas(self):

@@ -303,7 +303,7 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
                 factura = Factura.objects.get(pk=row.get('factura'), cliente=cliente)
                 facturas.append({'factura': factura, 'action': row.get('action')})
             except Factura.DoesNotExist:
-                raise serializers.ValidationError('La factura no existe.')
+                raise serializers.ValidationError('La factura o el cliente no existe.')
 
             if row.get('action') in ['add', 'update']:
                 monedas.append(factura.moneda)
@@ -324,7 +324,7 @@ class FacturaImputadaModelSerializer(serializers.ModelSerializer):
             cliente = self.context.get('cliente', None)
             return Factura.objects.get(pk=data, cliente=cliente, tipo__startswith='NC')
         except Factura.DoesNotExist as not_exist:
-            raise serializers.ValidationError('La factura no existe.') from not_exist
+            raise serializers.ValidationError('La nota de crédito no existe.') from not_exist
         return data
 
     def validate(self, attrs):

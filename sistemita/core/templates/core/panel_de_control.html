@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Panel de control | Liqueed{% endblock %}
+{% block header %}
+    <link href="{% static 'css/steps.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+  <div class="container-fluid">
+
+    <!-- Clientes -->
+    <div class="row">
+      <div class="card shadow mb-4">
+
+	<div class="card-header py-3">
+	  <h6 class="m-0 font-weight-bold text-primary">Contratos pendientes de facturar</h6>
+	</div>
+
+	<div class="card-body">
+	  <div class="table-responsive">
+	    <table style="min-width: 1030px;" class="table table-bordered table-hover" width="100%" cellspacing="0">
+	      <tbody>
+		{% for contrato in contratos %}
+		<tr>
+		  <td style="min-width: 300px;">{{ contrato.cliente }}</td>
+		  <td style="min-width: 300px;">{{ contrato.detalle }}</td>
+		  <td>{{ contrato.moneda_monto }}</td>
+		</tr>
+		{% empty %}
+		<tr>
+		  <td colspan="3">Sin contratos pendientes a facturar</td>
+		</tr>
+		{% endfor %}
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+
+      </div>
+    </div>
+    <!-- End clientes -->
+
+    <!-- Estado de facturas -->
+    <div class="row">
+      <div class="card shadow mb-4">
+
+	<div class="card-header py-3">
+	  <h6 class="m-0 font-weight-bold text-primary">Estado de facturas</h6>
+	</div>
+
+	<div class="card-body">
+	  <div class="table-responsive">
+	    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+	      <thead>
+		<tr>
+		  <th style="min-width: 300px;">Enviada al cliente</th>
+		  <th style="min-width: 300px;">Cobrada</th>
+		  <th style="min-width: 300px;">Demorada</th>
+		  <th style="min-width: 300px;">Lista <i class="fa fa-smile"></i></th>
+		</tr>
+	      </thead>
+	      <tbody>
+		{% for group in groups %}
+		  <tr>
+		    {% for factura in group %}
+		      {% if factura.status == 1 %}
+			<td>{% include 'components/card_enviada.html' %}</td>
+		      {% elif factura.status == 2 %}
+			<td>{% include 'components/card_cobrada.html' %}</td>
+		      {% elif factura.status == 3 %}
+			<td>{% include 'components/card_demorada.html' %}</td>
+		      {% elif factura.status == 4 %}
+			<td>{% include 'components/card_lista.html' %}</td>
+		      {% else %}
+			<td></td>
+		      {% endif %}
+		    {% endfor %}
+		  </tr>
+		{% endfor %}
+	      </tbody>
+	    </table>
+	  </div>
+	</div>
+
+      </div>
+    </div>
+    <!-- End Estado de facturas -->
+
+  </div>
+{% endblock %}

@@ -258,6 +258,24 @@ class FacturaClienteCreateViewTest(BaseTestCase):
         ]
         self.assertHasProps(form.errors, required_fields)
 
+    def test_fecha_invalid(self):
+        """Valida el formato de fecha."""
+        user = self.create_superuser()
+        self.client.login(username='user', password='user12345')
+        self.data.update({'fecha': '00000'})
+        form = FacturaForm(data=self.data, user=user)
+        self.assertFalse(form.is_valid())
+        self.assertHasProps(form.errors['fecha'], ['Introduzca una fecha válida.'])
+
+    def test_fecha_estimada_pago_invalid(self):
+        """Valida el formato de fecha."""
+        user = self.create_superuser()
+        self.client.login(username='user', password='user12345')
+        self.data.update({'fecha_estimada_pago': '00000'})
+        form = FacturaForm(data=self.data, user=user)
+        self.assertFalse(form.is_valid())
+        self.assertHasProps(form.errors['fecha_estimada_pago'], ['Introduzca una fecha válida.'])
+
     def test_form_total_zero(self):
         """Valida el total de la factura no sea cero."""
         user = self.create_superuser()
