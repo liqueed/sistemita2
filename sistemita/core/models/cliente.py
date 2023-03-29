@@ -188,7 +188,7 @@ class FacturaImpuesto(models.Model):
         return f'{self.factura.get_moneda_display()} {self.monto}'
 
     def __str__(self):
-        return f'{self.factura.numero} | {self.detalle}'
+        return f'Factura #{self.factura.numero} | {self.detalle} | {self.moneda_monto}'
 
     class Meta:
         """Configuraciones del modelo."""

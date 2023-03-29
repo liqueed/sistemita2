@@ -1,5 +1,7 @@
 """Formularios de clientes."""
 
+import json
+
 # Utils
 from decimal import Decimal
 from re import match
@@ -20,6 +22,7 @@ from sistemita.core.models.cliente import (
     Factura,
     FacturaCategoria,
     FacturaDistribuida,
+    FacturaImpuesto,
 )
 from sistemita.core.models.entidad import Distrito, Localidad
 from sistemita.core.models.proveedor import Proveedor
@@ -174,9 +177,10 @@ class FacturaForm(forms.ModelForm):
                 Div(Div('detalle', css_class='col-6'), css_class='row'),
                 Div(Div('moneda', css_class='col-2'), Div('neto', css_class='col-4'), css_class='row'),
                 Div(Div('iva', css_class='col-2'), css_class='row'),
-                Div(Div('total', css_class='col-4'), css_class='row'),
                 Div(Div('cobrado', css_class='col-2'), css_class='row'),
                 Div(Div('archivos', template='components/input_files.html'), css_class='row'),
+                Div(Div('impuestos', template='components/input_impuestos.html'), css_class='row'),
+                Div(Div('total', css_class='col-4'), css_class='row'),
                 Div(css_id='adjuntos', css_class='row'),
                 Div(Div('porcentaje_fondo', css_class='col-2'), css_class='row'),
                 Div(Div('porcentaje_socio_alan', css_class='col-2'), css_class='row'),
@@ -184,12 +188,15 @@ class FacturaForm(forms.ModelForm):
                 Div(Div('monto_imputado', css_class='col-2'), css_class='row'),
             ),
             FormActions(
-                Submit('submit', 'Guardar', css_class='float-right'), Reset('reset', 'Limpiar', css_class='float-right')
+                Div(css_class='alert-errors alert alert-danger alert-dismissible fade show d-none'),
+                Submit('submit', 'Guardar', css_class='float-right'),
+                Reset('reset', 'Limpiar', css_class='float-right'),
             ),
         )
 
     neto = forms.DecimalField(initial=0.0, decimal_places=2, max_digits=12)
     archivos = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+    impuestos = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     proveedores = forms.ModelMultipleChoiceField(
         required=False,
@@ -218,6 +225,7 @@ class FacturaForm(forms.ModelForm):
             'detalle',
             'moneda',
             'iva',
+            'impuestos',
             'neto',
             'total',
             'cobrado',
@@ -262,29 +270,6 @@ class FacturaForm(forms.ModelForm):
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
         return iva
 
-    def clean_total(self):
-        """Verifica si el usuario tiene permisos para editar el campo."""
-
-        total = self.cleaned_data.get('total', None)
-        neto = self.cleaned_data.get('neto', None)
-        iva = self.cleaned_data.get('iva', None)
-
-        # Verifico que el total calculado no haya sido modificado
-        if not self.user.has_perm('core.change_total_factura'):
-            neto = float(self.instance.neto)
-            total_calculado = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
-            if total_calculado != float(total):
-                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
-
-        if total == 0:
-            raise forms.ValidationError(MESSAGE_TOTAL_ZERO)
-
-        if total and neto and iva:
-            if total != get_porcentaje_agregado(amount=neto, percentage=iva):
-                raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
-
-        return total
-
     def clean_archivos(self):
         """Verifica si el usuario tiene permisos para editar el campo."""
         archivos = self.files.getlist('archivos')
@@ -292,6 +277,45 @@ class FacturaForm(forms.ModelForm):
             if archivos:
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
         return archivos
+
+    def clean_impuestos(self):
+        """Parsea impuestos a json."""
+        impuestos = self.cleaned_data.get('impuestos', None)
+        if impuestos:
+            impuestos = json.loads(impuestos)
+
+        return impuestos
+
+    def clean_total(self):
+        """Verifica si el usuario tiene permisos para editar el campo."""
+        total = self.cleaned_data.get('total', None)
+        neto = self.cleaned_data.get('neto', None)
+        iva = self.cleaned_data.get('iva', None)
+        impuestos = self.cleaned_data.get('impuestos', None)
+
+        # Impuestos
+        total_impuestos = 0
+        for impuesto in impuestos:
+            total_impuestos += impuesto.get('monto')
+
+        # Verifico que el total calculado no haya sido modificado
+        if not self.user.has_perm('core.change_total_factura'):
+            neto = float(self.instance.neto)
+            total_sin_impuestos = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
+            total_con_impuesto = total_sin_impuestos - total_impuestos
+            if total_con_impuesto != float(total):
+                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+
+        if total == 0:
+            raise forms.ValidationError(MESSAGE_TOTAL_ZERO)
+
+        if total and neto and iva:
+            total_sin_impuestos = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
+            total_con_impuestos = total_sin_impuestos - total_impuestos
+            if total != total_con_impuestos:
+                raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
+
+        return total
 
     def clean(self):
         """Valida los porcentajes de los socios."""
@@ -306,6 +330,7 @@ class FacturaForm(forms.ModelForm):
     def save(self, commit=True):
         """Guarda los datos recibidos del formulario."""
         data = self.cleaned_data
+        impuestos = data.pop('impuestos')
         data.pop('archivos')
         proveedores = data.pop('proveedores')
         instance = self.instance
@@ -347,6 +372,13 @@ class FacturaForm(forms.ModelForm):
             ):
                 facturadistribuida.distribuida = True
                 facturadistribuida.save()
+
+        # Impuestos
+        if impuestos:
+            for impuesto in impuestos:
+                FacturaImpuesto.objects.get_or_create(
+                    factura=instance, detalle=impuesto.get('detalle'), monto=impuesto.get('monto')
+                )
 
         return instance
 

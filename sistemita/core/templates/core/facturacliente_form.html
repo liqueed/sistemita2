@@ -8,6 +8,8 @@
   {% endif %} | Liqueed{% endblock %}
 {% block content %}
 {% block header %}
+  <script src="{% static 'vendor/validate/jquery.validate.js' %}"></script>
+  <script src="{% static 'vendor/validate/messages_es.js' %}"></script>
   <script src="{% static 'js/select2_placeholder.js' %}"></script>
 {% endblock %}
   <div class="container-fluid">
@@ -44,6 +46,8 @@
 
 {% block extra_js %}
 var permAddArchivos = '{{ perms.core.change_archivos_factura }}';
+var totalImpuestos = 0;
+
 if (permAddArchivos !== 'True'){
     $('input[name="archivos"]').prop('disabled', true);
 }
@@ -64,6 +68,40 @@ $('#id_contrato').change(function(){
     $.get(`/api/contrato/${idContrato}/`, function(data) {
 	$('#id_categoria').val(data.categoria);
     });
+});
+
+
+$('.add_impuestos').click(function(e){
+    e.preventDefault();
+    let cloneImpuesto = $('.group-impuestos:first').clone(); // Clono al primer wrapper impuesto
+    let countImpuestos = $('.group-impuestos').length;
+    let cloneIdImpuesto = countImpuestos + 1; // Id del proximo elemento clonado
+    if (!validateForm()){return;}
+
+    // detalle
+    cloneImpuesto.find('.input-detalle').attr('name', `detalle_${cloneIdImpuesto}`);
+    cloneImpuesto.find('.input-detalle').val('');
+    // monto
+    cloneImpuesto.find('.numberinput').val('0.0');
+    cloneImpuesto.find('.numberinput').attr('name', `monto_${cloneIdImpuesto}`);
+    cloneImpuesto.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
+    $(`.wrapper-impuestos`).append(cloneImpuesto);
+});
+
+
+$('.wrapper-impuestos').on('change keyup', function(e){
+    let impuestos = []
+    totalImpuestos = 0;
+    $('.group-impuestos').each(function(e){
+	let monto = parseFloat($(this).find('.input-monto').val());
+	totalImpuestos += monto;
+	impuestos.push({
+	    'detalle': $(this).find('.input-detalle').val(),
+	    'monto': monto,
+	});
+    });
+    $('#impuestos').val(JSON.stringify(impuestos));
+    getTotal();
 });
 
 function displayInfoCliente(){
@@ -147,6 +185,50 @@ function getTotal(){
     let neto = parseFloat($('#id_neto').val());
     let iva = parseInt($('#id_iva').val());
     let total = parseFloat(neto + (iva / 100) * neto).toFixed(2);
+    if (!isNaN(totalImpuestos)){
+	total -= totalImpuestos;
+    }
+    if (totalImpuestos > total){
+	$('.alert-errors').children('p').remove();
+	$('.alert-errors').removeClass('d-none');
+	$('.alert-errors').append('<p class="m-0">El total de impuestos no puede ser mayor al total.</p>');
+    } else {
+	$('.alert-errors').addClass('d-none');
+    }
     $('#id_total').val(total);
+}
+
+
+function validateForm(){
+    var validator = $('form').validate({
+	lang: 'es',
+    });
+
+    // Validaciones dinamicas
+    $('[name*="monto"]').not('[name="monto_imputado"]').each(function () {
+	$(this).rules('add', {
+	    required: true,
+	    notEqual: '0.0',
+	});
+    });
+
+
+    $('[name*="detalle"]').not('#id_detalle').each(function () {
+	$(this).rules('add', {
+	    required: true,
+	    notEqual: '',
+	});
+    });
+
+    // Metodos
+    jQuery.validator.addMethod("notEqual", function(value, element, param) {
+	this.optional(element)
+	return this.optional(element) || value !== param;
+    }, "Este campo es obligatorio.");
+
+    let result = $("form").valid()
+
+    return result;
+
 }
 {% endblock %}

@@ -11040,3 +11040,6 @@ th.sortable.desc::after {
 th.sortable:hover::after {
   color: #333;
 }
+.asteriskField{
+  color: tomato;
+}
