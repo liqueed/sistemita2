@@ -32,7 +32,7 @@ http:
     ### Sistemita ###
     #################
     web-secure-router:
-      rule: "Host(`sistemita.liqueed.org`)"
+      rule: "Host(`sistemita.liqueed.org`, `www.sistemita.liqueed.org`)"
       entryPoints:
         - web-secure
       middlewares:
@@ -43,7 +43,7 @@ http:
         certResolver: letsencrypt
 
     nginx-secure-router:
-      rule: "Host(`sistemita.liqueed.org`) && PathPrefix(`/media`)"
+      rule: "Host(`sistemita.liqueed.org`) || Host(`www.sistemita.liqueed.org`) && PathPrefix(`/media`)"
       entryPoints:
         - web-secure
       middlewares:
@@ -57,7 +57,7 @@ http:
     ### Fluid ###
     #############
     web-secure-router-fluid:
-      rule: "Host(`sistemita-fluid.liqueed.org`)"
+      rule: "Host(`sistemita-fluid.liqueed.org`, `www.sistemita-fluid.liqueed.org`)",
       entryPoints:
         - web-secure
       middlewares:
@@ -68,7 +68,7 @@ http:
         certResolver: letsencrypt
 
     nginx-secure-router:
-      rule: "Host(`sistemita-fluid.liqueed.org`) && PathPrefix(`/media`)"
+      rule: "Host(`sistemita-fluid.liqueed.org`) || Host(`www.sistemita-fluid.liqueed.org`) && PathPrefix(`/media`)"
       entryPoints:
         - web-secure
       middlewares:
@@ -98,7 +98,7 @@ http:
     nginx:
       loadBalancer:
         servers:
-          - url: https://sistemita.liqueed.org:8080/media/
+          - url: http://sistemita.liqueed.org:8080/media/
 
     #############
     ### Fluid ###
@@ -111,7 +111,7 @@ http:
     nginx_fluid:
       loadBalancer:
         servers:
-          - url: https://sistemita-fluid.liqueed.org:8081/media/
+          - url: http://sistemita-fluid.liqueed.org:8081/media/
 
 providers:
   # https://docs.traefik.io/master/providers/file/
