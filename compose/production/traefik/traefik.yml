@@ -98,7 +98,7 @@ http:
     nginx:
       loadBalancer:
         servers:
-          - url: http://sistemita.liqueed.org:8080/media/
+          - url: https://sistemita.liqueed.org:8080/media/
 
     #############
     ### Fluid ###
@@ -111,7 +111,7 @@ http:
     nginx_fluid:
       loadBalancer:
         servers:
-          - url: http://sistemita-fluid.liqueed.org:8081/media/
+          - url: https://sistemita-fluid.liqueed.org:8081/media/
 
 providers:
   # https://docs.traefik.io/master/providers/file/
