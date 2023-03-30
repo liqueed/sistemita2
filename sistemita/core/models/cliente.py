@@ -175,6 +175,28 @@ class Factura(FacturaAbstract):
         verbose_name_plural = 'facturas'
 
 
+class FacturaImpuesto(models.Model):
+    """Modelo de impuestos de factura de clientes."""
+
+    factura = models.ForeignKey(Factura, related_name='impuestos', on_delete=models.CASCADE)
+    detalle = models.TextField(blank=True, max_length=255)
+    monto = models.DecimalField(blank=False, decimal_places=2, max_digits=12, default=0.0)
+
+    @property
+    def moneda_monto(self):
+        """Retorno el monto del contrato."""
+        return f'{self.factura.get_moneda_display()} {self.monto}'
+
+    def __str__(self):
+        return f'Factura #{self.factura.numero} | {self.detalle} | {self.moneda_monto}'
+
+    class Meta:
+        """Configuraciones del modelo."""
+
+        verbose_name = 'impuesto'
+        verbose_name_plural = 'impuestos'
+
+
 class Contrato(TimeStampedModel, models.Model):
     """Modelo contrato de cliente."""
 

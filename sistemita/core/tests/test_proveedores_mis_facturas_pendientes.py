@@ -61,7 +61,7 @@ class FacturaProveedorByUserPendientesListViewTestCase(BaseTestCase):
         self.create_user(['view_mis_facturasproveedor_pendientes'], email=email)
         self.client.login(username='user', password='user12345', email=email)
         proveedor = ProveedorFactory.create(correo=email)
-        instance = FacturaDistribuidaProveedorFactory.create(proveedor=proveedor)
+        instance = FacturaDistribuidaProveedorFactory.create(proveedor=proveedor, factura_proveedor=None)
         response = self.client.get('/factura-proveedor/mis-facturas-pendientes/')
         self.assertQuerysetEqual(response.context['object_list'], [instance], transform=lambda x: x)
 

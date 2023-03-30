@@ -30,6 +30,7 @@ from sistemita.core.models.cliente import (
     Contrato,
     Factura,
     FacturaDistribuida,
+    FacturaImpuesto,
     FacturaImputada,
 )
 from sistemita.core.models.proveedor import (
@@ -84,11 +85,26 @@ class ClienteSerializer(serializers.ModelSerializer):
         }
 
 
+class FacturaImpuestoModelSerializer(serializers.ModelSerializer):
+    """Serializer del model Factura impuesto."""
+
+    class Meta:
+        """Configuraciones del serializer."""
+
+        model = FacturaImpuesto
+        fields = [
+            'id',
+            'detalle',
+            'monto',
+        ]
+
+
 class FacturaSerializer(serializers.ModelSerializer):
     """Serializer de Factura."""
 
     archivos = ArchivoSerializer(many=True, read_only=True)
     cliente = ClienteSerializer(read_only=True)
+    impuestos = FacturaImpuestoModelSerializer(many=True, read_only=True)
 
     class Meta:
         """Configuraciones del serializer."""
@@ -110,6 +126,7 @@ class FacturaSerializer(serializers.ModelSerializer):
             'monto_neto_sin_fondo',
             'monto_neto_sin_fondo_porcentaje_socios',
             'factura_distribuida',
+            'impuestos',
         ]
 
 

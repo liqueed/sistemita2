@@ -1,5 +1,5 @@
 <div class="col-12">
-  <label for="id_arhivos">Archivos</label>
+  <label for="id_archivos">Archivos</label>
 </div>
 <div class="col-6 wrapper">
   <div class="mb-2">
@@ -22,13 +22,13 @@
   $(add_button).click(function(e){
       e.preventDefault();
       if(x < max_fields){
-          x++;
+	  x++;
       var htmlInput = `<div class="mb-2"><div class="form-control custom-file" style="border:0">`;
       htmlInput += `<input class="custom-file-input" type="file" name="archivos">`;
       htmlInput += `<label class="custom-file-label text-truncate" for="id_archivos">---</label></div>`;
       htmlInput += `<button class="btn btn-danger btn-sm remove_field" type="button">x</button></div>`;
       $(wrapper).append(htmlInput);
-      $('.custom-file-input').on("change", function(e){e.target.parentNode.querySelector('.custom-file-label').textContent=e.target.files[0].name;});
+	$('.custom-file-input').on("change", function(e){e.target.parentNode.querySelector('.custom-file-label').textContent=e.target.files[0].name;});
       }
   });
 

@@ -1,0 +1,50 @@
+<div class="col-12">
+  <label for="id_impuestos">Impuestos</label>
+</div>
+
+<div class="col-12">
+  <div class="card p-4 mb-3" style="width: 50rem;">
+
+    <div class="col-12">
+      <!-- Wrapper impuesto -->
+      <div class="wrapper-impuestos">
+
+	<div class="row group-impuestos">
+	  <!-- Detalle -->
+	  <div class="col-8">
+	    <div class="form-group">
+	      <label class="requiredField">
+		Detalle<span class="asteriskField">*</span>
+	      </label>
+	      <div>
+		<input class="input-detalle form-control" name="detalle_1" autocomplete="off">
+	      </div>
+	    </div>
+
+	  </div>
+	  <!-- End Detalle -->
+	  <!-- Monto -->
+	  <div class="col-4">
+	    <div class="form-group">
+	      <label class="requiredField">
+		Monto<span class="asteriskField">*</span>
+	      </label>
+	      <div>
+		<input class="input-monto numberinput form-control" name="monto_1" type="number" value="0.0" step="0.01" required>
+	      </div>
+	    </div>
+	  </div>
+	  <!-- End Monto -->
+
+	</div>
+      </div>
+      <!-- End Wrapper impuesto -->
+
+    </div>
+
+    <div class="col-6">
+      <button class="btn btn-xs btn-success add_impuestos"><i class="fas fa-plus-circle"></i></button>
+    </div>
+    <input type="hidden" id="impuestos" name="impuestos">
+  </div>
+</div>
