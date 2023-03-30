@@ -59,7 +59,7 @@ http:
     ### Fluid ###
     #############
     web-secure-router-fluid:
-      rule: "Host(`sistemita-fluid.liqueed.org`, `www.sistemita-fluid.liqueed.org`)",
+      rule: "Host(`sistemita-fluid.liqueed.org`, `www.sistemita-fluid.liqueed.org`)"
       entryPoints:
         - web-secure
       middlewares:
