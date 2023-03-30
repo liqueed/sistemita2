@@ -37,6 +37,7 @@ http:
         - web-secure
       middlewares:
         - csrf
+        - sistemita-hosts
       service: django
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
@@ -48,6 +49,7 @@ http:
         - web-secure
       middlewares:
         - csrf
+        - fluid-hosts
       service: nginx
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
@@ -84,6 +86,18 @@ http:
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
       headers:
         hostsProxyHeaders: ["X-CSRFToken"]
+
+    sistemita-hosts:
+      headers:
+        allowedHosts:
+          - "sistemita.liqueed.org"
+          - "www.sistemita.liqueed.org"
+
+    fluid-hosts:
+      headers:
+        allowedHosts:
+          - "sistemita-fluid.liqueed.org"
+          - "www.sistemita-fluid.liqueed.org"
 
   services:
 
