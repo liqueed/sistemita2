@@ -84,24 +84,12 @@ $('.add_impuestos').click(function(e){
     // monto
     cloneImpuesto.find('.numberinput').val('0.0');
     cloneImpuesto.find('.numberinput').attr('name', `monto_${cloneIdImpuesto}`);
-    cloneImpuesto.find("select").after('<button class="btn btn-danger btn-xs btn-metodo-remove">x</button>');
     $(`.wrapper-impuestos`).append(cloneImpuesto);
 });
 
 
 $('.wrapper-impuestos').on('change keyup', function(e){
-    let impuestos = []
-    totalImpuestos = 0;
-    $('.group-impuestos').each(function(e){
-	let monto = parseFloat($(this).find('.input-monto').val());
-	totalImpuestos += monto;
-	impuestos.push({
-	    'detalle': $(this).find('.input-detalle').val(),
-	    'monto': monto,
-	});
-    });
-    $('#impuestos').val(JSON.stringify(impuestos));
-    getTotal();
+    getImpuestos();
 });
 
 function displayInfoCliente(){
@@ -135,6 +123,26 @@ var idFactura = $("#id_factura").val();
 if (idFactura) {
     var adjuntos = $("#adjuntos");
     $.get(`/api/factura/${idFactura}/`, function(data) {
+	$.each(data.impuestos, function(index, item) {
+	    index = index + 1;
+	    if (index === 1){
+		$('.group-impuestos:first').find('.input-detalle').val(item.detalle);
+		$('.group-impuestos:first').find('.input-detalle').after('<button class="btn btn-danger btn-xs btn-remove">x</button>');
+		$('.group-impuestos:first').find('.numberinput').val(item.monto);
+		$('.group-impuestos:first').attr('data-id', item.id);
+		$('.group-impuestos:first').attr('data-action', 'update');
+	    } else {
+		let cloneImpuesto = $('.group-impuestos:first').clone(); // Clono al primer wrapper impuesto
+		// detalle
+		cloneImpuesto.attr('data-id', item.id);
+		cloneImpuesto.find('.input-detalle').attr('name', `detalle_${index}`);
+		cloneImpuesto.find('.input-detalle').val(item.detalle);
+		// monto
+		cloneImpuesto.find('.numberinput').val(item.monto);
+		cloneImpuesto.find('.numberinput').attr('name', `monto_${index}`);
+		$(`.wrapper-impuestos`).append(cloneImpuesto);
+	    }
+	});
 	$.each(data.archivos, function(index, item) {
 	    var filename = item.documento.split(/[\\\/]/).pop();
 	    var itemHtml = `<div class="col-6 mt-2">${filename}</div>`;
@@ -181,6 +189,15 @@ $('#id_tipo').change(function(){
     getTotal();
 });
 
+
+$('.wrapper-impuestos').on("click",".btn-remove", function(e){
+    e.preventDefault();
+    $(this).closest(".group-impuestos").addClass('d-none');
+    $(this).closest(".group-impuestos").attr('data-action', 'delete');
+    getImpuestos();
+    getTotal();
+});
+
 function getTotal(){
     let neto = parseFloat($('#id_neto').val());
     let iva = parseInt($('#id_iva').val());
@@ -196,6 +213,25 @@ function getTotal(){
 	$('.alert-errors').addClass('d-none');
     }
     $('#id_total').val(total);
+}
+
+function getImpuestos(){
+    let impuestos = []
+    totalImpuestos = 0;
+    $('.group-impuestos').each(function(e){
+	let monto = parseFloat($(this).find('.input-monto').val());
+	if ($(this).attr('data-action') !== 'delete'){
+	    totalImpuestos += monto;
+	}
+	impuestos.push({
+	    'id': $(this).attr('data-id'),
+	    'detalle': $(this).find('.input-detalle').val(),
+	    'monto': monto,
+	    'action': $(this).attr('data-action'),
+	});
+    });
+    $('#impuestos').val(JSON.stringify(impuestos));
+    getTotal();
 }
 
 

@@ -296,7 +296,8 @@ class FacturaForm(forms.ModelForm):
         # Impuestos
         total_impuestos = 0
         for impuesto in impuestos:
-            total_impuestos += impuesto.get('monto')
+            if not impuesto.get('action') == 'delete':
+                total_impuestos += impuesto.get('monto')
 
         # Verifico que el total calculado no haya sido modificado
         if not self.user.has_perm('core.change_total_factura'):
@@ -310,7 +311,7 @@ class FacturaForm(forms.ModelForm):
             raise forms.ValidationError(MESSAGE_TOTAL_ZERO)
 
         if total and neto and iva:
-            total_sin_impuestos = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
+            total_sin_impuestos = get_porcentaje_agregado(amount=neto, percentage=iva)
             total_con_impuestos = total_sin_impuestos - total_impuestos
             if total != total_con_impuestos:
                 raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
@@ -376,9 +377,17 @@ class FacturaForm(forms.ModelForm):
         # Impuestos
         if impuestos:
             for impuesto in impuestos:
-                FacturaImpuesto.objects.get_or_create(
-                    factura=instance, detalle=impuesto.get('detalle'), monto=impuesto.get('monto')
-                )
+                action = impuesto.get('action')
+                if action == 'add':
+                    FacturaImpuesto.objects.create(
+                        factura=instance, detalle=impuesto.get('detalle'), monto=impuesto.get('monto')
+                    )
+                elif action == 'update':
+                    FacturaImpuesto.objects.filter(id=impuesto.get('id')).update(
+                        factura=instance, detalle=impuesto.get('detalle'), monto=impuesto.get('monto')
+                    )
+                elif action == 'delete':
+                    FacturaImpuesto.objects.filter(id=impuesto.get('id')).delete()
 
         return instance
 
