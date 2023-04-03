@@ -40,7 +40,7 @@ class PanelDeControlTemplateView(LoginRequiredMixin, PermissionRequiredMixin, Su
         proveedor = Proveedor.objects.filter(correo=user_email).first()
 
         if proveedor:
-            context['contratos'] = Contrato.objects.filter(proveedores__in=[proveedor.pk], factura__isnull=True)
+            context['contratos'] = Contrato.objects.filter(proveedores__in=[proveedor.pk], monto__gt=0)
 
             # Define cards para el panel
             facturas = sorted(Factura.objects.filter(proveedores__in=[proveedor.pk]), key=lambda f: f.status)

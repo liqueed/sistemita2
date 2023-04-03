@@ -389,6 +389,16 @@ class FacturaForm(forms.ModelForm):
                 elif action == 'delete':
                     FacturaImpuesto.objects.filter(id=impuesto.get('id')).delete()
 
+        # Contrato
+        monto_facturas_contrato = 0
+        for factura in self.instance.contrato.facturas.all():
+            monto_facturas_contrato += factura.neto
+
+        self.instance.contrato.monto -= monto_facturas_contrato
+        if not max(self.instance.contrato.monto, 0):
+            self.instance.contrato.monto = 0
+        self.instance.contrato.save()
+
         return instance
 
 
