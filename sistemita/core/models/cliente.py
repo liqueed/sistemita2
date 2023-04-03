@@ -158,12 +158,12 @@ class Factura(FacturaAbstract):
                 pago_a_proveedores = True
 
         # Set de estado
-        if self.factura_distribuida.distribuida and self.cobrado and recepcion_fc_proveedores and pago_a_proveedores:
+        if self.cobrado:
+            status = 2
+        elif self.factura_distribuida.distribuida and self.cobrado and recepcion_fc_proveedores and pago_a_proveedores:
             status = 4
         elif self.factura_distribuida.distribuida and not self.cobrado and recepcion_fc_proveedores:
             status = 3
-        elif self.factura_distribuida.distribuida and self.cobrado and recepcion_fc_proveedores:
-            status = 2
 
         return status
 
