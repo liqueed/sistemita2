@@ -70,7 +70,7 @@ class PanelDeControlTemplateViewTest(BaseTestCase):
         self.create_user(['view_paneldecontrol'], email=email)
         self.client.login(username='user', password='user12345', email=email)
         proveedor = ProveedorFactory.create(correo=email)
-        factura = FacturaClienteFactory.create(proveedores=[proveedor])
+        factura = FacturaClienteFactory.create(proveedores=[proveedor], cobrado=False)
         FacturaDistribuidaFactory.create(factura=factura)
         response = self.client.get('/paneldecontrol/')
         self.assertEqual(response.context['groups'][0][0].status, 1)
@@ -85,7 +85,7 @@ class PanelDeControlTemplateViewTest(BaseTestCase):
         proveedor = ProveedorFactory.create(correo=email)
         factura = FacturaClienteFactory.create(proveedores=[proveedor], cobrado=True)
         factura_distribuida = FacturaDistribuidaFactory.create(factura=factura, distribuida=True)
-        factura_proveedor = FacturaProveedorFactory(proveedor=proveedor, factura=factura)
+        factura_proveedor = FacturaProveedorFactory(proveedor=proveedor, factura=factura, cobrado=False)
         FacturaDistribuidaProveedorFactory.create(
             factura_distribucion=factura_distribuida, proveedor=proveedor, factura_proveedor=factura_proveedor
         )

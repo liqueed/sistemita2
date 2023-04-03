@@ -72,7 +72,7 @@ class Factura(FacturaAbstract):
     cliente = models.ForeignKey(Cliente, blank=False, on_delete=models.CASCADE)
     archivos = models.ManyToManyField(Archivo, blank=True)
     porcentaje_fondo = models.PositiveSmallIntegerField(default=15)
-    contrato = models.ForeignKey('Contrato', blank=True, null=True, on_delete=models.SET_NULL)
+    contrato = models.ForeignKey('Contrato', blank=True, null=True, on_delete=models.SET_NULL, related_name='facturas')
     categoria = models.ForeignKey(FacturaCategoria, blank=True, null=True, on_delete=models.SET_NULL)
     proveedores = models.ManyToManyField('Proveedor', blank=True)
     porcentaje_socio_alan = models.DecimalField(
@@ -158,12 +158,12 @@ class Factura(FacturaAbstract):
                 pago_a_proveedores = True
 
         # Set de estado
-        if self.cobrado:
-            status = 2
-        elif self.factura_distribuida.distribuida and self.cobrado and recepcion_fc_proveedores and pago_a_proveedores:
+        if self.factura_distribuida.distribuida and self.cobrado and recepcion_fc_proveedores and pago_a_proveedores:
             status = 4
         elif self.factura_distribuida.distribuida and not self.cobrado and recepcion_fc_proveedores:
             status = 3
+        elif self.cobrado:
+            status = 2
 
         return status
 
@@ -217,7 +217,7 @@ class Contrato(TimeStampedModel, models.Model):
         return f'{self.get_moneda_display()} {self.monto}'
 
     def __str__(self):
-        return f'{self.fecha_desde} | {self.cliente}'
+        return f'{self.fecha_desde} | {self.cliente} | {self.moneda_monto}'
 
     class Meta:
         """Configuraciones del modelo."""

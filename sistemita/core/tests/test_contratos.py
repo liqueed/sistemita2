@@ -34,7 +34,7 @@ class ContratoModelTest(BaseTestCase):
     def test_string_representation(self):
         """Representación legible del modelo."""
         contrato = self.instance
-        self.assertEqual(str(contrato), f'{contrato.fecha_desde} | {contrato.cliente}')
+        self.assertEqual(str(contrato), f'{contrato.fecha_desde} | {contrato.cliente} | {contrato.moneda_monto}')
 
 
 class ContratoListViewTest(BaseTestCase):
