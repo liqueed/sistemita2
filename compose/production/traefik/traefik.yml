@@ -49,7 +49,6 @@ http:
         - web-secure
       middlewares:
         - csrf
-        - fluid-hosts
       service: nginx
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
@@ -64,12 +63,13 @@ http:
         - web-secure
       middlewares:
         - csrf
+        - fluid-hosts
       service: django_fluid
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
 
-    nginx-secure-router:
+    nginx-fluid-secure-router:
       rule: "Host(`sistemita-fluid.liqueed.org`) || Host(`www.sistemita-fluid.liqueed.org`) && PathPrefix(`/media`)"
       entryPoints:
         - web-secure
