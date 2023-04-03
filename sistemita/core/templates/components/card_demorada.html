@@ -1,5 +1,6 @@
 <div class="card" style="width: 18rem;">
   <div class="card-body">
+    <small><strong>#{{ factura.numero }}</strong></small>
     <h5 class="card-title mb-0">{{ factura.cliente.razon_social }}</h5>
     {% if factura.fecha_estimada_pago %}
        <span class="badge badge-warning text-dark">Fecha estimada de pago: {{ factura.fecha_estimada_pago|date:"d/m/Y" }}</span>
