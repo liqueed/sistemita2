@@ -71,11 +71,14 @@ def get_groups_to_panel(facturas):
                     match = (index, item)
                     break
 
-            if match:
+            if match is not None:
                 sub_group.append(match[1])
                 del facturas[match[0]]
             else:
                 sub_group.append(0)
-        # groups.append(sub_group)
+
+            # Verifica si el el subgrupo se completó
+            if len(sub_group) == 4:
+                return facturas, sub_group
 
     return facturas, sub_group
