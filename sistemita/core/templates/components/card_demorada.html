@@ -33,7 +33,11 @@
 	</div>
 	<div class="step">
 	  <div>
-	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	    {% if factura.facturas_proveedores_realizadas %}
+	      <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	    {% else %}
+	      <div class="circle"><i class="fa fa-times fa-lg"></i></div>
+	    {% endif %}
 	  </div>
 	  <div>
 	    <div class="title">Recepción Fc Proveedores</div>
@@ -41,7 +45,11 @@
 	</div>
 	<div class="step">
 	  <div>
-	    <div class="circle"><i class="fa fa-times fa-lg"></i></div>
+	    {% if factura.facturas_proveedores_pagadas %}
+	      <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	    {% else %}
+	      <div class="circle"><i class="fa fa-times fa-lg"></i></div>
+	    {% endif %}
 	  </div>
 	  <div>
 	    <div class="title">Pago a proveedores</div>
