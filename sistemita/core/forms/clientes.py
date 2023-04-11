@@ -312,7 +312,7 @@ class FacturaForm(forms.ModelForm):
 
         if total and neto and iva:
             total_sin_impuestos = get_porcentaje_agregado(amount=neto, percentage=iva)
-            total_con_impuestos = total_sin_impuestos - total_impuestos
+            total_con_impuestos = total_sin_impuestos - round(Decimal(total_impuestos), 2)
             if total != total_con_impuestos:
                 raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
 
@@ -390,14 +390,15 @@ class FacturaForm(forms.ModelForm):
                     FacturaImpuesto.objects.filter(id=impuesto.get('id')).delete()
 
         # Contrato
-        monto_facturas_contrato = 0
-        for factura in self.instance.contrato.facturas.all():
-            monto_facturas_contrato += factura.neto
+        if self.instance.contrato:
+            monto_facturas_contrato = 0
+            for factura in self.instance.contrato.facturas.all():
+                monto_facturas_contrato += factura.neto
 
-        self.instance.contrato.monto -= monto_facturas_contrato
-        if not max(self.instance.contrato.monto, 0):
-            self.instance.contrato.monto = 0
-        self.instance.contrato.save()
+            self.instance.contrato.monto -= monto_facturas_contrato
+            if not max(self.instance.contrato.monto, 0):
+                self.instance.contrato.monto = 0
+            self.instance.contrato.save()
 
         return instance
 
