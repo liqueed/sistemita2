@@ -78,6 +78,9 @@ $('.add_impuestos').click(function(e){
     let cloneIdImpuesto = countImpuestos + 1; // Id del proximo elemento clonado
     if (!validateForm()){return;}
 
+    // attributes
+    cloneImpuesto.removeAttr('data-id');
+    cloneImpuesto.attr('data-action', 'add');
     // detalle
     cloneImpuesto.find('.input-detalle').attr('name', `detalle_${cloneIdImpuesto}`);
     cloneImpuesto.find('.input-detalle').val('');
@@ -193,7 +196,9 @@ $('#id_tipo').change(function(){
 $('.wrapper-impuestos').on("click",".btn-remove", function(e){
     e.preventDefault();
     $(this).closest(".group-impuestos").addClass('d-none');
-    $(this).closest(".group-impuestos").attr('data-action', 'delete');
+    if ($(this).closest(".group-impuestos").attr('data-id')){
+	$(this).closest(".group-impuestos").attr('data-action', 'delete');
+    }
     getImpuestos();
     getTotal();
 });
