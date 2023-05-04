@@ -83,7 +83,7 @@
 		    <div class="float-right">{{ object.moneda_monto_distribuido }}</div>
 		  </td>
 		  <td>
-		    <div class="float-right">{{ object.factura.moneda_monto_neto_sin_fondo_porcentaje_socios }}</div>
+		    <div class="float-right">{{ object.factura.moneda_monto_neto_sin_fondo_porcentaje_socios_impuestos }}</div>
 		  </td>
 		  {% if perms.core.add_facturadistribuida or perms.core.view_facturadistribuida or perms.core.change_facturadistribuida or perms.core.delete_facturadistribuida %}
 		    <td class="text-center">
