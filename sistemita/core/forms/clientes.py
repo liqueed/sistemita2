@@ -369,7 +369,7 @@ class FacturaForm(forms.ModelForm):
             facturadistribuida = FacturaDistribuida.objects.get(factura=instance)
             if (
                 round(Decimal(facturadistribuida.monto_distribuido), 2)
-                == instance.monto_neto_sin_fondo_porcentaje_socios
+                == instance.monto_neto_sin_fondo_porcentaje_socios_impuestos
             ):
                 facturadistribuida.distribuida = True
                 facturadistribuida.save()
