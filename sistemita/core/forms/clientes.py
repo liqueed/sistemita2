@@ -372,7 +372,9 @@ class FacturaForm(forms.ModelForm):
                 == instance.monto_neto_sin_fondo_porcentaje_socios_impuestos
             ):
                 facturadistribuida.distribuida = True
-                facturadistribuida.save()
+            else:
+                facturadistribuida.distribuida = False
+            facturadistribuida.save()
 
         # Impuestos
         if impuestos:

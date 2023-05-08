@@ -14,7 +14,13 @@
 	</div>
 	<div class="step">
 	  <div>
+	  <div>
+	    {% if factura.factura_distribuida.distribuida %}
 	    <div class="circle circle-check"><i class="fa fa-check"></i></div>
+	    {% else %}
+	      <div class="circle"><i class="fa fa-times fa-lg"></i></div>
+	    {% endif %}
+	  </div>
 	  </div>
 	  <div>
 	    <div class="title">Distribución</div>
