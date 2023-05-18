@@ -508,7 +508,7 @@ class FacturaClienteUpdateViewTest(BaseTestCase):
             factura=instance,
         ).first()
 
-        if round(Decimal(factura_distribuida.monto_distribuido), 2) == instance.monto_neto_sin_fondo_porcentaje_socios:
+        if round(Decimal(factura_distribuida.monto_distribuido), 2) == instance.monto_a_distribuir:
             self.assertTrue(factura_distribuida.distribuida)
         else:
             self.assertFalse(factura_distribuida.distribuida)

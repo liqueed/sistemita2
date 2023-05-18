@@ -53,7 +53,7 @@
 		<th data-order="factura__cobrado" class="sortable">Pagó el cliente?</th>
 		<th data-order="distribuida" class="sortable">Decidida distribución?</th>
 		<th data-order="monto" class="sortable">Monto distribuido</th>
-		<th data-order="factura__monto_neto_sin_fondo" class="sortable">Monto total</th>
+		<th data-order="factura__monto_a_distribuir" class="sortable">Monto total</th>
 		{% if perms.core.change_facturadistribuida or perms.core.delete_facturadistribuida %}
 		  <th></th>
 		{% endif %}
@@ -83,7 +83,7 @@
 		    <div class="float-right">{{ object.moneda_monto_distribuido }}</div>
 		  </td>
 		  <td>
-		    <div class="float-right">{{ object.factura.moneda_monto_neto_sin_fondo_porcentaje_socios_impuestos }}</div>
+		    <div class="float-right">{{ object.factura.moneda_monto_a_distribuir }}</div>
 		  </td>
 		  {% if perms.core.add_facturadistribuida or perms.core.view_facturadistribuida or perms.core.change_facturadistribuida or perms.core.delete_facturadistribuida %}
 		    <td class="text-center">
