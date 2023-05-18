@@ -87,61 +87,36 @@ class Factura(FacturaAbstract):
         return f'{self.fecha} - {self.numero} - {self.cliente.razon_social} - {self.moneda_monto}'
 
     @property
-    def porcentaje_fondo_monto(self):
-        """Retorno el monto del porcentaje de fondo sobre el total."""
-        return get_porcentaje(self.total, self.porcentaje_fondo)
-
-    @property
-    def porcentaje_fondo_neto(self):
-        """Retorno el monto del porcentaje de fondo desde el neto."""
-        return get_porcentaje(self.neto, self.porcentaje_fondo)
-
-    @property
-    def porcentaje_socios_neto(self):
-        """Retorno el monto del porcentaje de socios desde el monto neto."""
-        porcentaje_socios = self.porcentaje_socio_alan + self.porcentaje_socio_ariel
-        return get_porcentaje(self.neto, porcentaje_socios)
-
-    @property
-    def moneda_porcentaje_fondo_monto(self):
-        """Retorno el monto del porcentaje de fondo."""
-        return f'{self.get_moneda_display()} {self.porcentaje_fondo_monto}'
-
-    @property
-    def monto_neto_sin_fondo(self):
-        """Retorno el monto neto restado el porcentaje fondo."""
-        return self.neto - round(Decimal(self.porcentaje_fondo_neto), 2)
-
-    @property
-    def monto_neto_sin_fondo_porcentaje_socios(self):
-        """Retorno el monto neto restado el porcentaje fondo y el porcentaje de socios."""
-        fondo_porcentaje_socios = round(Decimal(self.porcentaje_fondo_neto) + Decimal(self.porcentaje_socios_neto), 2)
-        return self.neto - fondo_porcentaje_socios
-
-    @property
-    def monto_neto_sin_fondo_porcentaje_socios_impuestos(self):
-        """Retorna el monto neto restado el porcentaje fondo, el porcentaje de socios y los impuestos."""
+    def neto_sin_impuestos(self):
+        """Devuelve el monto neto sin impuestos"""
         impuestos = 0
         for impuesto in self.impuestos.all():
             impuestos += impuesto.monto
 
-        fondo_porcentaje_socios = round(Decimal(self.porcentaje_fondo_neto) + Decimal(self.porcentaje_socios_neto), 2)
-        return self.neto - (impuestos + fondo_porcentaje_socios)
+        return self.neto - impuestos
 
     @property
-    def moneda_monto_neto_sin_fondo(self):
-        """Retorno el monto neto restado el porcentaje fondo."""
-        return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo}'
+    def porcentaje_fondo_monto(self):
+        """Retorno el monto del porcentaje de fondo sobre el neto sin impuestos."""
+        return get_porcentaje(self.neto_sin_impuestos, self.porcentaje_fondo)
 
     @property
-    def moneda_monto_neto_sin_fondo_porcentaje_socios(self):
-        """Retorna el monto neto restado el porcentaje fondo y el porcentaje de socios."""
-        return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo_porcentaje_socios}'
+    def porcentaje_socios_monto(self):
+        """
+        Retorno el monto del porcentaje de socios sobre el neto sin impuestos
+        """
+        porcentaje_socios = self.porcentaje_socio_alan + self.porcentaje_socio_ariel
+        return get_porcentaje(self.neto_sin_impuestos, porcentaje_socios)
 
     @property
-    def moneda_monto_neto_sin_fondo_porcentaje_socios_impuestos(self):
-        """Retorna el monto neto restado el porcentaje fondo, el porcentaje de socios y los impuestos."""
-        return f'{self.get_moneda_display()} {self.monto_neto_sin_fondo_porcentaje_socios_impuestos}'
+    def monto_a_distribuir(self):
+        """Retorna el monto a distribuir: neto - (impuestos + porcentaje_fondo + porcentaje_alan + porcentaje_ariel)."""
+        return round(self.neto_sin_impuestos - Decimal(self.porcentaje_fondo_monto + self.porcentaje_socios_monto), 2)
+
+    @property
+    def moneda_monto_a_distribuir(self):
+        """Retorna el monto a distribuir mas la moneda."""
+        return f'{self.get_moneda_display()} {self.monto_a_distribuir}'
 
     @property
     def facturas_proveedores_realizadas(self):

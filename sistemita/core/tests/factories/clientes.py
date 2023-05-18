@@ -349,7 +349,7 @@ class FacturaDistribuidaFactoryData:
 
         distribucion_list = []
         range_aux = rand_range(2, 5)
-        monto = self.instance.factura.monto_neto_sin_fondo_porcentaje_socios / range_aux
+        monto = self.instance.factura.monto_a_distribuir / range_aux
 
         for _ in range(0, range_aux):
             factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()
@@ -381,7 +381,7 @@ class FacturaDistribuidaFactoryData:
 
         distribucion_list = []
         range_aux = rand_range(2, 5)
-        monto = self.instance.factura.monto_neto_sin_fondo_porcentaje_socios / range_aux
+        monto = self.instance.factura.monto_a_distribuir / range_aux
 
         for _ in range(0, range_aux):
             factura_distribuida_proveedor = FacturaDistribuidaProveedorFactory.create()

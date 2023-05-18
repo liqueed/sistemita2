@@ -179,9 +179,9 @@ $(document).ready(function() {
     $.get(`/api/factura-distribuida/${idFacturaDistribuida}/`, function(response) {
 	// factura
 	let moneda = response.factura.moneda == 'P' ? '$' : 'USD';
-	totalFactura = response.factura.monto_neto_sin_fondo;
+	totalFactura = response.factura.monto_a_distribuir;
 	$(`#factura`).append(
-	    new Option(`${response.factura.fecha} - ${response.factura.numero} - ${response.factura.cliente.razon_social} - ${moneda} ${response.factura.monto_neto_sin_fondo_porcentaje_socios}`, `${response.factura.id}`, true, true)
+	    new Option(`${response.factura.fecha} - ${response.factura.numero} - ${response.factura.cliente.razon_social} - ${moneda} ${response.factura.monto_a_distribuir}`, `${response.factura.id}`, true, true)
 	);
 
 	// proveedores y montos

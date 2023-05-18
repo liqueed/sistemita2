@@ -123,8 +123,7 @@ class FacturaSerializer(serializers.ModelSerializer):
             'total',
             'archivos',
             'monto_imputado',
-            'monto_neto_sin_fondo',
-            'monto_neto_sin_fondo_porcentaje_socios',
+            'monto_a_distribuir',
             'factura_distribuida',
             'impuestos',
         ]
@@ -521,7 +520,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             except Proveedor.DoesNotExist:
                 raise serializers.ValidationError('El proveedor no existe.')
 
-        if round(Decimal(montos), 2) > factura_distribuida.factura.monto_neto_sin_fondo_porcentaje_socios:
+        if round(Decimal(montos), 2) > factura_distribuida.factura.monto_a_distribuir:
             raise serializers.ValidationError('Los montos no pueden superar al total de la factura.')
 
         return distribucion
@@ -544,7 +543,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
             send_notification_factura_distribuida(proveedor, facturadistribuida)
             proveedores_list.append({'id': item.get('proveedor').pk})
 
-        if round(Decimal(monto_distribuido), 2) == facturadistribuida.factura.monto_neto_sin_fondo_porcentaje_socios:
+        if round(Decimal(monto_distribuido), 2) == facturadistribuida.factura.monto_a_distribuir:
             facturadistribuida.distribuida = True
 
         facturadistribuida.monto_distribuido = monto_distribuido
@@ -584,7 +583,7 @@ class FacturaDistribuidaSerializer(serializers.Serializer):
                 FacturaDistribuidaProveedor.objects.filter(id=data.get('id')).delete()
 
         facturadistribuida.monto_distribuido = monto_distribuido
-        if round(Decimal(monto_distribuido), 2) == facturadistribuida.factura.monto_neto_sin_fondo_porcentaje_socios:
+        if round(Decimal(monto_distribuido), 2) == facturadistribuida.factura.monto_a_distribuir:
             facturadistribuida.distribuida = True
         else:
             facturadistribuida.distribuida = False

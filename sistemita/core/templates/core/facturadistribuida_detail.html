@@ -21,7 +21,7 @@
 	<div class="table-responsive">
 	  <dl class="row">
 	    <dt class="col-sm-2">Factura: </dt><dd class="col-sm-10">{{ object.factura }}</dd>
-	    <dt class="col-sm-2">Monto a distribuir: </dt><dd class="col-sm-10">{{ object.factura.moneda_monto_neto_sin_fondo }}</dd>
+	    <dt class="col-sm-2">Monto a distribuir: </dt><dd class="col-sm-10">{{ object.factura.moneda_monto_a_distribuir }}</dd>
 	    <dt class="col-sm-2 mt-4 mb-2">Distribución</dt>
 	    {% for distribucion in object.factura_distribuida_proveedores.all %}
 	      {% if forloop.first %}
