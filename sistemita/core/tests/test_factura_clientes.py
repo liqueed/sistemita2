@@ -42,7 +42,7 @@ class FacturaClienteModelTest(BaseTestCase):
     def test_porcentaje_fondo_monto(self):
         """Valida el monto del porcentaje del fondo."""
         factura = self.instance
-        monto = round(float(factura.total) * factura.porcentaje_fondo / 100, 2)
+        monto = round(float(factura.neto) * factura.porcentaje_fondo / 100, 2)
         self.assertEqual(self.instance.porcentaje_fondo_monto, monto)
 
 

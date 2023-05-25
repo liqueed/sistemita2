@@ -302,18 +302,16 @@ class FacturaForm(forms.ModelForm):
         # Verifico que el total calculado no haya sido modificado
         if not self.user.has_perm('core.change_total_factura'):
             neto = float(self.instance.neto)
-            total_sin_impuestos = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
-            total_con_impuesto = total_sin_impuestos - total_impuestos
-            if total_con_impuesto != float(total):
+            total_con_iva = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
+            if total_con_iva != float(total):
                 raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
 
         if total == 0:
             raise forms.ValidationError(MESSAGE_TOTAL_ZERO)
 
         if total and neto and iva:
-            total_sin_impuestos = get_porcentaje_agregado(amount=neto, percentage=iva)
-            total_con_impuestos = total_sin_impuestos - round(Decimal(total_impuestos), 2)
-            if total != total_con_impuestos:
+            total_con_iva = get_porcentaje_agregado(amount=neto, percentage=iva)
+            if total != total_con_iva:
                 raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
 
         return total
