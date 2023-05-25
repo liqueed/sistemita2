@@ -207,9 +207,6 @@ function getTotal(){
     let neto = parseFloat($('#id_neto').val());
     let iva = parseInt($('#id_iva').val());
     let total = parseFloat(neto + (iva / 100) * neto).toFixed(2);
-    if (!isNaN(totalImpuestos)){
-	total -= totalImpuestos;
-    }
     if (totalImpuestos > total){
 	$('.alert-errors').children('p').remove();
 	$('.alert-errors').removeClass('d-none');
