@@ -15,6 +15,7 @@ from sistemita.core.tests.factories import (
     FacturaClienteFactoryData,
 )
 from sistemita.expense.models import Fondo
+from sistemita.utils.commons import round_decimals_up
 from sistemita.utils.tests import BaseTestCase, prevent_request_warnings
 
 fake = Faker('es_ES')
@@ -42,7 +43,7 @@ class FacturaClienteModelTest(BaseTestCase):
     def test_porcentaje_fondo_monto(self):
         """Valida el monto del porcentaje del fondo."""
         factura = self.instance
-        monto = round(float(factura.neto) * factura.porcentaje_fondo / 100, 2)
+        monto = round_decimals_up(float(factura.neto) * factura.porcentaje_fondo / 100, 2)
         self.assertEqual(self.instance.porcentaje_fondo_monto, monto)
 
 
