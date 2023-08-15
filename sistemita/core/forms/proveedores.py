@@ -1,5 +1,6 @@
 """Formularios de proveedor."""
 
+from decimal import Decimal
 from re import match
 
 # Crispy
@@ -145,8 +146,11 @@ class FacturaProveedorForm(forms.ModelForm):
                 self.fields['factura'].initial = Factura.objects.filter(pk=params.get('factura_id')).first()
             if params.get('neto', None):
                 self.fields['neto'].initial = params.get('neto')
-                self.fields['total'].initial = get_porcentaje_agregado(
-                    amount=float(params.get('neto')), percentage=self.fields['iva'].initial
+                self.fields['total'].initial = round(
+                    Decimal(
+                        get_porcentaje_agregado(amount=float(params.get('neto')), percentage=self.fields['iva'].initial)
+                    ),
+                    2,
                 )
             categoria = FacturaProveedorCategoria.objects.filter(nombre__icontains='coach').first()
             if categoria:
@@ -260,19 +264,18 @@ class FacturaProveedorForm(forms.ModelForm):
         neto = self.cleaned_data.get('neto', None)
         iva = self.cleaned_data.get('iva', None)
 
-        # Verifico que el total calculado no haya sido modificado
-        if not self.user.has_perm('core.change_total_facturaproveedor'):
-            neto = float(self.instance.neto)
-            total_calculado = get_porcentaje_agregado(amount=neto, percentage=self.instance.iva)
-            if total_calculado != float(total):
-                raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+        if total and neto and iva:
+            # Verifico que el total calculado no haya sido modificado
+            if not self.user.has_perm('core.change_total_facturaproveedor'):
+                if float(total) != get_porcentaje_agregado(amount=neto, percentage=iva):
+                    raise forms.ValidationError(MESSAGE_PERMISSION_ERROR)
+
+            # Verifico que el total sea correcto
+            if float(total) != get_porcentaje_agregado(amount=neto, percentage=iva):
+                raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
 
         if total == 0:
             raise forms.ValidationError(MESSAGE_TOTAL_ZERO)
-
-        if total and neto and iva:
-            if total != get_porcentaje_agregado(amount=neto, percentage=iva):
-                raise forms.ValidationError(MESSAGE_TOTAL_INVALID)
 
         return total
 

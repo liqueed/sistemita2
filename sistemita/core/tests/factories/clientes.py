@@ -163,7 +163,7 @@ class FacturaClienteFactory(DjangoModelFactory):
     moneda = Faker('random_element', elements=[row[0] for row in MONEDAS])
     neto = Faker('pydecimal', max_value=10000, positive=True, right_digits=2)
     iva = Faker('random_number', digits=2)
-    total = factory.LazyAttribute(lambda o: get_porcentaje_agregado(amount=o.neto, percentage=o.iva))
+    total = factory.LazyAttribute(lambda o: round(Decimal(get_porcentaje_agregado(amount=o.neto, percentage=o.iva)), 2))
     cobrado = Faker('pybool')
     porcentaje_socio_alan = Faker('pydecimal', max_value=20, positive=True, right_digits=2)
     porcentaje_socio_ariel = Faker('pydecimal', max_value=20, positive=True, right_digits=2)

@@ -205,12 +205,11 @@ class FacturaProveedorCreateViewTest(BaseTestCase):
         self.client.login(username='user', password='user12345')
         self.data.update({'moneda': 'D'})  # cambia el valor por defecto
         form = FacturaProveedorForm(data=self.data, user=user)
-        self.assertHasProps(form.errors, ['numero', 'moneda', 'iva', 'neto', 'total'])
+        self.assertHasProps(form.errors, ['numero', 'moneda', 'iva', 'neto'])
         self.assertHasErrorDetail(form.errors.get('numero'), 'No tienes permisos para cambiar este campo.')
         self.assertHasErrorDetail(form.errors.get('moneda'), 'No tienes permisos para cambiar este campo.')
         self.assertHasErrorDetail(form.errors.get('iva'), 'No tienes permisos para cambiar este campo.')
         self.assertHasErrorDetail(form.errors.get('neto'), 'No tienes permisos para cambiar este campo.')
-        self.assertHasErrorDetail(form.errors.get('total'), 'No tienes permisos para cambiar este campo.')
 
     def test_form_user_with_permission_change_values(self):
         """
@@ -368,15 +367,13 @@ class FacturaProveedorUpdateViewTest(BaseTestCase):
             'moneda': 'P' if self.instance.moneda == 'D' else 'D',
             'iva': self.instance.iva + 1,
             'neto': self.instance.neto + 1,
-            'total': self.instance.total + 1,
         }
         form = FacturaProveedorForm(instance=self.instance, data=data, user=user)
-        self.assertHasProps(form.errors, ['numero', 'iva', 'neto', 'total'])
+        self.assertHasProps(form.errors, ['numero', 'iva', 'neto', 'moneda'])
         self.assertHasErrorDetail(form.errors.get('numero'), 'No tienes permisos para cambiar este campo.')
         self.assertHasErrorDetail(form.errors.get('moneda'), 'No tienes permisos para cambiar este campo.')
         self.assertHasErrorDetail(form.errors.get('iva'), 'No tienes permisos para cambiar este campo.')
         self.assertHasErrorDetail(form.errors.get('neto'), 'No tienes permisos para cambiar este campo.')
-        self.assertHasErrorDetail(form.errors.get('total'), 'No tienes permisos para cambiar este campo.')
 
     def test_form_user_with_permission_change_values(self):
         """

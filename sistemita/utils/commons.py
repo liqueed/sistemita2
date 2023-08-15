@@ -1,9 +1,9 @@
 """Funciones utilitarias."""
-
-# Django
 # Utilities
+import math
 from decimal import Decimal
 
+# Django
 from django.contrib.admin.utils import NestedObjects
 from django.utils.encoding import force_text
 from django.utils.text import capfirst
@@ -12,20 +12,40 @@ from django.utils.text import capfirst
 from sistemita.core.constants import ZERO_DECIMAL
 
 
+def round_decimals_up(number, decimals):
+    """
+    Returns a value rounded up to a specific number of decimal places.
+    """
+    if not isinstance(number, Decimal):
+        number = Decimal(number)
+
+    if not isinstance(decimals, int):
+        raise TypeError("decimal places must be an integer")
+    if decimals < 0:
+        raise ValueError("decimal places has to be 0 or more")
+    if decimals == 0:
+        return math.ceil(number)
+
+    factor = 10**decimals
+    return math.ceil(number * factor) / factor
+
+
 def get_porcentaje(total, percentage):
     """
     Devuelve un monto que corresponde al porcentaje de un total.
     """
     if isinstance(percentage, Decimal):
         percentage = float(percentage)
-    return round(float(total) * percentage / 100, 2)
+    return round_decimals_up(float(total) * percentage / 100, 2)
 
 
 def get_porcentaje_agregado(amount, percentage):
     """
     Recibe un monto, le suma porcentaje y devuelve un total.
     """
-    return round(amount + percentage * amount / 100, 2)
+    if isinstance(amount, Decimal):
+        amount = float(amount)
+    return round_decimals_up(amount + percentage * amount / 100, 2)
 
 
 def get_total_factura(monto_facturas, monto_nota_de_credito):
