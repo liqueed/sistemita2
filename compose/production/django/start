@@ -10,4 +10,4 @@ python /app/manage.py migrate
 python /app/manage.py add_permissions
 python /app/manage.py permissions_translation
 
-/usr/local/bin/gunicorn --workers 3 config.wsgi --bind 0.0.0.0:5000 --chdir=/app --timeout 120
+/usr/local/bin/gunicorn --workers 3 config.wsgi --bind 0.0.0.0:5000 --chdir=/app --timeout 200 --threads 5
