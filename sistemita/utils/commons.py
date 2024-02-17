@@ -112,4 +112,4 @@ def get_time_duration_log(time_start, message):
     """Obtiene el tiempo de duración"""
     time_end = time()
     time_duration = (time_end - time_start) * 1000
-    logger.info(f'{message} time duration: {time_duration}')
+    logger.info(f'{message} time duration: {time_duration} ms')
