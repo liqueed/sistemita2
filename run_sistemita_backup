@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd /home/sistemita/actions-runner/_work/sistemita2/sistemita2/ && \
+/usr/local/bin/docker-compose -f production.yml exec -T postgres backup && \
+/usr/bin/docker cp $(/usr/local/bin/docker-compose -f production.yml ps -q postgres):/backups/ /home/sistemita/sistemita-db-backups/
