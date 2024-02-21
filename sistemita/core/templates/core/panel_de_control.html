@@ -21,9 +21,9 @@
 	      <tbody>
 		{% for contrato in contratos %}
 		<tr>
-		  <td style="min-width: 300px;">{{ contrato.cliente }}</td>
+		  <td style="min-width: 300px;">{{ contrato.cliente__razon_social }}</td>
 		  <td style="min-width: 300px;">{{ contrato.detalle }}</td>
-		  <td>{{ contrato.moneda_monto }}</td>
+		  <td>{% if contrato.moneda == 'P' %}${% else %}USD{% endif %} {{ contrato.monto }}</td>
 		</tr>
 		{% empty %}
 		<tr>

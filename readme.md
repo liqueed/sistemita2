@@ -107,6 +107,16 @@ Pasos para que un proveedor pueda ver sus facturas pendientes:
 	 Proveedores, Puede editar número de Facturas A Proveedores, Puede ver módulo Mis facturas pendientes)
 3. Dar los accesos al proveedor
 
+## Agregar crontab
+
+1. Agregar cron:
+
+	`$ sudo crontab -e`
+
+2. Agregar las siguientes líneas, el cron se ejecutará todos los días a las 00hs:
+
+	`0 0 * * * /home/sistemita/run_sistemita_backup`
+
 ## Documentacion anterior
 
 - Preparado para desarrollar directo sobre el contenedor descrito en el Dockerfile usando [VSCode](https://code.visualstudio.com/docs/remote/containers)

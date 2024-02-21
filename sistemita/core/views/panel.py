@@ -37,13 +37,17 @@ class PanelDeControlTemplateView(LoginRequiredMixin, PermissionRequiredMixin, Su
         Pass response_kwargs to the constructor of the response class.
         """
         user_email = self.request.user.email
-        proveedor = Proveedor.objects.filter(correo=user_email).first()
+        proveedor = Proveedor.objects.filter(correo=user_email).values('id')
 
         if proveedor:
-            context['contratos'] = Contrato.objects.filter(proveedores__in=[proveedor.pk], monto__gt=0)
+            proveedor_id = proveedor.first().get('id')
+            context['contratos'] = Contrato.objects.filter(proveedores__in=[proveedor_id], monto__gt=0).values(
+                'cliente__razon_social', 'detalle', 'moneda', 'monto'
+            )
 
             # Define cards para el panel
-            facturas = sorted(Factura.objects.filter(proveedores__in=[proveedor.pk]), key=lambda f: f.status)
+            facturas = sorted(Factura.objects.filter(proveedores__in=[proveedor_id]), key=lambda f: f.status)
+
             groups = []
             while len(facturas):
                 facturas, sub_group = get_groups_to_panel(facturas)

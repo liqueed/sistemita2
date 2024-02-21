@@ -1,7 +1,9 @@
 """Funciones utilitarias."""
 # Utilities
+import logging
 import math
 from decimal import Decimal
+from time import time
 
 # Django
 from django.contrib.admin.utils import NestedObjects
@@ -10,6 +12,8 @@ from django.utils.text import capfirst
 
 # Sistemita
 from sistemita.core.constants import ZERO_DECIMAL
+
+logger = logging.getLogger(__name__)
 
 
 def round_decimals_up(number, decimals):
@@ -102,3 +106,10 @@ def get_groups_to_panel(facturas):
                 return facturas, sub_group
 
     return facturas, sub_group
+
+
+def get_time_duration_log(time_start, message):
+    """Obtiene el tiempo de duración"""
+    time_end = time()
+    time_duration = (time_end - time_start) * 1000
+    logger.info(f'{message} time duration: {time_duration} ms')

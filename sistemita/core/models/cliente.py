@@ -121,13 +121,13 @@ class Factura(FacturaAbstract):
     @property
     def facturas_proveedores_realizadas(self):
         """Retorna si en caso de tener factura distribuida a proveedores, los proveedores hayan cargado las facturas."""
-        fc_proveedores = self.factura_distribuida.factura_distribuida_proveedores.all()
+        fc_proveedores = self.factura_distribuida.factura_distribuida_proveedores.all().values('factura_proveedor')
         recepcion_fc_proveedores = False
         if fc_proveedores:
             fc_proveedor_realizadas = 0
 
             for fc in fc_proveedores:
-                if fc.factura_proveedor:
+                if fc.get('factura_proveedor'):
                     fc_proveedor_realizadas += 1
 
             if fc_proveedores.count() == fc_proveedor_realizadas:
@@ -138,14 +138,17 @@ class Factura(FacturaAbstract):
     @property
     def facturas_proveedores_pagadas(self):
         """Retorna si en caso de tener factura distribuida a proveedores, los proveedores recibido el pago."""
-        fc_proveedores = self.factura_distribuida.factura_distribuida_proveedores.all()
+        fc_proveedores = self.factura_distribuida.factura_distribuida_proveedores.all().values(
+            'factura_proveedor', 'factura_proveedor__cobrado'
+        )
+
         pago_a_proveedores = False
         if fc_proveedores:
             fc_proveedor_pagadas = 0
 
             for fc in fc_proveedores:
-                if fc.factura_proveedor:
-                    if fc.factura_proveedor.cobrado:
+                if fc.get('factura_proveedor'):
+                    if fc.get('factura_proveedor__cobrado'):
                         fc_proveedor_pagadas += 1
 
             if fc_proveedores.count() == fc_proveedor_pagadas:
@@ -160,19 +163,25 @@ class Factura(FacturaAbstract):
         # paid: 2
         # delayed: 3
         # done: 4
+
+        factura_distribuida_distribuida = self.factura_distribuida.distribuida
+        cobrado = self.cobrado
+        facturas_proveedores_realizadas = self.facturas_proveedores_realizadas
+        facturas_proveedores_pagadas = self.facturas_proveedores_pagadas
+
         status = 1
 
         # Set de estado
         if (
-            self.factura_distribuida.distribuida
-            and self.cobrado
-            and self.facturas_proveedores_realizadas
-            and self.facturas_proveedores_pagadas
+            factura_distribuida_distribuida
+            and cobrado
+            and facturas_proveedores_realizadas
+            and facturas_proveedores_pagadas
         ):
             status = 4
-        elif self.factura_distribuida.distribuida and not self.cobrado and self.facturas_proveedores_realizadas:
+        elif factura_distribuida_distribuida and not cobrado and facturas_proveedores_realizadas:
             status = 3
-        elif self.cobrado:
+        elif cobrado:
             status = 2
 
         return status
