@@ -53,7 +53,7 @@ class PanelDeControlTemplateView(LoginRequiredMixin, PermissionRequiredMixin, Su
 
             filter_days = None
             if not self.request.GET.get('hasta'):
-                filter_days = date.today() - timedelta(days=90)
+                filter_days = date.today() - timedelta(days=30)
             else:
 
                 try:
