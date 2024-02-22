@@ -1,0 +1,30 @@
+<form class="form-inline">
+  <div class="form-group mr-1 mb-2">
+    <input autocomplete="off" value="{{ request.GET.hasta }}"
+	   type="text" class="form-control form-control-sm" name="hasta" id="id_hasta"
+	   placeholder="Hasta"
+    />
+    <div class="input-group-append">
+      <button class="btn btn-primary btn-sm" type="submit">
+	<i class="fas fa-filter"></i>
+      </button>
+    </div>
+
+    <div class="input-group-append">
+      <button class="clean btn btn-primary btn-sm" type="submit">
+	<i class="fas fa-times-circle"></i>
+      </button>
+    </div>
+
+  </div>
+</form>
+{% block extra_js %}
+<script>
+
+$('#id_hasta').datepicker({format: 'dd/mm/yyyy', language: 'es', todayHighlight: true});
+
+$('.clean').click(function(e){
+    $('#id_hasta').val('');
+});
+</script>
+{% endblock %}

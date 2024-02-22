@@ -1,5 +1,7 @@
 """Vista del panel de control."""
 
+from datetime import date, datetime, timedelta
+
 # Django
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
@@ -44,13 +46,33 @@ class PanelDeControlTemplateView(LoginRequiredMixin, PermissionRequiredMixin, Su
             context['contratos'] = Contrato.objects.filter(proveedores__in=[proveedor_id], monto__gt=0).values(
                 'cliente__razon_social', 'detalle', 'moneda', 'monto'
             )
+            filtered_facturas = []
 
             # Define cards para el panel
             facturas = sorted(Factura.objects.filter(proveedores__in=[proveedor_id]), key=lambda f: f.status)
 
+            filter_days = None
+            if not self.request.GET.get('hasta'):
+                filter_days = date.today() - timedelta(days=90)
+            else:
+
+                try:
+                    date_filter = datetime.strptime(self.request.GET.get('hasta'), '%d/%m/%Y').date()
+                    days = (date_filter - date.today()).days
+                    if days < 0:
+                        filter_days = date.today() - timedelta(days=abs(days))
+                except ValueError:
+                    filter_days = date.today() - timedelta(days=90)
+
+            for factura in facturas:
+                if filter_days:
+                    if factura.fecha < filter_days and factura.status == 4:
+                        continue
+                filtered_facturas.append(factura)
+
             groups = []
-            while len(facturas):
-                facturas, sub_group = get_groups_to_panel(facturas)
+            while len(filtered_facturas):
+                filtered_facturas, sub_group = get_groups_to_panel(filtered_facturas)
                 if sub_group:
                     groups.append(sub_group)
 

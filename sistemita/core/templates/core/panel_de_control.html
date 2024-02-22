@@ -42,14 +42,16 @@
     <!-- Estado de facturas -->
     <div class="row">
       <div class="card shadow mb-4">
-
 	<div class="card-header py-3">
 	  <h6 class="m-0 font-weight-bold text-primary">Estado de facturas</h6>
 	</div>
 
 	<div class="card-body">
 	  <div class="table-responsive">
-	    <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+	    <div class="row" style="margin-left: 940px;">
+	      {% include 'components/filter_panel.html' %}
+	    </div>
+	    <table class="table table-bordered table-hover table-sortable" cellspacing="0" width="100%">
 	      <thead>
 		<tr>
 		  <th style="min-width: 300px;">Enviada al cliente</th>
